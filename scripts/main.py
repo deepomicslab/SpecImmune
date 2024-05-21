@@ -9,8 +9,13 @@ import argparse
 
 def main(args):
     command = f"""
+    ## first: read binning
     python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 0
+
+    ## second: find a pair of alleles for each HLA locus
     python3 {sys.path[0]}/select_best_reference_allele.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
+
+    
     """
     os.system(command)
 
