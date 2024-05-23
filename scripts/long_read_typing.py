@@ -8,11 +8,12 @@ import os
 import pysam
 import gzip
 import argparse
+from downsample_bam import main
 
 interval_dict = {"A":"HLA_A:1000-4503", "B":"HLA_B:1000-5081","C": "HLA_C:1000-5304","DPA1":"HLA_DPA1:1000-10775",\
     "DPB1":"HLA_DPB1:1000-12468","DQA1":"HLA_DQA1:1000-7492","DQB1":"HLA_DQB1:1000-8480","DRB1":"HLA_DRB1:1000-12229" }
 gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
-# gene_list = ['DRB1']
+# gene_list = ['A']
 
 
 class Read_Obj():
@@ -61,7 +62,6 @@ class Score_Obj():
             self.loci_score[read_obj.read_name][read_obj.loci_name] = [score, read_obj.match_num]
         else:
             if score > self.loci_score[read_obj.read_name][read_obj.loci_name][0]:
-            # if read_obj.match_num > self.loci_score[read_obj.read_name][read_obj.loci_name][1]:
                 self.loci_score[read_obj.read_name][read_obj.loci_name] = [score, read_obj.match_num]
     
     def assign(self, assign_file):
@@ -82,9 +82,7 @@ class Score_Obj():
                 
 
                 # if gene_score[0][0] == "DRB1" or gene_score[1][0] == "DRB1":
-                if read_name == "410aa980-09c5-4423-8a3d-315031b8e376":
-                    print (read_name, gene_score[0][0], gene_score[:5], gene_match_len[:5])
-
+                #     print (read_name, gene_score[0][0], gene_score[:5], gene_match_len[:5])
                 if gene_score[0][0] in ["U"] and gene_score[1][0] == "A" :
                     assigned_locus = ["A"]                
                 elif gene_score[0][0] == "DRB1" and gene_score[0][1][0] - gene_score[1][1][0] < 0.05:  # 0.02 0.05
@@ -113,14 +111,27 @@ class Pacbio_Binning():
     def __init__(self):
         
          
-        self.db = f"{sys.path[0]}/../db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"
+        # self.db = f"{sys.path[0]}/../db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"
         # self.db = f"{sys.path[0]}/../db/ref/hla_gen.format.filter.extend.DRB.no26789.v2.fasta"
+        self.db = f"""{args["db"]}/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"""
         self.map2db()
-        self.sam = f"{parameter.outdir}/{parameter.sample}.db.sam"
-        self.bamfile = pysam.AlignmentFile(self.sam, 'r')   
+        self.sam = f"{parameter.outdir}/{parameter.sample}.db.bam"
+        self.bamfile = pysam.AlignmentFile(self.sam, 'rb')   
         self.assign_file = f"{parameter.outdir}/{parameter.sample}.assign.txt"
 
+    def index_db(self):
+        ref_index = self.db[:-5] + args["y"] + ".mmi"
+        # print ("search the reference index:", ref_index)
+        if not os.path.isfile(ref_index):
+            print ("start build Minimap2 index for the reference...")
+            os.system(f"minimap2 {minimap_para} -d {ref_index} {self.db} ")
+        else:
+            print (f"Detect Minimap2 index for the reference: {ref_index}")
+        self.db = ref_index
+
     def map2db(self):
+        if args["minimap_index"] == 1:
+            self.index_db()
         # map raw reads to database
         alignDB_order = f"""
         fq={parameter.raw_fq}
@@ -128,7 +139,7 @@ class Pacbio_Binning():
         outdir={parameter.outdir}
         bin={sys.path[0]}/../bin
         sample={parameter.sample}
-        minimap2 -t {parameter.threads} {minimap_para} -p 0.1 -N 100000 -a $ref $fq > $outdir/$sample.db.sam
+        minimap2 -t {parameter.threads} {minimap_para} -p 0.1 -N 100000 -a $ref $fq |samtools view -bS -o $outdir/$sample.db.bam
         echo alignment done.
         """
         os.system(alignDB_order)
@@ -141,10 +152,6 @@ class Pacbio_Binning():
                 continue
             # print (read)
             read_obj = Read_Obj(read)
-
-            if read_obj.match_num < MIN_MATCH_LENFTH:
-                continue
-
             scor.add_read(read_obj)
             # print (read_obj.read_name, read_obj.mismatch_rate, read_obj.allele_name )
         read_loci = scor.assign(self.assign_file)
@@ -191,10 +198,10 @@ class Parameters():
         outdir = args["o"]
         self.population = args["p"]
         self.threads = args["j"]
-        self.db = "%s/../db/"%(sys.path[0])
+        self.db = "%s/"%(args["db"])
         self.bin = "%s/../bin/"%(sys.path[0])      
         self.outdir = "%s/%s/"%(outdir, self.sample)
-        self.whole_dir = sys.path[0]
+        self.whole_dir = "%s/whole/"%(sys.path[0])
 
         if not os.path.exists(args["o"]):
             os.system("mkdir %s"%(args["o"]))
@@ -204,41 +211,85 @@ class Parameters():
 
 class Fasta():
 
+    def alignment(self, gene):
+        ### call and phase snps
+        cmd = """
+        sample=%s
+        bin=%s
+        db=%s
+        outdir=%s
+        hla=%s
+        hla_ref=$db/HLA/HLA_$hla/HLA_$hla.fa
+        minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
+        samtools index $outdir/$hla.bam
+        samtools depth -d 1000000 -aa $outdir/$hla.bam >$outdir/$hla.depth
+        """%(parameter.sample, parameter.bin, args["db"], parameter.outdir, gene, parameter.threads, minimap_para, args["a"])
+        os.system(cmd)
+
+        max_depth = args["max_depth"]
+        seed = args["seed"]
+        input_bam = f"{parameter.outdir}/{gene}.bam"
+        input_depth = f"{parameter.outdir}/{gene}.depth"
+        output_bam = f"{parameter.outdir}/{gene}.downsample.bam"
+        output_depth = f"{parameter.outdir}/{gene}.downsample.depth"
+        downsample_ratio = main(input_bam, output_bam, input_depth, output_depth, max_depth, seed)
+        print (f"downsample ratio is {downsample_ratio} for {gene}")
+        if downsample_ratio < 1:
+            os.system(f"rm {input_bam}")
+            os.system(f"rm {input_depth}")
+            os.system(f"mv {output_bam} {input_bam}")
+            os.system(f"mv {output_depth} {input_depth}")
+
+
     def vcf2fasta(self, gene):
-        for index in range(2):
-            order = """
-            sample=%s
-            db=%s
-            outdir=%s
-            hla=%s
-            i=%s
-            j=%s
-            hla_ref=$db/HLA/HLA_$hla/HLA_$hla.fa
-            minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
-            samtools index $outdir/$hla.bam
+        ### map and downsample alignment
+        self.alignment(gene)
+        ### call and phase snps
+        awk_script = '{{sum+=$3}} END {{ if (NR>0) print sum/NR; else print 0; }}'
+        hla_ref=f"{parameter.db}/HLA/HLA_{gene}/HLA_{gene}.fa"
+        bam=f"{parameter.outdir}/{gene}.bam"
+        depth_file=f"{parameter.outdir}/{gene}.depth"
 
-            samtools depth -aa $outdir/$hla.bam >$outdir/$hla.depth
-            python3 %s/mask_low_depth_region.py -f False -c $outdir/$hla.depth -o $outdir -w 20 -d %s
-            mask_bed=$outdir/low_depth.bed
-            cp $outdir/low_depth.bed $outdir/$hla.low_depth.bed
-
-            longshot -F -c 2 --bam $outdir/$hla.bam --ref $hla_ref --out $outdir/$sample.$hla.longshot.vcf 
-            #longshot -F -S -c 2 -q 10 -Q 2 -a 5 -y 20 -e 2 -E 0.1 --hom_snv_rate 0.01 --het_snv_rate 0.01 --bam $outdir/$hla.bam --ref $hla_ref --out $outdir/$sample.$hla.longshot.vcf 
-            bgzip -f $outdir/$sample.$hla.longshot.vcf
-            tabix -f $outdir/$sample.$hla.longshot.vcf.gz
-
-            zcat $outdir/$sample.$hla.longshot.vcf.gz >$outdir/$sample.$hla.phased.vcf          
-            bgzip -f $outdir/$sample.$hla.phased.vcf
-            tabix -f $outdir/$sample.$hla.phased.vcf.gz
-
-            samtools faidx $hla_ref %s |bcftools consensus -H $i --mask $mask_bed $outdir/$sample.$hla.phased.vcf.gz >$outdir/hla.allele.$i.HLA_$hla.raw.fasta
-            echo ">HLA_%s_$j" >$outdir/hla.allele.$i.HLA_$hla.fasta
-            cat $outdir/hla.allele.$i.HLA_$hla.raw.fasta|grep -v ">" >>$outdir/hla.allele.$i.HLA_$hla.fasta
+        # call snp
+        mask_bed=f"{parameter.outdir}/low_depth.bed"
+        call_phase_cmd= f"""
+            set_dp={args["k"]}
+            avg_depth=$(samtools depth -a {bam} | awk '{awk_script}')
+            if (( $(echo "$avg_depth < 5" | bc -l) )) && [ {args['y']} = "pacbio" ]; then
+                set_dp=0
+            else
+                set_dp=5
+            fi
+            python {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {parameter.outdir} -w 20 -d $set_dp
             
-            samtools faidx $outdir/hla.allele.$i.HLA_$hla.fasta        
-            """%(parameter.sample, parameter.db, parameter.outdir, gene, index+1, index,parameter.threads, minimap_para, args["a"], sys.path[0], args["k"], interval_dict[gene], gene)
+            cp {mask_bed} {parameter.outdir}/{gene}.low_depth.bed
+            longshot -F -c 2 -C 100000 -P {args.strand_bias_pvalue_cutoff} -r {interval_dict[gene]} --bam ${bam} --ref {hla_ref} --out {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf 
+            bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf
+            tabix -f {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf.gz
+            zcat {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf.gz >{parameter.outdir}/$sample.{gene}.phased.vcf          
+            bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.phased.vcf
+            tabix -f {parameter.outdir}/{parameter.sample}.{gene}.phased.vcf.gz
+        """
+        os.system(call_phase_cmd)
+
+        # call sv & phase snv-sv
+        gene_work_dir=f"{parameter.outdir}/{gene}_work"
+        if not os.path.exists(gene_work_dir):
+            os.makedirs(gene_work_dir)
+        sv_cmd = f"""
+            bash {sys.path[0]}/refine_haplotype_pipe.sh {bam} {hla_ref} {gene} {interval_dict[gene]} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample} 
+        """
+        os.system(sv_cmd)
+
+        ## reconstruct HLA sequence based on the phased snps & sv
+        for index in range(2):
+            order = f"""
+            echo ">HLA_{gene}_{index}" >$outdir/hla.allele.$i.HLA_$hla.fasta
+            cat {gene_work_dir}/{gene}.{index+1}.raw.fa|grep -v ">" >>$outdir/hla.allele.$i.HLA_$hla.fasta    
+            samtools faidx $outdir/hla.allele.{index+1}.HLA_{gene}.fasta    
+            """
             os.system(order)
-            # -S -A -Q 10 -E 0.3 -e 5
+
 
 
     def get_fasta(self):
@@ -248,12 +299,20 @@ class Fasta():
 
     def annotation(self):
         anno = f"""
-        perl {parameter.whole_dir}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]}
+        perl {parameter.whole_dir}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}/HLA 
         cat {parameter.outdir}/hla.result.txt
-        python3 {parameter.whole_dir}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}
+        python3 {parameter.whole_dir}/../refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}
         """
         # print (anno)
         os.system(anno)
+
+
+    #python3 {parameter.whole_dir}/g_group_annotation.py -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -j {args["j"]} 
+    # def phase(self):
+    #     hairs = f"$bin/ExtractHAIRs --triallelic 1 --pacbio 1 --indels 1 --ref $ref\
+    #      --bam $outdir/$sample.tgs.sort.bam --VCF %s --out $outdir/fragment.tgs.file"
+    # order = '%s/../bin/SpecHap -P --window_size 15000 --vcf %s --frag %s/fragment.sorted.file\
+    #  --out %s/%s.specHap.phased.vcf'%(sys.path[0],my_new_vcf, outdir, outdir,gene)
 
 if __name__ == "__main__":   
 
@@ -272,7 +331,12 @@ if __name__ == "__main__":
     optional.add_argument("-k", type=int, help="The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking", metavar="\b", default=5)
     optional.add_argument("-a", type=str, help="Prefix of filtered fastq file.", metavar="\b", default="long_read")
     optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio].", metavar="\b", default="pacbio")
+    optional.add_argument("--minimap_index", type=int, help="Whether build Minimap2 index for the reference [0|1]. Using index can reduce memory usage.", metavar="\b", default=0)
+    optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
+    optional.add_argument("--strand_bias_pvalue_cutoff", type=float, help="Remove a variant if the allele observations are biased toward one strand (forward or reverse). Recommand setting 0 to high-depth data.", metavar="\b", default=0.01)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
+    optional.add_argument("--seed", type=int, help="seed to generate random numbers", metavar="\b", default=8)
+    optional.add_argument("--max_depth", type=int, help="maximum depth for each HLA locus. Downsample if exceed this value.", metavar="\b", default=2000)
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
 
@@ -285,17 +349,19 @@ if __name__ == "__main__":
     Min_score = 0  #the read is too long, so the score can be very low.
     Min_diff = args["d"]  #0.001
 
-    MIN_MATCH_LENFTH = 0
-
     minimap_para = ''
     if args["y"] == "pacbio":
         minimap_para = " -x map-pb "
     elif args["y"] == "nanopore":
         minimap_para = " -x map-ont "
 
+
     ###assign reads
     if args["m"] == 10086:
         print ("skip assignment, just for testing")
+    elif args["m"] == 2:
+        print ("start variant pipeline ...")
+        pbin = Pacbio_Binning()
     else:
         pbin = Pacbio_Binning()
         pbin.read_bam()        
@@ -306,7 +372,6 @@ if __name__ == "__main__":
         print ("Sequence is reconstructed, start annotation...")
         fa.annotation()
     print ("Finished.")
-
 
 
 

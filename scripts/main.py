@@ -10,14 +10,31 @@ import argparse
 def main(args):
     command = f"""
     ## first: read binning
-    python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 0
+    python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 0 --db {args["db"]}
 
     ## second: find a pair of alleles for each HLA locus
     python3 {sys.path[0]}/select_best_reference_allele.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
 
-    
     """
     os.system(command)
+
+    # build individual ref when first run
+    command = f"""
+    ## third: build individual reference for each HLA locus
+    python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
+    python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {args.db_ref} {args.db}
+    """
+    if args.first_run:
+        os.system(command)
+    command = f"""
+    ## forth: call & phasing variant & typing
+    python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 2
+
+    """
+    os.system(command)
+
+        
+    
 
 
 
@@ -41,6 +58,9 @@ if __name__ == "__main__":
     # optional.add_argument("-a", type=str, help="Prefix of filtered fastq file.", metavar="\b", default="long_read")
     optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio].", metavar="\b", default="pacbio")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
+    optional.add_argument("-dr", "--db_ref", type=str, help="database reference", metavar="\b", \
+                           default=sys.path[0] + "/../db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta")
+    optional.add_argument("-f", "--first_run", type=bool, help="set False for rerun", metavar="\b", default=True)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
