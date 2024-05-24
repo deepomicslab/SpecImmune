@@ -25,7 +25,10 @@ class Align_Obj(object):
         self.mismatch_num  += mismatch_num
 
     def get_identity(self):
-        self.identity = self.match_num/ (self.match_num + self.mismatch_num)
+        if self.match_num + self.mismatch_num == 0:
+            self.identity = 0
+        else:
+            self.identity = self.match_num/ (self.match_num + self.mismatch_num)
     
     def get_depth(self, allele_length):
         self.depth = (self.match_num + self.mismatch_num)/allele_length
