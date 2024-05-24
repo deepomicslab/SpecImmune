@@ -735,7 +735,7 @@ def main(args):
     
     
     result_dict = {}
-    allele_match_dict = {}
+    allele_match_dict = defaultdict(int)
     
 
     # for gene in read_matrix_dict:
@@ -753,6 +753,10 @@ def main(args):
 
         record_read_allele_dict, allele_name_dict = construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_length)
         print ("finish matrix construction")
+
+        for read_name in record_read_allele_dict:
+            for allele_name in record_read_allele_dict[read_name]:
+                allele_match_dict[allele_name] += record_read_allele_dict[read_name][allele_name].match_num
 
         type_result, objective_value, type_allele_result = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)
 
