@@ -17,15 +17,13 @@ import random
 from collections import defaultdict
 import pysam
 
+from read_objects import My_read
+from handle_allele_pair import My_allele_pair
+
 gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 # gene_list = ['A', 'C', 'DRB1']
 
-def run_depth():
-    cmd = f"""
-    samtools view -bS -F 0x800  fredhutch-hla-1408-1012.db.sam | samtools sort - >fredhutch-hla-1408-1012.db.bam
-    samtools depth -aa fredhutch-hla-1408-1012.db.bam>fredhutch-hla-1408-1012.db.depth
-    """
-    os.system(cmd)
+
 
 def mapping_p(MAPQ, base = 10):
     ## MAPQ: MAPping Quality. It equals −10 log10 Pr{mapping position is wrong}, rounded to the nearest integer. A value 255 indicates that the mapping quality is not available.
@@ -139,141 +137,39 @@ def find_bad_reads(sam):
     bamfile.close()
     return bad_reads_dict
 
-def construct_matrix(args, gene, sam, record_candidate_alleles, record_allele_length, mapping_quality_cutoff = 0 ):
-    # sam = "/mnt/d/HLAPro_backup/Nanopore_optimize/output/fredhutch-hla-1408-1012/fredhutch-hla-1408-1012.db.bam"
-    # primary_match_len_dict = find_primary_alignments(sam)
-    # bad_reads_dict = find_bad_reads(sam)
-    bad_reads_dict = {}
-    bamfile = pysam.AlignmentFile(sam, 'r')  
+def construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_length):
 
-    record_read_index = defaultdict(dict)
-    record_allele_index = defaultdict(dict)
+    bamfile = pysam.AlignmentFile(bam, 'r')  
 
-    record_read_index_base = defaultdict(dict)
-    record_allele_index_base = defaultdict(dict)
+    record_read_allele_dict = defaultdict(dict)
+    allele_name_dict = defaultdict(int)
+
+
 
     for read in bamfile:
         if read.is_unmapped:
             continue
-        # print (read.mapping_quality)
-        # if read.mapping_quality < mapping_quality_cutoff:
-        #     continue
 
-        # if read.is_secondary:
-        #     continue
-        # if random.randint(0, 10) < 2:
-        #     continue
+        my_read = My_read(read)
 
         read_name = read.query_name
         allele_name = read.reference_name
-        gene = allele_name.split("*")[0]
-        # print (read_name)
+        gene = my_read.loci_name
 
-        if read_name in bad_reads_dict:
-            continue
-
-        if gene not in record_read_index:
-            record_read_index_base[gene] = set()
-            record_allele_index_base[gene] = set()
-        
         if allele_name not in record_candidate_alleles[gene]:
             continue 
 
-        if read_name not in record_read_index_base[gene]:
-            record_read_index[gene][read_name] = len(record_read_index_base[gene])
-            record_read_index_base[gene].add(read_name)
-        if allele_name not in record_allele_index_base[gene]:
-            record_allele_index[gene][allele_name] = len(record_allele_index_base[gene])
-            record_allele_index_base[gene].add(allele_name)
-
-
-    bamfile.close()
-    # print (record_allele_index)
-
-    read_matrix_dict = {}
-    read_identity_matrix_dict = {}
-    read_map_len_matrix_dict = {}
-    read_mismatch_matrix_dict = {}
-
-    for gene in record_read_index:
-        x = np.empty(shape=(len(record_allele_index[gene]),len(record_read_index[gene])))
-        x.fill(0)
-        y = np.empty(shape=(len(record_allele_index[gene]),len(record_read_index[gene])))
-        y.fill(0)
-        z = np.empty(shape=(len(record_allele_index[gene]),len(record_read_index[gene])))
-        z.fill(0)
-        e = np.empty(shape=(len(record_allele_index[gene]),len(record_read_index[gene])))
-        e.fill(0)
-
-        read_matrix_dict[gene] = x
-        read_map_len_matrix_dict[gene] = y
-        read_identity_matrix_dict[gene] = z
-        read_mismatch_matrix_dict[gene] = e
-
-    bamfile = pysam.AlignmentFile(sam, 'r')  
-    for read in bamfile:
-        if read.is_unmapped:
-            continue
-        # if read.mapping_quality < mapping_quality_cutoff:
-        #     continue
-
-
-        # if read.mapping_quality < 1:
-        #     delta = 0.1
-        # else:
-        #     delta = 1
-
-        read_name = read.query_name
-        allele_name = read.reference_name
-        gene = allele_name.split("*")[0]
-        match_num, mismatch, alignment_score, identity = get_match_length(read)
-
-        # if  primary_match_len_dict[read_name][0] - match_num > 20 :   # 10
-        #     continue
-        # print ("alignment_score", alignment_score)
-
-        # if gene == "C":
-        #     if  primary_match_len_dict[read_name][2] - alignment_score > 50:   # 10
-        #         continue
-
-        # match_num = float(match_num)/record_allele_length[allele_name]
-        # print (match_num)
-
-        # if match_num < 2000:
-        #     continue
-
-        # if read_name == "9265b58c-82d8-4c1b-9c03-4c8a1bc05a15":
-        #     print (read_name, allele_name, match_num)
-
-        if read_name in record_read_index[gene] and allele_name in record_allele_index[gene]:
-            a = record_allele_index[gene][allele_name]
-            r = record_read_index[gene][read_name]
-            read_matrix_dict[gene][a][r] = 1
-
-            ## select the longest
-            if read_map_len_matrix_dict[gene][a][r] < match_num:  # sometimes a read can have two alignments on a same allele, just choose the longest alignment length
-                # 3af99479-6bb5-434c-89a6-45405b3716fd in fredhutch-hla-KT17.C.db.sam
-                read_map_len_matrix_dict[gene][a][r] = match_num  #   #  round(match_num * mapping_p(read.mapping_quality))
-                read_identity_matrix_dict[gene][a][r] = identity
-                read_mismatch_matrix_dict[gene][a][r] = mismatch
-            
-            ## select the highest identity
-            # if read_map_len_matrix_dict[gene][a][r] != 0:
-            #     if read_map_len_matrix_dict[gene][a][r]/(read_map_len_matrix_dict[gene][a][r]+read_identity_matrix_dict[gene][a][r]) < match_num/(match_num + identity):
-            #         read_map_len_matrix_dict[gene][a][r] = match_num  
-            #         read_identity_matrix_dict[gene][a][r] = identity
-            # else:
-            #     read_map_len_matrix_dict[gene][a][r] = match_num  
-            #     read_identity_matrix_dict[gene][a][r] = identity
-
-
+        if allele_name not in record_read_allele_dict[read_name]:
+            record_read_allele_dict[read_name][allele_name] = my_read
+            allele_name_dict[allele_name] += 1
+        elif record_read_allele_dict[read_name][allele_name].identity < my_read.identity:
+            record_read_allele_dict[read_name][allele_name] = my_read
 
 
 
     bamfile.close()
-    # print (read_matrix_dict)
-    print_read_matrix(args, gene, record_allele_index, record_read_index, read_map_len_matrix_dict, read_identity_matrix_dict)
-    return read_matrix_dict, read_map_len_matrix_dict, record_allele_index, record_read_index, read_identity_matrix_dict,read_mismatch_matrix_dict
+    return record_read_allele_dict, allele_name_dict
+
 
 def print_read_matrix(args, gene, record_allele_index, record_read_index, read_map_len_matrix_dict,read_identity_matrix_dict):
     outdir = args["o"] + "/" + args["n"]
@@ -293,265 +189,6 @@ def print_read_matrix(args, gene, record_allele_index, record_read_index, read_m
         print (line, file = out)
     out.close()
 
-def get_match_length(read, identity_cutoff = 0.85):
-    match_num = 0        
-    indel_num = 0
-    unmap_part_num = 0
-    for ci in read.cigar:
-        if ci[0] == 0:
-        # if ci[0] == 0 or ci[0] == 1 or ci[0] == 2:
-            match_num += ci[1]
-        elif ci[0] == 1 or ci[0] == 2:
-            indel_num += ci[1]
-        else:
-            unmap_part_num += 1
-
-    mis_NM = 0
-    alignment_score = 0
-    for ta in read.get_tags():
-        if ta[0] == 'NM':
-            mis_NM = ta[1]  
-        if ta[0] == 'AS':
-            alignment_score = ta[1]  
-    
-    if match_num == 0:
-        print (read.query_name, read.cigar)
-        sys.exit(0)
-    
-    identity = (match_num - mis_NM)/match_num
-
-    # if identity < identity_cutoff:
-    #     return 0 
-    # if unmap_part_num > 2:
-    #     print (read.cigar)
-    #     return 0, 0
-
-    return match_num - mis_NM,  mis_NM, alignment_score, identity
-    # return alignment_score,  mis_NM, alignment_score 
-    # return match_num, identity
-
-def save_pkl(pkl_name, my_dict):
-    with open(pkl_name, 'wb') as handle:
-        pickle.dump(my_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-def load_pkl(pkl_name):
-    with open(pkl_name, 'rb') as handle:
-        my_dict = pickle.load(handle)
-        return my_dict
-
-
-def main(args):
-
-    if not os.path.exists(args["o"]):
-        os.system("mkdir %s"%(args["o"]))
-    outdir = args["o"] + "/" + args["n"]
-    if not os.path.exists(outdir):
-        os.system("mkdir %s"%(outdir))
-    # outdir = args["o"]
-    
-    
-    result_dict = {}
-    allele_match_dict = {}
-    
-
-    # for gene in read_matrix_dict:
-    for gene in gene_list:
-        # if gene not in gene_list:
-        #     continue
-
-        sam, depth_file, sort_depth_file = map2db(args, gene)
-
-        get_depth = Get_depth(depth_file)
-        get_depth.record_depth()
-        record_candidate_alleles, record_allele_length = get_depth.select(sort_depth_file)
-
-        print (sam)
-
-        read_matrix_dict, read_map_len_matrix_dict, record_allele_index, record_read_index, read_identity_matrix_dict,read_mismatch_matrix_dict = \
-            construct_matrix(args, gene, sam, record_candidate_alleles, record_allele_length)
-
-        # read_matrix_dict_file = outdir + "/" + args["n"] + "." + gene + ".read_matrix_dict.pkl"
-        # read_map_len_matrix_dict_file = outdir + "/" + args["n"] + "." + gene + ".read_map_len_matrix_dict.pkl"
-        # record_allele_index_file = outdir + "/" + args["n"] + "." + gene + ".record_allele_index.pkl"
-        # read_identity_matrix_file = outdir + "/" + args["n"] + "." + gene + ".read_identity_matrix.pkl"
-
-        # save_pkl(read_matrix_dict_file, read_matrix_dict)
-        # save_pkl(read_map_len_matrix_dict_file, read_map_len_matrix_dict)
-        # save_pkl(record_allele_index_file, record_allele_index)
-        # save_pkl(read_identity_matrix_file, read_identity_matrix_dict)
-
-        # read_matrix_dict = load_pkl(read_matrix_dict_file)
-        # read_map_len_matrix_dict = load_pkl(read_map_len_matrix_dict_file)
-        # record_allele_index = load_pkl(record_allele_index_file)
-        # read_identity_matrix_dict = load_pkl(read_identity_matrix_file)
-
-        # print (read_matrix_dict_file)
-        print ("finish matrix construction")
-
-
-        record_index_allele = {}  #{index: allele}
-        for allele in record_allele_index[gene]:
-            record_index_allele[record_allele_index[gene][allele]] = allele
- 
-        read_matrix = read_matrix_dict[gene]
-        read_map_len_matrix = read_map_len_matrix_dict[gene]
-        read_identity_matrix = read_identity_matrix_dict[gene]
-        read_mismatch_matrix = read_mismatch_matrix_dict[gene]
-        
-        # print (read_matrix)
-        # print (record_allele_index[gene])
-        for i in range(len(read_matrix)):
-            allele = list(record_allele_index[gene].keys())[i]
-            match_len = np.sum(read_map_len_matrix[i])
-            allele_match_dict[allele] = match_len
-            print (i, list(record_allele_index[gene].keys())[i], np.sum(read_matrix[i]), np.sum(read_map_len_matrix[i]), \
-                round(np.sum(read_map_len_matrix[i])/record_allele_length[allele]), sep = "\t")
-
-        # type_result, objective_value = model(read_matrix, read_map_len_matrix, allele_match_dict)
-        type_result, objective_value, type_allele_result = model2(read_matrix, read_map_len_matrix, allele_match_dict, \
-            record_index_allele, record_read_index, gene, read_identity_matrix, read_mismatch_matrix,record_allele_length)
-        # print (gene, len(type_result), len(record_allele_index[gene]), record_allele_index[gene])
-        # type_allele_result = []
-        # for allele in record_allele_index[gene]:
-        #     # print (allele, record_allele_index[gene][allele])
-        #     if type_result[record_allele_index[gene][allele]] == 1:
-        #         type_allele_result.append(allele)
-        print (gene, type_allele_result, "\n\n")
-        
-        # homo_hete_ratio = (2 * allele_match_dict[type_allele_result[0]] - objective_value )/ allele_match_dict[type_allele_result[0]]
-        # print (2 * allele_match_dict[type_allele_result[0]], objective_value, homo_hete_ratio)
-        # if homo_hete_ratio  >  args["b"]:
-        #     print (2 * allele_match_dict[type_allele_result[0]], objective_value, homo_hete_ratio)
-        #     type_allele_result = [type_allele_result[0]]
-
-        homo_hete_ratio = (objective_value - allele_match_dict[type_allele_result[0].split(",")[0]])/ allele_match_dict[type_allele_result[0].split(",")[0]]
-        
-        homo_hete_ratio_cutoff = args["b"]
-
-        if gene == "DPA1":
-            homo_hete_ratio_cutoff = 0.001
-        # if gene == "DQA1":
-        #     homo_hete_ratio_cutoff = 0.01
-
-        print (homo_hete_ratio, homo_hete_ratio_cutoff)
-
-        if gene == "C":
-            if cal_sim_of_alleles(type_allele_result[0].split(",")[0], type_allele_result[1].split(",")[0]) != 6:
-                if homo_hete_ratio  <  homo_hete_ratio_cutoff:
-                    type_allele_result = [type_allele_result[0]]
-        
-        else:
-            if homo_hete_ratio  <  homo_hete_ratio_cutoff:
-                type_allele_result = [type_allele_result[0]]         
-
-
-        result_dict[gene] = type_allele_result
-        print (gene, type_allele_result, "\n\n")
-    
-    out = open(f"{outdir}/hla.new.result.txt", 'w')
-    print ("#", file = out)
-    print ("sample", end = "\t", file = out)
-    for gene in gene_list:
-        for i in range(2):
-            print (f"HLA_{gene}_{i+1}", end = "\t", file = out)
-
-    print (f"\n{args['n']}", end = "\t", file = out)
-    for gene in gene_list:
-        if len(result_dict[gene]) == 1:
-            result_dict[gene].append(result_dict[gene][0])
- 
-        for i in range(2):
-            print (result_dict[gene][i], end = "\t", file = out)
-
-    # print (f"\nMatch_length", end = "\t", file = out)
-    # for gene in gene_list:
-    #     if len(result_dict[gene]) == 1:
-    #         result_dict[gene].append(result_dict[gene][0])
-    #     for i in range(2):
-    #         print (allele_match_dict[result_dict[gene][i]], end = "\t", file = out)
-
-    # print (f"\nObjective value:\t", end = "\t", file = out)
-    out.close()
-
-
-def model_bk(C, M):
-    ## C: traditional read hit matrix   M: read map len matrix
-    # allele_num = 3
-    # read_num = 4
-    allele_num = len(C)
-    read_num = len(C[0])
-    t_max = 2
-    t_min = 1
-
-    # C = [[1,1,1,1], [0,0,0,0], [1,1,1,1]]
-    prob = LpProblem('HLA typing', LpMaximize)
-    my_x =LpVariable.dicts("X", range(allele_num), cat = "Binary", lowBound = 0, upBound = 1)
-    my_y =LpVariable.dicts("Y", range(read_num), cat = "Binary", lowBound = 0, upBound = 1)
-    my_z =LpVariable.dicts("Z", range(allele_num*read_num), cat = "Binary", lowBound = 0, upBound = 1)  ## get x*y
-    my_A =LpVariable.dicts("A", range(allele_num*read_num), cat = "Binary", lowBound = 0, upBound = 1)  ## get x*y
-    my_L =LpVariable.dicts("L", range(read_num), lowBound = 0, cat='Integer')  # total match len from all reads
-
-    # print (my_z)
-    sum_x = 0
-    for a in range(allele_num):
-        sum_x += my_x[a]
-
-    prob += sum_x <= t_max
-    prob += sum_x >= t_min
-
-    for r in range(read_num):
-        sum_xc = 0
-        sum_xm = 0
-        for a in range(allele_num):
-            sum_xc += my_x[a] * C[a][r]
-            # print (C[a][r], M[a][r] )
-            prob += my_z[a+allele_num*r] <= my_x[a]
-            prob += my_z[a+allele_num*r] <= my_y[r]
-            prob += my_z[a+allele_num*r] >= my_x[a] + my_y[r] - 1
-
-            sum_xm += my_z[a+allele_num*r] * M[a][r] 
-
-        prob += sum_xc >= my_y[r]
-        prob += sum_xm >= my_L[r]
-
-    # obj = 0
-    # for r in range(read_num):
-    #     # obj += my_y[r]
-    #     obj +=  my_L[r]
-
-
-    obj = lpSum([my_L[r] for r in range(read_num)])
-    prob += obj
-    # print(prob)
-
-    solver = PULP_CBC_CMD()
-    prob.solve(solver)
-
-    type_result = []
-    for i in prob.variables():
-        if 'X' in i.name:
-            type_result.append(i.varValue)
-        #     print (i)
-        # print (i, i.varValue)
-    # return alpha
-    print (type_result)
-    return type_result
-
-    # cost=LpVariable.dicts("cost",range(len(geno_set)*4),lowBound = 0)
-    # beta_cost=LpVariable.dicts("beta_cost",range(len(geno_set)),lowBound = 0)
-
-def downsample_matrix(M, max_num=500):
-    # downsample reads
-    # if len(M[0]) < max_num:
-    #     return M
-    # else:
-    #     index_array = range(len(M[0]))
-    #     random.shuffle(index_array)
-    #     new_M = []
-    #     for i in index_array[:max_num]:
-    #         new_M.append(M[i])
-    #     return new_M
-    return M
 
 def cal_zero_map(M):
     zero_read_dict = {}
@@ -667,6 +304,54 @@ def model2(C, M, allele_match_dict, record_index_allele, record_read_index, gene
     
     return type_result, highest_score, type_allele_result
 
+
+def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length):
+    ## enumeration
+    read_name_list = list(record_read_allele_dict.keys())
+    read_num = len(read_name_list)
+    allele_name_list = list(allele_name_dict.keys())
+    allele_num = len(allele_name_list)
+
+    record_allele_pair_match_len = {}
+    record_allele_pair_mismatch = defaultdict(int)
+    record_allele_pair_identity = defaultdict(float)
+    record_allele_pair_sep_match = {}
+
+    for i in range(allele_num):
+        for j in range(i+1, allele_num):
+            allele_pair_obj = My_allele_pair(allele_name_list[i], allele_name_list[j])
+            allele_pair_obj.assign_reads(record_read_allele_dict)
+
+            tag = allele_pair_obj.tag
+
+
+            allele_pair_obj.allele_1_obj.get_depth(record_allele_length[allele_pair_obj.allele_1])
+            allele_pair_obj.allele_2_obj.get_depth(record_allele_length[allele_pair_obj.allele_2])
+
+            if gene in ["DPA1", 'DRB1'] :  # not DPB1
+                depth_cutoff = 0.25
+                depth_l = [allele_pair_obj.allele_1_obj.depth, allele_pair_obj.allele_2_obj.depth]
+                if min(depth_l)/max(depth_l) < depth_cutoff:
+                    continue
+            
+            record_allele_pair_match_len[tag] = allele_pair_obj.pair_obj.match_num
+            record_allele_pair_identity[tag] = allele_pair_obj.pair_obj.identity
+
+            record_allele_pair_sep_match[tag] = {}
+            record_allele_pair_sep_match[tag][allele_name_list[i]] = {}
+            record_allele_pair_sep_match[tag][allele_name_list[i]]["identity"] = allele_pair_obj.allele_1_obj.identity
+            record_allele_pair_sep_match[tag][allele_name_list[i]]["depth"] = allele_pair_obj.allele_1_obj.depth
+            record_allele_pair_sep_match[tag][allele_name_list[j]] = {}
+            record_allele_pair_sep_match[tag][allele_name_list[j]]["identity"] = allele_pair_obj.allele_1_obj.identity
+            record_allele_pair_sep_match[tag][allele_name_list[j]]["depth"] = allele_pair_obj.allele_1_obj.depth
+
+    type_result = [0, 1]
+    tag_list, highest_score = choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_identity,record_allele_pair_sep_match)
+    tag_list = order_result_pair(tag_list, record_allele_pair_sep_match)
+    type_allele_result =  generate_output(tag_list)          
+
+    return type_result, highest_score, type_allele_result
+
 def determine_largest(a, b):
     if a > b:
         return 0
@@ -720,7 +405,6 @@ def discard_alleles(alleles_after_read_assignment, record_allele_pair_match_len,
     print (len(record_allele_pair_match_len), "remain allele pair num is", len(new_record_allele_pair_identity))
     return new_record_allele_pair_match_len, new_record_allele_pair_identity
 
-
 def print_match_results(sorted_record_allele_pair_match_len, record_allele_pair_sep_match, gene, record_allele_pair_identity):
     outdir = args["o"] + "/" + args["n"]
     out = open(f"""{outdir}/{args["n"]}.{gene}.allele.match.csv""", 'w')
@@ -733,8 +417,6 @@ def print_match_results(sorted_record_allele_pair_match_len, record_allele_pair_
             round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),\
              allele_list[1], round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3), round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]), sep = ",", file = out)
     out.close()
-
-
 
 def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_identity,record_allele_pair_sep_match):
     sorted_record_allele_pair_match_len = sorted(record_allele_pair_match_len.items(), key=lambda x: x[1], reverse=True)
@@ -901,8 +583,6 @@ def order_result_pair(type_allele_result, record_allele_pair_sep_match):
         sort_type_allele_result.append(tag)
     return sort_type_allele_result
 
-
-
 def cal_sim_of_alleles(allele1, allele2):
     clean_allele1 = allele1.split("*")[1].split(":")      
     clean_allele2 = allele2.split("*")[1].split(":")   
@@ -1034,11 +714,100 @@ def map2db(args, gene):
     minimap2 -t {args["j"] } {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
     samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
     samtools depth -aa {bam}>{depth_file}
+    rm {sam}
     echo alignment done.
     """
-    os.system(alignDB_order)
-    return sam, depth_file, sort_depth_file
+    # os.system(alignDB_order)
+    return bam, depth_file, sort_depth_file
 
+
+def main(args):
+
+    if not os.path.exists(args["o"]):
+        os.system("mkdir %s"%(args["o"]))
+    outdir = args["o"] + "/" + args["n"]
+    if not os.path.exists(outdir):
+        os.system("mkdir %s"%(outdir))
+    # outdir = args["o"]
+    
+    
+    result_dict = {}
+    allele_match_dict = defaultdict(int)
+    
+
+    # for gene in read_matrix_dict:
+    for gene in gene_list:
+        # if gene not in gene_list:
+        #     continue
+
+        bam, depth_file, sort_depth_file = map2db(args, gene)
+
+        get_depth = Get_depth(depth_file)
+        get_depth.record_depth()
+        record_candidate_alleles, record_allele_length = get_depth.select(sort_depth_file)
+
+        print (bam)
+
+        record_read_allele_dict, allele_name_dict = construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_length)
+        print ("finish matrix construction")
+
+        for read_name in record_read_allele_dict:
+            for allele_name in record_read_allele_dict[read_name]:
+                allele_match_dict[allele_name] += record_read_allele_dict[read_name][allele_name].match_num
+
+        type_result, objective_value, type_allele_result = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)
+
+        print (gene, type_allele_result, "\n\n")
+        
+
+        homo_hete_ratio = (objective_value - allele_match_dict[type_allele_result[0].split(",")[0]])/ allele_match_dict[type_allele_result[0].split(",")[0]]
+        
+        homo_hete_ratio_cutoff = args["b"]
+
+        if gene == "DPA1":
+            homo_hete_ratio_cutoff = 0.001
+        # if gene == "DQA1":
+        #     homo_hete_ratio_cutoff = 0.01
+
+        print (homo_hete_ratio, homo_hete_ratio_cutoff)
+
+        if gene == "C":
+            if cal_sim_of_alleles(type_allele_result[0].split(",")[0], type_allele_result[1].split(",")[0]) != 6:
+                if homo_hete_ratio  <  homo_hete_ratio_cutoff:
+                    type_allele_result = [type_allele_result[0]]
+        
+        else:
+            if homo_hete_ratio  <  homo_hete_ratio_cutoff:
+                type_allele_result = [type_allele_result[0]]         
+
+
+        result_dict[gene] = type_allele_result
+        print (gene, type_allele_result, "\n\n")
+    
+    out = open(f"{outdir}/hla.new.result.txt", 'w')
+    print ("#", file = out)
+    print ("sample", end = "\t", file = out)
+    for gene in gene_list:
+        for i in range(2):
+            print (f"HLA_{gene}_{i+1}", end = "\t", file = out)
+
+    print (f"\n{args['n']}", end = "\t", file = out)
+    for gene in gene_list:
+        if len(result_dict[gene]) == 1:
+            result_dict[gene].append(result_dict[gene][0])
+ 
+        for i in range(2):
+            print (result_dict[gene][i], end = "\t", file = out)
+
+    # print (f"\nMatch_length", end = "\t", file = out)
+    # for gene in gene_list:
+    #     if len(result_dict[gene]) == 1:
+    #         result_dict[gene].append(result_dict[gene][0])
+    #     for i in range(2):
+    #         print (allele_match_dict[result_dict[gene][i]], end = "\t", file = out)
+
+    # print (f"\nObjective value:\t", end = "\t", file = out)
+    out.close()
 
 if __name__ == "__main__":
     # depth_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/output/fredhutch-hla-1408-1012/fredhutch-hla-1408-1012.db.depth"
