@@ -349,10 +349,7 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
     tag_list, highest_score = choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_identity,record_allele_pair_sep_match)
     tag_list = order_result_pair(tag_list, record_allele_pair_sep_match)
     type_allele_result =  generate_output(tag_list)          
-    # for i in range(len(sorted_record_allele_pair_match_len)):
-    #     if sorted_record_allele_pair_match_len[i][0] == 'C*04:01:01:01&C*03:03:01:01':
-    #         print (sorted_record_allele_pair_match_len[i][0].split("&"), sorted_record_allele_pair_match_len[i][1], record_allele_pair_mismatch[sorted_record_allele_pair_match_len[i][0]], sorted_record_allele_pair_match_len[i][1]/(record_allele_pair_mismatch[sorted_record_allele_pair_match_len[i][0]]+sorted_record_allele_pair_match_len[i][1]), sep="\t")
-    
+
     return type_result, highest_score, type_allele_result
 
 def determine_largest(a, b):
