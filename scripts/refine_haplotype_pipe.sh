@@ -22,6 +22,9 @@ run_sniffles() {
     local genotype_error=$1
     local minsupport=$2
     local mapq=$3
+    local cluster_binsize=$4
+    local cluster_r=$5
+    local cluster_merge_pos=$6
     sniffles -i $bam \
         -v $refined_sv \
         --phase \
@@ -32,9 +35,9 @@ run_sniffles() {
         --mapq $mapq \
         --no-qc \
         --genotype-error $genotype_error \
-        --cluster-binsize 10 \
-        --cluster-r 0.1 \
-        --cluster-merge-pos 1000 \
+        --cluster-binsize $cluster_binsize \
+        --cluster-r $cluster_r \
+        --cluster-merge-pos $cluster_merge_pos \
         --sample-id 'SAMPLE' \
         --output-rnames
 }
@@ -43,22 +46,32 @@ run_sniffles() {
 genotype_error=0.05
 minsupport="auto"
 mapq=20
+cluster-binsize=100
+cluster-r=2.5
+cluster-merge-pos=150
+
 
 case "$hla" in
     "DQB1")
         genotype_error=0.00
         minsupport=1
         mapq=0
+        cluster-binsize=10
+        cluster-r=0.1
+        cluster-merge-pos=1000
         ;;
     "DRB1")
         genotype_error=0.01
         minsupport=1
         mapq=0
+        cluster-binsize=10
+        cluster-r=0.1
+        cluster-merge-pos=1000
         ;;
 esac
 
 
-run_sniffles $genotype_error $minsupport $mapq
+run_sniffles $genotype_error $minsupport $mapq $cluster_binsize $cluster_r $cluster_merge_pos
 
 # Whatshap haplotag
 whatshap haplotag \
