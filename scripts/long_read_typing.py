@@ -8,8 +8,9 @@ import os
 import pysam
 import gzip
 import argparse
+from collections import defaultdict
 from downsample_bam import main
-from read_objects import My_read
+from read_objects import My_read, My_locus, Read_bin
 
 # interval_dict = {"A":"HLA_A:1000-4503", "B":"HLA_B:1000-5081","C": "HLA_C:1000-5304","DPA1":"HLA_DPA1:1000-10775",\
 #     "DPB1":"HLA_DPB1:1000-12468","DQA1":"HLA_DQA1:1000-7492","DQB1":"HLA_DQB1:1000-8480","DRB1":"HLA_DRB1:1000-12229" }
@@ -53,6 +54,86 @@ from read_objects import My_read
 #             self.match_rate = 0
 
 class Score_Obj():
+    # determine which gene to assign
+    def __init__(self):
+        self.loci_score = {}
+        self.primary_dict = defaultdict(set)
+        self.read_loci = {}
+    
+    def add_read(self, read_obj):
+        # score = round(read_obj.match_rate * (1 - read_obj.mismatch_rate), 6)
+        if read_obj.primary:
+            self.primary_dict[read_obj.read_name].add(read_obj.allele_name)
+        # else:
+        #     return 0
+        if read_obj.match_num < 300:
+            return 0
+        score = read_obj.match_rate
+        if read_obj.read_name not in self.loci_score:
+            self.loci_score[read_obj.read_name] = {}
+        
+        if read_obj.loci_name not in self.loci_score[read_obj.read_name]:
+            locus_obj = My_locus()
+            locus_obj.add_record(read_obj)
+
+            self.loci_score[read_obj.read_name][read_obj.loci_name] = locus_obj
+
+        else:
+            self.loci_score[read_obj.read_name][read_obj.loci_name].add_record(read_obj)
+        
+
+    
+    def assign(self, assign_file):
+        f = open(assign_file, 'w')
+        # print (len(self.loci_score))
+        for read_name in self.loci_score: # for each read
+            # if "m54329U_200715_194535/141295780/ccs" != read_name:
+            #     continue
+            print (read_name, self.primary_dict[read_name])
+            read_bin = Read_bin(self.loci_score[read_name])
+            assigned_locus = read_bin.assign_multiple()
+            print ("\n\n")
+            # break
+            # assigned_locus = []
+            # gene_score = sorted(self.loci_score[read_name].items(), key=lambda item: item[1][0], reverse = True)
+            # gene_match_len = sorted(self.loci_score[read_name].items(), key=lambda  x: x[1][1], reverse = True)
+            # # if len(gene_score) > 1 and (gene_score[0][0] == "DQB1"):
+            # #     print (read_name, gene_score[:2])
+            # if gene_score[0][1][0] <= Min_score:
+            #     continue
+            # if len(gene_score) == 1: # mapped to only one gene, directly assign to that gene
+            #     assigned_locus = [gene_score[0][0]]
+            # else:
+            #     # real-data based adjustment
+                
+
+            #     # if gene_score[0][0] == "DRB1" or gene_score[1][0] == "DRB1":
+            #     #     print (read_name, gene_score[0][0], gene_score[:5], gene_match_len[:5])
+            #     if gene_score[0][0] in ["HLA-U"] and gene_score[1][0] == "HLA-A" :
+            #         assigned_locus = ["HLA-A"]                
+            #     elif gene_score[0][0] == "HLA-DRB1" and gene_score[0][1][0] - gene_score[1][1][0] < 0.05:  # 0.02 0.05
+            #         continue
+            #     elif gene_score[0][0] == "HLA-DQB1" and gene_score[0][1][0] < 0.9:
+            #         continue
+            #     elif gene_score[0][0] == 'HLA-DPB2' and gene_score[1][0] == "HLA-DPA1":
+            #         assigned_locus = ["HLA-DPA1"]
+            #     elif gene_score[0][0] in ['HLA-DPB1', "HLA-DPA1"] and gene_score[1][0] in ['HLA-DPB1', "HLA-DPA1"]:
+            #         assigned_locus = ['HLA-DPB1', "HLA-DPA1"]
+            #     # map to more than one gene, check the score difference
+            #     elif gene_score[0][1][0] - gene_score[1][1][0] >= Min_diff:
+            #         assigned_locus = [gene_score[0][0]]
+            #     # score diff too small, can not determine which gene to assign
+            #     # discard this read
+            #     else:
+            #         continue
+            # # print ("assigned locus", assigned_locus)
+            print (read_name, assigned_locus, file = f)
+            self.read_loci[read_name] = assigned_locus
+        f.close()
+        return self.read_loci
+
+
+class Score_Obj_bk():
     # determine which gene to assign
     def __init__(self):
         self.loci_score = {}
