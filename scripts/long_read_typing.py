@@ -89,16 +89,16 @@ class Score_Obj():
 
                 # if gene_score[0][0] == "DRB1" or gene_score[1][0] == "DRB1":
                 #     print (read_name, gene_score[0][0], gene_score[:5], gene_match_len[:5])
-                if gene_score[0][0] in ["U"] and gene_score[1][0] == "A" :
-                    assigned_locus = ["A"]                
-                elif gene_score[0][0] == "DRB1" and gene_score[0][1][0] - gene_score[1][1][0] < 0.05:  # 0.02 0.05
+                if gene_score[0][0] in ["HLA-U"] and gene_score[1][0] == "HLA-A" :
+                    assigned_locus = ["HLA-A"]                
+                elif gene_score[0][0] == "HLA-DRB1" and gene_score[0][1][0] - gene_score[1][1][0] < 0.05:  # 0.02 0.05
                     continue
-                elif gene_score[0][0] == "DQB1" and gene_score[0][1][0] < 0.9:
+                elif gene_score[0][0] == "HLA-DQB1" and gene_score[0][1][0] < 0.9:
                     continue
-                elif gene_score[0][0] == 'DPB2' and gene_score[1][0] == "DPA1":
-                    assigned_locus = ["DPA1"]
-                elif gene_score[0][0] in ['DPB1', "DPA1"] and gene_score[1][0] in ['DPB1', "DPA1"]:
-                    assigned_locus = ['DPB1', "DPA1"]
+                elif gene_score[0][0] == 'HLA-DPB2' and gene_score[1][0] == "HLA-DPA1":
+                    assigned_locus = ["HLA-DPA1"]
+                elif gene_score[0][0] in ['HLA-DPB1', "HLA-DPA1"] and gene_score[1][0] in ['HLA-DPB1', "HLA-DPA1"]:
+                    assigned_locus = ['HLA-DPB1', "HLA-DPA1"]
                 # map to more than one gene, check the score difference
                 elif gene_score[0][1][0] - gene_score[1][1][0] >= Min_diff:
                     assigned_locus = [gene_score[0][0]]
