@@ -331,7 +331,7 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
             allele_pair_obj.allele_1_obj.get_depth(record_allele_length[allele_pair_obj.allele_1])
             allele_pair_obj.allele_2_obj.get_depth(record_allele_length[allele_pair_obj.allele_2])
 
-            if gene in ["DPA1", 'DRB1'] :  # not DPB1
+            if gene in ["HLA-DPA1", 'HLA-DRB1'] :  # not DPB1
                 depth_cutoff = 0.25
                 depth_l = [allele_pair_obj.allele_1_obj.depth, allele_pair_obj.allele_2_obj.depth]
                 if min(depth_l)/max(depth_l) < depth_cutoff:
@@ -752,18 +752,17 @@ def output_spechla_format(args, result_dict):
     # print (f"\nObjective value:\t", end = "\t", file = out)
     out.close()
 
-def output_hlala_format(args, result_dict):
+def output_hlala_format(args, result_dict, reads_num_dict):
     outdir = args["o"] + "/" + args["n"]
-    f = open(f"{outdir}/hla.new.result.txt", 'w')
+    f = open(f"""{outdir}/{args["n"]}.{args["i"]}.type.result.txt""", 'w')
     # print ("#", version_info, file = f)
-    print ("Locus   Chromosome      Allele", file = f)
+    print ("Locus   Chromosome      Allele  Reads_num", file = f)
     for gene in gene_list:
         if len(result_dict[gene]) == 1:
             result_dict[gene].append(result_dict[gene][0])
         for ch in [1, 2]:
-            print (gene, ch, result_dict[gene][ch-1], sep="\t", file = f)
-
-
+            result_dict[gene][ch-1] = result_dict[gene][ch-1].replace(',', ';')
+            print (gene, ch, result_dict[gene][ch-1], reads_num_dict[gene], sep="\t", file = f)
     f.close()
 
 def main(args):
@@ -775,10 +774,8 @@ def main(args):
         os.system("mkdir %s"%(outdir))
     # outdir = args["o"]
 
-
-    
-    
     result_dict = {}
+    reads_num_dict = {}
     allele_match_dict = defaultdict(int)
     
 
@@ -797,6 +794,7 @@ def main(args):
 
         record_read_allele_dict, allele_name_dict = construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_length)
         print ("finish matrix construction")
+        reads_num_dict[gene] = len(record_read_allele_dict)
         # record_read_allele_dict = examine_reads(record_read_allele_dict)
         # print (len(record_read_allele_dict)) 
 
@@ -804,7 +802,7 @@ def main(args):
             for allele_name in record_read_allele_dict[read_name]:
                 allele_match_dict[allele_name] += record_read_allele_dict[read_name][allele_name].match_num
 
-        if len(record_read_allele_dict) > 2:
+        if len(record_read_allele_dict) >= args["min_read_num"]:
             type_result, objective_value, type_allele_result = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)
 
             print (gene, type_allele_result, "\n\n")
@@ -814,7 +812,7 @@ def main(args):
             
             homo_hete_ratio_cutoff = args["b"]
 
-            if gene == "DPA1":
+            if gene == "HLA-DPA1":
                 homo_hete_ratio_cutoff = 0.001
             # if gene == "DQA1":
             #     homo_hete_ratio_cutoff = 0.01
@@ -836,7 +834,7 @@ def main(args):
         result_dict[gene] = type_allele_result
         print (gene, type_allele_result, "\n\n")
     # output_spechla_format(args, result_dict)
-    output_hlala_format(args, result_dict)
+    output_hlala_format(args, result_dict, reads_num_dict)
     
 
 
@@ -862,6 +860,7 @@ if __name__ == "__main__":
     required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=5)
     optional.add_argument("--candidate_allele_num", type=int, help="Maintain this number of alleles for ILP step.", metavar="\b", default=100)
+    optional.add_argument("--min_read_num", type=int, help="min support read number.", metavar="\b", default=2)
     optional.add_argument("-b", type=float, help="The match length increase ratio lower than this value is homo [0-1].", metavar="\b", default=0.0007)
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
