@@ -9,6 +9,7 @@ import pysam
 import gzip
 import argparse
 from downsample_bam import main
+from read_objects import My_read
 
 # interval_dict = {"A":"HLA_A:1000-4503", "B":"HLA_B:1000-5081","C": "HLA_C:1000-5304","DPA1":"HLA_DPA1:1000-10775",\
 #     "DPB1":"HLA_DPB1:1000-12468","DQA1":"HLA_DQA1:1000-7492","DQB1":"HLA_DQB1:1000-8480","DRB1":"HLA_DRB1:1000-12229" }
@@ -16,40 +17,40 @@ from downsample_bam import main
 # gene_list = ['A']
 
 
-class Read_Obj():
-    # for each alignment record, extract information (identity, gene name)
-    def __init__(self, read):
-        mis_NM = 0
-        for ta in read.get_tags():
-            if ta[0] == 'NM':
-                mis_NM = ta[1]  
+# class Read_Obj():
+#     # for each alignment record, extract information (identity, gene name)
+#     def __init__(self, read):
+#         mis_NM = 0
+#         for ta in read.get_tags():
+#             if ta[0] == 'NM':
+#                 mis_NM = ta[1]  
 
-        self.match_num = 0  
-        self.read_length = 0      
-        for ci in read.cigar:
-            self.read_length += ci[1]
-            if ci[0] == 0:
-                self.match_num += ci[1]
-            # if ci[0] == 0 or ci[0] == 1 or ci[0] == 2:
-            #     self.match_num += ci[1]
-            # if ci[0] == 1 or ci[0] == 2:
-            #     mis_NM += ci[1]
-        # print (read.query_name, read.reference_name, self.read_length, mis_NM)   
-        # self.read_length = len(read.query_sequence) 
+#         self.match_num = 0  
+#         self.read_length = 0      
+#         for ci in read.cigar:
+#             self.read_length += ci[1]
+#             if ci[0] == 0:
+#                 self.match_num += ci[1]
+#             # if ci[0] == 0 or ci[0] == 1 or ci[0] == 2:
+#             #     self.match_num += ci[1]
+#             # if ci[0] == 1 or ci[0] == 2:
+#             #     mis_NM += ci[1]
+#         # print (read.query_name, read.reference_name, self.read_length, mis_NM)   
+#         # self.read_length = len(read.query_sequence) 
 
-        self.read_name = read.query_name
-        self.allele_name = read.reference_name
-        self.mismatch_rate = round(float(mis_NM)/self.match_num, 6)
-        self.match_rate = 1 - self.mismatch_rate
+#         self.read_name = read.query_name
+#         self.allele_name = read.reference_name
+#         self.mismatch_rate = round(float(mis_NM)/self.match_num, 6)
+#         self.match_rate = 1 - self.mismatch_rate
 
-        # if self.match_num < 500:
-        #     self.match_rate = 0
+#         # if self.match_num < 500:
+#         #     self.match_rate = 0
 
-        self.loci_name = self.allele_name.split("*")[0]
-        if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
-            self.loci_name = "KIR2DL5"
-        if self.read_length < 400 and self.allele_name[0:3] == "KIR":
-            self.match_rate = 0
+#         self.loci_name = self.allele_name.split("*")[0]
+#         if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
+#             self.loci_name = "KIR2DL5"
+#         if self.read_length < 400 and self.allele_name[0:3] == "KIR":
+#             self.match_rate = 0
 
 class Score_Obj():
     # determine which gene to assign
@@ -169,7 +170,8 @@ class Pacbio_Binning():
             if read.is_unmapped:
                 continue
             # print (read)
-            read_obj = Read_Obj(read)
+            # read_obj = Read_Obj(read)
+            read_obj = My_read(read)
             scor.add_read(read_obj)
             # print (read_obj.read_name, read_obj.mismatch_rate, read_obj.allele_name )
         read_loci = scor.assign(self.assign_file)

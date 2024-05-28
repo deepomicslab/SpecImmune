@@ -17,8 +17,11 @@ class My_read():
         self.match_start_pos = 0
         self.match_end_pos = 0
         self.loci_name = None
+        self.read_length = 0
 
         self.get_match_length(read)
+        self.match_rate = self.identity
+        self.mismatch_rate = 1 - self.match_rate
         
 
 
@@ -27,6 +30,7 @@ class My_read():
         unmap_part_num = 0
         pos = 0
         for ci in read.cigar:
+            self.read_length += ci[1]
             if ci[0] == 0:  # M
                 self.alignment_len += ci[1]
                 if self.match_start_pos == 0:
@@ -59,6 +63,11 @@ class My_read():
         self.read_name = read.query_name
         self.allele_name = read.reference_name
         self.loci_name = self.allele_name.split("*")[0]
+
+        if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
+            self.loci_name = "KIR2DL5"
+        if self.read_length < 400 and self.allele_name[0:3] == "KIR":
+            self.match_rate = 0
 
 
 
