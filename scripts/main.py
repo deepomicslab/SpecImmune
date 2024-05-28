@@ -10,10 +10,10 @@ import argparse
 def main(args):
     command = f"""
     ## first: read binning
-    python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 0 --db {args["db"]}
+    python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 0 --db {args["db"]}
 
     ## second: find a pair of alleles for each HLA locus
-    python3 {sys.path[0]}/select_best_reference_allele.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
+    python3 {sys.path[0]}/select_best_reference_allele.py -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
 
     """
     os.system(command)
@@ -49,6 +49,7 @@ if __name__ == "__main__":
     required.add_argument("-r", type=str, help="Long-read fastq file. PacBio or Nanopore.", metavar="\b")
     required.add_argument("-n", type=str, help="Sample ID", metavar="\b")
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
+    required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
     # optional.add_argument("-p", type=str, help="The population of the sample [Asian, Black, Caucasian, Unknown, nonuse] for annotation. Unknown means use mean allele frequency in all populations. nonuse indicates only adopting mapping score and considering zero-frequency alleles.", metavar="\b", default="Unknown")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=5)
     # optional.add_argument("-d", type=float, help="Minimum score difference to assign a read to a gene.", metavar="\b", default=0.001)

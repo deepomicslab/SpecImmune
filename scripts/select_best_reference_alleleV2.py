@@ -21,7 +21,7 @@ from read_objects import My_read
 from handle_allele_pair import My_allele_pair
 from filter_reads import examine_reads
 
-gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
+# gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 # gene_list = ['A', 'C', 'DRB1']
 
 
@@ -45,8 +45,9 @@ class Get_depth():
             allele = array[0]
 
             gene = allele.split("*")[0]
-
+            
             depth = int(array[2])
+            # print (gene, allele, depth)
             if gene not in self.depth_dict:
                 self.depth_dict[gene] = {}
             if allele not in self.depth_dict[gene]:
@@ -82,7 +83,7 @@ class Get_depth():
 
                 # print (allele, mean_depth, median_depth, coverage)
             sorted_dict = sorted(record_allele_depth.items(), key=lambda x: x[1], reverse=True)
-            for i in range(min([args["m"], len(sorted_dict)])):
+            for i in range(min([args["candidate_allele_num"], len(sorted_dict)])):
                 print (sorted_dict[i][0], round(sorted_dict[i][1],2), record_allele_length[sorted_dict[i][0]] , sep = "\t")
                 record_candidate_alleles[gene].add(sorted_dict[i][0])
 
@@ -711,7 +712,8 @@ def map2db(args, gene):
     sample={args["n"] }
 
     fq=$outdir/{gene}.long_read.fq.gz
-    ref={args["db"]}/HLA/whole/HLA_{gene}.fasta
+    # ref={args["db"]}/HLA/whole/HLA_{gene}.fasta
+    ref={args["db"]}/HLA/ref/split/{gene}.fasta
 
     minimap2 -t {args["j"] } {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
     samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
@@ -719,81 +721,18 @@ def map2db(args, gene):
     rm {sam}
     echo alignment done.
     """
-    # os.system(alignDB_order)
+
+    os.system(alignDB_order)
     return bam, depth_file, sort_depth_file
 
-
-def main(args):
-
-    if not os.path.exists(args["o"]):
-        os.system("mkdir %s"%(args["o"]))
+def output_spechla_format(args, result_dict):
     outdir = args["o"] + "/" + args["n"]
-    if not os.path.exists(outdir):
-        os.system("mkdir %s"%(outdir))
-    # outdir = args["o"]
-    
-    
-    result_dict = {}
-    allele_match_dict = defaultdict(int)
-    
-
-    # for gene in read_matrix_dict:
-    for gene in gene_list:
-        # if gene not in gene_list:
-        #     continue
-
-        bam, depth_file, sort_depth_file = map2db(args, gene)
-
-        get_depth = Get_depth(depth_file)
-        get_depth.record_depth()
-        record_candidate_alleles, record_allele_length = get_depth.select(sort_depth_file)
-
-        print (bam)
-
-        record_read_allele_dict, allele_name_dict = construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_length)
-        print ("finish matrix construction")
-        # record_read_allele_dict = examine_reads(record_read_allele_dict)
-        # print (len(record_read_allele_dict)) 
-
-        for read_name in record_read_allele_dict:
-            for allele_name in record_read_allele_dict[read_name]:
-                allele_match_dict[allele_name] += record_read_allele_dict[read_name][allele_name].match_num
-
-        type_result, objective_value, type_allele_result = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)
-
-        print (gene, type_allele_result, "\n\n")
-        
-
-        homo_hete_ratio = (objective_value - allele_match_dict[type_allele_result[0].split(",")[0]])/ allele_match_dict[type_allele_result[0].split(",")[0]]
-        
-        homo_hete_ratio_cutoff = args["b"]
-
-        if gene == "DPA1":
-            homo_hete_ratio_cutoff = 0.001
-        # if gene == "DQA1":
-        #     homo_hete_ratio_cutoff = 0.01
-
-        print (homo_hete_ratio, homo_hete_ratio_cutoff)
-
-        if gene == "C":
-            if cal_sim_of_alleles(type_allele_result[0].split(",")[0], type_allele_result[1].split(",")[0]) != 6:
-                if homo_hete_ratio  <  homo_hete_ratio_cutoff:
-                    type_allele_result = [type_allele_result[0]]
-        
-        else:
-            if homo_hete_ratio  <  homo_hete_ratio_cutoff:
-                type_allele_result = [type_allele_result[0]]         
-
-
-        result_dict[gene] = type_allele_result
-        print (gene, type_allele_result, "\n\n")
-    
     out = open(f"{outdir}/hla.new.result.txt", 'w')
     print ("#", file = out)
     print ("sample", end = "\t", file = out)
     for gene in gene_list:
         for i in range(2):
-            print (f"HLA_{gene}_{i+1}", end = "\t", file = out)
+            print (f"{gene}_{i+1}", end = "\t", file = out)
 
     print (f"\n{args['n']}", end = "\t", file = out)
     for gene in gene_list:
@@ -812,6 +751,94 @@ def main(args):
 
     # print (f"\nObjective value:\t", end = "\t", file = out)
     out.close()
+
+def output_hlala_format(args, result_dict):
+    outdir = args["o"] + "/" + args["n"]
+    f = open(f"{outdir}/hla.new.result.txt", 'w')
+    # print ("#", version_info, file = f)
+    print ("Locus   Chromosome      Allele", file = f)
+    for gene in gene_list:
+        if len(result_dict[gene]) == 1:
+            result_dict[gene].append(result_dict[gene][0])
+        for ch in [1, 2]:
+            print (gene, ch, result_dict[gene][ch-1], sep="\t", file = f)
+
+
+    f.close()
+
+def main(args):
+
+    if not os.path.exists(args["o"]):
+        os.system("mkdir %s"%(args["o"]))
+    outdir = args["o"] + "/" + args["n"]
+    if not os.path.exists(outdir):
+        os.system("mkdir %s"%(outdir))
+    # outdir = args["o"]
+
+
+    
+    
+    result_dict = {}
+    allele_match_dict = defaultdict(int)
+    
+
+    # for gene in read_matrix_dict:
+    for gene in gene_list:
+        # if gene not in gene_list:
+        #     continue
+
+        bam, depth_file, sort_depth_file = map2db(args, gene)
+
+        get_depth = Get_depth(depth_file)
+        get_depth.record_depth()
+        record_candidate_alleles, record_allele_length = get_depth.select(sort_depth_file)
+        print ("record_candidate_alleles", len(record_candidate_alleles))
+        print (bam)
+
+        record_read_allele_dict, allele_name_dict = construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_length)
+        print ("finish matrix construction")
+        # record_read_allele_dict = examine_reads(record_read_allele_dict)
+        # print (len(record_read_allele_dict)) 
+
+        for read_name in record_read_allele_dict:
+            for allele_name in record_read_allele_dict[read_name]:
+                allele_match_dict[allele_name] += record_read_allele_dict[read_name][allele_name].match_num
+
+        if len(record_read_allele_dict) > 2:
+            type_result, objective_value, type_allele_result = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)
+
+            print (gene, type_allele_result, "\n\n")
+            
+
+            homo_hete_ratio = (objective_value - allele_match_dict[type_allele_result[0].split(",")[0]])/ allele_match_dict[type_allele_result[0].split(",")[0]]
+            
+            homo_hete_ratio_cutoff = args["b"]
+
+            if gene == "DPA1":
+                homo_hete_ratio_cutoff = 0.001
+            # if gene == "DQA1":
+            #     homo_hete_ratio_cutoff = 0.01
+
+            print (homo_hete_ratio, homo_hete_ratio_cutoff)
+
+            if gene == "C":
+                if cal_sim_of_alleles(type_allele_result[0].split(",")[0], type_allele_result[1].split(",")[0]) != 6:
+                    if homo_hete_ratio  <  homo_hete_ratio_cutoff:
+                        type_allele_result = [type_allele_result[0]]
+            
+            else:
+                if homo_hete_ratio  <  homo_hete_ratio_cutoff:
+                    type_allele_result = [type_allele_result[0]]      
+        else:
+            type_allele_result  = ['-', '-']
+
+
+        result_dict[gene] = type_allele_result
+        print (gene, type_allele_result, "\n\n")
+    # output_spechla_format(args, result_dict)
+    output_hlala_format(args, result_dict)
+    
+
 
 if __name__ == "__main__":
     # depth_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/output/fredhutch-hla-1408-1012/fredhutch-hla-1408-1012.db.depth"
@@ -832,9 +859,9 @@ if __name__ == "__main__":
     required.add_argument("-r", type=str, help="Long-read fastq file. PacBio or Nanopore.", metavar="\b")
     required.add_argument("-n", type=str, help="Sample ID", metavar="\b")
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
-
+    required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=5)
-    optional.add_argument("-m", type=int, help="Maintain this number of alleles for ILP step.", metavar="\b", default=100)
+    optional.add_argument("--candidate_allele_num", type=int, help="Maintain this number of alleles for ILP step.", metavar="\b", default=100)
     optional.add_argument("-b", type=float, help="The match length increase ratio lower than this value is homo [0-1].", metavar="\b", default=0.0007)
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
@@ -850,40 +877,18 @@ if __name__ == "__main__":
 
 
 
+    gene_class = args["i"]
+    if gene_class == "HLA":
+        gene_list = [ 'HLA-A', 'HLA-B', 'HLA-C', 'HLA-DMA', 'HLA-DMB', 'HLA-DOA', 'HLA-DOB', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DPB2', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRA', 'HLA-DRB1', 'HLA-DRB3', 'HLA-DRB4', 'HLA-DRB5', 'HLA-E', 'HLA-F', 'HLA-G', 'HLA-H', 'HLA-J', 'HLA-K', 'HLA-L', 'HLA-P', 'HLA-V', 'HLA-DQA2', 'HLA-DPA2', 'HLA-N', 'HLA-S', 'HLA-T', 'HLA-U', 'HLA-W', 'MICA', 'MICB', 'TAP1', 'TAP2', 'HFE' ]
+        interval_dict = {"HFE": "HFE:301-8261","HLA-A": "HLA-A:301-3802","HLA-B": "HLA-B:301-4381","HLA-C": "HLA-C:301-4618","HLA-DMA": "HLA-DMA:301-5310","HLA-DMB": "HLA-DMB:301-7040","HLA-DOA": "HLA-DOA:301-3953","HLA-DOB": "HLA-DOB:301-5086","HLA-DPA1": "HLA-DPA1:301-10075","HLA-DPA2": "HLA-DPA2:301-7043","HLA-DPB1": "HLA-DPB1:301-11826","HLA-DPB2": "HLA-DPB2:301-18134","HLA-DQA1": "HLA-DQA1:301-6784","HLA-DQA2": "HLA-DQA2:301-6152","HLA-DQB1": "HLA-DQB1:301-7402","HLA-DRA": "HLA-DRA:301-6005","HLA-DRB1": "HLA-DRB1:301-11380","HLA-DRB3": "HLA-DRB3:301-13888","HLA-DRB4": "HLA-DRB4:301-15764","HLA-DRB5": "HLA-DRB5:301-13745","HLA-E": "HLA-E:301-4122","HLA-F": "HLA-F:301-3848","HLA-G": "HLA-G:301-3438","HLA-H": "HLA-H:301-3810","HLA-J": "HLA-J:301-3844","HLA-K": "HLA-K:301-3852","HLA-L": "HLA-L:301-4070","HLA-N": "HLA-N:301-935","HLA-P": "HLA-P:301-3231","HLA-S": "HLA-S:301-1174","HLA-T": "HLA-T:301-2787","HLA-U": "HLA-U:301-1030","HLA-V": "HLA-V:301-2203","HLA-W": "HLA-W:301-3272","MICA": "MICA:301-13027","MICB": "MICB:301-12616","TAP1": "TAP1:301-9570","TAP2": "TAP2:301-10907"}
+        # gene_list = ['HLA-P', 'HLA-V', 'HLA-DQA2', 'HLA-DPA2', 'HLA-N', 'HLA-S', 'HLA-T', 'HLA-U', 'HLA-W', 'MICA', 'MICB', 'TAP1', 'TAP2', 'HFE']
+    if gene_class == "CYP":
+        gene_list = [ 'CYP19A1', 'CYP1A1', 'CYP1B1', 'CYP26A1', 'CYP2A13', 'CYP2A6', 'CYP2B6', 'CYP2C19', 'CYP2C8', 'CYP2C9', 'CYP2D6', 'CYP2F1', 'CYP2J2', 'CYP2R1', 'CYP2S1', 'CYP2W1', 'CYP3A4', 'CYP3A43', 'CYP4A22', 'CYP4B1', 'CYP4F2', 'CYP8A1', 'CYP3A5', 'CYP3A7' ]
+        interval_dict = {"CYP4B1": "CYP4B1:1-2170","CYP3A4": "CYP3A4:1-34205","CYP3A7": "CYP3A7:1-37162","CYP2F1": "CYP2F1:1-20929","CYP2A13": "CYP2A13:1-14732","CYP2C9": "CYP2C9:1-58934","CYP26A1": "CYP26A1:1-11410","CYP3A5": "CYP3A5:1-38805","CYP1A1": "CYP1A1:1-7878","CYP3A43": "CYP3A43:1-45538","CYP2A6": "CYP2A6:1-13910","CYP19A1": "CYP19A1:1-47775","CYP2S1": "CYP2S1:1-21330","CYP1B1": "CYP1B1:1-12177","CYP2B6": "CYP2B6:1-34098","CYP8A1": "CYP8A1:1-5603","CYP2C19": "CYP2C19:1-99871","CYP4F2": "CYP4F2:1-27051","CYP2D6": "CYP2D6:1-11312","CYP4A22": "CYP4A22:1-12568","CYP2R1": "CYP2R1:1-21197","CYP2C8": "CYP2C8:1-39726","CYP2W1": "CYP2W1:1-13442","CYP2J2": "CYP2J2:1-40444"}
+    if gene_class == "KIR":
+        gene_list = ['KIR2DL1', 'KIR2DL2', 'KIR2DL3', 'KIR2DL4', 'KIR2DL5', 'KIR2DP1', 'KIR2DS1', 'KIR2DS2', 'KIR2DS3', 'KIR2DS4', 'KIR2DS5', 'KIR3DL1', 'KIR3DL2', 'KIR3DL3', 'KIR3DP1', 'KIR3DS1']
+        interval_dict = {"KIR2DL1": "KIR2DL1:301-15041","KIR2DL2": "KIR2DL2:301-15082","KIR2DL3": "KIR2DL3:301-15068","KIR2DL4": "KIR2DL4:301-11434","KIR2DL5": "KIR2DL5:301-10072","KIR2DP1": "KIR2DP1:301-13426","KIR2DS1": "KIR2DS1:301-15020","KIR2DS2": "KIR2DS2:301-14878","KIR2DS3": "KIR2DS3:301-15403","KIR2DS4": "KIR2DS4:301-16392","KIR2DS5": "KIR2DS5:301-15548","KIR3DL1": "KIR3DL1:301-14846","KIR3DL2": "KIR3DL2:301-17301","KIR3DL3": "KIR3DL3:301-12699","KIR3DP1": "KIR3DP1:301-4540","KIR3DS1": "KIR3DS1:301-15232"}
 
-    
-    # ref = "/mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"
+
 
     main(args)
-
-
-
-
-
-                # if max([M[i][z], M[j][z]]) < 500:
-                # identity_i = 1 - read_identity_matrix[i][z]/(M[i][z] + read_identity_matrix[i][z])
-                # identity_j = 1 - read_identity_matrix[j][z]/(M[j][z] + read_identity_matrix[j][z])
-                # if max([identity_i, identity_j]) < 0.85:
-                # #     continue
-                # # if min([M[i][z], M[j][z]]) == 0:
-                #     if record_index_allele[i] == 'C*16:01:01:01' and record_index_allele[j] == 'C*06:02:01:01' :#:'C*07:02:01:15':
-                #         print (z, read_name_list[z], M[i][z], M[j][z], identity_i, identity_j)
-                #     # continue
-                # if z in zero_read_dict:
-                #     continue
-                
-                # if record_index_allele[i] == 'C*04:01:01:01' and record_index_allele[j] == 'C*03:03:01:01' :#:'C*07:02:01:15':
-                #     if M[i][z] > M[j][z] :#and min([M[i][z], M[j][z]]) ==0:
-                #         print (read_name_list[z], record_index_allele[i], record_index_allele[j], int(M[i][z]), int(M[j][z]), int(max([M[i][z], M[j][z]])), read_identity_matrix[i][z],  read_identity_matrix[j][z],sep="\t")
-
-                # if record_index_allele[i] == 'C*04:01:01:11' and record_index_allele[j] == 'C*03:03:01:01' :#:'C*07:02:01:15':
-                #     if M[i][z] > M[j][z] :#and min([M[i][z], M[j][z]]) ==0:
-                #         print (read_name_list[z], record_index_allele[i], record_index_allele[j], int(M[i][z]), int(M[j][z]), int(max([M[i][z], M[j][z]])), read_identity_matrix[i][z],  read_identity_matrix[j][z],sep="\t")
-                # if M[i][z] >= M[j][z]:
-                #     map_sum += M[i][z]
-                #     record_allele_pair_mismatch[tag]  += read_identity_matrix[i][z]
-                # else:
-                #     map_sum += M[j][z]
-                #     record_allele_pair_mismatch[tag]  += read_identity_matrix[j][z]
-                # if record_index_allele[i] == 'DPA1*02:02:02:01' and record_index_allele[j] == 'DPA1*01:03:01:04' :
-                #     print (read_identity_matrix[i][z], M[i][z], read_identity_matrix[j][z], M[j][z], sep = "\t")

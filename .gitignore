@@ -5,6 +5,7 @@ __pycache__/
 
 db/
 test/pacbio/output/
+test/test
 
 # C extensions
 *.so
