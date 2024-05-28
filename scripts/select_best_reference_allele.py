@@ -18,7 +18,7 @@ from collections import defaultdict
 import pysam
 
 gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
-# gene_list = ['A', 'C', 'DRB1']
+# gene_list = ['A']
 
 def run_depth():
     cmd = f"""

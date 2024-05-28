@@ -19,6 +19,7 @@ import pysam
 
 from read_objects import My_read
 from handle_allele_pair import My_allele_pair
+from filter_reads import examine_reads
 
 gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 # gene_list = ['A', 'C', 'DRB1']
@@ -163,6 +164,7 @@ def construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_le
             record_read_allele_dict[read_name][allele_name] = my_read
             allele_name_dict[allele_name] += 1
         elif record_read_allele_dict[read_name][allele_name].identity < my_read.identity:
+        # elif record_read_allele_dict[read_name][allele_name].match_num < my_read.match_num:
             record_read_allele_dict[read_name][allele_name] = my_read
 
 
@@ -750,6 +752,8 @@ def main(args):
 
         record_read_allele_dict, allele_name_dict = construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_length)
         print ("finish matrix construction")
+        # record_read_allele_dict = examine_reads(record_read_allele_dict)
+        # print (len(record_read_allele_dict)) 
 
         for read_name in record_read_allele_dict:
             for allele_name in record_read_allele_dict[read_name]:
