@@ -1,0 +1,45 @@
+##fileformat=VCFv4.2
+##source=Longshot v0.4.3
+##contig=<ID=chr7_trb,length=517001>
+##contig=<ID=chr9_trb,length=175001>
+##contig=<ID=chr14_tra,length=933001>
+##contig=<ID=chr7_trg,length=122001>
+##contig=<ID=chr7_alt_trb,length=180001>
+##contig=<ID=chr14_igh,length=1030001>
+##contig=<ID=chr15_igh,length=103603>
+##contig=<ID=chr16_igh,length=660004>
+##contig=<ID=chr2_igk,length=2600003>
+##contig=<ID=chr22_igl,length=916001>
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Total Depth of reads passing MAPQ filter">
+##INFO=<ID=AC,Number=R,Type=Integer,Description="Number of Observations of Each Allele">
+##INFO=<ID=AM,Number=1,Type=Integer,Description="Number of Ambiguous Allele Observations">
+##INFO=<ID=MC,Number=1,Type=Integer,Description="Minimum Error Correction (MEC) for this single variant">
+##INFO=<ID=MF,Number=1,Type=Float,Description="Minimum Error Correction (MEC) Fraction for this variant.">
+##INFO=<ID=MB,Number=1,Type=Float,Description="Minimum Error Correction (MEC) Fraction for this variant's haplotype block.">
+##INFO=<ID=AQ,Number=1,Type=Float,Description="Mean Allele Quality value (PHRED-scaled).">
+##INFO=<ID=GM,Number=1,Type=Integer,Description="Phased genotype matches unphased genotype (boolean).">
+##INFO=<ID=DA,Number=1,Type=Integer,Description="Total Depth of reads at any MAPQ (but passing samtools filter 0xF00).">
+##INFO=<ID=MQ10,Number=1,Type=Float,Description="Fraction of reads (passing 0xF00) with MAPQ>=10.">
+##INFO=<ID=MQ20,Number=1,Type=Float,Description="Fraction of reads (passing 0xF00) with MAPQ>=20.">
+##INFO=<ID=MQ30,Number=1,Type=Float,Description="Fraction of reads (passing 0xF00) with MAPQ>=30.">
+##INFO=<ID=MQ40,Number=1,Type=Float,Description="Fraction of reads (passing 0xF00) with MAPQ>=40.">
+##INFO=<ID=MQ50,Number=1,Type=Float,Description="Fraction of reads (passing 0xF00) with MAPQ>=50.">
+##INFO=<ID=PH,Number=G,Type=Float,Description="PHRED-scaled Probabilities of Phased Genotypes">
+##INFO=<ID=SC,Number=1,Type=String,Description="Reference Sequence in 21-bp window around variant.">
+##FILTER=<ID=dn,Description="In a dense cluster of variants">
+##FILTER=<ID=dp,Description="Exceeds maximum depth">
+##FILTER=<ID=sb,Description="Allelic strand bias">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=PS,Number=1,Type=Integer,Description="Phase Set">
+##FORMAT=<ID=UG,Number=1,Type=String,Description="Unphased Genotype (pre-haplotype-assembly)">
+##FORMAT=<ID=UQ,Number=1,Type=Float,Description="Unphased Genotype Quality (pre-haplotype-assembly)">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read depth">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Number of observation for each allele">
+##FORMAT=<ID=RO,Number=1,Type=Integer,Description="Reference allele observation count">
+##FORMAT=<ID=QR,Number=1,Type=Integer,Description="Sum of quality of the reference observations">
+##FORMAT=<ID=AO,Number=A,Type=Integer,Description="Alternate allele observation count">
+##FORMAT=<ID=QA,Number=A,Type=Integer,Description="Sum of quality of the alternate observations">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
+##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the structural variant described in this record">
+##INFO=<ID=SVLEN,Number=.,Type=Integer,Description="Difference in length between REF and ALT alleles">
