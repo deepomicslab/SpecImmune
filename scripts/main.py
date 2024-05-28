@@ -8,30 +8,43 @@ import argparse
 
 
 def main(args):
-    command = f"""
-    ## first: read binning
-    python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 0 --db {args["db"]}
+    if not os.path.exists(args["o"]):
+        os.system("mkdir %s"%(args["o"]))
+    outdir = args["o"] + "/" + args["n"]
+    if not os.path.exists(outdir):
+        os.system("mkdir %s"%(outdir))
 
-    ## second: find a pair of alleles for each HLA locus
-    python3 {sys.path[0]}/select_best_reference_allele.py -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
+    if args['i'] != "IG_TR":
+        command = f"""
+        ## first: read binning
+        python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 0 --db {args["db"]}
 
-    """
-    os.system(command)
+        ## second: find a pair of alleles for each HLA locus
+        python3 {sys.path[0]}/select_best_reference_allele.py -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
 
-    # build individual ref when first run
-    command = f"""
-    ## third: build individual reference for each HLA locus
-    python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
-    python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {args.db_ref} {args.db}
-    """
-    if args.first_run:
+        """
         os.system(command)
-    command = f"""
-    ## forth: call & phasing variant & typing
-    python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 2
 
-    """
-    os.system(command)
+        # build individual ref when first run
+        command = f"""
+        ## third: build individual reference for each HLA locus
+        python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
+        python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {args["db_ref"]} {args["db"]}
+        """
+        if args.first_run:
+            os.system(command)
+        command = f"""
+        ## forth: call & phasing variant & typing
+        python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 2
+
+        """
+        os.system(command)
+    
+    else:
+        command = f"""
+        bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {args["db"]}
+        """
+        os.system(command)
 
         
     
@@ -49,7 +62,7 @@ if __name__ == "__main__":
     required.add_argument("-r", type=str, help="Long-read fastq file. PacBio or Nanopore.", metavar="\b")
     required.add_argument("-n", type=str, help="Sample ID", metavar="\b")
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
-    required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
+    required.add_argument("-i", type=str, help="HLA,KIR,CYP,IG_TR",metavar="\b", default="HLA")
     # optional.add_argument("-p", type=str, help="The population of the sample [Asian, Black, Caucasian, Unknown, nonuse] for annotation. Unknown means use mean allele frequency in all populations. nonuse indicates only adopting mapping score and considering zero-frequency alleles.", metavar="\b", default="Unknown")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=5)
     # optional.add_argument("-d", type=float, help="Minimum score difference to assign a read to a gene.", metavar="\b", default=0.001)
