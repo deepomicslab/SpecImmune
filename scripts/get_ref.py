@@ -15,9 +15,6 @@ import argparse
 from collections import defaultdict
 
 
-gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
-# gene_list = ['A']
-
 #def run_depth(args):
 #    cmd = f"""
 #    echo search  {args["o"]}/{args["n"]}/{args["n"]}.db.sam ... 
@@ -29,9 +26,9 @@ gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 
 def run_depth(args):
     cmd = f"""
-    echo search  {args["o"]}/{args["n"]}/{args["n"]}.db.sam ... 
-    samtools view -bS -F 0x800  {args["o"]}/{args["n"]}/{args["n"]}.db.sam | samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.db.bam
-    samtools depth -aa {args["o"]}/{args["n"]}/{args["n"]}.db.bam>{args["o"]}/{args["n"]}/{args["n"]}.db.depth
+    echo search  {args["o"]}/{args["n"]}/{args["n"]}.db.bam ... 
+    samtools view -bS -F 0x800  {args["o"]}/{args["n"]}/{args["n"]}.db.bam | samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.db.sort.bam
+    samtools depth -aa {args["o"]}/{args["n"]}/{args["n"]}.db.sort.bam>{args["o"]}/{args["n"]}/{args["n"]}.db.depth
     """
     os.system(cmd)
     return """%s/%s/%s.db.depth"""%(args["o"], args["n"], args["n"])
@@ -79,8 +76,7 @@ class Get_depth():
         record_candidate_alleles = defaultdict(set)
         record_allele_length = {}
         for gene in self.depth_dict:
-            if gene not in gene_list:
-                continue
+
             record_allele_depth = {}
             
             record_allele_info = {}
@@ -107,36 +103,6 @@ class Get_depth():
         # return record_candidate_alleles
         f.close()
 
-def map2db(args, gene):
-
-    minimap_para = ''
-    if args["y"] == "pacbio":
-        minimap_para = " -x map-pb "
-    elif args["y"] == "nanopore":
-        minimap_para = " -x map-ont "
-
-    outdir = args["o"] + "/" + args["n"]
-    sam = outdir + "/" + args["n"] + "." + gene + ".db.sam"
-    bam = outdir + "/" + args["n"] + "." + gene + ".db.bam"
-    depth_file = outdir + "/" + args["n"] + "." + gene + ".db.depth"
-
-    # map raw reads to database
-    alignDB_order = f"""
-    fq={args["r"] }
-    ref={args["f"] }
-    outdir={args["o"]}/{args["n"] }
-    sample={args["n"] }
-
-    fq=/mnt/d/HLAPro_backup/Nanopore_optimize/output/$sample/{gene}.long_read.fq.gz
-    ref=/mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/db/HLA/whole/HLA_{gene}.fasta
-
-    minimap2 -t {args["j"] } {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
-    samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
-    samtools depth -aa {bam}>{depth_file}
-    echo alignment done.
-    """
-    os.system(alignDB_order)
-    return sam, depth_file
 
 
 if __name__ == "__main__":

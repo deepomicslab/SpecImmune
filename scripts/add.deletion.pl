@@ -1,7 +1,7 @@
-#!/usr/bin/perl -w
+
+use FindBin qw($Bin);
 my ($snpfile,$svfile,$outfile) = @ARGV;
 my @chrs = ("chr7_trb","chr9_trb","chr14_tra","chr7_trg","chr7_alt_trb","chr14_igh","chr15_igh","chr16_igh","chr2_igk","chr22_igl");
-
 my (%hash,%hash2);
 open SV, "$svfile" or die "$!\n";
 while(<SV>){
@@ -44,7 +44,7 @@ while(<SV>){
 close SV;
 
 open IN, "$snpfile" or die "$!\n";
-`cat head.vcf >$outfile`;
+`cat $Bin/head.vcf >$outfile`;
 open OUT, ">>$outfile";
 while(<IN>){
 	chomp;

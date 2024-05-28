@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
-my ($sample,$hap1,$hap2,$outdir) = @ARGV;
-my $db ="/home/wangmengyao/SpecComplex/db/IG_TR/IG.TR.merge.allele.fasta";
-my $bin="/home/wangmengyao/SpecHLA/bin";
+my ($sample,$hap1,$hap2,$outdir,$db_dir) = @ARGV;
+my $db ="$db_dir/IG_TR/IG.TR.merge.allele.fasta";
+print $db;
 my @chrs = ("chr14_igh", "chr15_igh", "chr16_igh", "chr2_igk", "chr22_igl",  "chr7_alt_trb", "chr7_trb", "chr9_trb", "chr14_tra", "chr7_trg");
 my @chr7_alt_trbs = ("TRBV5-3", "TRBV5-7", "TRBV5-8", "TRBV6-4", "TRBV6-8", "TRBV6-9", "TRBV7-3", "TRBV7-7", "TRBV7-8", "TRBV7-9", "TRBV9");
 my %hasht;
@@ -16,7 +16,7 @@ foreach my $chr(@chrs){
 	`samtools faidx $hap1 $chr > $outdir/tmp/$sample.$chr.hap1.fasta`;
 	`samtools faidx $hap2 $chr > $outdir/tmp/$sample.$chr.hap2.fasta`;
         for(my $i=1;$i<=2;$i++){
-	    `$bin/blastn -query $outdir/tmp/$sample.$chr.hap$i.fasta -out $outdir/tmp/$sample.$chr.hap$i.blast.txt -db $db -outfmt 7 -max_target_seqs 3000 -num_threads 4 `;
+	    `blastn -query $outdir/tmp/$sample.$chr.hap$i.fasta -out $outdir/tmp/$sample.$chr.hap$i.blast.txt -db $db -outfmt 7 -max_target_seqs 3000 -num_threads 4 `;
             my (%hashg, %hashp, %hashs, %hashl);
 	    open IN, "$outdir/tmp/$sample.$chr.hap$i.blast.txt" or die "$!\n";
 	    while(<IN>){
