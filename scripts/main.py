@@ -44,13 +44,13 @@ def main(args):
         python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
         python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {db_ref} 
         """
-        if args.first_run:
+        if args["first_run"]:
             os.system(command)
         
         
         command = f"""
         ## forth: call & phasing variant & typing
-        python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 2 --db {args["db"]}
+        python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 2 --db {args["db"]} -i {args["i"]}
 
         """
         os.system(command)

@@ -13,7 +13,7 @@ def record_depth(depth_file):
         gene = array[0]
         depth = int(array[2])
         depth_list.append(depth)
-    mean_depth = np.mean(depth_list[1000:-1000])
+    mean_depth = np.mean(depth_list[300:-300])
     return mean_depth
     
 

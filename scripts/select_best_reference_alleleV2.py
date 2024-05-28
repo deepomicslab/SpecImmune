@@ -705,6 +705,13 @@ def map2db(args, gene):
     sort_depth_file = outdir + "/" + args["n"] + "." + gene + ".db.sort.depth.txt"
     # ref={args["f"] }
     # map raw reads to database
+
+    if args["i"] == "HLA" or args["i"] == "CYP":
+        ref = f"""{args["db"]}/{args["i"]}/ref/split/{gene}.fasta"""
+    elif args["i"] == "KIR":
+        ref = f"""{args["db"]}/KIR/ref/split/{gene}.exon.fasta"""
+
+
     alignDB_order = f"""
     fq={args["r"] }
     
@@ -712,8 +719,8 @@ def map2db(args, gene):
     sample={args["n"] }
 
     fq=$outdir/{gene}.long_read.fq.gz
-    # ref={args["db"]}/HLA/whole/HLA_{gene}.fasta
-    ref={args["db"]}/HLA/ref/split/{gene}.fasta
+
+    ref={ref}
 
     minimap2 -t {args["j"] } {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
     samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
@@ -754,7 +761,8 @@ def output_spechla_format(args, result_dict):
 
 def output_hlala_format(args, result_dict, reads_num_dict):
     outdir = args["o"] + "/" + args["n"]
-    f = open(f"""{outdir}/{args["n"]}.{args["i"]}.type.result.txt""", 'w')
+    result = f"""{outdir}/{args["n"]}.{args["i"]}.type.result.txt"""
+    f = open(result, 'w')
     # print ("#", version_info, file = f)
     print ("Locus   Chromosome      Allele  Reads_num", file = f)
     for gene in gene_list:
@@ -764,6 +772,7 @@ def output_hlala_format(args, result_dict, reads_num_dict):
             result_dict[gene][ch-1] = result_dict[gene][ch-1].replace(',', ';')
             print (gene, ch, result_dict[gene][ch-1], reads_num_dict[gene], sep="\t", file = f)
     f.close()
+    print ("result is", result)
 
 def main(args):
 

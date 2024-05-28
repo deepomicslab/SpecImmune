@@ -131,8 +131,9 @@ class Pacbio_Binning():
         else:
             print ("wrong gene_class")
 
-        self.sam = f"""{parameter.outdir}/{parameter.sample}.{args["i"]}.db.bam"""
-        self.map2db()
+        self.sam = f"""{parameter.outdir}/{parameter.sample}.db.bam"""
+        if args["m"] != 2:
+            self.map2db()
         self.bamfile = pysam.AlignmentFile(self.sam, 'rb')   
         self.assign_file = f"{parameter.outdir}/{parameter.sample}.assign.txt"
 
@@ -236,7 +237,7 @@ class Fasta():
         db=%s
         outdir=%s
         hla=%s
-        hla_ref=$db/HLA/HLA_$hla/HLA_$hla.fa
+        hla_ref=$db/split_ref/$hla.fasta
         minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
         samtools index $outdir/$hla.bam
         samtools depth -d 1000000 -aa $outdir/$hla.bam >$outdir/$hla.depth
@@ -263,10 +264,10 @@ class Fasta():
         self.alignment(gene)
         ### call and phase snps
         awk_script = '{{sum+=$3}} END {{ if (NR>0) print sum/NR; else print 0; }}'
-        hla_ref=f"{parameter.db}/HLA/HLA_{gene}/HLA_{gene}.fa"
+        hla_ref=f"{parameter.db}/split_ref/{gene}.fasta"
         bam=f"{parameter.outdir}/{gene}.bam"
         depth_file=f"{parameter.outdir}/{gene}.depth"
-
+        print ("xxx", bam)
         # call snp
         mask_bed=f"{parameter.outdir}/low_depth.bed"
         call_phase_cmd= f"""
@@ -277,10 +278,10 @@ class Fasta():
             else
                 set_dp=5
             fi
-            python {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {parameter.outdir} -w 20 -d $set_dp
+            python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {parameter.outdir} -w 20 -d $set_dp
             
             cp {mask_bed} {parameter.outdir}/{gene}.low_depth.bed
-            longshot -F -c 2 -C 100000 -P {args.strand_bias_pvalue_cutoff} -r {interval_dict[gene]} --bam ${bam} --ref {hla_ref} --out {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf 
+            longshot -F -c 2 -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval_dict[gene]} --bam ${bam} --ref {hla_ref} --out {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf 
             bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf
             tabix -f {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf.gz
             zcat {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf.gz >{parameter.outdir}/$sample.{gene}.phased.vcf          
@@ -289,6 +290,7 @@ class Fasta():
         """
         os.system(call_phase_cmd)
 
+        print ("call snp done")
         # call sv & phase snv-sv
         gene_work_dir=f"{parameter.outdir}/{gene}_work"
         if not os.path.exists(gene_work_dir):
