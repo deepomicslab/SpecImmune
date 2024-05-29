@@ -3,7 +3,14 @@
 class My_db():
 
     def __init__(self, args):
+
+
+        # self.db = f"{sys.path[0]}/../db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"
+        # self.db = f"{sys.path[0]}/../db/ref/hla_gen.format.filter.extend.DRB.no26789.v2.fasta"
+        # self.db = f"""{args["db"]}/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"""
+
         self.gene_class = args["i"]
+
         if self.gene_class == "HLA":
             self.full_db = f"""{args["db"]}/HLA/ref/HLA.extend.fasta"""   # 15578 alleles
             self.lite_db = f"""{args["db"]}/HLA/ref/HLA.select.lite.fasta"""   # 6172 alleles
@@ -17,6 +24,10 @@ class My_db():
             self.lite_db = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""  # 1020
             # self.lite_db = f"""{args["db"]}/CYP/ref/CYP.select.fasta"""  # 537
             self.full_db = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""  # 1020
+        
+        elif self.gene_class == "IG_TR":
+            self.full_db = f"""{args["db"]}/IG_TR/IG.TR.merge.allele.fasta"""
+            self.lite_db = self.full_db
 
         else:
             print ("wrong gene_class")
@@ -43,4 +54,5 @@ class My_db():
         #     print ("wrong gene_class")
         ref = f"""{self.root}/whole/{gene}.fasta"""
         return ref
+
      

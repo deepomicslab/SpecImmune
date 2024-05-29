@@ -97,40 +97,7 @@ class Score_Obj():
             read_bin = Read_bin(self.loci_score[read_name])
             assigned_locus = read_bin.assign_multiple()
             print ("\n\n")
-            # break
-            # assigned_locus = []
-            # gene_score = sorted(self.loci_score[read_name].items(), key=lambda item: item[1][0], reverse = True)
-            # gene_match_len = sorted(self.loci_score[read_name].items(), key=lambda  x: x[1][1], reverse = True)
-            # # if len(gene_score) > 1 and (gene_score[0][0] == "DQB1"):
-            # #     print (read_name, gene_score[:2])
-            # if gene_score[0][1][0] <= Min_score:
-            #     continue
-            # if len(gene_score) == 1: # mapped to only one gene, directly assign to that gene
-            #     assigned_locus = [gene_score[0][0]]
-            # else:
-            #     # real-data based adjustment
-                
 
-            #     # if gene_score[0][0] == "DRB1" or gene_score[1][0] == "DRB1":
-            #     #     print (read_name, gene_score[0][0], gene_score[:5], gene_match_len[:5])
-            #     if gene_score[0][0] in ["HLA-U"] and gene_score[1][0] == "HLA-A" :
-            #         assigned_locus = ["HLA-A"]                
-            #     elif gene_score[0][0] == "HLA-DRB1" and gene_score[0][1][0] - gene_score[1][1][0] < 0.05:  # 0.02 0.05
-            #         continue
-            #     elif gene_score[0][0] == "HLA-DQB1" and gene_score[0][1][0] < 0.9:
-            #         continue
-            #     elif gene_score[0][0] == 'HLA-DPB2' and gene_score[1][0] == "HLA-DPA1":
-            #         assigned_locus = ["HLA-DPA1"]
-            #     elif gene_score[0][0] in ['HLA-DPB1', "HLA-DPA1"] and gene_score[1][0] in ['HLA-DPB1', "HLA-DPA1"]:
-            #         assigned_locus = ['HLA-DPB1', "HLA-DPA1"]
-            #     # map to more than one gene, check the score difference
-            #     elif gene_score[0][1][0] - gene_score[1][1][0] >= Min_diff:
-            #         assigned_locus = [gene_score[0][0]]
-            #     # score diff too small, can not determine which gene to assign
-            #     # discard this read
-            #     else:
-            #         continue
-            # # print ("assigned locus", assigned_locus)
             print (read_name, assigned_locus, file = f)
             self.read_loci[read_name] = assigned_locus
         f.close()
@@ -201,12 +168,6 @@ class Score_Obj_bk():
 class Pacbio_Binning():
 
     def __init__(self):
-        
-         
-        # self.db = f"{sys.path[0]}/../db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"
-        # self.db = f"{sys.path[0]}/../db/ref/hla_gen.format.filter.extend.DRB.no26789.v2.fasta"
-        # self.db = f"""{args["db"]}/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"""
-
         self.db = my_db.lite_db
 
         self.sam = f"""{parameter.outdir}/{parameter.sample}.db.bam"""
