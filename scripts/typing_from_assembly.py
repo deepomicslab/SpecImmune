@@ -15,6 +15,7 @@ import pysam
 import argparse
 
 from determine_gene import get_focus_gene
+from db_objects import My_db
 
 
 def get_1_element(lst):
@@ -38,13 +39,13 @@ def change_allele_name(raw, new):
                 outfile.write(line)
 
 def minimap(sample, hap_index):
-    command = f"{minimap_path} {record_truth_file_dict[sample][hap_index]} {HLA_data}  -o {result_path}/{sample}.h{hap_index+1}.sam -a -t {args['j']}"
+    command = f"{minimap2} {record_truth_file_dict[sample][hap_index]} {HLA_data}  -o {result_path}/{sample}.h{hap_index+1}.sam -a -t {args['j']}"
     print (command)
     os.system(command)
 
 def minimap_exon(sample, hap_index):
-    # command = f"{minimap_path} {record_truth_file_dict[sample][hap_index]} {HLA_data}  -o {result_path}/{sample}.h{hap_index+1}.paf -t 10"
-    command = f"{minimap_path} {record_truth_file_dict[sample][hap_index]} {single_exon_database_fasta}  -o {result_path}/{sample}.h{hap_index+1}.exon.sam -a -t {args['j']}"
+    # command = f"{minimap2} {record_truth_file_dict[sample][hap_index]} {HLA_data}  -o {result_path}/{sample}.h{hap_index+1}.paf -t 10"
+    command = f"{minimap2} {record_truth_file_dict[sample][hap_index]} {single_exon_database_fasta}  -o {result_path}/{sample}.h{hap_index+1}.exon.sam -a -t {args['j']}"
     # print (command)
     os.system(command)
 
@@ -420,39 +421,21 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         parser.print_help()
         sys.exit(0)
-
-    minimap_path = "minimap2"
-    HLA_data = "%s/../db/HLA/whole/hla_gen.fasta"%(sys.path[0])
-    version_info = get_IMGT_version()
-
-    # https://github.com/ANHIG/IMGTHLA/blob/Latest/fasta/hla_gen.fasta
-    # raw_HLA_data = "/mnt/d/HLAPro_backup/minor_rev/extract_alleles/hla_gen.fasta"
-    # HLA_data = "/mnt/d/HLAPro_backup/minor_rev/extract_alleles/hla_gen.rename.fasta"
     
-    # raw_HLA_exon_data = "/mnt/d/HLAPro_backup/minor_rev/extract_alleles/hla_nuc.fasta"
-    # HLA_exon_data = "/mnt/d/HLAPro_backup/minor_rev/extract_alleles/hla_nuc.rename.fasta"
-    # truth_1000G_file = "/mnt/d/HLAPro_backup/wgs1000/20181129_HLA_types_full_1000_Genomes_Project_panel.txt"
-    # single_exon_database = "/mnt/d/HLAPro_backup/minor_rev/extract_alleles/xml/"
-    # single_exon_database_fasta = "/mnt/d/HLAPro_backup/minor_rev/extract_alleles/xml/hla_exons.fasta"
-    # change_allele_name(raw_HLA_data, HLA_data)
-    # change_allele_name(raw_HLA_exon_data, HLA_exon_data)
-    # get_exons_databse(single_exon_database)
-
-    if not os.path.exists(args["o"]):
-        os.system("mkdir %s"%(args["o"]))
-    if not os.path.isfile(HLA_data):
-        os.system("cat %s/../db/HLA/whole/HLA_*.fasta > %s/../db/HLA/whole/hla_gen.fasta"%(sys.path[0], sys.path[0]))
-    
+    version_info = "##"
 
     result_path = args['o']
     sample = args['n']
     samples_list = [sample]
     # gene_list = ["A", "B", "C", "DPA1", "DPB1", "DQA1", "DQB1", "DRB1"]
     record_truth_file_dict = {sample : [args['1'], args['2']]}
+
     gene_list, interval_dict =  get_focus_gene(args)
+    my_db = My_db(args)
+    HLA_data = my_db.all_alleles
 
     # create an output file for the extracted segment
-    out_fasta = open(result_path + f"/{sample}_extracted_HLA_alleles.fasta", 'w')
+    out_fasta = open(result_path + f"/{sample}_extracted_{my_db.gene_class}_alleles.fasta", 'w')
 
     record_best_match = {}
     for sample in samples_list:

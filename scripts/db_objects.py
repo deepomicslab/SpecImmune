@@ -5,18 +5,22 @@ class My_db():
     def __init__(self, args):
         self.gene_class = args["i"]
         if self.gene_class == "HLA":
-            self.lite_db = f"""{args["db"]}/HLA/ref/HLA.extend.fasta"""
+            # self.lite_db = f"""{args["db"]}/HLA/ref/HLA.extend.fasta"""   # 15578 alleles
+            self.lite_db = f"""{args["db"]}/HLA/ref/HLA.select.lite.fasta"""   # 6172 alleles
         elif self.gene_class == "KIR":
-            self.lite_db = f"""{args["db"]}/KIR/ref/KIR.extend.select.fasta"""
-            #self.db = f"{sys.path[0]}/../db/KIR/ref/KIR.extend.fasta"
+            # self.lite_db = f"""{args["db"]}/KIR/ref/KIR.extend.select.fasta""" ## 72
+            self.lite_db = f"{args["db"]}/KIR/ref/KIR.extend.fasta"  ## 848
         elif self.gene_class == "CYP":
-            self.lite_db = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""
+            self.lite_db = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""  # 1020
+            # self.lite_db = f"""{args["db"]}/CYP/ref/CYP.select.fasta"""  # 537
         else:
             print ("wrong gene_class")
 
         
         self.gene_all_alleles_dir =  f"""{args["db"]}/split_ref/"""  
         self.root = args["db"]
+
+        self.all_alleles = f"""{args["db"]}/whole/merge.fasta"""    ### 17446
 
     def get_gene_alleles(self, gene):
         ### record representative allele of each gene
@@ -26,12 +30,12 @@ class My_db():
     def get_gene_all_alleles(self, gene):
         ### record all alleles of each gene
 
-        if self.gene_class == "HLA" or self.gene_class == "CYP":
-            ref = f"""{self.root}/{self.gene_class}/ref/split/{gene}.fasta"""
-        elif self.gene_class == "KIR":
-            ref = f"""{self.root}/KIR/ref/split/{gene}.exon.fasta"""
-        else:
-            print ("wrong gene_class")
-        
+        # if self.gene_class == "HLA" or self.gene_class == "CYP":
+        #     ref = f"""{self.root}/{self.gene_class}/ref/split/{gene}.fasta"""
+        # elif self.gene_class == "KIR":
+        #     ref = f"""{self.root}/KIR/ref/split/{gene}.exon.fasta"""
+        # else:
+        #     print ("wrong gene_class")
+        ref = f"""{self.root}/whole/{gene}.fasta"""
         return ref
      
