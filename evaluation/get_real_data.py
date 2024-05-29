@@ -41,7 +41,7 @@ def download_and_check_md5(url, md5, data_dir):
 # data_dir = '/mnt/d/HLAPro_backup/Nanopore_optimize/data/pacbio_clr/'  # Specify the data directory here
 data_dir = "/RGC_1/shuai/hla_pacbio_clr/"
 data_list_file = 'igsr_HGSVC2_PacBio_CLR.tsv'  # Specify the data list file here
-hg38=/home/wangmengyao/GATK/database/Homo_sapiens_assembly38.fasta
+hg38="/home/wangmengyao/GATK/database/Homo_sapiens_assembly38.fasta"
 
 with open(data_list_file, 'r') as file:
     file.readline()
