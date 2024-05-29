@@ -5,6 +5,13 @@ Extract HLA allele from phased assemblies
 3. choose the best allele by balancing the matched length and identity
 4. extract the assembly sequence that mapped to the best allele
 
+
+    python3 ../scripts/typing_from_assembly.py \
+    -1 /mnt/d/my_HLA/assembly/v12_HG00514_hgsvc_pbsq2-clr_1000-flye.h1-un.arrow-p1.fasta \
+    -2 /mnt/d/my_HLA/assembly/v12_HG00514_hgsvc_pbsq2-clr_1000-flye.h2-un.arrow-p1.fasta \
+    -n HG00514 -i KIR -o /mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/\
+     -j 15 --db /mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/
+
 wangshuai, Nov 9, 2023
 """
 
@@ -38,14 +45,14 @@ def change_allele_name(raw, new):
             else:
                 outfile.write(line)
 
-def minimap(sample, hap_index):
-    command = f"{minimap2} {record_truth_file_dict[sample][hap_index]} {HLA_data}  -o {result_path}/{sample}.h{hap_index+1}.sam -a -t {args['j']}"
+def minimap(sample, hap_index, input_sam):
+    command = f"minimap2 {record_truth_file_dict[sample][hap_index]} {HLA_data} -a -t {args['j']} -o {input_sam}"
     print (command)
     os.system(command)
 
 def minimap_exon(sample, hap_index):
-    # command = f"{minimap2} {record_truth_file_dict[sample][hap_index]} {HLA_data}  -o {result_path}/{sample}.h{hap_index+1}.paf -t 10"
-    command = f"{minimap2} {record_truth_file_dict[sample][hap_index]} {single_exon_database_fasta}  -o {result_path}/{sample}.h{hap_index+1}.exon.sam -a -t {args['j']}"
+    # command = f"minimap2 {record_truth_file_dict[sample][hap_index]} {HLA_data}  -o {result_path}/{sample}.h{hap_index+1}.paf -t 10"
+    command = f"minimap2 {record_truth_file_dict[sample][hap_index]} {single_exon_database_fasta}  -o {result_path}/{sample}.h{hap_index+1}.exon.sam -a -t {args['j']}"
     # print (command)
     os.system(command)
 
@@ -122,6 +129,9 @@ def resort_list_with_same_alleles(sorted_list, first_index, second_index):
     return sorted_list
     
 def get_max_alleles(sorted_list, index):
+    if len(sorted_list) == 0:
+        print ("empty")
+        return []
     # print (sorted_list)
     max_value = sorted_list[0][index]
     max_allele_list = []
@@ -275,17 +285,17 @@ class Assign_allele():
         self.sample_save_alignments_dict = sample_save_alignments_dict
         self.sample = sample
 
-    def main(self):
+    def main(self, out_txt):
         record_selection = {}
         for gene in gene_list:
             gene_alignments = self.sample_save_alignments_dict[gene]
             truth_alleles = [[]]
-            first_hap_selection, second_hap_selection = self.handle_each_gene(gene_alignments, truth_alleles, gene)
+            first_hap_selection, second_hap_selection = self.handle_each_gene(gene_alignments, truth_alleles, gene, out_txt)
             record_selection[gene] = [first_hap_selection, second_hap_selection]
             print (self.sample, gene, "selection", first_hap_selection[0], second_hap_selection[0])
         return record_selection
     
-    def handle_each_gene(self, gene_alignments, truth_alleles, gene):
+    def handle_each_gene(self, gene_alignments, truth_alleles, gene, out_txt):
         if len(truth_alleles) > 0 and len(truth_alleles[0]) > 0:
             print (self.sample, gene, "1000G", truth_alleles)
             align_00 = self.filter_by_1000G(truth_alleles[0], gene_alignments[0])
@@ -308,12 +318,23 @@ class Assign_allele():
             return my_align_00[0], my_align_11[0]
         
         else:
-            first_hap_selection = self.select_by_alignment(gene_alignments[0], truth_alleles)
-            second_hap_selection = self.select_by_alignment(gene_alignments[1], truth_alleles)
+            first_hap_selection, first_match_sorted_list = self.select_by_alignment(gene_alignments[0], truth_alleles)
+            second_hap_selection, second_match_sorted_list = self.select_by_alignment(gene_alignments[1], truth_alleles)
+
+            for i in range(len(first_match_sorted_list)):
+                print (self.sample, gene, "h1", first_match_sorted_list[i][0], first_match_sorted_list[i][1], first_match_sorted_list[i][3], file = out_txt)
+
+            for i in range(len(second_match_sorted_list)):
+                print (self.sample, gene, "h2", second_match_sorted_list[i][0], second_match_sorted_list[i][1], second_match_sorted_list[i][3], file = out_txt)
+
+
+
             return first_hap_selection, second_hap_selection
 
     def select_by_alignment(self, align_list, truth_alleles):
-
+        if len(align_list) == 0:
+            print ("empty list")
+            return ['-'], []
         match_sorted_list = sorted(align_list, key=get_1_element, reverse = True)
         match_sorted_list = resort_list_with_same_alleles(match_sorted_list, 1, 3)
         identity_sorted_list = sorted(align_list, key=get_3_element, reverse = True)
@@ -329,7 +350,7 @@ class Assign_allele():
             select_allele_list = intersection_alleles[0].split(">")
             select_allele = select_allele_list[0]
             print (">>>>>>>>>>perfect:", select_allele)      
-            return select_allele_list
+            return select_allele_list, match_sorted_list
 
         max_match_len = match_sorted_list[0][1]
         match_len_with_max_identity = identity_sorted_list[0][1]
@@ -370,7 +391,7 @@ class Assign_allele():
         print ("identity **************************")
 
         print ("selected allele is ", select_allele_list[0])
-        return select_allele_list
+        return select_allele_list, match_sorted_list
  
     def filter_by_1000G(self, truth, align_list):
         new_align_list = []
@@ -432,23 +453,24 @@ if __name__ == "__main__":
 
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
-    HLA_data = my_db.all_alleles
+    HLA_data = my_db.full_db
 
     # create an output file for the extracted segment
     out_fasta = open(result_path + f"/{sample}_extracted_{my_db.gene_class}_alleles.fasta", 'w')
+    out_txt = open(result_path + f"/{sample}_extracted_{my_db.gene_class}_align.txt", 'w')
 
     record_best_match = {}
     for sample in samples_list:
         print (sample)
         sample_save_alignments_dict = {}
-        for hap_index in range(2):
-            minimap(sample, hap_index)
+
+        # for hap_index in range(2):
+        #     
             # minimap_exon(sample, hap_index)
+
         for hap_index in range(2):
-            # input_sam_exon = f"/mnt/d/HLAPro_backup/minor_rev/extract_alleles/{sample}.h{hap_index+1}.exon.sam"
-            
-            # input_paf = f"/mnt/d/HLAPro_backup/minor_rev/extract_alleles/{sample}.h{hap_index+1}.paf"
-            input_sam = f"{result_path}/{sample}.h{hap_index+1}.sam"
+            input_sam = f"{result_path}/{sample}.h{hap_index+1}.{my_db.gene_class}.sam"
+            minimap(sample, hap_index, input_sam)
             assembly_file = record_truth_file_dict[sample][hap_index]
             # open the input FASTA file
             
@@ -459,19 +481,20 @@ if __name__ == "__main__":
                 sample_save_alignments_dict[gene].append(align_list)
                 # print (assembly_file, input_sam)
         ass = Assign_allele(sample_save_alignments_dict, sample)
-        record_selection = ass.main()
+        record_selection = ass.main(out_txt)
         record_best_match[sample] = record_selection
         for hap_index in range(2):
             assembly_file = record_truth_file_dict[sample][hap_index]
             in_fasta = pysam.FastaFile(assembly_file)
             for gene in gene_list: 
                 select_allele_list = record_selection[gene][hap_index]
-            
-                extract_seq(select_allele_list, assembly_file, hap_index, sample, gene, out_fasta, in_fasta)
+                if select_allele_list[0] != "-":
+                    extract_seq(select_allele_list, assembly_file, hap_index, sample, gene, out_fasta, in_fasta)
     #     #         break
             in_fasta.close()
     #     # break
     out_fasta.close()
+    out_txt.close()
     # check_trio_consistency(record_best_match, trio_list)
     # """
 

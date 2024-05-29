@@ -5,14 +5,19 @@ class My_db():
     def __init__(self, args):
         self.gene_class = args["i"]
         if self.gene_class == "HLA":
-            # self.lite_db = f"""{args["db"]}/HLA/ref/HLA.extend.fasta"""   # 15578 alleles
+            self.full_db = f"""{args["db"]}/HLA/ref/HLA.extend.fasta"""   # 15578 alleles
             self.lite_db = f"""{args["db"]}/HLA/ref/HLA.select.lite.fasta"""   # 6172 alleles
+
         elif self.gene_class == "KIR":
             # self.lite_db = f"""{args["db"]}/KIR/ref/KIR.extend.select.fasta""" ## 72
-            self.lite_db = f"{args["db"]}/KIR/ref/KIR.extend.fasta"  ## 848
+            self.lite_db = f"""{args["db"]}/KIR/ref/KIR.extend.fasta"""  ## 848
+            self.full_db = f"""{args["db"]}/KIR/ref/KIR.extend.fasta"""  ## 848
+
         elif self.gene_class == "CYP":
             self.lite_db = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""  # 1020
             # self.lite_db = f"""{args["db"]}/CYP/ref/CYP.select.fasta"""  # 537
+            self.full_db = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""  # 1020
+
         else:
             print ("wrong gene_class")
 
