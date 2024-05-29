@@ -1,5 +1,10 @@
 # SpecLong
 
+## install
+
+```
+conda env create --name speclong -f environment.yml
+```
 
 ## extract reads from WGS data
 run.extract.reads.sh

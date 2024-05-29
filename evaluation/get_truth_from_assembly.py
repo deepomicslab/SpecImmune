@@ -22,10 +22,11 @@ outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/"
 
 record_truth_file_dict = get_phased_assemblies()
 for sample in record_truth_file_dict:
-    if sample == "HG00514":
-        continue
+    # if sample == "HG00514":
+    #     continue
     print (record_truth_file_dict[sample])
     for gene_class in ["HLA", "CYP", "KIR"]:
+    # for gene_class in ["IG_TR"]:
         cmd = f"""
         python3 ../scripts/typing_from_assembly.py -1 {record_truth_file_dict[sample][0]} -2 {record_truth_file_dict[sample][1]} -n {sample} -i {gene_class} -o {outdir} -j 15 --db /mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/
         """

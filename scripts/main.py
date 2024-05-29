@@ -4,7 +4,7 @@ import os
 import pysam
 import gzip
 import argparse
-
+from db_objects import My_db
 
 
 def main(args):
@@ -26,34 +26,23 @@ def main(args):
         os.system(command)
 
         # build individual ref when first run
-        # db_ref = {args["db"]} + "/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"
+        
+        # my_db = My_db(args)
+        # command = f"""
+        # ## third: build individual reference for each HLA locus
+        # python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
+        # python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} 
+        # """
+        # if args["first_run"]:
+        #     os.system(command)
+        
+        
+        # command = f"""
+        # ## forth: call & phasing variant & typing
+        # python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 2 --db {args["db"]} -i {args["i"]}
 
-        gene_class = args["i"]
-        if gene_class == "HLA":
-            db_ref = f"""{args["db"]}/HLA/ref/HLA.extend.fasta"""
-        elif gene_class == "KIR":
-            db_ref = f"""{args["db"]}/KIR/ref/KIR.extend.select.fasta"""
-            #self.db = f"{sys.path[0]}/../db/KIR/ref/KIR.extend.fasta"
-        elif gene_class == "CYP":
-            db_ref = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""
-        else:
-            print ("wrong gene_class")
-        
-        command = f"""
-        ## third: build individual reference for each HLA locus
-        python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
-        python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {db_ref} 
-        """
-        if args["first_run"]:
-            os.system(command)
-        
-        
-        command = f"""
-        ## forth: call & phasing variant & typing
-        python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 2 --db {args["db"]} -i {args["i"]}
-
-        """
-        os.system(command)
+        # """
+        # os.system(command)
     
     else:
         command = f"""
