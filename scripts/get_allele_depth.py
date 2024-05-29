@@ -1,3 +1,6 @@
+from collections import defaultdict
+import numpy as np
+
 class Get_depth():
 
     def __init__(self, depth_file):
@@ -29,8 +32,8 @@ class Get_depth():
         record_candidate_alleles = defaultdict(set)
         record_allele_length = {}
         for gene in self.depth_dict:
-            if gene not in gene_list:
-                continue
+            # if gene not in gene_list:
+            #     continue
             record_allele_depth = {}
             
             record_allele_info = {}
@@ -50,7 +53,7 @@ class Get_depth():
 
                 # print (allele, mean_depth, median_depth, coverage)
             sorted_dict = sorted(record_allele_depth.items(), key=lambda x: x[1], reverse=True)
-            for i in range(min([, len(sorted_dict)])):
+            for i in range(min([max_allele_num, len(sorted_dict)])):
                 print (sorted_dict[i][0], round(sorted_dict[i][1],2), record_allele_length[sorted_dict[i][0]] , sep = "\t")
                 record_candidate_alleles[gene].add(sorted_dict[i][0])
 
