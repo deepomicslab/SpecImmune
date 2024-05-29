@@ -9,8 +9,12 @@ import pysam
 import gzip
 import argparse
 from collections import defaultdict
+
+
 from downsample_bam import main
 from read_objects import My_read, My_locus, Read_bin
+from determine_gene import get_focus_gene
+from db_objects import My_db
 
 # interval_dict = {"A":"HLA_A:1000-4503", "B":"HLA_B:1000-5081","C": "HLA_C:1000-5304","DPA1":"HLA_DPA1:1000-10775",\
 #     "DPB1":"HLA_DPB1:1000-12468","DQA1":"HLA_DQA1:1000-7492","DQB1":"HLA_DQB1:1000-8480","DRB1":"HLA_DRB1:1000-12229" }
@@ -203,19 +207,13 @@ class Pacbio_Binning():
         # self.db = f"{sys.path[0]}/../db/ref/hla_gen.format.filter.extend.DRB.no26789.v2.fasta"
         # self.db = f"""{args["db"]}/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"""
 
-        if gene_class == "HLA":
-            self.db = f"""{args["db"]}/HLA/ref/HLA.extend.fasta"""
-        elif gene_class == "KIR":
-            self.db = f"""{args["db"]}/KIR/ref/KIR.extend.select.fasta"""
-            #self.db = f"{sys.path[0]}/../db/KIR/ref/KIR.extend.fasta"
-        elif gene_class == "CYP":
-            self.db = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""
-        else:
-            print ("wrong gene_class")
+        self.db = my_db.lite_db
 
         self.sam = f"""{parameter.outdir}/{parameter.sample}.db.bam"""
+        
         if args["m"] != 2:
             self.map2db()
+
         self.bamfile = pysam.AlignmentFile(self.sam, 'rb')   
         self.assign_file = f"{parameter.outdir}/{parameter.sample}.assign.txt"
 
@@ -299,7 +297,6 @@ class Parameters():
         outdir = args["o"]
         self.population = args["p"]
         self.threads = args["j"]
-        self.db = "%s/"%(args["db"])
         self.bin = "%s/../bin/"%(sys.path[0])      
         self.outdir = "%s/%s/"%(outdir, self.sample)
         self.whole_dir = "%s/whole/"%(sys.path[0])
@@ -317,14 +314,13 @@ class Fasta():
         cmd = """
         sample=%s
         bin=%s
-        db=%s
         outdir=%s
         hla=%s
-        hla_ref=$db/split_ref/$hla.fasta
+        hla_ref=%s
         minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
         samtools index $outdir/$hla.bam
         samtools depth -d 1000000 -aa $outdir/$hla.bam >$outdir/$hla.depth
-        """%(parameter.sample, parameter.bin, args["db"], parameter.outdir, gene, parameter.threads, minimap_para, args["a"])
+        """%(parameter.sample, parameter.bin, parameter.outdir, gene, my_db.get_gene_alleles(gene), parameter.threads, minimap_para, args["a"])
         os.system(cmd)
 
         max_depth = args["max_depth"]
@@ -347,7 +343,7 @@ class Fasta():
         self.alignment(gene)
         ### call and phase snps
         awk_script = '{{sum+=$3}} END {{ if (NR>0) print sum/NR; else print 0; }}'
-        hla_ref=f"{parameter.db}/split_ref/{gene}.fasta"
+        hla_ref=my_db.get_gene_alleles(gene)
         bam=f"{parameter.outdir}/{gene}.bam"
         depth_file=f"{parameter.outdir}/{gene}.depth"
         print ("xxx", bam)
@@ -434,7 +430,7 @@ if __name__ == "__main__":
     optional.add_argument("-k", type=int, help="The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking", metavar="\b", default=5)
     optional.add_argument("-a", type=str, help="Prefix of filtered fastq file.", metavar="\b", default="long_read")
     optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio].", metavar="\b", default="pacbio")
-    optional.add_argument("--minimap_index", type=int, help="Whether build Minimap2 index for the reference [0|1]. Using index can reduce memory usage.", metavar="\b", default=0)
+    optional.add_argument("--minimap_index", type=int, help="Whether build Minimap2 index for the reference [0|1]. Using index can reduce memory usage.", metavar="\b", default=1)
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
     optional.add_argument("--strand_bias_pvalue_cutoff", type=float, help="Remove a variant if the allele observations are biased toward one strand (forward or reverse). Recommand setting 0 to high-depth data.", metavar="\b", default=0.01)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
@@ -452,17 +448,8 @@ if __name__ == "__main__":
     Min_score = 0  #the read is too long, so the score can be very low.
     Min_diff = args["d"]  #0.001
 
-    gene_class = args["i"]
-    if gene_class == "HLA":
-        gene_list = [ 'HLA-A', 'HLA-B', 'HLA-C', 'HLA-DMA', 'HLA-DMB', 'HLA-DOA', 'HLA-DOB', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DPB2', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRA', 'HLA-DRB1', 'HLA-DRB3', 'HLA-DRB4', 'HLA-DRB5', 'HLA-E', 'HLA-F', 'HLA-G', 'HLA-H', 'HLA-J', 'HLA-K', 'HLA-L', 'HLA-P', 'HLA-V', 'HLA-DQA2', 'HLA-DPA2', 'HLA-N', 'HLA-S', 'HLA-T', 'HLA-U', 'HLA-W', 'MICA', 'MICB', 'TAP1', 'TAP2', 'HFE' ]
-        interval_dict = {"HFE": "HFE:301-8261","HLA-A": "HLA-A:301-3802","HLA-B": "HLA-B:301-4381","HLA-C": "HLA-C:301-4618","HLA-DMA": "HLA-DMA:301-5310","HLA-DMB": "HLA-DMB:301-7040","HLA-DOA": "HLA-DOA:301-3953","HLA-DOB": "HLA-DOB:301-5086","HLA-DPA1": "HLA-DPA1:301-10075","HLA-DPA2": "HLA-DPA2:301-7043","HLA-DPB1": "HLA-DPB1:301-11826","HLA-DPB2": "HLA-DPB2:301-18134","HLA-DQA1": "HLA-DQA1:301-6784","HLA-DQA2": "HLA-DQA2:301-6152","HLA-DQB1": "HLA-DQB1:301-7402","HLA-DRA": "HLA-DRA:301-6005","HLA-DRB1": "HLA-DRB1:301-11380","HLA-DRB3": "HLA-DRB3:301-13888","HLA-DRB4": "HLA-DRB4:301-15764","HLA-DRB5": "HLA-DRB5:301-13745","HLA-E": "HLA-E:301-4122","HLA-F": "HLA-F:301-3848","HLA-G": "HLA-G:301-3438","HLA-H": "HLA-H:301-3810","HLA-J": "HLA-J:301-3844","HLA-K": "HLA-K:301-3852","HLA-L": "HLA-L:301-4070","HLA-N": "HLA-N:301-935","HLA-P": "HLA-P:301-3231","HLA-S": "HLA-S:301-1174","HLA-T": "HLA-T:301-2787","HLA-U": "HLA-U:301-1030","HLA-V": "HLA-V:301-2203","HLA-W": "HLA-W:301-3272","MICA": "MICA:301-13027","MICB": "MICB:301-12616","TAP1": "TAP1:301-9570","TAP2": "TAP2:301-10907"}
-    if gene_class == "CYP":
-        gene_list = [ 'CYP19A1', 'CYP1A1', 'CYP1B1', 'CYP26A1', 'CYP2A13', 'CYP2A6', 'CYP2B6', 'CYP2C19', 'CYP2C8', 'CYP2C9', 'CYP2D6', 'CYP2F1', 'CYP2J2', 'CYP2R1', 'CYP2S1', 'CYP2W1', 'CYP3A4', 'CYP3A43', 'CYP4A22', 'CYP4B1', 'CYP4F2', 'CYP8A1', 'CYP3A5', 'CYP3A7' ]
-        interval_dict = {"CYP4B1": "CYP4B1:1-2170","CYP3A4": "CYP3A4:1-34205","CYP3A7": "CYP3A7:1-37162","CYP2F1": "CYP2F1:1-20929","CYP2A13": "CYP2A13:1-14732","CYP2C9": "CYP2C9:1-58934","CYP26A1": "CYP26A1:1-11410","CYP3A5": "CYP3A5:1-38805","CYP1A1": "CYP1A1:1-7878","CYP3A43": "CYP3A43:1-45538","CYP2A6": "CYP2A6:1-13910","CYP19A1": "CYP19A1:1-47775","CYP2S1": "CYP2S1:1-21330","CYP1B1": "CYP1B1:1-12177","CYP2B6": "CYP2B6:1-34098","CYP8A1": "CYP8A1:1-5603","CYP2C19": "CYP2C19:1-99871","CYP4F2": "CYP4F2:1-27051","CYP2D6": "CYP2D6:1-11312","CYP4A22": "CYP4A22:1-12568","CYP2R1": "CYP2R1:1-21197","CYP2C8": "CYP2C8:1-39726","CYP2W1": "CYP2W1:1-13442","CYP2J2": "CYP2J2:1-40444"}
-    if gene_class == "KIR":
-        gene_list = ['KIR2DL1', 'KIR2DL2', 'KIR2DL3', 'KIR2DL4', 'KIR2DL5', 'KIR2DP1', 'KIR2DS1', 'KIR2DS2', 'KIR2DS3', 'KIR2DS4', 'KIR2DS5', 'KIR3DL1', 'KIR3DL2', 'KIR3DL3', 'KIR3DP1', 'KIR3DS1']
-        interval_dict = {"KIR2DL1": "KIR2DL1:301-15041","KIR2DL2": "KIR2DL2:301-15082","KIR2DL3": "KIR2DL3:301-15068","KIR2DL4": "KIR2DL4:301-11434","KIR2DL5": "KIR2DL5:301-10072","KIR2DP1": "KIR2DP1:301-13426","KIR2DS1": "KIR2DS1:301-15020","KIR2DS2": "KIR2DS2:301-14878","KIR2DS3": "KIR2DS3:301-15403","KIR2DS4": "KIR2DS4:301-16392","KIR2DS5": "KIR2DS5:301-15548","KIR3DL1": "KIR3DL1:301-14846","KIR3DL2": "KIR3DL2:301-17301","KIR3DL3": "KIR3DL3:301-12699","KIR3DP1": "KIR3DP1:301-4540","KIR3DS1": "KIR3DS1:301-15232"}
-
+    gene_list, interval_dict =  get_focus_gene(args)
+    my_db = My_db(args)
 
     minimap_para = ''
     if args["y"] == "pacbio":
