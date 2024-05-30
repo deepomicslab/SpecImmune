@@ -77,7 +77,7 @@ def print_read_matrix(args, gene, record_read_allele_dict, allele_name_dict):
         line = read_name + ","
         for allele_name in allele_name_list:
             if allele_name not in record_read_allele_dict[read_name]:
-                line += "0/0"
+                line += "0/0"+ ","
             else:
                 line += str(record_read_allele_dict[read_name][allele_name].match_num) + "/" + str(round(record_read_allele_dict[read_name][allele_name].identity, 4)) + ","
         # line += "\n"
@@ -156,6 +156,7 @@ def select_alleles_by_identity_diff(record_allele_pair_sep_match, identity_cutof
 def print_match_results(sorted_record_allele_pair_match_len, record_allele_pair_sep_match, gene, record_allele_pair_identity):
     outdir = args["o"] + "/" + args["n"]
     out = open(f"""{outdir}/{args["n"]}.{gene}.allele.match.csv""", 'w')
+    print ("index,total_match","total_identity,allele_1,allele_1_identity,allele_1_depth,allele_2,allele_2_identity,allele_2_depth", file = out)
 
     data = []
     for i in range(len(sorted_record_allele_pair_match_len)):
@@ -350,7 +351,7 @@ def map2db(args, gene):
 
     ref={ref}
 
-    minimap2 -t {args["j"] } {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
+    minimap2 -t {args["j"] } {minimap_para} -N 1 -a $ref $fq > {sam}  # -p 0.1 -N 100000
     samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
     samtools depth -aa {bam}>{depth_file}
     rm {sam}
@@ -509,5 +510,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    # gene_list = ["HLA-A"]
+    # gene_list = ["HLA-DPA1"]
     main(args)

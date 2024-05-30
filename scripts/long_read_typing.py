@@ -98,7 +98,7 @@ class Score_Obj():
             assigned_locus = read_bin.assign_multiple()
             print ("\n\n")
 
-            print (read_name, assigned_locus, file = f)
+            print (read_name, ",".join(assigned_locus), sep = "\t", file = f)
             self.read_loci[read_name] = assigned_locus
         f.close()
         return self.read_loci
@@ -198,7 +198,7 @@ class Pacbio_Binning():
         outdir={parameter.outdir}
         bin={sys.path[0]}/../bin
         sample={parameter.sample}
-        minimap2 -t {parameter.threads} {minimap_para} -p 0.1 -N 100000 -a $ref $fq |samtools view -bS -o {self.sam}
+        minimap2 -t {parameter.threads} {minimap_para}  -a $ref $fq |samtools view -bS -o {self.sam}
         echo alignment done.
         """
         print (alignDB_order)
