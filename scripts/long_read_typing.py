@@ -70,8 +70,8 @@ class Score_Obj():
             self.primary_dict[read_obj.read_name].add(read_obj.allele_name)
         # else:
         #     return 0
-        if read_obj.match_num < 300:
-            return 0
+        # if read_obj.match_num < 100:
+        #     return 0
         score = read_obj.match_rate
         if read_obj.read_name not in self.loci_score:
             self.loci_score[read_obj.read_name] = {}
@@ -91,14 +91,14 @@ class Score_Obj():
         f = open(assign_file, 'w')
         # print (len(self.loci_score))
         for read_name in self.loci_score: # for each read
-            # if "m54329U_200715_194535/141295780/ccs" != read_name:
+            # if "508262af-89b0-42c3-8d64-07cbcf21d8b0" != read_name:
             #     continue
-            print (read_name, self.primary_dict[read_name])
+            # print (read_name, self.primary_dict[read_name])
             read_bin = Read_bin(self.loci_score[read_name])
             assigned_locus = read_bin.assign_multiple()
-            print ("\n\n")
+            # print ("\n\n")
 
-            print (read_name, assigned_locus, file = f)
+            print (read_name, ",".join(assigned_locus), sep = "\t", file = f)
             self.read_loci[read_name] = assigned_locus
         f.close()
         return self.read_loci
@@ -198,9 +198,10 @@ class Pacbio_Binning():
         outdir={parameter.outdir}
         bin={sys.path[0]}/../bin
         sample={parameter.sample}
-        minimap2 -t {parameter.threads} {minimap_para} -p 0.1 -N 100000 -a $ref $fq |samtools view -bS -o {self.sam}
+        minimap2 -t {parameter.threads} {minimap_para}  -a $ref $fq |samtools view -bS -o {self.sam}
         echo alignment done.
         """
+        print (alignDB_order)
         os.system(alignDB_order)
 
     def read_bam(self):

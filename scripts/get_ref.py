@@ -15,6 +15,9 @@ import argparse
 from collections import defaultdict
 
 
+from get_allele_depth import Get_depth
+
+
 #def run_depth(args):
 #    cmd = f"""
 #    echo search  {args["o"]}/{args["n"]}/{args["n"]}.db.sam ... 
@@ -46,63 +49,6 @@ def run_depth(args):
 def mapping_p(MAPQ):
     ## MAPQ: MAPping Quality. It equals −10 log10 Pr{mapping position is wrong}, rounded to the nearest integer. A value 255 indicates that the mapping quality is not available.
     return 1 - 10**(-(0.1+MAPQ)/10)
-
-class Get_depth():
-
-    def __init__(self, depth_file):
-        self.depth_file = depth_file
-        self.depth_dict = {}
-
-    def record_depth(self):
-        f = open(self.depth_file)
-        for line in f:
-            array = line.strip().split()
-
-            allele = array[0]
-
-            gene = allele.split("*")[0]
-
-            depth = int(array[2])
-            if gene not in self.depth_dict:
-                self.depth_dict[gene] = {}
-            if allele not in self.depth_dict[gene]:
-                self.depth_dict[gene][allele] = []
-
-            self.depth_dict[gene][allele].append(depth)
-    
-    def select(self, output):
-        f = open(output, 'w')
-        print ("Gene\tAllele\tDepth\tAllele_length", file = f)
-
-        record_candidate_alleles = defaultdict(set)
-        record_allele_length = {}
-        for gene in self.depth_dict:
-
-            record_allele_depth = {}
-            
-            record_allele_info = {}
-            for allele in self.depth_dict[gene]:
-                mean_depth = np.mean(self.depth_dict[gene][allele])
-                median_depth = np.median(self.depth_dict[gene][allele])
-
-                over_0 = 0
-                for e in self.depth_dict[gene][allele]:
-                    if e > 0:
-                       over_0 += 1
-                coverage =  float(over_0)/len(self.depth_dict[gene][allele])
-                record_allele_length[allele] = len(self.depth_dict[gene][allele])
-
-                record_allele_depth[allele] = mean_depth
-                record_allele_info[allele] = [mean_depth, median_depth, coverage]
-
-                # print (allele, mean_depth, median_depth, coverage)
-            sorted_dict = sorted(record_allele_depth.items(), key=lambda x: x[1], reverse=True)
-            for i in range(len(sorted_dict)):
-                print (gene, sorted_dict[i][0], sorted_dict[i][1], record_allele_length[sorted_dict[i][0]], file = f)
-        #         print (sorted_dict[i], record_allele_length[sorted_dict[i][0]], record_allele_length[sorted_dict[i][0]]*sorted_dict[i][1] )
-        #         record_candidate_alleles[gene].add(sorted_dict[i][0])
-        # return record_candidate_alleles
-        f.close()
 
 
 

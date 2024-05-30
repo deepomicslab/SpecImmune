@@ -51,21 +51,26 @@ class My_allele_pair():
     
     def assign_reads(self, record_read_allele_dict):
         for read_name in record_read_allele_dict:
+
+            ### read not support both allele
             if self.allele_1 not in record_read_allele_dict[read_name] and self.allele_2 not in record_read_allele_dict[read_name]:
-                pass
+                continue
             if self.allele_1 not in record_read_allele_dict[read_name]:
                 larger_index = 1
             elif self.allele_2 not in record_read_allele_dict[read_name]:
                 larger_index = 0
             else: 
                 larger_index = determine_largest(record_read_allele_dict[read_name][self.allele_1].identity, record_read_allele_dict[read_name][self.allele_2].identity)
-                if larger_index == 0:
-                    self.allele_1_obj.add_read(record_read_allele_dict[read_name][self.allele_1].match_num, record_read_allele_dict[read_name][self.allele_1].mismatch_num)
-                    self.pair_obj.add_read(record_read_allele_dict[read_name][self.allele_1].match_num, record_read_allele_dict[read_name][self.allele_1].mismatch_num)
 
-                else:
-                    self.allele_2_obj.add_read(record_read_allele_dict[read_name][self.allele_2].match_num, record_read_allele_dict[read_name][self.allele_2].mismatch_num)
-                    self.pair_obj.add_read(record_read_allele_dict[read_name][self.allele_2].match_num, record_read_allele_dict[read_name][self.allele_2].mismatch_num)
+            if larger_index == 0:
+                self.allele_1_obj.add_read(record_read_allele_dict[read_name][self.allele_1].match_num, record_read_allele_dict[read_name][self.allele_1].mismatch_num)
+                self.pair_obj.add_read(record_read_allele_dict[read_name][self.allele_1].match_num, record_read_allele_dict[read_name][self.allele_1].mismatch_num)
+            else:
+                self.allele_2_obj.add_read(record_read_allele_dict[read_name][self.allele_2].match_num, record_read_allele_dict[read_name][self.allele_2].mismatch_num)
+                self.pair_obj.add_read(record_read_allele_dict[read_name][self.allele_2].match_num, record_read_allele_dict[read_name][self.allele_2].mismatch_num)
+
+            # if self.allele_1 == "HLA-A*02:01:01:35" and self.allele_2 == "HLA-A*03:08:01:02":
+            #     print (read_name, larger_index)
 
         self.allele_1_obj.get_identity()
         self.allele_2_obj.get_identity()
