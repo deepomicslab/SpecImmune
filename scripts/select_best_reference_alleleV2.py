@@ -53,30 +53,33 @@ def construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_le
         if allele_name not in record_read_allele_dict[read_name]:
             record_read_allele_dict[read_name][allele_name] = my_read
             allele_name_dict[allele_name] += 1
-        elif record_read_allele_dict[read_name][allele_name].identity < my_read.identity:
-        # elif record_read_allele_dict[read_name][allele_name].match_num < my_read.match_num:
+        # elif record_read_allele_dict[read_name][allele_name].identity < my_read.identity:
+        elif record_read_allele_dict[read_name][allele_name].match_num < my_read.match_num:
             record_read_allele_dict[read_name][allele_name] = my_read
 
 
 
     bamfile.close()
+    print_read_matrix(args, gene, record_read_allele_dict, allele_name_dict)
     return record_read_allele_dict, allele_name_dict
 
 
-def print_read_matrix(args, gene, record_allele_index, record_read_index, read_map_len_matrix_dict,read_identity_matrix_dict):
+def print_read_matrix(args, gene, record_read_allele_dict, allele_name_dict):
+    allele_name_list = list(allele_name_dict.keys())
     outdir = args["o"] + "/" + args["n"]
     out = open(f"""{outdir}/{args["n"]}.{gene}.read.matrix.csv""", 'w')
     first_line = "allele,"
-    for allele in record_allele_index[gene]:
+    for allele in allele_name_list:
         first_line += allele + ","
     # first_line += "\n"
     print (first_line, file = out)
-    for read_name in record_read_index[gene]:
+    for read_name in record_read_allele_dict:
         line = read_name + ","
-        for allele_name in record_allele_index[gene]:
-            a = record_allele_index[gene][allele_name]
-            r = record_read_index[gene][read_name]
-            line += str(read_map_len_matrix_dict[gene][a][r]) + "/" + str(round(read_identity_matrix_dict[gene][a][r], 4)) + ","
+        for allele_name in allele_name_list:
+            if allele_name not in record_read_allele_dict[read_name]:
+                line += "0/0"
+            else:
+                line += str(record_read_allele_dict[read_name][allele_name].match_num) + "/" + str(round(record_read_allele_dict[read_name][allele_name].identity, 4)) + ","
         # line += "\n"
         print (line, file = out)
     out.close()
@@ -119,8 +122,8 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
             record_allele_pair_sep_match[tag][allele_name_list[i]]["identity"] = allele_pair_obj.allele_1_obj.identity
             record_allele_pair_sep_match[tag][allele_name_list[i]]["depth"] = allele_pair_obj.allele_1_obj.depth
             record_allele_pair_sep_match[tag][allele_name_list[j]] = {}
-            record_allele_pair_sep_match[tag][allele_name_list[j]]["identity"] = allele_pair_obj.allele_1_obj.identity
-            record_allele_pair_sep_match[tag][allele_name_list[j]]["depth"] = allele_pair_obj.allele_1_obj.depth
+            record_allele_pair_sep_match[tag][allele_name_list[j]]["identity"] = allele_pair_obj.allele_2_obj.identity
+            record_allele_pair_sep_match[tag][allele_name_list[j]]["depth"] = allele_pair_obj.allele_2_obj.depth
 
     type_result = [0, 1]
     tag_list, highest_score = choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_identity,record_allele_pair_sep_match)
@@ -335,6 +338,7 @@ def map2db(args, gene):
     # map raw reads to database
 
     ref = my_db.get_gene_all_alleles(gene)
+    # ref="/mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/db/HLA/whole/HLA_A.fasta"
 
     alignDB_order = f"""
     fq={args["r"] }
@@ -409,20 +413,18 @@ def main(args):
 
     result_dict = {}
     reads_num_dict = {}
-    allele_match_dict = defaultdict(int)
-    
 
-    # for gene in read_matrix_dict:
+
     for gene in gene_list:
-        # if gene not in gene_list:
-        #     continue
-
+        allele_match_dict = defaultdict(int)
+        allele_read_num_dict = defaultdict(int)
         bam, depth_file, sort_depth_file = map2db(args, gene)
 
         get_depth = Get_depth(depth_file)
         get_depth.record_depth()
         record_candidate_alleles, record_allele_length = get_depth.select(sort_depth_file, args["candidate_allele_num"])
-        print ("record_candidate_alleles", len(record_candidate_alleles))
+        # gene="A"
+        print ("record_candidate_alleles num:", len(record_candidate_alleles[gene]))
         print (bam)
 
         record_read_allele_dict, allele_name_dict = construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_length)
@@ -434,6 +436,10 @@ def main(args):
         for read_name in record_read_allele_dict:
             for allele_name in record_read_allele_dict[read_name]:
                 allele_match_dict[allele_name] += record_read_allele_dict[read_name][allele_name].match_num
+                allele_read_num_dict[allele_name] += 1
+        
+        for allele_name in allele_match_dict:
+            print ("speclong depth", allele_name, allele_match_dict[allele_name], round(allele_match_dict[allele_name]/record_allele_length[allele_name]),allele_read_num_dict[allele_name])
 
         if len(record_read_allele_dict) >= args["min_read_num"]:
             type_result, objective_value, type_allele_result = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)
@@ -461,6 +467,7 @@ def main(args):
                 if homo_hete_ratio  <  homo_hete_ratio_cutoff:
                     type_allele_result = [type_allele_result[0]]      
         else:
+            print ("support read number is too low for %s"%(gene))
             type_allele_result  = ['-', '-']
 
 
@@ -502,4 +509,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
+    # gene_list = ["HLA-A"]
     main(args)

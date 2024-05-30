@@ -6,7 +6,7 @@ __pycache__/
 db/
 test/pacbio/output/
 test/test
-
+nohup.out
 # C extensions
 *.so
 

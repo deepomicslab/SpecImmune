@@ -17,6 +17,9 @@ import random
 from collections import defaultdict
 import pysam
 
+from determine_gene import get_focus_gene
+from db_objects import My_db
+
 gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 # gene_list = ['A']
 
@@ -1036,7 +1039,7 @@ def map2db(args, gene):
     samtools depth -aa {bam}>{depth_file}
     echo alignment done.
     """
-    os.system(alignDB_order)
+    # os.system(alignDB_order)
     return sam, depth_file, sort_depth_file
 
 

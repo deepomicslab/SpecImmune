@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 my ($sample,$outdir) = @ARGV;
 my (%hash, %hashc, %hashb,%hashr, %hash1,%hash2);
-open IN, "/home/wangmengyao/SpecComplex/db/HLA/ref/HLA.extend.fasta" or die "$!\n";
+open IN, "/mnt/d/HLAPro_backup/Nanopore_optimize//SpecComplex/db/HLA/ref/HLA.extend.fasta" or die "$!\n";
 while(<IN>){
 	chomp;
 	s/^>//;
@@ -32,7 +32,7 @@ foreach my $gene(sort keys %hashc){
 }
 close COUT;
 
-`less HLA.ref.hap.txt |sort -k 3 -n >HLA.ref.hap.sort.txt`;
+`less /mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.txt |sort -k 3 -n >HLA.ref.hap.sort.txt`;
 my @regions;
 open CI, "HLA.ref.hap.sort.txt" or die "$!\n";
 while(<CI>){
@@ -45,7 +45,8 @@ while(<CI>){
 	push @regions, $region;
 }
 close CI;
-open FA, "HLA.ref.hap.fa" or die "$!\n";
+open FA, "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.fa" or die "$!\n";
+open SEP, ">$outdir/$sample.HLA.sep.fa";
 <FA>;
 my $ref=<FA>;
 close FA;
@@ -58,13 +59,19 @@ foreach my $re(@regions){
 	my ($s,$e) = (split /-/,$se)[0,1];
 	my $ee = $s - 1;
 	my $pre = "$chr".":"."$ss"."-"."$ee";
-	my $pfa = `samtools faidx HLA.ref.hap.fa $pre |grep -v ">" `;
+	my $pfa = `samtools faidx /mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.fa $pre |grep -v ">" `;
 	chomp $pfa;
 	$pfa =~ s/\s//g;
 	my $allele1 = $hash1{$gene};
 	my $allele2 = $hash2{$gene};
 	my $fa1 = $hash{$allele1};
 	my $fa2 = $hash{$allele2};
+
+	print SEP ">$allele1\n";
+	print SEP "$fa1\n";
+	print SEP ">$allele2\n";
+	print SEP "$fa2\n";
+
 	if($flag == 16){
 		$fa1 = uc $fa1;
                 $fa1 = reverse $fa1;
@@ -73,6 +80,7 @@ foreach my $re(@regions){
                 $fa2 = reverse $fa2;
                 $fa2 =~ tr/ATCG/TAGC/;
 	}
+	
 	$nref1 .= $pfa; $nref1 .= $fa1;
 	$nref2 .= $pfa; $nref2 .= $fa2;
 	$end = $e;
@@ -80,10 +88,13 @@ foreach my $re(@regions){
 	#my $l1 = length($pfa); my $l2 = length($fa1); my $l3 = length($fa2);
 	#print "$pre\t$l1\t$re\t$l2\t$l3\n";
 }
+close SEP;
+
+
 my $len = length($ref);
 $end += 1;
 my $region0 = "HLA.hap:"."$end"."-"."$len";
-my $pe = `samtools faidx HLA.ref.hap.fa $region0 | grep -v ">"`;
+my $pe = `samtools faidx /mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.fa $region0 | grep -v ">"`;
 $pe =~ s/\s//g;
 $nref1 .= $pe;
 $nref2 .= $pe;

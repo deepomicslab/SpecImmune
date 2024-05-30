@@ -14,6 +14,7 @@ class My_db():
         if self.gene_class == "HLA":
             self.full_db = f"""{args["db"]}/HLA/ref/HLA.extend.fasta"""   # 15578 alleles
             self.lite_db = f"""{args["db"]}/HLA/ref/HLA.select.fasta"""   # 6172 alleles
+            # self.lite_db = f"/mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"
 
         elif self.gene_class == "KIR":
             # self.lite_db = f"""{args["db"]}/KIR/ref/KIR.extend.select.fasta""" ## 72
@@ -53,6 +54,7 @@ class My_db():
         # else:
         #     print ("wrong gene_class")
         ref = f"""{self.root}/whole/{gene}.fasta"""
+        # ref = f"""{self.root}/clean_whole/{gene}.fasta"""
         return ref
 
      

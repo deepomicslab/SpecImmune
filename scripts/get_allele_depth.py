@@ -24,7 +24,13 @@ class Get_depth():
                 self.depth_dict[gene][allele] = []
 
             self.depth_dict[gene][allele].append(depth)
-    
+        
+        ### delete extended seq
+        for gene in self.depth_dict:
+            for allele in self.depth_dict[gene]:
+
+                self.depth_dict[gene][allele] = self.depth_dict[gene][allele][300:-300]
+
     def select(self, sort_depth_file, max_allele_num=10):
         f = open(sort_depth_file, 'w')
         print ("Gene\tAllele\tDepth\tAllele_length", file = f)
