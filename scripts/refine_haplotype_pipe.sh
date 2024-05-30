@@ -8,10 +8,9 @@ interval=$4
 mask_bed=$5
 gene_work_dir=$6
 threads=$7
-i=$8
-sample=$9
+sample=$8
 scripts_dir=$(dirname $0)
-
+longphase=$scripts_dir/../bin/longphase
 # Sniffles 
 refined_sv=$gene_work_dir/HLA_$hla.snisv.vcf
 filtered_sv=$gene_work_dir/HLA_$hla.snisv.filtered.vcf
@@ -40,15 +39,16 @@ run_sniffles() {
         --cluster-merge-pos $cluster_merge_pos \
         --sample-id 'SAMPLE' \
         --output-rnames
+    echo "sv calling done!"
 }
 
 # parameters
 genotype_error=0.05
 minsupport="auto"
 mapq=20
-cluster-binsize=100
-cluster-r=2.5
-cluster-merge-pos=150
+cluster_binsize=100
+cluster_r=2.5
+cluster_merge_pos=150
 
 
 case "$hla" in
@@ -70,39 +70,43 @@ case "$hla" in
         ;;
 esac
 
-
+echo "sniffles for $sample !"
 run_sniffles $genotype_error $minsupport $mapq $cluster_binsize $cluster_r $cluster_merge_pos
 
 # Whatshap haplotag
+echo "haplotag for $sample !"
+echo "whatshap haplotag --ignore-read-groups -o $gene_work_dir/haplotagged.$hla.bam --reference $hla_ref $snv_vcf $bam --output-haplotag-list $gene_work_dir/hap.tsv"
 whatshap haplotag \
-    --ignore-read-groups \
+    --ignore-read-groups  \
     -o $gene_work_dir/haplotagged.$hla.bam \
     --reference $hla_ref \
     $snv_vcf \
-    $bam
+    $bam \
+    --output-haplotag-list $gene_work_dir/hap.tsv
 
 
-whatshap split --output-h1 $outdir/h0.bam --output-h2 $gene_work_dir/h1.bam $gene_work_dir/haplotagged.bam $gene_work_dir/hap.tsv --output-untagged $gene_work_dir/untag.bam
-whatshap split --output-h1 $outdir/h0_untag.bam --output-h2 $gene_work_dir/h1_untag.bam $gene_work_dir/haplotagged.bam $gene_work_dir/hap.untag.tsv --add-untagged
+# whatshap split --output-h1 $outdir/h0.bam --output-h2 $gene_work_dir/h1.bam $gene_work_dir/haplotagged.bam $gene_work_dir/hap.tsv --output-untagged $gene_work_dir/untag.bam
+# whatshap split --output-h1 $outdir/h0_untag.bam --output-h2 $gene_work_dir/h1_untag.bam $gene_work_dir/haplotagged.bam $gene_work_dir/hap.untag.tsv --add-untagged
 
-samtools index $gene_work_dir/h0.bam
-samtools index $gene_work_dir/h1.bam
-samtools index $gene_work_dir/h0_untag.bam
-samtools index $gene_work_dir/h1_untag.bam
+# samtools index $gene_work_dir/h0.bam
+# samtools index $gene_work_dir/h1.bam
+# samtools index $gene_work_dir/h0_untag.bam
+# samtools index $gene_work_dir/h1_untag.bam
 
 
 samtools index $gene_work_dir/haplotagged.$hla.bam
 
 # Longphase
 # todo:: change to spechap here 
-longphase phase -s $snv_vcf \
+echo "longphase for $sample !"
+$longphase phase -s $snv_vcf \
     -b $gene_work_dir/haplotagged.$hla.bam \
     -r $hla_ref \
     --sv-file $refined_sv \
     -o $gene_work_dir/longphase \
     --ont
 
-
+echo "filtering for $sample !"
 bcftools view -i 'GT!="0/0" && GT!="." && GT!="./." && INFO/PRECISE=1' $gene_work_dir/longphase_SV.vcf -o $filtered_sv
 
 fmt_sv=$gene_work_dir/HLA_$hla.snisv.filtered.fmt.vcf

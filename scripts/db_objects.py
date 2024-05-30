@@ -1,4 +1,4 @@
-
+import os
 
 class My_db():
 
@@ -10,6 +10,9 @@ class My_db():
         # self.db = f"""{args["db"]}/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"""
 
         self.gene_class = args["i"]
+        self.individual_ref_dir = f"""{args["o"]}/individual_ref"""
+        if not os.path.exists(self.individual_ref_dir):
+            os.makedirs(self.individual_ref_dir)
 
         if self.gene_class == "HLA":
             self.full_db = f"""{args["db"]}/HLA/ref/HLA.extend.fasta"""   # 15578 alleles
@@ -41,7 +44,8 @@ class My_db():
 
     def get_gene_alleles(self, gene):
         ### record representative allele of each gene
-        return self.gene_all_alleles_dir + f"/{gene}.fasta"
+        # return self.gene_all_alleles_dir + f"/{gene}.fasta"
+        return self.individual_ref_dir + f"/{gene}/{gene}.fasta"
 
 
     def get_gene_all_alleles(self, gene):

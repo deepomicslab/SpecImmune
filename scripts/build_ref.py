@@ -48,22 +48,25 @@ def build_ref():
     # Write the reference file
     # shell code
     for gene, (allele, depth) in gene_allele_depth.items():
-        gene_dir=f"{outdir}/HLA/{gene}"
+        gene_dir=f"{outdir}/{gene}"
+        print("gene_dir", gene_dir, flush=True)
         if not os.path.exists(gene_dir):
             os.makedirs(gene_dir)
 
-        print(f"processing {gene} {allele} {depth}")
+        print(f"processing {gene} {allele} {depth}", flush=True)
         cmd=f"""
-            samtools faidx {ref_db} {allele}>{gene_dir}/HLA_{gene}.raw.fa 
+            samtools faidx {all_allele_fasta} {allele}>{gene_dir}/{gene}.raw.fasta 
         """
+        print(cmd, flush=True)
         os.system(cmd)
-        replace_single_contig_name(f"{gene_dir}/HLA_{gene}.raw.fa", f"{gene_dir}/HLA_{gene}.fa", f"HLA_{gene}")
+        replace_single_contig_name(f"{gene_dir}/{gene}.raw.fasta", f"{gene_dir}/{gene}.fasta", f"{gene}")
         cmd=f"""
-        samtools faidx {gene_dir}/HLA_{gene}.fa
-        bwa index {gene_dir}/HLA_{gene}.fa
-        faToTwoBit {gene_dir}/HLA_{gene}.fa {gene_dir}/{gene}.2bit
-        makeblastdb -in {gene_dir}/HLA_{gene}.fa -dbtype nucl -parse_seqids -out {gene_dir}/HLA_{gene}
+        samtools faidx {gene_dir}/{gene}.fasta
+        bwa index {gene_dir}/{gene}.fasta
+        # faToTwoBit {gene_dir}/{gene}.fasta {gene_dir}/{gene}.2bit
+        # makeblastdb -in {gene_dir}/{gene}.fasta -dbtype nucl -parse_seqids -out {gene_dir}/{gene}
         """
+        print(cmd, flush=True)
         os.system(cmd)
 
 
@@ -73,11 +76,10 @@ if __name__ == '__main__':
         sys.exit(1)
 
     input_file = sys.argv[1]
-    ref_db= sys.argv[2] 
+    all_allele_fasta= sys.argv[2] 
     outdir= sys.argv[3]
-    HLA_dir = f"{outdir}/HLA"
-    if not os.path.exists(HLA_dir):
-        os.makedirs(HLA_dir)
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
     
     gene_allele_depth = find_highest_depth_alleles(input_file)
     build_ref()
