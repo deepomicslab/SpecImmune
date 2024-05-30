@@ -711,17 +711,18 @@ def map2db(args, gene):
     ref = my_db.get_gene_all_alleles(gene)
 
     alignDB_order = f"""
-    fq={args["r"] }
+    fq={args["r"]}
     
-    outdir={args["o"]}/{args["n"] }
-    sample={args["n"] }
+    outdir={args["o"]}/{args["n"]}
+    sample={args["n"]}
 
     fq=$outdir/{gene}.long_read.fq.gz
 
     ref={ref}
 
-    minimap2 -t {args["j"] } {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
-    samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
+    minimap2 -t {args["j"]} {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
+    samtools view -bS -F 0x800  {sam} | samtools sort -@ {args["j"]}  - >{bam}
+    samtools index -@ {args["j"]} {bam}
     samtools depth -aa {bam}>{depth_file}
     rm {sam}
     echo alignment done.

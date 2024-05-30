@@ -27,7 +27,8 @@ from collections import defaultdict
 def run_depth(args):
     cmd = f"""
     echo search  {args["o"]}/{args["n"]}/{args["n"]}.db.bam ... 
-    samtools view -bS -F 0x800  {args["o"]}/{args["n"]}/{args["n"]}.db.bam | samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.db.sort.bam
+    samtools view -bS -F 0x800  {args["o"]}/{args["n"]}/{args["n"]}.db.bam | samtools sort -@ {args["j"]} - >{args["o"]}/{args["n"]}/{args["n"]}.db.sort.bam
+    samtools index -@ {args["j"]} {args["o"]}/{args["n"]}/{args["n"]}.db.sort.bam
     samtools depth -aa {args["o"]}/{args["n"]}/{args["n"]}.db.sort.bam>{args["o"]}/{args["n"]}/{args["n"]}.db.depth
     """
     os.system(cmd)

@@ -114,7 +114,7 @@ def compare_match_len_and_identity(match_sorted_list, identity_sorted_list, trut
     return select_allele_list
     
 def get_IMGT_version():
-    g_file = "%s/../db/HLA/hla_nom_g.txt"%(sys.path[0])
+    g_file = "%s/HLA/hla_nom_g.txt"%(args['db'])
     G_annotation_dict = {}
     i = 0
     version_info = "N/A"
@@ -255,6 +255,8 @@ if __name__ == "__main__":
     # required.add_argument("-2", type=str, help="Assembly file of the second haplotype in fasta formate", metavar="\b")
     required.add_argument("-n", type=str, help="Sample ID", metavar="\b")
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
+    optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
+    
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
     optional.add_argument("-h", "--help", action="help")
@@ -264,13 +266,16 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(0)
 
-    HLA_data = "%s/../db/HLA/whole/hla_gen.fasta"%(sys.path[0])
+    # HLA_data = "%s/../db/whole/hla_gen.fasta"%(sys.path[0])
+    HLA_data = f"{args['db']}/whole/hla_gen.fasta"
     version_info = get_IMGT_version()
 
     if not os.path.exists(args["o"]):
         os.system("mkdir %s"%(args["o"]))
     if not os.path.isfile(HLA_data):
-        os.system("cat %s/../db/HLA/whole/HLA_*.fasta > %s/../db/HLA/whole/hla_gen.fasta"%(sys.path[0], sys.path[0]))
+        # os.system("cat %s/../db/whole/HLA_*.fasta > %s/../db/whole/hla_gen.fasta"%(sys.path[0], sys.path[0]))
+        os.system(f"cat {args['db']}/whole/HLA-*.fasta > {args['db']}/whole/hla_gen.fasta")
+
     
     # inputdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/output/fredhutch-hla-1347-4843/"
     inputdir = args['o']
@@ -291,7 +296,7 @@ if __name__ == "__main__":
         for gene in gene_list:
             if gene not in record_best_match:
                 record_best_match[gene] = {}
-            tag = f"HLA_{gene}_{hap_index+1}"
+            tag = f"HLA-{gene}_{hap_index+1}"
             align_list = get_blast_info(blastfile, tag)
 
             full_result_list = select_by_alignment(align_list, gene)

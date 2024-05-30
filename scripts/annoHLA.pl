@@ -10,6 +10,7 @@ GetOptions(
            "p=s"     =>      \$pop,
            "r=s"     =>      \$wxs,
            "g=s"     =>      \$g_nom,
+           "d=s"     =>      \$db,
            "h"       =>      \$help
 );
 my $usage = <<USE;
@@ -22,21 +23,22 @@ usage: perl $0 [options]
         -p       <tr>    population information "Asian|Black|Caucasian|Unknown|nonuse"
         -r       <tr>    focus region "exon|whole|tgs" ("exon" is suitable for WES or RNAseq; "whole" is suitable for WGS; "tgs" is suitable for TGS )
         -g       <tr>     G-translate 1|0"
+        -d       <tr>    the directory of database
         -help|?           print help information
 e.g.:
         perl $0 -s samplename -i indir -p Unknown -r exon -g 1
 USE
 die $usage unless ($sample && $dir && $pop && $wxs );
-print "parameter:\tsample:$sample\tdir:$dir\tpop:$pop\twxs:$wxs\tG_nom:$g_nom\n";
+print "parameter:\tsample:$sample\tdir:$dir\tpop:$pop\twxs:$wxs\tG_nom:$g_nom\tdb:$db\n";
 
 my $version="";
 my $k = 2;
 my $bias = 1;
 if($wxs eq "tgs"){$bias = 0.4} # gap score in TGS
 my (%hashp,%hashp2, %hashpp, %hashg, %hashc, %hash,%hashdd);
-my $db="$Bin/../db/HLA";
+# my $db="$Bin/../db/HLA";
 my $bin="$Bin/../../bin";
-my @hlas = ("HLA_A","HLA_B","HLA_C","HLA_DPA1","HLA_DPB1","HLA_DQA1","HLA_DQB1","HLA_DRB1");
+my @hlas = ("HLA-A","HLA-B","HLA-C","HLA-DPA1","HLA-DPB1","HLA-DQA1","HLA-DQB1","HLA-DRB1");
 my $fadir=$dir;
 my $workdir = "$dir/tmp";
 `mkdir  -p $workdir`;
@@ -247,7 +249,7 @@ sub whole_blast{
 sub tgs_blast{
         open BOUT, ">$dir/hla.blast.summary.txt";  # new 
 	foreach my $class(@hlas){
-		my $ref = "$db/whole/$class";
+		my $ref = "$db/../whole/$class";
 		for(my $i=1;$i<=$k;$i++){
 			my $tag = "$class"."_"."$i";
 			my $fa = "$fadir/hla.allele.$i.$class.fasta";

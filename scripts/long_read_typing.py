@@ -306,8 +306,10 @@ class Fasta():
         awk_script = '{{sum+=$3}} END {{ if (NR>0) print sum/NR; else print 0; }}'
         hla_ref=my_db.get_gene_alleles(gene)
         bam=f"{parameter.outdir}/{gene}.bam"
+        print("bam for vars:", bam, parameter.outdir)
         depth_file=f"{parameter.outdir}/{gene}.depth"
         print ("xxx", bam)
+        print ("xxx", hla_ref)
         # call snp
         mask_bed=f"{parameter.outdir}/low_depth.bed"
         call_phase_cmd= f"""
@@ -321,10 +323,10 @@ class Fasta():
             python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {parameter.outdir} -w 20 -d $set_dp
             
             cp {mask_bed} {parameter.outdir}/{gene}.low_depth.bed
-            longshot -F -c 2 -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval_dict[gene]} --bam ${bam} --ref {hla_ref} --out {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf 
+            longshot -F -c 2 -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval_dict[gene]} --bam {bam} --ref {hla_ref} --out {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf 
             bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf
             tabix -f {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf.gz
-            zcat {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf.gz >{parameter.outdir}/$sample.{gene}.phased.vcf          
+            zcat {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf.gz >{parameter.outdir}/{parameter.sample}.{gene}.phased.vcf          
             bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.phased.vcf
             tabix -f {parameter.outdir}/{parameter.sample}.{gene}.phased.vcf.gz
         """
@@ -343,9 +345,9 @@ class Fasta():
         ## reconstruct HLA sequence based on the phased snps & sv
         for index in range(2):
             order = f"""
-            echo ">HLA_{gene}_{index}" >$outdir/hla.allele.$i.HLA_$hla.fasta
-            cat {gene_work_dir}/{gene}.{index+1}.raw.fa|grep -v ">" >>$outdir/hla.allele.$i.HLA_$hla.fasta    
-            samtools faidx $outdir/hla.allele.{index+1}.HLA_{gene}.fasta    
+            echo ">HLA_{gene}_{index}" >{parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
+            cat {gene_work_dir}/{gene}.{index+1}.raw.fa|grep -v ">" >>{parameter.outdir}/hla.allele.{index+1}.{gene}.fasta    
+            samtools faidx {parameter.outdir}/hla.allele.{index+1}.HLA_{gene}.fasta    
             """
             os.system(order)
 
@@ -357,10 +359,12 @@ class Fasta():
         # self.annotation()
 
     def annotation(self):
+        print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}/HLA """)
+        print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}""")
         anno = f"""
-        perl {parameter.whole_dir}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}/HLA 
+        perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}/HLA 
         cat {parameter.outdir}/hla.result.txt
-        python3 {parameter.whole_dir}/../refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}
+        python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}
         """
         # print (anno)
         os.system(anno)
@@ -431,7 +435,7 @@ if __name__ == "__main__":
 
     if args["m"] != 0:
         fa = Fasta()
-        fa.get_fasta()
+        #fa.get_fasta()
         print ("Sequence is reconstructed, start annotation...")
         fa.annotation()
     print ("Finished.")
