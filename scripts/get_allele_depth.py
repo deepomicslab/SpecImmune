@@ -60,7 +60,7 @@ class Get_depth():
                 # print (allele, mean_depth, median_depth, coverage)
             sorted_dict = sorted(record_allele_depth.items(), key=lambda x: x[1], reverse=True)
             for i in range(min([max_allele_num, len(sorted_dict)])):
-                print (sorted_dict[i][0], round(sorted_dict[i][1],2), record_allele_length[sorted_dict[i][0]] , sep = "\t")
+                # print (sorted_dict[i][0], round(sorted_dict[i][1],2), record_allele_length[sorted_dict[i][0]] , sep = "\t")
                 record_candidate_alleles[gene].add(sorted_dict[i][0])
 
             ## output

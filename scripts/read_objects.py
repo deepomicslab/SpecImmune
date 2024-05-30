@@ -129,7 +129,7 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
                 store_intervalue = [min(record_interval), max(record_interval)]
                 # print (store_intervalue)
                 if self.intervals_overlap(store_intervalue, my_interval):
-                    print ("overlap", store_intervalue, my_interval, assigned_locus, loci_name)
+                    print ("overlap", store_intervalue, my_interval, assigned_locus, loci_name, highest_identity, self.loci_object_dict[loci_name].represent_identity)
                     continue
                 # else:
                 #     print ("non overlap", store_intervalue, my_interval)

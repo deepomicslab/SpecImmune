@@ -24,11 +24,12 @@ def count_shared_reads(file1, file2):
 
 # Usage example
 gene="DQB1"
-gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
+# gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
+gene_list = ['A', 'B']
 for gene in gene_list:
     print (gene)
-    file1 = f'/mnt/d/HLAPro_backup/Nanopore_optimize/output4/fredhutch-hla-FH5_0.1/HLA-{gene}.long_read.fq.gz'  # Replace with the actual gzipped file path of the first FASTQ file
-    file2 = f'/mnt/d/HLAPro_backup/Nanopore_optimize/output0/fredhutch-hla-FH5_0.1/{gene}.long_read.fq.gz'  # Replace with the actual gzipped file path of the second FASTQ file
+    file1 = f'/mnt/d/HLAPro_backup/Nanopore_optimize/output5/fredhutch-hla-FH4/HLA-{gene}.long_read.fq.gz'  # Replace with the actual gzipped file path of the first FASTQ file
+    file2 = f'/mnt/d/HLAPro_backup/Nanopore_optimize/output0/fredhutch-hla-FH4/{gene}.long_read.fq.gz'  # Replace with the actual gzipped file path of the second FASTQ file
 
     shared_reads, file1_specific_reads, file2_specific_reads = count_shared_reads(file1, file2)
 

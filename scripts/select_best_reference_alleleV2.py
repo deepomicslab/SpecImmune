@@ -351,7 +351,7 @@ def map2db(args, gene):
 
     ref={ref}
 
-    minimap2 -t {args["j"] } {minimap_para} -N 1 -a $ref $fq > {sam}  # -p 0.1 -N 100000
+    minimap2 -t {args["j"] } {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}  # -p 0.1 -N 100000  -N 1
     samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
     samtools depth -aa {bam}>{depth_file}
     rm {sam}
@@ -510,5 +510,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    # gene_list = ["HLA-DPA1"]
+    # gene_list = ["HLA-B"]
     main(args)
