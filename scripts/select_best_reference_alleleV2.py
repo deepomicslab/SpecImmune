@@ -353,8 +353,8 @@ def map2db(args, gene):
 
 
     minimap2 -t {args["j"]} {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
-    samtools view -bS -F 0x800  {sam} | samtools sort -@ {args["j"]}  - >{bam}
-    samtools index -@ {args["j"]} {bam}
+    samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
+    samtools index {bam}
     samtools depth -aa {bam}>{depth_file}
     rm {sam}
     echo alignment done.

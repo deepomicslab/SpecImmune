@@ -436,7 +436,7 @@ if __name__ == "__main__":
 
     if args["m"] != 0:
         fa = Fasta()
-        #fa.get_fasta()
+        fa.get_fasta()
         print ("Sequence is reconstructed, start annotation...")
         fa.annotation()
     print ("Finished.")
