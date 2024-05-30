@@ -2,7 +2,7 @@
 
 # Specify the file list file
 file_list_file="/mnt/d/HLAPro_backup/Nanopore_optimize/data/fastq.list"
-outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/output4"
+outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/output5"
 
 # file_list_file="/mnt/d/HLAPro_backup/Nanopore_optimize/data/complex_reads/pacbio_hifi_hla.list"
 # outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/output_pac"

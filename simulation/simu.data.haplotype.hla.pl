@@ -1,7 +1,10 @@
 #!/usr/bin/perl -w
 my ($sample,$outdir) = @ARGV;
 my (%hash, %hashc, %hashb,%hashr, %hash1,%hash2);
-open IN, "/mnt/d/HLAPro_backup/Nanopore_optimize//SpecComplex/db/HLA/ref/HLA.extend.fasta" or die "$!\n";
+my $db_fasta = "/mnt/d/HLAPro_backup/Nanopore_optimize//SpecComplex/db/HLA/ref/HLA.extend.fasta";
+my $hap_txt = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.txt";
+my $hap_fa ="/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.fa";
+open IN, $db_fasta or die "$!\n";
 while(<IN>){
 	chomp;
 	s/^>//;
@@ -32,7 +35,7 @@ foreach my $gene(sort keys %hashc){
 }
 close COUT;
 
-`less /mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.txt |sort -k 3 -n >HLA.ref.hap.sort.txt`;
+`less $hap_txt |sort -k 3 -n >HLA.ref.hap.sort.txt`;
 my @regions;
 open CI, "HLA.ref.hap.sort.txt" or die "$!\n";
 while(<CI>){
@@ -45,7 +48,7 @@ while(<CI>){
 	push @regions, $region;
 }
 close CI;
-open FA, "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.fa" or die "$!\n";
+open FA, $hap_fa or die "$!\n";
 open SEP, ">$outdir/$sample.HLA.sep.fa";
 <FA>;
 my $ref=<FA>;
@@ -59,7 +62,7 @@ foreach my $re(@regions){
 	my ($s,$e) = (split /-/,$se)[0,1];
 	my $ee = $s - 1;
 	my $pre = "$chr".":"."$ss"."-"."$ee";
-	my $pfa = `samtools faidx /mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.fa $pre |grep -v ">" `;
+	my $pfa = `samtools faidx $hap_fa $pre |grep -v ">" `;
 	chomp $pfa;
 	$pfa =~ s/\s//g;
 	my $allele1 = $hash1{$gene};
@@ -94,7 +97,7 @@ close SEP;
 my $len = length($ref);
 $end += 1;
 my $region0 = "HLA.hap:"."$end"."-"."$len";
-my $pe = `samtools faidx /mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.fa $region0 | grep -v ">"`;
+my $pe = `samtools faidx $hap_fa $region0 | grep -v ">"`;
 $pe =~ s/\s//g;
 $nref1 .= $pe;
 $nref2 .= $pe;

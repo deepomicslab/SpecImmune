@@ -114,7 +114,7 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
         record_identity = {}
         for loci_name in self.loci_object_dict:
             record_identity[loci_name] = self.loci_object_dict[loci_name].represent_identity
-            print (loci_name, self.loci_object_dict[loci_name].represent_identity, self.loci_object_dict[loci_name].represent_match_num, self.loci_object_dict[loci_name].start,self.loci_object_dict[loci_name].end )
+            # print (loci_name, self.loci_object_dict[loci_name].represent_identity, self.loci_object_dict[loci_name].represent_match_num, self.loci_object_dict[loci_name].start,self.loci_object_dict[loci_name].end )
         assigned_locus = []
         record_interval = []
         gene_score = sorted(record_identity.items(), key=lambda item: item[1], reverse = True)
@@ -129,15 +129,15 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
                 store_intervalue = [min(record_interval), max(record_interval)]
                 # print (store_intervalue)
                 if self.intervals_overlap(store_intervalue, my_interval):
-                    print ("overlap", store_intervalue, my_interval)
+                    print ("overlap", store_intervalue, my_interval, assigned_locus, loci_name)
                     continue
-                else:
-                    print ("non overlap", store_intervalue, my_interval)
+                # else:
+                #     print ("non overlap", store_intervalue, my_interval)
             # print (loci_name, self.loci_object_dict[loci_name].represent_identity, my_interval)
             assigned_locus.append(loci_name)
             record_interval += my_interval
-        print (assigned_locus)
-        print ("#####\n")
+        # print (assigned_locus)
+        # print ("#####\n")
         return assigned_locus
 
     # def intervals_overlap(self, interval1, interval2):

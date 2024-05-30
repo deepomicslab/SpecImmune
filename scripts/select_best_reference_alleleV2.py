@@ -198,15 +198,15 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
         else:
             break
 
-    for i in range(len(sorted_record_allele_pair_match_len)):
-        tag = sorted_record_allele_pair_match_len[i][0]
-        allele_list = tag.split("&")
-        print ("#", int(sorted_record_allele_pair_match_len[i][1]), round(record_allele_pair_identity[tag],3), allele_list[0], \
-            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),\
-             allele_list[1], round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3), round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]), sep="\t")
+    # for i in range(len(sorted_record_allele_pair_match_len)):
+    #     tag = sorted_record_allele_pair_match_len[i][0]
+    #     allele_list = tag.split("&")
+    #     print ("#", int(sorted_record_allele_pair_match_len[i][1]), round(record_allele_pair_identity[tag],3), allele_list[0], \
+    #         round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),\
+    #          allele_list[1], round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3), round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]), sep="\t")
 
-        if i > 100:
-            break
+    #     if i > 100:
+    #         break
     identity_sorted_list = sorted(good_length_dict.items(), key=lambda x: x[1], reverse=True)
     match_len_with_max_identity = identity_sorted_list[0][1]
     full_result_list = []
@@ -439,8 +439,8 @@ def main(args):
                 allele_match_dict[allele_name] += record_read_allele_dict[read_name][allele_name].match_num
                 allele_read_num_dict[allele_name] += 1
         
-        for allele_name in allele_match_dict:
-            print ("speclong depth", allele_name, allele_match_dict[allele_name], round(allele_match_dict[allele_name]/record_allele_length[allele_name]),allele_read_num_dict[allele_name])
+        # for allele_name in allele_match_dict:
+        #     print ("speclong depth", allele_name, allele_match_dict[allele_name], round(allele_match_dict[allele_name]/record_allele_length[allele_name]),allele_read_num_dict[allele_name])
 
         if len(record_read_allele_dict) >= args["min_read_num"]:
             type_result, objective_value, type_allele_result = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)

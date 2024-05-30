@@ -93,10 +93,10 @@ class Score_Obj():
         for read_name in self.loci_score: # for each read
             # if "508262af-89b0-42c3-8d64-07cbcf21d8b0" != read_name:
             #     continue
-            print (read_name, self.primary_dict[read_name])
+            # print (read_name, self.primary_dict[read_name])
             read_bin = Read_bin(self.loci_score[read_name])
             assigned_locus = read_bin.assign_multiple()
-            print ("\n\n")
+            # print ("\n\n")
 
             print (read_name, ",".join(assigned_locus), sep = "\t", file = f)
             self.read_loci[read_name] = assigned_locus
