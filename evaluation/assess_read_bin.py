@@ -81,14 +81,19 @@ def calculate_recall_and_accuracy(true_list, inferred_list):
 
     return recall, accuracy
 
+
+def cal_bin_accuracy(hap_fasta, fastq, read_assign):
+    read_allele_dict = extract_read_allele(hap_fasta)
+    true_read_names = extract_read_names_from_fastq(fastq, read_allele_dict)
+
+    infer_read_names = extract_read_names(read_assign)
+
+    return compare(true_read_names, infer_read_names)
+
 read_assign = "/home/wangshuai/softwares/SpecLong/test/test/test_HLA/test_HLA.assign.txt"
 hap_fasta = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/test.HLA.sep.fa"
 fastq = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/test.fastq.gz"
 
 # print (read_names)
-read_allele_dict = extract_read_allele(hap_fasta)
-true_read_names = extract_read_names_from_fastq(fastq, read_allele_dict)
 
-infer_read_names = extract_read_names(read_assign)
-
-compare(true_read_names, infer_read_names)
+cal_bin_accuracy(hap_fasta, fastq, read_assign)

@@ -218,37 +218,38 @@ class Pacbio_Binning():
             # print (read_obj.read_name, read_obj.mismatch_rate, read_obj.allele_name )
         read_loci = scor.assign(self.assign_file)
         for gene in gene_list:
-            self.filter_fq(gene, read_loci)
+            outfile = parameter.outdir + '/%s.%s.fq'%(gene, args["a"])
+            filter_fq(gene, read_loci, parameter.raw_fq, outfile)
         print ("reads-binning done.\n\n\n")
 
-    def filter_fq(self, gene, dict):
-        # output the assigned reads to the fastq file of each gene
-        i = 0
-        #gene = 'A'
-        outfile = parameter.outdir + '/%s.%s.fq'%(gene, args["a"])
-        out = open(outfile, 'w')
-        flag = False
-        if parameter.raw_fq.split(".")[-1] == "gz":
-            f = gzip.open(parameter.raw_fq,'rt')
-        else:
-            f = open(parameter.raw_fq)
-        for line in f:
-            line = line.strip()
-            if i % 4 == 0:
-                read_name = line.split()[0][1:]
-                if read_name in dict.keys() and gene in dict[read_name]:
-                    flag = True
-                    num = 1
-                    print (line, file = out)
-            elif flag:
+def filter_fq(gene, dict, raw_fq, outfile):
+    # output the assigned reads to the fastq file of each gene
+    i = 0
+    #gene = 'A'
+    
+    out = open(outfile, 'w')
+    flag = False
+    if raw_fq.split(".")[-1] == "gz":
+        f = gzip.open(raw_fq,'rt')
+    else:
+        f = open(raw_fq)
+    for line in f:
+        line = line.strip()
+        if i % 4 == 0:
+            read_name = line.split()[0][1:]
+            if read_name in dict.keys() and gene in dict[read_name]:
+                flag = True
+                num = 1
                 print (line, file = out)
-                num += 1
-                if num == 4:
-                    flag = False
-            i += 1
-        f.close()
-        out.close()
-        os.system('gzip -f %s'%(outfile))
+        elif flag:
+            print (line, file = out)
+            num += 1
+            if num == 4:
+                flag = False
+        i += 1
+    f.close()
+    out.close()
+    os.system('gzip -f %s'%(outfile))
 
 
 class Parameters():

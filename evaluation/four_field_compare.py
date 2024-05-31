@@ -41,6 +41,7 @@ def parse_truth(truth_file):
     # print (truth_dict)
     return truth_dict
 
+
 def parse_hla_hla_input(input_file):
     genes=[]
     input_dict={}
@@ -57,6 +58,25 @@ def parse_hla_hla_input(input_file):
                     input_dict[gene].append(field[2])
                 else:
                     input_dict[gene].append('')
+    return input_dict
+
+def parse_simu_true(input_file):
+    genes=[]
+    input_dict={}
+    with open(input_file, 'r') as f:
+        for idx, line in enumerate(f):
+            if idx == 0:  
+                continue
+            if idx >= 1:  
+                field = line.strip().split('\t')
+                gene = field[0]
+                if gene not in input_dict:
+                    input_dict[gene] = []
+                if len(field) >= 3:
+                    input_dict[gene].append(field[1])
+                    input_dict[gene].append(field[2])
+                # else:
+                #     input_dict[gene].append('')
     return input_dict
 
 def parse_spechla_input(input_file):
@@ -273,7 +293,7 @@ def align_digit_2_truth(truth, mylist):  # not using
     # print (mylist, truth)
     return mylist
 
-def compare_four(truth_dict, all_hla_la_result, digit=8):
+def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
     gene_dict = {}
     for sample in truth_dict:
         # if sample != "FH14":
@@ -351,6 +371,19 @@ def count_report_allele(truth_dict, all_hla_la_result):
         print (gene, np.mean(count_gene_array[gene]), np.median(count_gene_array[gene]), min(count_gene_array[gene]), max(count_gene_array[gene]))
 
 
+def assess_sim():
+    truth = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/test.HLA.hap.alleles.txt"
+    infer = "/home/wangshuai/softwares/SpecLong/test/test/test_HLA/test_HLA.HLA.type.result.txt"
+    sample_truth_dict = parse_simu_true(truth)
+    sample_infer_dict = parse_hla_hla_input(infer)
+    # print (sample_truth_dict)
+    truth_dict, infer_dict = {}, {}
+    truth_dict["test"] = sample_truth_dict
+    infer_dict["test"] = sample_infer_dict
+
+    gene_list = [ 'HLA-A', 'HLA-B', 'HLA-C', 'HLA-DMA', 'HLA-DMB', 'HLA-DOA', 'HLA-DOB', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DPB2', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRA', 'HLA-DRB1', 'HLA-DRB3', 'HLA-DRB4', 'HLA-DRB5', 'HLA-E', 'HLA-F', 'HLA-G', 'HLA-H', 'HLA-J', 'HLA-K', 'HLA-L', 'HLA-P', 'HLA-V', 'HLA-DQA2', 'HLA-DPA2', 'HLA-N', 'HLA-S', 'HLA-T', 'HLA-U', 'HLA-W', 'MICA', 'MICB', 'TAP1', 'TAP2', 'HFE' ]
+    compare_four(truth_dict, infer_dict, gene_list)
+
 def main():
     # truth_dict=parse_truth("hla_nanopore/4_field_truth.csv")
     # input_dict, res_genes=parse_input(args.input)
@@ -361,13 +394,14 @@ def main():
 
     # truth_dict=parse_truth("hla_nanopore/4_field_truth.csv")
     # all_hla_la_result = parse_all_hla_hla_input(truth_dict)
-    # compare_four(truth_dict, all_hla_la_result, 8)
+    # compare_four(truth_dict, all_hla_la_result, gene_list, 8)
     # count_report_allele(truth_dict, all_hla_la_result)
 
     truth_dict=parse_truth("./4_field_truth.csv")
     all_spechla_result = parse_all_spechla_input(truth_dict)
-    compare_four(truth_dict, all_spechla_result, 8)
+    compare_four(truth_dict, all_spechla_result, gene_list, 8)
     count_report_allele(truth_dict, all_spechla_result)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='compare results')
@@ -376,4 +410,5 @@ if __name__ == "__main__":
     # parser.add_argument('output', help='Output VCF file path')
 
     # args = parser.parse_args()
-    main()
+    # main()
+    assess_sim()
