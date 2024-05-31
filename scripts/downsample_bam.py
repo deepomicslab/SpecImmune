@@ -37,7 +37,7 @@ def handle_bam(output_bam, output_depth):
 
 def main(input_bam, output_bam, input_depth, output_depth, max_depth, seed):
 
-    get_depth = Get_depth(depth_file)
+    get_depth = Get_depth(input_depth)
     get_depth.record_depth()
 
     depth_list = []

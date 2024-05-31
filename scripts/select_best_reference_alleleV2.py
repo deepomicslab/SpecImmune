@@ -419,6 +419,7 @@ def main(args):
 
 
     for gene in gene_list:
+        print (f"start type {gene} for {args["n"]}...\n")
         allele_match_dict = defaultdict(int)
         allele_read_num_dict = defaultdict(int)
         bam, depth_file, sort_depth_file = map2db(args, gene)

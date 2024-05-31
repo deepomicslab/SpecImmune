@@ -198,10 +198,11 @@ class Pacbio_Binning():
         outdir={parameter.outdir}
         bin={sys.path[0]}/../bin
         sample={parameter.sample}
-        minimap2 -t {parameter.threads} {minimap_para}  -a $ref $fq |samtools view -bS -o {self.sam}
+        # minimap2 -t {parameter.threads} {minimap_para} -a $ref $fq |samtools view -bS -o {self.sam}
+        bwa mem -R '@RG\\tID:foo\\tSM:bar' -t {parameter.threads} {my_db.lite_db} $fq |samtools view -bS -o {self.sam}
         echo alignment done.
         """
-        print (alignDB_order)
+        # print (alignDB_order)
         os.system(alignDB_order)
 
     def read_bam(self):
@@ -218,7 +219,7 @@ class Pacbio_Binning():
         read_loci = scor.assign(self.assign_file)
         for gene in gene_list:
             self.filter_fq(gene, read_loci)
-        print ("reads-binning done.")
+        print ("reads-binning done.\n\n\n")
 
     def filter_fq(self, gene, dict):
         # output the assigned reads to the fastq file of each gene
