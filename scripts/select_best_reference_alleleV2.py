@@ -425,7 +425,7 @@ def main(args):
 
         get_depth = Get_depth(depth_file)
         get_depth.record_depth()
-        record_candidate_alleles, record_allele_length = get_depth.select(sort_depth_file, args["candidate_allele_num"])
+        record_candidate_alleles, record_allele_length = get_depth.select(sort_depth_file, gene_list, args["candidate_allele_num"])
         # gene="A"
         print ("record_candidate_alleles num:", len(record_candidate_alleles[gene]))
         print (bam)

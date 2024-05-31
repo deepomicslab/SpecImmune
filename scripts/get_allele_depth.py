@@ -1,5 +1,6 @@
 from collections import defaultdict
 import numpy as np
+import sys
 
 class Get_depth():
 
@@ -26,20 +27,29 @@ class Get_depth():
             self.depth_dict[gene][allele].append(depth)
         
         ### delete extended seq
-        for gene in self.depth_dict:
-            for allele in self.depth_dict[gene]:
+        # gene_num = 0
+        # allele_num = 0
+        # for gene in self.depth_dict:
+        #     gene_num += 1
+        #     for allele in self.depth_dict[gene]:
 
-                self.depth_dict[gene][allele] = self.depth_dict[gene][allele][300:-300]
+        #         self.depth_dict[gene][allele] = self.depth_dict[gene][allele][300:-300]
+        #         allele_num += 1
+        
+        # print (f"{allele_num} alleles from {gene_num} loci in the bam.")
+        # print ("xxxx", len(self.depth_dict["HLA-N"]["HLA-N*01:01:01:04"]))
 
-    def select(self, sort_depth_file, max_allele_num=10):
+    def select(self, sort_depth_file, gene_list, max_allele_num=10):
         f = open(sort_depth_file, 'w')
         print ("Gene\tAllele\tDepth\tAllele_length", file = f)
+
+        # print ("xxxx", len(self.depth_dict["HLA-N"]["HLA-N*01:01:01:04"]))
 
         record_candidate_alleles = defaultdict(set)
         record_allele_length = {}
         for gene in self.depth_dict:
-            # if gene not in gene_list:
-            #     continue
+            if gene not in gene_list:
+                continue
             record_allele_depth = {}
             
             record_allele_info = {}
@@ -51,6 +61,11 @@ class Get_depth():
                 for e in self.depth_dict[gene][allele]:
                     if e > 0:
                        over_0 += 1
+
+                if len(self.depth_dict[gene][allele]) == 0:
+                    print ("depth list is empty for", gene, allele)
+                    sys.exit(0)
+
                 coverage =  float(over_0)/len(self.depth_dict[gene][allele])
                 record_allele_length[allele] = len(self.depth_dict[gene][allele])
 
