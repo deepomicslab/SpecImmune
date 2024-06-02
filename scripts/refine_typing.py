@@ -13,6 +13,7 @@ import re
 import sys
 import pysam
 import argparse
+from determine_gene import get_focus_gene
 
 
 def get_1_element(lst):
@@ -114,7 +115,7 @@ def compare_match_len_and_identity(match_sorted_list, identity_sorted_list, trut
     return select_allele_list
     
 def get_IMGT_version():
-    g_file = "%s/HLA/hla_nom_g.txt"%(args['db'])
+    g_file = "%s/whole/hla_nom_g.txt"%(args['db'])
     G_annotation_dict = {}
     i = 0
     version_info = "N/A"
@@ -128,6 +129,8 @@ def select_by_alignment(align_list, gene):
         return []
     full_result_list = []
     # match_sorted_list = sorted(align_list, key=get_1_element, reverse = True)
+    if gene == "HLA-A":
+        print("align:", align_list[0])
     match_sorted_list = sorted(align_list, key=get_2_element, reverse = True)  # match length - mismatch
     match_sorted_list = resort_list_with_same_alleles(match_sorted_list, 1, 3)
     identity_sorted_list = sorted(align_list, key=get_3_element, reverse = True)
@@ -140,15 +143,15 @@ def select_by_alignment(align_list, gene):
     #     print (mat, file = f)
     # f.close()
 
-    # print (identity_sorted_list)
+    print ("ienti:",identity_sorted_list)
     intersection_alleles = list(set(max_match_len_alleles) & set(max_identity_alleles))   
-    # print (">>>>>>>>>", match_sorted_list[:10])
+    print (">>>>>>>>>", match_sorted_list[:10])
     min_ide_diff_cutoff = 0.0002
     if len(intersection_alleles) > 0:
         select_allele_list = intersection_alleles[0].split(">")
         select_allele = select_allele_list[0]
         
-        if gene != "DPB1":  
+        if gene != "HLA-DPB1":  
             full_result_list.append(select_allele_list)   
             # print (">>>>>>>>>>max_match_len allele and max_identity allele match, typed allele:", select_allele)  
         else:  # although max_match_len allele and max_identity allele match, still report ambiguity alleles for DPB1
@@ -161,7 +164,7 @@ def select_by_alignment(align_list, gene):
     else:
         # 
         # print (">>>>>>>>>>max_match_len allele and max_identity allele don't match, report possible alleles")  
-        len_diff_cutoff = 0.01 
+        len_diff_cutoff = 0.1 
         ide_diff_cutoff = 0.001
         max_match_len = match_sorted_list[0][2]
         match_len_with_max_identity = identity_sorted_list[0][1]
@@ -189,6 +192,8 @@ def select_by_alignment(align_list, gene):
         for i in range(len(match_sorted_list)):
             if (max_match_len - match_sorted_list[i][2])/max_match_len <= len_diff_cutoff:
                 good_length_list.append(match_sorted_list[i])
+                if gene=="HLA-A":
+                    print("match_sorted_list", match_sorted_list[i])
         # print (len(good_length_list), "len(good_length_list)")
         identity_sorted_list = sorted(good_length_list, key=get_3_element, reverse = True)
         identity_sorted_list = resort_list_with_same_alleles(identity_sorted_list, 3, 1)
@@ -232,13 +237,17 @@ def output(record_best_match, gene_list, result_file, version_info):
     f.close()
 
 def get_blast_info(blastfile, tag):
+    print("blastfile", blastfile)
     align_list = []
     for line in open(blastfile):
         field = line.strip().split()
         if field[0] != tag:
             continue
         align_info = [field[1], int(field[3]), int(field[3])-float(field[2]), 1-float(field[2])/int(field[3]), 'x', 0, 0]
+        if field[1] in ["HLA-A*03:08:01:02", "HLA-A*03:01:01:12"]:
+            print("field", field, align_info)    
         align_list.append(align_info)
+    print("align_list_0", align_list)
     identity_sorted_list = sorted(align_list, key=get_3_element, reverse = True)
     return identity_sorted_list
 
@@ -256,6 +265,8 @@ if __name__ == "__main__":
     required.add_argument("-n", type=str, help="Sample ID", metavar="\b")
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
+    required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
+
     
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
@@ -267,14 +278,16 @@ if __name__ == "__main__":
         sys.exit(0)
 
     # HLA_data = "%s/../db/whole/hla_gen.fasta"%(sys.path[0])
-    HLA_data = f"{args['db']}/whole/hla_gen.fasta"
+    HLA_data = f"{args['db']}/whole/HLA.full.fasta"
     version_info = get_IMGT_version()
+    gene_list, interval_dict =  get_focus_gene(args)
 
     if not os.path.exists(args["o"]):
         os.system("mkdir %s"%(args["o"]))
     if not os.path.isfile(HLA_data):
         # os.system("cat %s/../db/whole/HLA_*.fasta > %s/../db/whole/hla_gen.fasta"%(sys.path[0], sys.path[0]))
-        os.system(f"cat {args['db']}/whole/HLA-*.fasta > {args['db']}/whole/hla_gen.fasta")
+        # cat call fasta in gene subdir to one file
+        os.system(f"cat {args['db']}/whole/*/*.fasta > {HLA_data}")
 
     
     # inputdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/output/fredhutch-hla-1347-4843/"
@@ -284,7 +297,7 @@ if __name__ == "__main__":
 
     result_file = result_path + "/" + "hlala.like.results.txt"
     all_align_result_file = result_path + "/" + "hla.map.results.txt"
-    gene_list = ["A", "B", "C", "DPA1", "DPB1", "DQA1", "DQB1", "DRB1"]
+    # gene_list = ["A", "B", "C", "DPA1", "DPB1", "DQA1", "DQB1", "DRB1"]
 
     record_best_match = {}
     blastfile = f"{result_path}/hla.blast.summary.txt"
@@ -296,7 +309,7 @@ if __name__ == "__main__":
         for gene in gene_list:
             if gene not in record_best_match:
                 record_best_match[gene] = {}
-            tag = f"HLA-{gene}_{hap_index+1}"
+            tag = f"{gene}_{hap_index+1}"
             align_list = get_blast_info(blastfile, tag)
 
             full_result_list = select_by_alignment(align_list, gene)

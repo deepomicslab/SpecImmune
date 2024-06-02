@@ -37,8 +37,13 @@ my $bias = 1;
 if($wxs eq "tgs"){$bias = 0.4} # gap score in TGS
 my (%hashp,%hashp2, %hashpp, %hashg, %hashc, %hash,%hashdd);
 # my $db="$Bin/../db/HLA";
-my $bin="$Bin/../../bin";
-my @hlas = ("HLA-A","HLA-B","HLA-C","HLA-DPA1","HLA-DPB1","HLA-DQA1","HLA-DQB1","HLA-DRB1");
+my $bin="$Bin/../bin";
+my @hlas = (
+    'HLA-A', 'HLA-B', 'HLA-C', 'HLA-DMA', 'HLA-DMB', 'HLA-DOA', 'HLA-DOB', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DPB2', 
+    'HLA-DQA1', 'HLA-DQB1', 'HLA-DRA', 'HLA-DRB1', 'HLA-DRB3', 'HLA-DRB4', 'HLA-DRB5', 'HLA-E', 'HLA-F', 'HLA-G', 
+    'HLA-H', 'HLA-J', 'HLA-K', 'HLA-L', 'HLA-P', 'HLA-V', 'HLA-DQA2', 'HLA-DPA2', 'HLA-N', 'HLA-S', 'HLA-T', 'HLA-U', 
+    'HLA-W', 'MICA', 'MICB', 'TAP1', 'TAP2', 'HFE'
+);
 my $fadir=$dir;
 my $workdir = "$dir/tmp";
 `mkdir  -p $workdir`;
@@ -249,7 +254,7 @@ sub whole_blast{
 sub tgs_blast{
         open BOUT, ">$dir/hla.blast.summary.txt";  # new 
 	foreach my $class(@hlas){
-		my $ref = "$db/../whole/$class";
+		my $ref = "$db/whole/$class/$class";
 		for(my $i=1;$i<=$k;$i++){
 			my $tag = "$class"."_"."$i";
 			my $fa = "$fadir/hla.allele.$i.$class.fasta";
@@ -326,7 +331,7 @@ foreach my $hla(@hlas){
                  $score = sprintf "%.3f", $score;
                  #DRB1*14:01 and DRB1*14:54 differ in HLA_DRB1:9519
                  if($allele =~ /DRB1\*14:01/){
-                          system("samtools  mpileup -r HLA_DRB1:9519-9519 -t DP -t SP -uvf $db/hla.ref.extend.fa $dir/$sample.realign.sort.bam --output $workdir/snp.vcf");
+                          system("samtools  mpileup -r HLA-DRB1:9519-9519 -t DP -t SP -uvf $db/hla.ref.extend.fa $dir/$sample.realign.sort.bam --output $workdir/snp.vcf");
                           open TE, "$workdir/snp.vcf" or die "$!\n";
                           while(<TE>){
                                  chomp;
@@ -338,7 +343,7 @@ foreach my $hla(@hlas){
                  }
                  #C*07:01 and C*07:18 differ in HLA_C:4061
                  if($allele =~ /C\*07:01/ && $wxs eq "exon"){
-                          system("samtools  mpileup -r HLA_C:4061-4061 -t DP -t SP -uvf $db/hla.ref.extend.fa $dir/$sample.realign.sort.bam --output $workdir/snp.vcf");
+                          system("samtools  mpileup -r HLA-C:4061-4061 -t DP -t SP -uvf $db/hla.ref.extend.fa $dir/$sample.realign.sort.bam --output $workdir/snp.vcf");
                           open TE, "$workdir/snp.vcf" or die "$!\n";
                           while(<TE>){
                                  chomp;
