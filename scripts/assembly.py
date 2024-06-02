@@ -22,3 +22,12 @@ def assembly(fq, assmbly_dir, prefix, genome_size, seq_type="nanopore"):
     os.system(cmd)
 
     return contig
+
+
+# for each fastq in a folder, run the assembly by the function:assembly with the following parameters
+def assembly_all(fq_dir, assmbly_dir, genome_size, seq_type="nanopore"):
+    for fq in os.listdir(fq_dir):
+        if fq.endswith(".fq.gz") or fq.endswith(".fastq.gz"):
+            prefix = fq.split(".")[0]
+            fq = os.path.join(fq_dir, fq)
+            assembly(fq, assmbly_dir, prefix, genome_size, seq_type)

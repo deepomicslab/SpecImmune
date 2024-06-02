@@ -431,5 +431,5 @@ if __name__ == "__main__":
     # parser.add_argument('output', help='Output VCF file path')
 
     # args = parser.parse_args()
-    # main()
-    assess_sim()
+    main()
+    # assess_sim()
