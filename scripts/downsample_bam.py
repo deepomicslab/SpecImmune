@@ -4,17 +4,9 @@ import numpy as np
 import random
 import sys
 
+from get_allele_depth import Get_depth
 
-def record_depth(depth_file):
-    depth_list = []
-    f = open(depth_file)
-    for line in f:
-        array = line.strip().split()
-        gene = array[0]
-        depth = int(array[2])
-        depth_list.append(depth)
-    mean_depth = np.mean(depth_list[300:-300])
-    return mean_depth
+
     
 
 def downsample_bam(input_bam, output_bam, downsample_ratio, seed):
@@ -44,7 +36,17 @@ def handle_bam(output_bam, output_depth):
 
 
 def main(input_bam, output_bam, input_depth, output_depth, max_depth, seed):
-    mean_depth = record_depth(input_depth)
+
+    get_depth = Get_depth(input_depth)
+    get_depth.record_depth()
+
+    depth_list = []
+    for gene in get_depth.depth_dict:
+        for allele in get_depth.depth_dict[gene]:
+            depth_list = get_depth.depth_dict[gene][allele]
+
+    mean_depth = np.mean(depth_list)
+
     if mean_depth <= max_depth:
         return 1
     else:

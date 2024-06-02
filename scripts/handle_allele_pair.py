@@ -27,8 +27,11 @@ class Align_Obj(object):
     def get_identity(self):
         if self.match_num + self.mismatch_num == 0:
             self.identity = 0
+            # print("Warning: Identity is 0", self.name)
         else:
-            self.identity = self.match_num/ (self.match_num + self.mismatch_num)
+            self.identity = self.match_num / (self.match_num + self.mismatch_num)
+            # if self.name == "HLA-A*02:01:01:35&HLA-A*03:08:01:02":
+            #     print (self.name, self.match_num, self.mismatch_num, self.identity)
     
     def get_depth(self, allele_length):
         self.depth = (self.match_num + self.mismatch_num)/allele_length
@@ -50,6 +53,7 @@ class My_allele_pair():
         self.identity_list = []
     
     def assign_reads(self, record_read_allele_dict):
+        read_assign_dict = {}
         for read_name in record_read_allele_dict:
 
             ### read not support both allele
@@ -62,10 +66,15 @@ class My_allele_pair():
             else: 
                 larger_index = determine_largest(record_read_allele_dict[read_name][self.allele_1].identity, record_read_allele_dict[read_name][self.allele_2].identity)
 
+            # if self.tag == "HLA-A*02:01:01:35&HLA-A*03:08:01:02":
+            #     print (read_name, larger_index, record_read_allele_dict[read_name][self.allele_1].identity, record_read_allele_dict[read_name][self.allele_2].identity)
+
             if larger_index == 0:
+                read_assign_dict[read_name] = [self.allele_1]
                 self.allele_1_obj.add_read(record_read_allele_dict[read_name][self.allele_1].match_num, record_read_allele_dict[read_name][self.allele_1].mismatch_num)
                 self.pair_obj.add_read(record_read_allele_dict[read_name][self.allele_1].match_num, record_read_allele_dict[read_name][self.allele_1].mismatch_num)
             else:
+                read_assign_dict[read_name] = [self.allele_2]
                 self.allele_2_obj.add_read(record_read_allele_dict[read_name][self.allele_2].match_num, record_read_allele_dict[read_name][self.allele_2].mismatch_num)
                 self.pair_obj.add_read(record_read_allele_dict[read_name][self.allele_2].match_num, record_read_allele_dict[read_name][self.allele_2].mismatch_num)
 
@@ -75,3 +84,5 @@ class My_allele_pair():
         self.allele_1_obj.get_identity()
         self.allele_2_obj.get_identity()
         self.pair_obj.get_identity()
+
+        return read_assign_dict

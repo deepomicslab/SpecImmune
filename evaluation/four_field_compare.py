@@ -41,6 +41,7 @@ def parse_truth(truth_file):
     # print (truth_dict)
     return truth_dict
 
+
 def parse_hla_hla_input(input_file):
     genes=[]
     input_dict={}
@@ -51,12 +52,40 @@ def parse_hla_hla_input(input_file):
             if idx >= 1:  
                 field = line.strip().split('\t')
                 gene = field[0]
+
+                gene = del_prefix(gene)
+
                 if gene not in input_dict:
                     input_dict[gene] = []
                 if len(field) >= 3:
                     input_dict[gene].append(field[2])
                 else:
                     input_dict[gene].append('')
+    return input_dict
+
+def del_prefix(a):
+    if a[:4] == "HLA-":
+        a = a[4:]
+    return a
+
+def parse_simu_true(input_file):
+    genes=[]
+    input_dict={}
+    with open(input_file, 'r') as f:
+        for idx, line in enumerate(f):
+            if idx == 0:  
+                continue
+            if idx >= 1:  
+                field = line.strip().split('\t')
+                gene = field[0]
+                gene = del_prefix(gene)
+                if gene not in input_dict:
+                    input_dict[gene] = []
+                if len(field) >= 3:
+                    input_dict[gene].append(field[1])
+                    input_dict[gene].append(field[2])
+                # else:
+                #     input_dict[gene].append('')
     return input_dict
 
 def parse_spechla_input(input_file):
@@ -109,8 +138,10 @@ def parse_spechla_clean_input(input_file):
 def parse_all_hla_hla_input(truth_dict):
     all_hla_la_result = {}
     for sample in truth_dict:
-        # input_file = f"hla_nanopore/hla_la/{sample}.txt"
-        input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output0/fredhutch-hla-{sample}/hlala.like.results.txt"  # SpecHLA
+        # input_file = f"hla_nanopore/hla_la/{sample}.txt"  # HLA*LA
+        # input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output0/fredhutch-hla-{sample}/hlala.like.results.txt"  # SpecHLA
+        input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output5/fredhutch-hla-{sample}/fredhutch-hla-{sample}.HLA.type.result.txt"  # SpecLong
+        print (input_file)
         input_dict = parse_hla_hla_input(input_file)
         all_hla_la_result[sample] = input_dict
     return all_hla_la_result
@@ -273,7 +304,7 @@ def align_digit_2_truth(truth, mylist):  # not using
     # print (mylist, truth)
     return mylist
 
-def compare_four(truth_dict, all_hla_la_result, digit=8):
+def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
     gene_dict = {}
     for sample in truth_dict:
         # if sample != "FH14":
@@ -281,6 +312,7 @@ def compare_four(truth_dict, all_hla_la_result, digit=8):
         # for gene in truth_dict[sample]:
         for gene in gene_list:
             true_list = truth_dict[sample][gene]
+            # print (sample, gene, all_hla_la_result[sample])
             hla_la_list = all_hla_la_result[sample][gene]
             if true_list[1] == '':
                 true_list[1] = true_list[0]
@@ -302,6 +334,8 @@ def compare_four(truth_dict, all_hla_la_result, digit=8):
                 else:
                     hla_la_list[i] = [hla_la_list[i]]
                 # print ("xx", hla_la_list, hla_la_list[i])
+                hla_la_list[i] = [del_prefix(x) for x in hla_la_list[i]]
+                true_list[i] = [del_prefix(x) for x in true_list[i]]
 
                 # print ("yy", true_list[i] , hla_la_list[i])
                 true_list[i] = convert_field(true_list[i], digit)
@@ -351,7 +385,22 @@ def count_report_allele(truth_dict, all_hla_la_result):
         print (gene, np.mean(count_gene_array[gene]), np.median(count_gene_array[gene]), min(count_gene_array[gene]), max(count_gene_array[gene]))
 
 
+def assess_sim():
+    truth = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/test.HLA.hap.alleles.txt"
+    infer = "/home/wangshuai/softwares/SpecLong/test/test/test_HLA/test_HLA.HLA.type.result.txt"
+    sample_truth_dict = parse_simu_true(truth)
+    sample_infer_dict = parse_hla_hla_input(infer)
+    # print (sample_truth_dict)
+    truth_dict, infer_dict = {}, {}
+    truth_dict["test"] = sample_truth_dict
+    infer_dict["test"] = sample_infer_dict
+
+    gene_list = [ 'HLA-A', 'HLA-B', 'HLA-C', 'HLA-DMA', 'HLA-DMB', 'HLA-DOA', 'HLA-DOB', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DPB2', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRA', 'HLA-DRB1', 'HLA-DRB3', 'HLA-DRB4', 'HLA-DRB5', 'HLA-E', 'HLA-F', 'HLA-G', 'HLA-H', 'HLA-J', 'HLA-K', 'HLA-L', 'HLA-P', 'HLA-V', 'HLA-DQA2', 'HLA-DPA2', 'HLA-N', 'HLA-S', 'HLA-T', 'HLA-U', 'HLA-W', 'MICA', 'MICB', 'TAP1', 'TAP2', 'HFE' ]
+    gene_list = [del_prefix(x) for x in gene_list]
+    compare_four(truth_dict, infer_dict, gene_list)
+
 def main():
+    nano_truth = "./4_field_truth.csv"
     # truth_dict=parse_truth("hla_nanopore/4_field_truth.csv")
     # input_dict, res_genes=parse_input(args.input)
     # compare(truth_dict, input_dict, res_genes)
@@ -361,13 +410,19 @@ def main():
 
     # truth_dict=parse_truth("hla_nanopore/4_field_truth.csv")
     # all_hla_la_result = parse_all_hla_hla_input(truth_dict)
-    # compare_four(truth_dict, all_hla_la_result, 8)
+    # compare_four(truth_dict, all_hla_la_result, gene_list, 8)
     # count_report_allele(truth_dict, all_hla_la_result)
 
-    truth_dict=parse_truth("./4_field_truth.csv")
-    all_spechla_result = parse_all_spechla_input(truth_dict)
-    compare_four(truth_dict, all_spechla_result, 8)
-    count_report_allele(truth_dict, all_spechla_result)
+    # truth_dict=parse_truth(nano_truth)
+    # all_spechla_result = parse_all_spechla_input(truth_dict)
+    # compare_four(truth_dict, all_spechla_result, gene_list, 8)
+    # count_report_allele(truth_dict, all_spechla_result)
+
+    truth_dict=parse_truth(nano_truth)
+    all_hla_la_result = parse_all_hla_hla_input(truth_dict)
+    compare_four(truth_dict, all_hla_la_result, gene_list, 8)
+    count_report_allele(truth_dict, all_hla_la_result)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='compare results')
@@ -377,3 +432,4 @@ if __name__ == "__main__":
 
     # args = parser.parse_args()
     main()
+    # assess_sim()
