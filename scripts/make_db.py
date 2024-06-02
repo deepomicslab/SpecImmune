@@ -56,7 +56,7 @@ def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir):
         cmd = f"""
         samtools faidx "{gene_fasta_filename}"
         bwa index "{gene_fasta_filename}"
-        faToTwoBit "{gene_dir}"/{gene_name}.fasta "{gene_dir}"/{gene_name}.2bit
+        {script_dir}/../bin/faToTwoBit "{gene_dir}"/{gene_name}.fasta "{gene_dir}"/{gene_name}.2bit
         makeblastdb -in "{gene_dir}"/{gene_name}.fasta -dbtype nucl -parse_seqids -out "{gene_dir}"/{gene_name}
         """
         print(cmd, flush=True)
@@ -71,7 +71,7 @@ def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir):
     cmd = f"""
     samtools faidx "{merged_fasta_filename}"
     bwa index "{merged_fasta_filename}"
-    faToTwoBit "{merged_fasta_filename}" "{os.path.join(output_base_dir, 'HLA.full.2bit')}"
+    {script_dir}/../bin/faToTwoBit "{merged_fasta_filename}" "{os.path.join(output_base_dir, 'HLA.full.2bit')}"
     makeblastdb -in "{merged_fasta_filename}" -dbtype nucl -parse_seqids -out "{os.path.join(output_base_dir, 'HLA.full')}"
     """
     print(cmd, flush=True)
@@ -111,9 +111,15 @@ if __name__ == "__main__":
     # add default hla_gene.fa
     optional.add_argument("--HLA_fa", help="hla_gene")
     args = parser.parse_args()
+    script_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # Ensure the output directory exists
+    # Ensure the output directory exists and is not a file
+    if os.path.isfile(args.outdir):
+        print(f"The specified output directory '{args.outdir}' is a file. Deleting the file.")
+        os.remove(args.outdir)
+
     if args.outdir and not os.path.exists(args.outdir):
+        print("No DB dir, creating one")
         os.makedirs(args.outdir)
 
     main()
