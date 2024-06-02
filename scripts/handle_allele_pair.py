@@ -27,8 +27,11 @@ class Align_Obj(object):
     def get_identity(self):
         if self.match_num + self.mismatch_num == 0:
             self.identity = 0
+            # print("Warning: Identity is 0", self.name)
         else:
-            self.identity = self.match_num/ (self.match_num + self.mismatch_num)
+            self.identity = self.match_num / (self.match_num + self.mismatch_num)
+            # if self.name == "HLA-A*02:01:01:35&HLA-A*03:08:01:02":
+            #     print (self.name, self.match_num, self.mismatch_num, self.identity)
     
     def get_depth(self, allele_length):
         self.depth = (self.match_num + self.mismatch_num)/allele_length
@@ -62,6 +65,9 @@ class My_allele_pair():
                 larger_index = 0
             else: 
                 larger_index = determine_largest(record_read_allele_dict[read_name][self.allele_1].identity, record_read_allele_dict[read_name][self.allele_2].identity)
+
+            # if self.tag == "HLA-A*02:01:01:35&HLA-A*03:08:01:02":
+            #     print (read_name, larger_index, record_read_allele_dict[read_name][self.allele_1].identity, record_read_allele_dict[read_name][self.allele_2].identity)
 
             if larger_index == 0:
                 read_assign_dict[read_name] = [self.allele_1]

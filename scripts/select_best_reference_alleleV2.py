@@ -23,7 +23,7 @@ from filter_reads import examine_reads
 from determine_gene import get_focus_gene
 from db_objects import My_db
 from get_allele_depth import Get_depth
-from long_read_typing import filter_fq
+from read_binning import filter_fq
 # gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
   
 
@@ -92,6 +92,8 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
     allele_name_list = list(allele_name_dict.keys())
     allele_num = len(allele_name_list)
 
+    # print ("read_num:", read_num, "allele_num:", allele_num)
+
     record_allele_pair_match_len = {}
     record_allele_pair_mismatch = defaultdict(int)
     record_allele_pair_identity = defaultdict(float)
@@ -125,7 +127,7 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
             record_allele_pair_sep_match[tag][allele_name_list[j]]["identity"] = allele_pair_obj.allele_2_obj.identity
             record_allele_pair_sep_match[tag][allele_name_list[j]]["depth"] = allele_pair_obj.allele_2_obj.depth
 
-
+    # print ("record_allele_pair_match_len", len(record_allele_pair_match_len))
     tag_list, highest_score = choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_identity,record_allele_pair_sep_match)
     tag_list = order_result_pair(tag_list, record_allele_pair_sep_match)
     type_allele_result =  generate_output(tag_list)          
@@ -136,7 +138,7 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
 
 def split_assign_reads(gene, first_pair, record_read_allele_dict, outdir, raw_fq):
     allele_name_list = first_pair.split("&")
-    print (allele_name_list)
+    # print (allele_name_list)
     allele_pair_obj = My_allele_pair(allele_name_list[0], allele_name_list[1])
     read_assign_dict = allele_pair_obj.assign_reads(record_read_allele_dict)
     # print (read_assign_dict)
@@ -185,12 +187,13 @@ def print_match_results(sorted_record_allele_pair_match_len, record_allele_pair_
     out.close()
 
 def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_identity,record_allele_pair_sep_match):
+    # print (record_allele_pair_match_len)
     sorted_record_allele_pair_match_len = sorted(record_allele_pair_match_len.items(), key=lambda x: x[1], reverse=True)
     
     print_match_results(sorted_record_allele_pair_match_len, record_allele_pair_sep_match, gene, record_allele_pair_identity)
 
     highest_match_score = sorted_record_allele_pair_match_len[0][1]
-    
+
 
     len_diff_cutoff = 1e-4 
     ide_diff_cutoff = 0.001
@@ -379,8 +382,12 @@ def map2db(args, gene):
     rm {sam}
     echo alignment done.
     """
+    # if the depth_file is not detected 
+    if not os.path.exists(depth_file):
+        os.system(alignDB_order)
+    else:
+        print("Depth file is detected.")
 
-    os.system(alignDB_order)
     return bam, depth_file, sort_depth_file
 
 def output_spechla_format(args, result_dict):
@@ -450,7 +457,7 @@ def main(args):
         get_depth.record_depth()
         record_candidate_alleles, record_allele_length = get_depth.select(sort_depth_file, gene_list, args["candidate_allele_num"])
         # gene="A"
-        print ("record_candidate_alleles num:", len(record_candidate_alleles[gene]))
+        # print ("record_candidate_alleles num:", len(record_candidate_alleles[gene]))
         print (bam)
 
         record_read_allele_dict, allele_name_dict = construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_length)
@@ -467,7 +474,8 @@ def main(args):
         # for allele_name in allele_match_dict:
         #     print ("speclong depth", allele_name, allele_match_dict[allele_name], round(allele_match_dict[allele_name]/record_allele_length[allele_name]),allele_read_num_dict[allele_name])
 
-        if len(record_read_allele_dict) >= args["min_read_num"]:
+        print (gene, "read num:", len(record_read_allele_dict), "mapped allele num:", len(allele_name_dict))
+        if len(record_read_allele_dict) >= args["min_read_num"] and len(allele_name_dict) > 1:
             objective_value, type_allele_result, first_pair = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)
             split_assign_reads(gene, first_pair, record_read_allele_dict, outdir, gene_fq)  # output assigned reads to fastq
 
@@ -494,7 +502,7 @@ def main(args):
                 if homo_hete_ratio  <  homo_hete_ratio_cutoff:
                     type_allele_result = [type_allele_result[0]]      
         else:
-            print ("support read number is too low for %s"%(gene))
+            print ("support read number is too low or the mapped allele num is too low for %s, skip typing"%(gene))
             type_allele_result  = ['-', '-']
 
 
@@ -536,5 +544,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    # gene_list = ["HLA-B"]
+    # gene_list = ["HLA-A"]
     main(args)

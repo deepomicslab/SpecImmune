@@ -1,1 +1,0 @@
-from four_field_compare import parse_hla_hla_input

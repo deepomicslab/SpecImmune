@@ -17,7 +17,7 @@ def main(args):
     if args['i'] != "IG_TR":
         command = f"""
         ## first: read binning
-        python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 0 --db {args["db"]}
+        # python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]}
         ## second: find a pair of alleles for each HLA locus
         python3 {sys.path[0]}/select_best_reference_alleleV2.py -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
         """
@@ -31,16 +31,16 @@ def main(args):
         python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}  -i {args["i"]}   
         python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
         """
-        if args["first_run"]:
-            os.system(command)
+        # if args["first_run"]:
+        #     os.system(command)
         
         
         command = f"""
         ## forth: call & phasing variant & typing
-        python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} -m 2 --db {args["db"]} -i {args["i"]}
+        python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} -i {args["i"]}
 
         """
-        os.system(command)
+        # os.system(command)
     
     else:
         command = f"""

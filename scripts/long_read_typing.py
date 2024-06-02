@@ -1,5 +1,4 @@
 """
-Function 1 : assign long reads to the gene
 Function 2 : typing with only long reads
 """
 
@@ -16,154 +15,6 @@ from read_objects import My_read, My_locus, Read_bin
 from determine_gene import get_focus_gene
 from db_objects import My_db
 
-# interval_dict = {"A":"HLA_A:1000-4503", "B":"HLA_B:1000-5081","C": "HLA_C:1000-5304","DPA1":"HLA_DPA1:1000-10775",\
-#     "DPB1":"HLA_DPB1:1000-12468","DQA1":"HLA_DQA1:1000-7492","DQB1":"HLA_DQB1:1000-8480","DRB1":"HLA_DRB1:1000-12229" }
-# gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
-# gene_list = ['A']
-
-
-# class Read_Obj():
-#     # for each alignment record, extract information (identity, gene name)
-#     def __init__(self, read):
-#         mis_NM = 0
-#         for ta in read.get_tags():
-#             if ta[0] == 'NM':
-#                 mis_NM = ta[1]  
-
-#         self.match_num = 0  
-#         self.read_length = 0      
-#         for ci in read.cigar:
-#             self.read_length += ci[1]
-#             if ci[0] == 0:
-#                 self.match_num += ci[1]
-#             # if ci[0] == 0 or ci[0] == 1 or ci[0] == 2:
-#             #     self.match_num += ci[1]
-#             # if ci[0] == 1 or ci[0] == 2:
-#             #     mis_NM += ci[1]
-#         # print (read.query_name, read.reference_name, self.read_length, mis_NM)   
-#         # self.read_length = len(read.query_sequence) 
-
-#         self.read_name = read.query_name
-#         self.allele_name = read.reference_name
-#         self.mismatch_rate = round(float(mis_NM)/self.match_num, 6)
-#         self.match_rate = 1 - self.mismatch_rate
-
-#         # if self.match_num < 500:
-#         #     self.match_rate = 0
-
-#         self.loci_name = self.allele_name.split("*")[0]
-#         if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
-#             self.loci_name = "KIR2DL5"
-#         if self.read_length < 400 and self.allele_name[0:3] == "KIR":
-#             self.match_rate = 0
-
-class Score_Obj():
-    # determine which gene to assign
-    def __init__(self):
-        self.loci_score = {}
-        self.primary_dict = defaultdict(set)
-        self.read_loci = {}
-    
-    def add_read(self, read_obj):
-        # score = round(read_obj.match_rate * (1 - read_obj.mismatch_rate), 6)
-        if read_obj.primary:
-            self.primary_dict[read_obj.read_name].add(read_obj.allele_name)
-        # else:
-        #     return 0
-        # if read_obj.match_num < 100:
-        #     return 0
-        score = read_obj.match_rate
-        if read_obj.read_name not in self.loci_score:
-            self.loci_score[read_obj.read_name] = {}
-        
-        if read_obj.loci_name not in self.loci_score[read_obj.read_name]:
-            locus_obj = My_locus()
-            locus_obj.add_record(read_obj)
-
-            self.loci_score[read_obj.read_name][read_obj.loci_name] = locus_obj
-
-        else:
-            self.loci_score[read_obj.read_name][read_obj.loci_name].add_record(read_obj)
-        
-
-    
-    def assign(self, assign_file):
-        f = open(assign_file, 'w')
-        # print (len(self.loci_score))
-        for read_name in self.loci_score: # for each read
-            # if "508262af-89b0-42c3-8d64-07cbcf21d8b0" != read_name:
-            #     continue
-            # print (read_name, self.primary_dict[read_name])
-            read_bin = Read_bin(self.loci_score[read_name])
-            assigned_locus = read_bin.assign_multiple()
-            # print ("\n\n")
-
-            print (read_name, ",".join(assigned_locus), sep = "\t", file = f)
-            self.read_loci[read_name] = assigned_locus
-        f.close()
-        return self.read_loci
-
-
-class Score_Obj_bk():
-    # determine which gene to assign
-    def __init__(self):
-        self.loci_score = {}
-        self.loci_mismatch_score = {}
-        self.read_loci = {}
-    
-    def add_read(self, read_obj):
-        # score = round(read_obj.match_rate * (1 - read_obj.mismatch_rate), 6)
-        score = read_obj.match_rate
-        if read_obj.read_name not in self.loci_score:
-            self.loci_score[read_obj.read_name] = {}
-            self.loci_score[read_obj.read_name][read_obj.loci_name] = [score, read_obj.match_num]
-        elif read_obj.loci_name not in self.loci_score[read_obj.read_name]:
-            self.loci_score[read_obj.read_name][read_obj.loci_name] = [score, read_obj.match_num]
-        else:
-            if score > self.loci_score[read_obj.read_name][read_obj.loci_name][0]:
-                self.loci_score[read_obj.read_name][read_obj.loci_name] = [score, read_obj.match_num]
-    
-    def assign(self, assign_file):
-        f = open(assign_file, 'w')
-        # print (len(self.loci_score))
-        for read_name in self.loci_score: # for each read
-            assigned_locus = []
-            gene_score = sorted(self.loci_score[read_name].items(), key=lambda item: item[1][0], reverse = True)
-            gene_match_len = sorted(self.loci_score[read_name].items(), key=lambda  x: x[1][1], reverse = True)
-            # if len(gene_score) > 1 and (gene_score[0][0] == "DQB1"):
-            #     print (read_name, gene_score[:2])
-            if gene_score[0][1][0] <= Min_score:
-                continue
-            if len(gene_score) == 1: # mapped to only one gene, directly assign to that gene
-                assigned_locus = [gene_score[0][0]]
-            else:
-                # real-data based adjustment
-                
-
-                # if gene_score[0][0] == "DRB1" or gene_score[1][0] == "DRB1":
-                #     print (read_name, gene_score[0][0], gene_score[:5], gene_match_len[:5])
-                if gene_score[0][0] in ["HLA-U"] and gene_score[1][0] == "HLA-A" :
-                    assigned_locus = ["HLA-A"]                
-                elif gene_score[0][0] == "HLA-DRB1" and gene_score[0][1][0] - gene_score[1][1][0] < 0.05:  # 0.02 0.05
-                    continue
-                elif gene_score[0][0] == "HLA-DQB1" and gene_score[0][1][0] < 0.9:
-                    continue
-                elif gene_score[0][0] == 'HLA-DPB2' and gene_score[1][0] == "HLA-DPA1":
-                    assigned_locus = ["HLA-DPA1"]
-                elif gene_score[0][0] in ['HLA-DPB1', "HLA-DPA1"] and gene_score[1][0] in ['HLA-DPB1', "HLA-DPA1"]:
-                    assigned_locus = ['HLA-DPB1', "HLA-DPA1"]
-                # map to more than one gene, check the score difference
-                elif gene_score[0][1][0] - gene_score[1][1][0] >= Min_diff:
-                    assigned_locus = [gene_score[0][0]]
-                # score diff too small, can not determine which gene to assign
-                # discard this read
-                else:
-                    continue
-            # print ("assigned locus", assigned_locus)
-            print (read_name, assigned_locus, file = f)
-            self.read_loci[read_name] = assigned_locus
-        f.close()
-        return self.read_loci
 
 class Pacbio_Binning():
 
@@ -171,85 +22,9 @@ class Pacbio_Binning():
         self.db = my_db.lite_db
 
         self.sam = f"""{parameter.outdir}/{parameter.sample}.db.bam"""
-        
-        if args["m"] != 2:
-            self.map2db()
 
         self.bamfile = pysam.AlignmentFile(self.sam, 'rb')   
         self.assign_file = f"{parameter.outdir}/{parameter.sample}.assign.txt"
-
-    def index_db(self):
-        ref_index = self.db[:-5] + args["y"] + ".mmi"
-        # print ("search the reference index:", ref_index)
-        if not os.path.isfile(ref_index):
-            print ("start build Minimap2 index for the reference...")
-            os.system(f"minimap2 {minimap_para} -d {ref_index} {self.db} ")
-        else:
-            print (f"Detect Minimap2 index for the reference: {ref_index}")
-        self.db = ref_index
-
-    def map2db(self):
-        if args["minimap_index"] == 1:
-            self.index_db()
-        # map raw reads to database
-        alignDB_order = f"""
-        fq={parameter.raw_fq}
-        ref={self.db}
-        outdir={parameter.outdir}
-        bin={sys.path[0]}/../bin
-        sample={parameter.sample}
-        # minimap2 -t {parameter.threads} {minimap_para} -a $ref $fq |samtools view -bS -o {self.sam}
-        bwa mem -R '@RG\\tID:foo\\tSM:bar' -t {parameter.threads} {my_db.lite_db} $fq |samtools view -bS -o {self.sam}
-        echo alignment done.
-        """
-        # print (alignDB_order)
-        os.system(alignDB_order)
-
-    def read_bam(self):
-        # observe each read, assign it to gene based on alignment records
-        scor = Score_Obj()
-        for read in self.bamfile:
-            if read.is_unmapped:
-                continue
-            # print (read)
-            # read_obj = Read_Obj(read)
-            read_obj = My_read(read)
-            scor.add_read(read_obj)
-            # print (read_obj.read_name, read_obj.mismatch_rate, read_obj.allele_name )
-        read_loci = scor.assign(self.assign_file)
-        for gene in gene_list:
-            outfile = parameter.outdir + '/%s.%s.fq'%(gene, args["a"])
-            filter_fq(gene, read_loci, parameter.raw_fq, outfile)
-        print ("reads-binning done.\n\n\n")
-
-def filter_fq(gene, dict, raw_fq, outfile):
-    # output the assigned reads to the fastq file of each gene
-    i = 0
-    #gene = 'A'
-    
-    out = open(outfile, 'w')
-    flag = False
-    if raw_fq.split(".")[-1] == "gz":
-        f = gzip.open(raw_fq,'rt')
-    else:
-        f = open(raw_fq)
-    for line in f:
-        line = line.strip()
-        if i % 4 == 0:
-            read_name = line.split()[0][1:]
-            if read_name in dict.keys() and gene in dict[read_name]:
-                flag = True
-                num = 1
-                print (line, file = out)
-        elif flag:
-            print (line, file = out)
-            num += 1
-            if num == 4:
-                flag = False
-        i += 1
-    f.close()
-    out.close()
-    os.system('gzip -f %s'%(outfile))
 
 
 class Parameters():
@@ -426,21 +201,15 @@ if __name__ == "__main__":
         minimap_para = " -x map-ont "
 
 
-    ###assign reads
-    if args["m"] == 10086:
-        print ("skip assignment, just for testing")
-    elif args["m"] == 2:
-        print ("start variant pipeline ...")
-        pbin = Pacbio_Binning()
-    else:
-        pbin = Pacbio_Binning()
-        pbin.read_bam()        
 
-    if args["m"] != 0:
-        fa = Fasta()
-        fa.get_fasta()
-        print ("Sequence is reconstructed, start annotation...")
-        fa.annotation()
+    print ("start variant pipeline ...")
+    pbin = Pacbio_Binning()
+        
+    fa = Fasta()
+    fa.get_fasta()
+    print ("Sequence is reconstructed, start annotation...")
+    fa.annotation()
+
     print ("Finished.")
 
 

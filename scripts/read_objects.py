@@ -24,10 +24,43 @@ class My_read():
         self.match_rate = self.identity
         self.mismatch_rate = 1 - self.match_rate
         
-
-
     def get_match_length(self, read):
-   
+        ### the NM tag consists all insertion, deletion and mismatches in the alignment
+
+        # Get the alignment length in the read
+        self.alignment_len = alignment_length = read.query_alignment_length
+
+        # Get the alignment start position in the read
+        self.match_start_pos = read.query_alignment_start
+
+        # Get the alignment end position in the read
+        self.match_end_pos = read.query_alignment_end
+            
+        if not read.is_secondary:
+            self.primary = True
+
+        for ta in read.get_tags():
+            if ta[0] == 'NM':
+                self.mismatch_num = ta[1]  
+        
+        if self.alignment_len == 0:
+            print ("unmapped read", read.query_name, read.cigar)
+            sys.exit(0)
+        
+        self.match_num = self.alignment_len - self.mismatch_num
+        self.identity = self.match_num/self.alignment_len
+
+        self.read_name = read.query_name
+        self.allele_name = read.reference_name
+        self.loci_name = self.allele_name.split("*")[0]
+
+        if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
+            self.loci_name = "KIR2DL5"
+        if self.alignment_len < 400 and self.allele_name[0:3] == "KIR":
+            self.identity = 0
+
+    def get_match_length_bk(self, read):
+        ### the NM tag consists all insertion, deletion and mismatches in the alignment
         unmap_part_num = 0
         pos = 0
         for ci in read.cigar:

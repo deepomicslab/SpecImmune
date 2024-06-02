@@ -17,6 +17,8 @@ def assembly(fq, assmbly_dir, prefix, genome_size, seq_type="nanopore"):
         echo result is in {assmbly_dir}/{prefix}.contigs.fasta
     """
     contig = f"{assmbly_dir}/{prefix}.contigs.fasta"
-    return contig
+    
 
     os.system(cmd)
+
+    return contig
