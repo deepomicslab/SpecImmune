@@ -15,9 +15,8 @@ class My_db():
             os.makedirs(self.individual_ref_dir)
 
         if self.gene_class == "HLA":
-            self.full_db = f"""{args["db"]}/HLA/ref/HLA.extend.fasta"""   # 15578 alleles
-            self.lite_db = f"""{args["db"]}/HLA/ref/HLA.select.fasta"""   # 6172 alleles
-            self.lite_db = self.full_db
+            self.full_db = f"""{args["db"]}/whole/HLA.full.fasta"""   # 15578 alleles
+            self.lite_db = f"""{args["db"]}/whole/HLA.lite.fasta"""   # 6172 alleles
             # self.lite_db = f"/mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"
 
         elif self.gene_class == "KIR":
@@ -58,7 +57,8 @@ class My_db():
         #     ref = f"""{self.root}/KIR/ref/split/{gene}.exon.fasta"""
         # else:
         #     print ("wrong gene_class")
-        ref = f"""{self.root}/whole/{gene}.fasta"""
+        # ref = f"""{self.root}/whole/{gene}.fasta"""
+        ref = f"""{self.root}/whole/{gene}/{gene}.fasta"""
         # ref = f"""{self.root}/clean_whole/{gene}.fasta"""
         return ref
 

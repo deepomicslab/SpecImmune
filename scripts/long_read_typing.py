@@ -19,7 +19,7 @@ from db_objects import My_db
 class Pacbio_Binning():
 
     def __init__(self):
-        self.db = my_db.lite_db
+        self.db = my_db.full_db
 
         self.sam = f"""{parameter.outdir}/{parameter.sample}.db.bam"""
 
@@ -38,7 +38,7 @@ class Parameters():
         self.threads = args["j"]
         self.bin = "%s/../bin/"%(sys.path[0])      
         self.outdir = "%s/%s/"%(outdir, self.sample)
-        self.whole_dir = "%s/whole/"%(sys.path[0])
+        # self.whole_dir = "%s/whole/"%(sys.path[0])
 
         if not os.path.exists(args["o"]):
             os.system("mkdir %s"%(args["o"]))
@@ -98,7 +98,7 @@ class Fasta():
             else
                 set_dp=5
             fi
-            python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {parameter.outdir} -w 20 -d $set_dp
+            python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {parameter.outdir} -w 20 -d 5
             
             cp {mask_bed} {parameter.outdir}/{gene}.low_depth.bed
             longshot -F -c 2 -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval_dict[gene]} --bam {bam} --ref {hla_ref} --out {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf 
@@ -123,9 +123,9 @@ class Fasta():
         ## reconstruct HLA sequence based on the phased snps & sv
         for index in range(2):
             order = f"""
-            echo ">HLA_{gene}_{index}" >{parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
+            echo ">{gene}_{index}" >{parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
             cat {gene_work_dir}/{gene}.{index+1}.raw.fa|grep -v ">" >>{parameter.outdir}/hla.allele.{index+1}.{gene}.fasta    
-            samtools faidx {parameter.outdir}/hla.allele.{index+1}.HLA_{gene}.fasta    
+            samtools faidx {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta    
             """
             os.system(order)
 
@@ -137,12 +137,12 @@ class Fasta():
         # self.annotation()
 
     def annotation(self):
-        print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}/HLA """)
+        print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}""")
         print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}""")
         anno = f"""
-        perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}/HLA 
+        perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}
         cat {parameter.outdir}/hla.result.txt
-        python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}
+        python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}  -i {args["i"]}
         """
         # print (anno)
         os.system(anno)

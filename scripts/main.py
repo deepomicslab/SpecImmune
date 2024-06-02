@@ -21,18 +21,21 @@ def main(args):
         ## second: find a pair of alleles for each HLA locus
         python3 {sys.path[0]}/select_best_reference_alleleV2.py -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
         """
-        os.system(command)
+        #os.system(command)
 
         # build individual ref when first run
         
         my_db = My_db(args)
+        print(f"""python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}""")
         command = f"""
         ## third: build individual reference for each HLA locus
-        python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}  -i {args["i"]}   
+        python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
         python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
         """
+        
         # if args["first_run"]:
         #     os.system(command)
+
         
         
         command = f"""
