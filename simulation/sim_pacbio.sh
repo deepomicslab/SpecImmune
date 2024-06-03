@@ -21,9 +21,10 @@ do
 
 
     #### run
-    python ../scripts/main.py -n $sample -o $outdir -j 15 -y pacbio -i HLA -r $outdir/$sample/${sample}.fastq.gz --db /mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/ 
+    python ../scripts/main.py -n $sample -o $outdir -j 15 -y pacbio -i HLA -r $outdir/$sample/${sample}.fastq.gz --db ../db/ 
 
     #### evaluation
+    break
 
 done
 

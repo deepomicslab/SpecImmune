@@ -1,24 +1,40 @@
 #!/usr/bin/perl -w
 my ($sample,$outdir) = @ARGV;
 my (%hash, %hashc, %hashb,%hashr, %hash1,%hash2);
-my $db_fasta = "/mnt/d/HLAPro_backup/Nanopore_optimize//SpecComplex/db/HLA/ref/HLA.extend.fasta";
-my $hap_txt = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.txt";
+my $db_fasta = "../db/whole/HLA.full.fasta";
+my $hap_txt = "./HLA.ref.hap.txt";
 my $hap_fa ="/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/down/HLA.ref.hap.fa";
 open IN, $db_fasta or die "$!\n";
+# while(<IN>){
+# 	chomp;
+# 	s/^>//;
+# 	my $id = $_;
+# 	my $fa = <IN>;
+# 	chomp $fa;
+# 	### used to extract the middle region
+# 	# my $ll = length($fa);
+# 	# my $e = $ll - 600;
+# 	# my $ffa = substr($fa,299,$e);
+# 	my $ffa = $fa;  ## no need to extract the middle region
+# 	$hash{$id} = $ffa;
+# 	my $gene = (split /\*/,$id)[0];
+# 	if($gene =~ /KIR2DL5/){$gene = "KIR2DL5"}
+# 	$hashc{$gene} .= "$id\t";
+# }
+my $id = '';
 while(<IN>){
-	chomp;
-	s/^>//;
-	my $id = $_;
-	my $fa = <IN>;
-	chomp $fa;
-	my $ll = length($fa);
-	my $e = $ll - 600;
-	my $ffa = substr($fa,299,$e);
-	$hash{$id} = $ffa;
-	my $gene = (split /\*/,$id)[0];
-	if($gene =~ /KIR2DL5/){$gene = "KIR2DL5"}
-	$hashc{$gene} .= "$id\t";
+    chomp;
+    if (/^>/) {
+        $id = substr($_, 1);  # remove '>'
+        $hash{$id} = '';  # initialize sequence
+        my $gene = (split /\*/, $id)[0];
+        if($gene =~ /KIR2DL5/){$gene = "KIR2DL5"}
+        $hashc{$gene} .= "$id\t";
+    } else {
+        $hash{$id} .= $_;  # append to sequence
+    }
 }
+
 close IN;
 open COUT, ">$outdir/$sample.HLA.hap.alleles.txt";
 print COUT "Gene\tHap1\tHap2\n";
