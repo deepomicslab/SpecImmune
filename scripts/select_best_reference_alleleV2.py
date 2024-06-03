@@ -24,6 +24,8 @@ from determine_gene import get_focus_gene
 from db_objects import My_db
 from get_allele_depth import Get_depth
 from read_binning import filter_fq
+from get_db_version import get_IMGT_version
+
 # gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
   
 
@@ -110,7 +112,7 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
             allele_pair_obj.allele_1_obj.get_depth(record_allele_length[allele_pair_obj.allele_1])
             allele_pair_obj.allele_2_obj.get_depth(record_allele_length[allele_pair_obj.allele_2])
 
-            if gene in ["HLA-DPA1", 'HLA-DRB1'] :  # not DPB1
+            if gene in ["HLA-DPA1", 'HLA-DRB1', "HLA-A"] :  # not DPB1
                 depth_cutoff = 0.25
                 depth_l = [allele_pair_obj.allele_1_obj.depth, allele_pair_obj.allele_2_obj.depth]
                 if min(depth_l)/max(depth_l) < depth_cutoff:
@@ -421,8 +423,9 @@ def output_spechla_format(args, result_dict):
 def output_hlala_format(args, result_dict, reads_num_dict):
     outdir = args["o"] + "/" + args["n"]
     result = f"""{outdir}/{args["n"]}.{args["i"]}.type.result.txt"""
+    version_info = get_IMGT_version(args)
     f = open(result, 'w')
-    # print ("#", version_info, file = f)
+    print ("#", version_info, file = f)
     print ("Locus   Chromosome      Allele  Reads_num", file = f)
     for gene in gene_list:
         if len(result_dict[gene]) == 1:

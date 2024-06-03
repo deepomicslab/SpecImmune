@@ -1,4 +1,4 @@
-db=/mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/
+db=../db/
 
 # python ../scripts/long_read_typing.py -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/hifi_fq/HG00514_pacbio.fastq.gz -j 15 -i HLA -m 0 -n HG00514 -o test --db $db
 

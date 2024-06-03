@@ -14,6 +14,7 @@ import sys
 import pysam
 import argparse
 from determine_gene import get_focus_gene
+from get_db_version import get_IMGT_version
 
 
 def get_1_element(lst):
@@ -114,15 +115,6 @@ def compare_match_len_and_identity(match_sorted_list, identity_sorted_list, trut
     print ("selected allele is ", select_allele_list[0])
     return select_allele_list
     
-def get_IMGT_version():
-    g_file = "%s/whole/hla_nom_g.txt"%(args['db'])
-    G_annotation_dict = {}
-    i = 0
-    version_info = "N/A"
-    for line in open(g_file):
-        if re.search("# version:", line):
-            version_info = line.strip()
-    return version_info
 
 def select_by_alignment(align_list, gene):
     if len(align_list) == 0:
@@ -222,7 +214,7 @@ def select_by_alignment(align_list, gene):
 
 def output(record_best_match, gene_list, result_file, version_info):
     f = open(result_file, 'w')
-    # print ("#", version_info, file = f)
+    print ("#", version_info, file = f)
     print ("Locus   Chromosome      Allele", file = f)
     for gene in gene_list:
         for ch in [1, 2]:
@@ -232,8 +224,6 @@ def output(record_best_match, gene_list, result_file, version_info):
                 alleles += a[0] + ";"
             out_alleles = alleles[:-1]
             print (gene, ch, out_alleles, sep="\t", file = f)
-
-
     f.close()
 
 def get_blast_info(blastfile, tag):
@@ -279,7 +269,7 @@ if __name__ == "__main__":
 
     # HLA_data = "%s/../db/whole/hla_gen.fasta"%(sys.path[0])
     HLA_data = f"{args['db']}/whole/HLA.full.fasta"
-    version_info = get_IMGT_version()
+    version_info = get_IMGT_version(args)
     gene_list, interval_dict =  get_focus_gene(args)
 
     if not os.path.exists(args["o"]):
