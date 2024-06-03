@@ -19,8 +19,8 @@ while IFS= read -r file_path; do
 
 
     echo $file_basename
-    # if [ "1" == "1" ]; then
-    if [ "$file_basename" == "fredhutch-hla-KT17" ]; then
+    if [ "1" == "1" ]; then
+    # if [ "$file_basename" == "fredhutch-hla-KT17" ]; then
 
         # python $tool -n $file_basename -o $outdir -j 15 -y pacbio -i HLA -r $file_path --db /mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/ 
 

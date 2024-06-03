@@ -3,6 +3,12 @@ import re
 from collections import defaultdict
 import numpy as np
 
+import sys
+sys.path.insert(0, sys.path[0]+'/../scripts/')
+
+from get_lite_db import convert_field_for_allele
+
+
 gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 # gene_list = ['A', 'C', 'DRB1']
 
@@ -272,27 +278,6 @@ def has_intersection(list1, list2):
                 return True
     return False
 
-def convert_field_for_allele(allele, digit=8):
-    array = allele.split(":")
-    # print ("allele", allele, array)
-    one = array[0]
-    two  = array[0] + ":" + array[1]
-    if len(array) >= 3:
-        three  = array[0] + ":" + array[1]+ ":" + array[2]
-    else:
-        three  = two
-
-    if digit == 2:
-        allele = one
-    elif digit == 4:
-        allele = two
-    elif digit == 6:
-        allele = three
-    # mylist[j] = three
-    elif digit == 8:
-        allele = allele   
-    return allele
-
 def convert_field(mylist, digit=8):
     for j in range(len(mylist)):
         mylist[j] = convert_field_for_allele(mylist[j], digit)
@@ -386,8 +371,8 @@ def count_report_allele(truth_dict, all_hla_la_result):
 
 
 def assess_sim():
-    truth = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/test.HLA.hap.alleles.txt"
-    infer = "/home/wangshuai/softwares/SpecLong/test/test/test_HLA/test_HLA.HLA.type.result.txt"
+    truth = "../test/test.HLA.hap.alleles.txt"
+    infer = "../test/test/test_HLA/test_HLA.HLA.type.result.txt"
     sample_truth_dict = parse_simu_true(truth)
     sample_infer_dict = parse_hla_hla_input(infer)
     # print (sample_truth_dict)
@@ -431,5 +416,5 @@ if __name__ == "__main__":
     # parser.add_argument('output', help='Output VCF file path')
 
     # args = parser.parse_args()
-    main()
-    # assess_sim()
+    # main()
+    assess_sim()
