@@ -100,6 +100,8 @@ if __name__ == "__main__":
 
     # print (read_names)
 
+    # python3 ../evaluation/assess_read_bin.py $outdir/$sample/${sample}.assign.txt $outdir/$sample/$sample.HLA.sep.fa $outdir/$sample/${sample}.fastq.gz 
+
     read_assign = sys.argv[1]
     hap_fasta = sys.argv[2]
     fastq = sys.argv[3]
