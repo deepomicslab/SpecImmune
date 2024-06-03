@@ -394,7 +394,7 @@ def output_hlala_format(args, result_dict, reads_num_dict):
     result = f"""{outdir}/{args["n"]}.{args["i"]}.type.result.txt"""
     version_info = get_IMGT_version(args)
     f = open(result, 'w')
-    print ("#", version_info, file = f)
+    print (version_info, file = f)
     print ("Locus   Chromosome      Allele  Reads_num", file = f)
     for gene in gene_list:
         if len(result_dict[gene]) == 1:

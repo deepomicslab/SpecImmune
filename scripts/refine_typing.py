@@ -214,7 +214,7 @@ def select_by_alignment(align_list, gene):
 
 def output(record_best_match, gene_list, result_file, version_info):
     f = open(result_file, 'w')
-    print ("#", version_info, file = f)
+    print (version_info, file = f)
     print ("Locus   Chromosome      Allele", file = f)
     for gene in gene_list:
         for ch in [1, 2]:
