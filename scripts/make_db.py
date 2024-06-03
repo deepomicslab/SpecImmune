@@ -4,7 +4,7 @@ import subprocess
 from Bio import SeqIO
 from determine_gene import get_focus_gene_from_class
 
-def download_fasta_file(url, output_path):
+def download_file(url, output_path):
     """
     Download a FASTA file from a given URL and save it to a specified path using wget.
 
@@ -84,7 +84,8 @@ def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir, gene_
 
 def make_HLA_db():
     # URL to download the FASTA file
-    HLA_fasta_url = "https://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/hla_gen.fasta"
+    HLA_fasta_url = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/hla_gen.fasta"
+    release_version = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/release_version.txt"
 
     # Path to save the downloaded FASTA file within the output directory
     HLA_dir = os.path.join(args.outdir, "whole")
@@ -95,7 +96,9 @@ def make_HLA_db():
     gene_list, interval_dict = get_focus_gene_from_class("HLA")
     if not args.HLA_fa:
         local_fasta_filename = os.path.join(HLA_dir, "hla_gen.fasta")
-        download_fasta_file(HLA_fasta_url, local_fasta_filename)
+        local_release_version = os.path.join(HLA_dir, "release_version.txt")
+        download_file(HLA_fasta_url, local_fasta_filename)
+        download_file(release_version, local_release_version)
     else:
         local_fasta_filename = args.HLA_fa
 
