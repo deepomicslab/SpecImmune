@@ -169,15 +169,28 @@ def determine_largest(a, b):
 def print_match_results(sorted_record_allele_pair_match_len, record_allele_pair_sep_match, gene, record_allele_pair_identity):
     outdir = args["o"] + "/" + args["n"]
     out = open(f"""{outdir}/{args["n"]}.{gene}.allele.match.csv""", 'w')
-    print ("index,total_match","total_identity,allele_1,allele_1_identity,allele_1_depth,allele_2,allele_2_identity,allele_2_depth", file = out)
+    print ("index,total_match","total_identity,allele_1,allele_1_identity,allele_1_depth,allele_1_coverage,allele_2,allele_2_identity,allele_2_depth,allele_2_coverage", file = out)
 
-    data = []
     for i in range(len(sorted_record_allele_pair_match_len)):
         tag = sorted_record_allele_pair_match_len[i][0]
         allele_list = tag.split("&")
-        print (i, int(sorted_record_allele_pair_match_len[i][1]), round(record_allele_pair_identity[tag],3), allele_list[0], \
-            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),\
-             allele_list[1], round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3), round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]), sep = ",", file = out)
+
+        print(
+            i, 
+            int(sorted_record_allele_pair_match_len[i][1]), 
+            round(record_allele_pair_identity[tag],3), 
+            allele_list[0],
+            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),
+            round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),
+            round(record_allele_pair_sep_match[tag][allele_list[0]]["coverage"],3),
+            allele_list[1], 
+            round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3), 
+            round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]),
+            round(record_allele_pair_sep_match[tag][allele_list[1]]["coverage"],3), 
+            sep=",", 
+            file=out
+        )
+
     out.close()
 
 def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_identity,record_allele_pair_sep_match):
@@ -206,9 +219,21 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     for i in range(len(sorted_record_allele_pair_match_len)):
         tag = sorted_record_allele_pair_match_len[i][0]
         allele_list = tag.split("&")
-        print ("#pass len", int(sorted_record_allele_pair_match_len[i][1]), round(record_allele_pair_identity[tag],3), allele_list[0], \
-            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),round(record_allele_pair_sep_match[tag][allele_list[0]]["coverage"],3), \
-             allele_list[1], round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3), round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]), round(record_allele_pair_sep_match[tag][allele_list[1]]["coverage"],3),sep="\t")
+
+        print(
+            "#pass len", int(sorted_record_allele_pair_match_len[i][1]),
+            round(record_allele_pair_identity[tag],3),
+            allele_list[0],
+            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),
+            round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),
+            round(record_allele_pair_sep_match[tag][allele_list[0]]["coverage"],3),
+            allele_list[1],
+            round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3),
+            round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]),
+            round(record_allele_pair_sep_match[tag][allele_list[1]]["coverage"],3),
+            sep="\t"
+        )
+
         if (highest_match_score - sorted_record_allele_pair_match_len[i][1])/highest_match_score <= len_diff_cutoff:
             good_length_dict[tag] = record_allele_pair_identity[tag]
         else:
