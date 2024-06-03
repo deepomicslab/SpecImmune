@@ -2,6 +2,7 @@ import os
 import argparse
 import subprocess
 from Bio import SeqIO
+from determine_gene import get_focus_gene_from_class
 
 def download_fasta_file(url, output_path):
     """
@@ -16,7 +17,7 @@ def download_fasta_file(url, output_path):
     else:
         raise Exception(f"Failed to download file from {url}")
 
-def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir):
+def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir, gene_list, interval_dict):
     """
     Parse a FASTA file, create directories based on gene names, 
     and save corresponding sequences to these directories.
@@ -30,12 +31,13 @@ def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir):
     for seq_record in sequences:
         # Extract the gene name from the description, assuming the format is ">HLA:HLA00001 A*01:01:01:01 3503 bp"
         description_parts = seq_record.description.split()
-        gene_name = "HLA-"+description_parts[1].split('*')[0]
+        gene_name = description_parts[1].split('*')[0]
+        gene_name = gene_name if gene_name in gene_list else f"HLA-{gene_name}"
         sequence_name = description_parts[1]
 
         # Update the sequence ID and name
-        seq_record.id = "HLA-"+sequence_name
-        seq_record.name = "HLA-"+sequence_name
+        seq_record.id = sequence_name if gene_name in gene_list else f"HLA-{sequence_name}"
+        seq_record.name = sequence_name if gene_name in gene_list else f"HLA-{sequence_name}"
         seq_record.description = ""
         
         if gene_name not in gene_sequences:
@@ -89,6 +91,8 @@ def make_HLA_db():
     print(HLA_dir)
     if not os.path.exists(HLA_dir):
         os.makedirs(HLA_dir)
+
+    gene_list, interval_dict = get_focus_gene_from_class("HLA")
     if not args.HLA_fa:
         local_fasta_filename = os.path.join(HLA_dir, "hla_gen.fasta")
         download_fasta_file(HLA_fasta_url, local_fasta_filename)
@@ -96,7 +100,7 @@ def make_HLA_db():
         local_fasta_filename = args.HLA_fa
 
     # Parse the FASTA file and save sequences by gene
-    create_HLA_directories_and_save_sequences(local_fasta_filename, HLA_dir)
+    create_HLA_directories_and_save_sequences(local_fasta_filename, HLA_dir, gene_list, interval_dict)
 
 def main():
     make_HLA_db()

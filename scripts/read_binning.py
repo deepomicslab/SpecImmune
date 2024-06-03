@@ -128,7 +128,7 @@ class Score_Obj_bk():
 class Pacbio_Binning():
 
     def __init__(self):
-        self.db = my_db.lite_db
+        self.db = my_db.full_db
 
         self.sam = f"""{parameter.outdir}/{parameter.sample}.db.bam"""
         
@@ -159,7 +159,7 @@ class Pacbio_Binning():
         bin={sys.path[0]}/../bin
         sample={parameter.sample}
         # minimap2 -t {parameter.threads} {minimap_para} -a $ref $fq |samtools view -bS -o {self.sam}
-        bwa mem -R '@RG\\tID:foo\\tSM:bar' -t {parameter.threads} {my_db.lite_db} $fq |samtools view -bS -o {self.sam}
+        bwa mem -R '@RG\\tID:foo\\tSM:bar' -t {parameter.threads} {my_db.full_db} $fq |samtools view -bS -o {self.sam}
         echo alignment done.
         """
         # print (alignDB_order)

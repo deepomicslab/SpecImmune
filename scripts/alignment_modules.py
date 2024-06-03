@@ -38,7 +38,7 @@ class Alignment():
         outdir={parameter.outdir}
         sample={parameter.sample}
         # minimap2 -t {self.threads} {minimap_para} -a $ref $fq |samtools view -bS -o {self.bamfile}
-        bwa mem -R '@RG\\tID:foo\\tSM:bar' -t {self.threads} {my_db.lite_db} $fq |samtools view -bS -o {self.bamfile}
+        bwa mem -R '@RG\\tID:foo\\tSM:bar' -t {self.threads} {my_db.full_db} $fq |samtools view -bS -o {self.bamfile}
         echo alignment done.
         """
         # print (alignDB_order)
