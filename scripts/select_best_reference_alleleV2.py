@@ -387,6 +387,7 @@ def map2db(args, gene):
         os.system(alignDB_order)
     else:
         print("Depth file is detected.")
+    # os.system(alignDB_order)
 
     return bam, depth_file, sort_depth_file
 
@@ -544,5 +545,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    # gene_list = ["HLA-A"]
+    gene_list = ["HLA-A"]
     main(args)

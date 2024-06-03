@@ -15,13 +15,21 @@ def main(args):
         os.system("mkdir %s"%(outdir))
 
     if args['i'] != "IG_TR":
+
         command = f"""
         ## first: read binning
         python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]}
         ## second: find a pair of alleles for each HLA locus
+        """
+        if args["mode"] >= 4:
+            os.system(command)
+
+        command = f"""
+        ## second: find a pair of alleles for each HLA locus
         python3 {sys.path[0]}/select_best_reference_alleleV2.py -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
         """
-        os.system(command)
+        if args["mode"] >= 3:
+            os.system(command)
 
         # build individual ref when first run
         
@@ -32,9 +40,10 @@ def main(args):
         python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
         python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
         """
-        
         if args["first_run"]:
-            os.system(command)
+            if args["mode"] >= 2:
+                os.system(command)
+
 
         
         
@@ -43,7 +52,8 @@ def main(args):
         python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} -i {args["i"]}
 
         """
-        os.system(command)
+        if args["mode"] >= 1:
+            os.system(command)
     
     else:
         command = f"""
@@ -73,7 +83,7 @@ if __name__ == "__main__":
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=5)
     # optional.add_argument("-d", type=float, help="Minimum score difference to assign a read to a gene.", metavar="\b", default=0.001)
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
-    # optional.add_argument("-m", type=int, help="1 represents typing, 0 means only read assignment", metavar="\b", default=1)
+    optional.add_argument("--mode", type=int, help="4 represents all steps, 3 skip first, 2 skip two, 3, skipt three", metavar="\b", default=4)
     optional.add_argument("-k", type=int, help="The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking", metavar="\b", default=5)
     # optional.add_argument("-a", type=str, help="Prefix of filtered fastq file.", metavar="\b", default="long_read")
     optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio].", metavar="\b", default="pacbio")

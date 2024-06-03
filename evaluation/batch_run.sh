@@ -19,12 +19,12 @@ while IFS= read -r file_path; do
 
 
     echo $file_basename
-    if [ "1" == "1" ]; then
-    # if [ "$file_basename" == "fredhutch-hla-RSH" ]; then
+    # if [ "1" == "1" ]; then
+    if [ "$file_basename" == "fredhutch-hla-FH3" ]; then
 
         # python $tool -n $file_basename -o $outdir -j 15 -y pacbio -i HLA -r $file_path --db /mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/ 
 
-        python $tool -n $file_basename -o $outdir -j 15 -y nanopore -i HLA -r $file_path --db /mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/ 
+        python $tool --mode 3 -n $file_basename -o $outdir -j 15 -y nanopore -i HLA -r $file_path --db /mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/ 
         # python ~/softwares/SpecLong/scripts/select_best_reference_alleleV2.py -b 0.0007 -n $file_basename  -o output0 -j 15 -y nanopore
         #python /mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/script//refine_typing.py -n $file_basename  -o output/$file_basename/ 
         # python ~/softwares/SpecHLA/script/long_read_typing.py -n $file_basename -r $file_path  -j 15 -o output0 #-m 10086  #--strand_bias_pvalue_cutoff 0 #   --max_depth 500
