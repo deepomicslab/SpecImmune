@@ -112,6 +112,9 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
             allele_pair_obj.allele_1_obj.get_depth(record_allele_length[allele_pair_obj.allele_1])
             allele_pair_obj.allele_2_obj.get_depth(record_allele_length[allele_pair_obj.allele_2])
 
+            allele_pair_obj.allele_1_obj.get_coverage(record_allele_length[allele_pair_obj.allele_1])
+            allele_pair_obj.allele_2_obj.get_coverage(record_allele_length[allele_pair_obj.allele_2])
+
             if gene in ["HLA-DPA1", 'HLA-DRB1', "HLA-A"] :  # not DPB1
                 depth_cutoff = 0.25
                 depth_l = [allele_pair_obj.allele_1_obj.depth, allele_pair_obj.allele_2_obj.depth]
@@ -125,9 +128,11 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
             record_allele_pair_sep_match[tag][allele_name_list[i]] = {}
             record_allele_pair_sep_match[tag][allele_name_list[i]]["identity"] = allele_pair_obj.allele_1_obj.identity
             record_allele_pair_sep_match[tag][allele_name_list[i]]["depth"] = allele_pair_obj.allele_1_obj.depth
+            record_allele_pair_sep_match[tag][allele_name_list[i]]["coverage"] = allele_pair_obj.allele_1_obj.coverage
             record_allele_pair_sep_match[tag][allele_name_list[j]] = {}
             record_allele_pair_sep_match[tag][allele_name_list[j]]["identity"] = allele_pair_obj.allele_2_obj.identity
             record_allele_pair_sep_match[tag][allele_name_list[j]]["depth"] = allele_pair_obj.allele_2_obj.depth
+            record_allele_pair_sep_match[tag][allele_name_list[j]]["coverage"] = allele_pair_obj.allele_2_obj.coverage
 
     # print ("record_allele_pair_match_len", len(record_allele_pair_match_len))
     tag_list, highest_score = choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_identity,record_allele_pair_sep_match)
@@ -161,19 +166,6 @@ def determine_largest(a, b):
     else:
         return random.randint(0, 1)
 
-def select_alleles_by_identity_diff(record_allele_pair_sep_match, identity_cutoff=0.07, depth_cutoff= 0.25):
-    allele_pair_after_identity_diff = {}
-    for tag in record_allele_pair_sep_match:
-        allele_list = tag.split("&")
-        if abs(record_allele_pair_sep_match[tag][allele_list[1]]["identity"]  - record_allele_pair_sep_match[tag][allele_list[0]]["identity"]) > identity_cutoff:
-            continue
-        depth_l = [record_allele_pair_sep_match[tag][allele_list[0]]["depth"], record_allele_pair_sep_match[tag][allele_list[1]]["depth"]]
-        if min(depth_l)/max(depth_l) < depth_cutoff:
-            continue
-        allele_pair_after_identity_diff[tag] = 1
-    print ("alleles_after_identity_diff pair", len(allele_pair_after_identity_diff))
-    return allele_pair_after_identity_diff
-
 def print_match_results(sorted_record_allele_pair_match_len, record_allele_pair_sep_match, gene, record_allele_pair_identity):
     outdir = args["o"] + "/" + args["n"]
     out = open(f"""{outdir}/{args["n"]}.{gene}.allele.match.csv""", 'w')
@@ -197,14 +189,16 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     highest_match_score = sorted_record_allele_pair_match_len[0][1]
 
 
-    len_diff_cutoff = 1e-4 
+    len_diff_cutoff =  1e-4 
     ide_diff_cutoff = 0.001
     # if gene  in ["DQA1", "DRB1", "DPA1"]:
     #     len_diff_cutoff = 1e-3
-    if gene  in ["DPA1"]:
+    if gene  in ["HLA-DPA1"]:
         len_diff_cutoff = 1e-2
-    if gene  in ["DRB1"]:
+    if gene  in ["HLA-DRB1"]:
         len_diff_cutoff = 5e-2
+    if gene  in ["HLA-C"]:
+        len_diff_cutoff =  1e-3
     # if gene  in ["DPB1"]:
     #     len_diff_cutoff = 1e-2
 
@@ -213,22 +207,13 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
         tag = sorted_record_allele_pair_match_len[i][0]
         allele_list = tag.split("&")
         print ("#pass len", int(sorted_record_allele_pair_match_len[i][1]), round(record_allele_pair_identity[tag],3), allele_list[0], \
-            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),\
-             allele_list[1], round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3), round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]), sep="\t")
+            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),round(record_allele_pair_sep_match[tag][allele_list[0]]["coverage"],3), \
+             allele_list[1], round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3), round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]), round(record_allele_pair_sep_match[tag][allele_list[1]]["coverage"],3),sep="\t")
         if (highest_match_score - sorted_record_allele_pair_match_len[i][1])/highest_match_score <= len_diff_cutoff:
             good_length_dict[tag] = record_allele_pair_identity[tag]
         else:
             break
 
-    # for i in range(len(sorted_record_allele_pair_match_len)):
-    #     tag = sorted_record_allele_pair_match_len[i][0]
-    #     allele_list = tag.split("&")
-    #     print ("#", int(sorted_record_allele_pair_match_len[i][1]), round(record_allele_pair_identity[tag],3), allele_list[0], \
-    #         round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),\
-    #          allele_list[1], round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3), round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]), sep="\t")
-
-    #     if i > 100:
-    #         break
     identity_sorted_list = sorted(good_length_dict.items(), key=lambda x: x[1], reverse=True)
     match_len_with_max_identity = identity_sorted_list[0][1]
     full_result_list = []
@@ -240,48 +225,7 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
             if len(full_result_list) >= 30:
                 break
 
-
-    # first consider identity, then consider match length
-    # if gene == "DQA1":
-    #     len_diff_cutoff = 1e-2
-    #     ide_diff_cutoff = 4e-3
-    #     identity_sorted_list = sorted(record_allele_pair_identity.items(), key=lambda x: x[1], reverse=True)
-    #     match_len_with_max_identity = identity_sorted_list[0][1]
-    #     good_identity_dict = {}
-    #     full_result_list = []
-    #     for i in range(len(identity_sorted_list)):
-    #         if (match_len_with_max_identity - identity_sorted_list[i][1])/match_len_with_max_identity <= ide_diff_cutoff:
-    #             good_identity_dict[identity_sorted_list[i][0]] = record_allele_pair_match_len[identity_sorted_list[i][0]]
-    #             print (identity_sorted_list[i], record_allele_pair_match_len[identity_sorted_list[i][0]])
-    #         else:
-    #             break
-    #     match_len_sorted_list = sorted(good_identity_dict.items(), key=lambda x: x[1], reverse=True)
-    #     match_len_with_max_identity = match_len_sorted_list[0][1]
-    #     full_result_list = []
-    #     for i in range(len(match_len_sorted_list)):
-    #         if (match_len_with_max_identity - match_len_sorted_list[i][1])/match_len_with_max_identity <= len_diff_cutoff:
-    #             print ("match length", match_len_sorted_list[i])
-    #             full_result_list.append(match_len_sorted_list[i][0])
-                
-    #         if len(full_result_list) >= 30:
-    #             break
-
-
-
-    # print ("\nhomo\n")
-    # for i in range(len(sorted_record_allele_pair_match_len)):
-    #     tag = sorted_record_allele_pair_match_len[i][0]
-    #     if tag.split("&")[0] == tag.split("&")[1]:
-    #         print (tag.split("&"), int(sorted_record_allele_pair_match_len[i][1]), record_allele_pair_identity[tag], sep="\t")
-
-    # print ("\ntruth\n")
-    # tag = 'DQA1*01:03:01:01'  + "&" + "DQA1*01:04:02"
-    # print (tag, record_allele_pair_match_len[tag], record_allele_pair_identity[tag], sep="\t")
-
-    
-
     return full_result_list, highest_match_score
-
 
 def generate_output(tag_list):
     type_allele_result = ['', '']
@@ -289,10 +233,10 @@ def generate_output(tag_list):
         pair = tag.split("&")
         if len(type_allele_result[0]) == 0:
             type_allele_result = pair
-            if type_allele_result[0] == 'C*04:01:01:11':
-                type_allele_result[0] = 'C*04:01:01:01,C*04:01:01:11'
-            if type_allele_result[1] == 'C*04:01:01:11':
-                type_allele_result[1] = 'C*04:01:01:01,C*04:01:01:11'
+            # if type_allele_result[0] == 'C*04:01:01:11':
+            #     type_allele_result[0] = 'C*04:01:01:01,C*04:01:01:11'
+            # if type_allele_result[1] == 'C*04:01:01:11':
+            #     type_allele_result[1] = 'C*04:01:01:01,C*04:01:01:11'
         else:
             
             for p in pair:
@@ -307,8 +251,8 @@ def generate_output(tag_list):
                         if same_digit_num > max_digit_num[i]:
                             max_digit_num[i] = same_digit_num
                 if keep:
-                    if p == 'C*04:01:01:11':
-                        p = 'C*04:01:01:01,C*04:01:01:11'
+                    # if p == 'C*04:01:01:11':
+                    #     p = 'C*04:01:01:01,C*04:01:01:11'
                     if max_digit_num[0] > max_digit_num[1]:
                         type_allele_result[0] += "," + p
                     elif max_digit_num[0] < max_digit_num[1]:
@@ -497,7 +441,7 @@ def main(args):
 
             print (homo_hete_ratio, homo_hete_ratio_cutoff)
 
-            if gene == "C":
+            if gene == "HLA-C":
                 if cal_sim_of_alleles(type_allele_result[0].split(",")[0], type_allele_result[1].split(",")[0]) != 6:
                     if homo_hete_ratio  <  homo_hete_ratio_cutoff:
                         type_allele_result = [type_allele_result[0]]
@@ -548,5 +492,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    # gene_list = ["HLA-A"]
+    # gene_list = ["HLA-C"]
     main(args)

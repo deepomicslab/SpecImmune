@@ -1,7 +1,4 @@
-
-
-
-
+import sys
 
 class My_read():
 
@@ -16,6 +13,8 @@ class My_read():
         self.allele_name = None
         self.match_start_pos = 0
         self.match_end_pos = 0
+        self.reference_start = 0
+        self.reference_end = 0
         self.loci_name = None
         self.read_length = 0
         self.primary = False
@@ -28,13 +27,16 @@ class My_read():
         ### the NM tag consists all insertion, deletion and mismatches in the alignment
 
         # Get the alignment length in the read
-        self.alignment_len = alignment_length = read.query_alignment_length
+        self.alignment_len = read.query_alignment_length
 
         # Get the alignment start position in the read
         self.match_start_pos = read.query_alignment_start
 
         # Get the alignment end position in the read
         self.match_end_pos = read.query_alignment_end
+
+        self.reference_start = read.reference_start
+        self.reference_end = read.reference_end
             
         if not read.is_secondary:
             self.primary = True

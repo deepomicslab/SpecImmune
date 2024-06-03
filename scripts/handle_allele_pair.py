@@ -20,9 +20,19 @@ class Align_Obj(object):
         self.identity = 0
         self.assigned_reads = []
 
+        self.reference_start = float("inf")
+        self.reference_end = 0
+        self.coverage = 0
+
     def add_read(self, match_num, mismatch_num):
         self.match_num += match_num
         self.mismatch_num  += mismatch_num
+    
+    def add_read_ref(self, start, end):
+        if start < self.reference_start:
+            self.reference_start = start
+        if end > self.reference_end:
+            self.reference_end = end
 
     def get_identity(self):
         if self.match_num + self.mismatch_num == 0:
@@ -35,6 +45,9 @@ class Align_Obj(object):
     
     def get_depth(self, allele_length):
         self.depth = (self.match_num + self.mismatch_num)/allele_length
+
+    def get_coverage(self, allele_length):
+        self.coverage = (self.reference_end - self.reference_start)/allele_length
 
 
 class My_allele_pair():
@@ -73,10 +86,12 @@ class My_allele_pair():
                 read_assign_dict[read_name] = [self.allele_1]
                 self.allele_1_obj.add_read(record_read_allele_dict[read_name][self.allele_1].match_num, record_read_allele_dict[read_name][self.allele_1].mismatch_num)
                 self.pair_obj.add_read(record_read_allele_dict[read_name][self.allele_1].match_num, record_read_allele_dict[read_name][self.allele_1].mismatch_num)
+                self.allele_1_obj.add_read_ref(record_read_allele_dict[read_name][self.allele_1].reference_start, record_read_allele_dict[read_name][self.allele_1].reference_end)
             else:
                 read_assign_dict[read_name] = [self.allele_2]
                 self.allele_2_obj.add_read(record_read_allele_dict[read_name][self.allele_2].match_num, record_read_allele_dict[read_name][self.allele_2].mismatch_num)
                 self.pair_obj.add_read(record_read_allele_dict[read_name][self.allele_2].match_num, record_read_allele_dict[read_name][self.allele_2].mismatch_num)
+                self.allele_2_obj.add_read_ref(record_read_allele_dict[read_name][self.allele_2].reference_start, record_read_allele_dict[read_name][self.allele_2].reference_end)
 
             # if self.allele_1 == "HLA-A*02:01:01:35" and self.allele_2 == "HLA-A*03:08:01:02":
             #     print (read_name, larger_index)
