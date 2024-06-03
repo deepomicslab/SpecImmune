@@ -545,5 +545,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    gene_list = ["HLA-A"]
+    # gene_list = ["HLA-A"]
     main(args)
