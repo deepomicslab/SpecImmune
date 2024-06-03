@@ -258,7 +258,7 @@ sub tgs_blast{
 		for(my $i=1;$i<=$k;$i++){
 			my $tag = "$class"."_"."$i";
 			my $fa = "$fadir/hla.allele.$i.$class.fasta";
-			system("blastn -query $fa -out $fadir/tmp/$tag.blast.out1 -db $ref -outfmt 7 -num_threads 4 -max_target_seqs 2500 -perc_identity 95 -qcov_hsp_perc 10");
+			system("blastn -query $fa -out $fadir/tmp/$tag.blast.out1 -db $ref -outfmt 7 -num_threads 4 -max_target_seqs 10000000 -perc_identity 95 -qcov_hsp_perc 10");
 			my (%hash_max,%hash11,%hash12, %hash21, %hash22,$gene,$score);
 			open IN1, "$workdir/$tag.blast.out1" or die "$!\n";
 			while(<IN1>){
