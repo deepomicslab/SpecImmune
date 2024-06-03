@@ -46,9 +46,12 @@ def extract_contigs(input_fasta, output_fasta):
             fasta_out.write(f'>{contig}\n{seq}\n')
             contig_names[lite_contig] = 1
 
-# Example usage
-input_fasta = '/mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/HLA/ref/HLA.extend.fasta'
-output_fasta = '/mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/HLA/ref/HLA.select.lite.fasta'
+
+            
+if __name__ == "__main__":
+    # Example usage
+    input_fasta = '/mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/HLA/ref/HLA.extend.fasta'
+    output_fasta = '/mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/HLA/ref/HLA.select.lite.fasta'
 
 
-extract_contigs(input_fasta, output_fasta)
+    extract_contigs(input_fasta, output_fasta)

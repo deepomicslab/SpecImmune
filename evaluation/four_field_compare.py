@@ -369,6 +369,16 @@ def count_report_allele(truth_dict, all_hla_la_result):
     for gene in count_gene_array:
         print (gene, np.mean(count_gene_array[gene]), np.median(count_gene_array[gene]), min(count_gene_array[gene]), max(count_gene_array[gene]))
 
+def assess_sim_module(truth, infer, gene_list):
+    sample_truth_dict = parse_simu_true(truth)
+    sample_infer_dict = parse_hla_hla_input(infer)
+    # print (sample_truth_dict)
+    truth_dict, infer_dict = {}, {}
+    truth_dict["test"] = sample_truth_dict
+    infer_dict["test"] = sample_infer_dict
+    gene_list = [del_prefix(x) for x in gene_list]
+    compare_four(truth_dict, infer_dict, gene_list)
+
 
 def assess_sim():
     truth = "../test/test.HLA.hap.alleles.txt"

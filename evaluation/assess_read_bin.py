@@ -15,10 +15,12 @@ def extract_read_names(file_path):
 
 
 def extract_read_allele(hap_fasta):
+    # print (hap_fasta)
     read_allele_dict = {}
     with open(hap_fasta, 'r') as file:
         index = 1
         for line in file:
+            
             if line[0] != ">":
                 continue
             
@@ -90,10 +92,16 @@ def cal_bin_accuracy(hap_fasta, fastq, read_assign):
 
     return compare(true_read_names, infer_read_names)
 
-read_assign = "/home/wangshuai/softwares/SpecLong/test/test/test_HLA/test_HLA.assign.txt"
-hap_fasta = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/test.HLA.sep.fa"
-fastq = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/test.fastq.gz"
+if __name__ == "__main__":  
 
-# print (read_names)
+    # read_assign = "/home/wangshuai/softwares/SpecLong/test/test/test_HLA/test_HLA.assign.txt"
+    # hap_fasta = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/test.HLA.sep.fa"
+    # fastq = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/test.fastq.gz"
 
-cal_bin_accuracy(hap_fasta, fastq, read_assign)
+    # print (read_names)
+
+    read_assign = sys.argv[1]
+    hap_fasta = sys.argv[2]
+    fastq = sys.argv[3]
+
+    cal_bin_accuracy(hap_fasta, fastq, read_assign)
