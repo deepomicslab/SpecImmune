@@ -201,9 +201,9 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     ide_diff_cutoff = 0.001
     # if gene  in ["DQA1", "DRB1", "DPA1"]:
     #     len_diff_cutoff = 1e-3
-    if gene  in ["DPA1"]:
+    if gene  in ["HLA-DPA1"]:
         len_diff_cutoff = 1e-2
-    if gene  in ["DRB1"]:
+    if gene  in ["HLA-DRB1"]:
         len_diff_cutoff = 5e-2
     # if gene  in ["DPB1"]:
     #     len_diff_cutoff = 1e-2
@@ -497,7 +497,7 @@ def main(args):
 
             print (homo_hete_ratio, homo_hete_ratio_cutoff)
 
-            if gene == "C":
+            if gene == "HLA-C":
                 if cal_sim_of_alleles(type_allele_result[0].split(",")[0], type_allele_result[1].split(",")[0]) != 6:
                     if homo_hete_ratio  <  homo_hete_ratio_cutoff:
                         type_allele_result = [type_allele_result[0]]

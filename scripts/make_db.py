@@ -32,13 +32,16 @@ def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir, gene_
         # Extract the gene name from the description, assuming the format is ">HLA:HLA00001 A*01:01:01:01 3503 bp"
         description_parts = seq_record.description.split()
         gene_name = description_parts[1].split('*')[0]
-        gene_name = gene_name if gene_name in gene_list else f"HLA-{gene_name}"
+        # gene_name = gene_name if gene_name in gene_list else f"HLA-{gene_name}"
         sequence_name = description_parts[1]
 
         # Update the sequence ID and name
         seq_record.id = sequence_name if gene_name in gene_list else f"HLA-{sequence_name}"
         seq_record.name = sequence_name if gene_name in gene_list else f"HLA-{sequence_name}"
         seq_record.description = ""
+        gene_name = gene_name if gene_name in gene_list else f"HLA-{gene_name}"
+
+        print(seq_record.id, seq_record.name, seq_record.description, flush=True)
         
         if gene_name not in gene_sequences:
             gene_sequences[gene_name] = []
