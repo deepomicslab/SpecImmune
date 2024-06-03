@@ -48,63 +48,63 @@ my $fadir=$dir;
 my $workdir = "$dir/tmp";
 `mkdir  -p $workdir`;
 #population frequency
-open FIN, "$db/HLA_FREQ_HLA_I_II.txt" or die "$!\n";
-<FIN>;
-while(<FIN>){
-    chomp;
-    my ($gene,$c,$b,$a) = (split);
-    if($wxs eq "exon"){
-       $a = sprintf "%.3f",$a;
-       $b = sprintf "%.3f",$b;
-       $c = sprintf "%.3f",$c;
-    }
-    if($wxs eq "whole"){
-       $a = sprintf "%.8f",$a;
-       $b = sprintf "%.8f",$b;
-       $c = sprintf "%.8f",$c;
-    }
-    $hashpp{$gene} = "$c;$b;$a";
-    $hashp2{$gene} = ($a+$b+$c)/3;
-    if($pop eq "Unknown"){$hashp{$gene} = ($a+$b+$c)/3}
-    if($pop eq "Asian"){$hashp{$gene} = $a}
-    if($pop eq "Black"){$hashp{$gene} = $b}
-    if($pop eq "Caucasian"){$hashp{$gene} = $c}
-    if($pop eq "nonuse"){$hashp{$gene} = 0}
-}
-close FIN;
+# open FIN, "$db/HLA_FREQ_HLA_I_II.txt" or die "$!\n";
+# <FIN>;
+# while(<FIN>){
+#     chomp;
+#     my ($gene,$c,$b,$a) = (split);
+#     if($wxs eq "exon"){
+#        $a = sprintf "%.3f",$a;
+#        $b = sprintf "%.3f",$b;
+#        $c = sprintf "%.3f",$c;
+#     }
+#     if($wxs eq "whole"){
+#        $a = sprintf "%.8f",$a;
+#        $b = sprintf "%.8f",$b;
+#        $c = sprintf "%.8f",$c;
+#     }
+#     $hashpp{$gene} = "$c;$b;$a";
+#     $hashp2{$gene} = ($a+$b+$c)/3;
+#     if($pop eq "Unknown"){$hashp{$gene} = ($a+$b+$c)/3}
+#     if($pop eq "Asian"){$hashp{$gene} = $a}
+#     if($pop eq "Black"){$hashp{$gene} = $b}
+#     if($pop eq "Caucasian"){$hashp{$gene} = $c}
+#     if($pop eq "nonuse"){$hashp{$gene} = 0}
+# }
+# close FIN;
 
 #Convert HLA nomenclature
-open INL, "$db/hla_nom_g.txt" or die "$!\n";
-while(<INL>){
-        chomp;
-        next if(/^#/);
-        my ($tag, $line, $hh) = (split /;/, $_)[0,1,2];
-        if($hh && $g_nom){
-                my $value = "$tag"."$hh";
-                my @arrs = (split /\//,$line);
-                foreach my $kk(@arrs){
-                        my $hla = "$tag"."$kk";
-                        $hashg{$hla} = $value;
-                }
-        }else{
-                my $hla = "$tag"."$line";
-                $hashg{$hla} = $hla;
-        }
+# open INL, "$db/hla_nom_g.txt" or die "$!\n";
+# while(<INL>){
+#         chomp;
+#         next if(/^#/);
+#         my ($tag, $line, $hh) = (split /;/, $_)[0,1,2];
+#         if($hh && $g_nom){
+#                 my $value = "$tag"."$hh";
+#                 my @arrs = (split /\//,$line);
+#                 foreach my $kk(@arrs){
+#                         my $hla = "$tag"."$kk";
+#                         $hashg{$hla} = $value;
+#                 }
+#         }else{
+#                 my $hla = "$tag"."$line";
+#                 $hashg{$hla} = $hla;
+#         }
 
-}
-close INL;
+# }
+# close INL;
 #convertion of HLA id
-open IN, "$db/Allelelist.txt" or die "$!\n";
-while(<IN>){
-        chomp;
-	if(/version/){$version=$_}
-        next if(/^#/);
-        my ($id, $name) = (split /,/, $_)[0,1];
-        my $key = "HLA:"."$id";
-        my $hla=$name;
-        $hashc{$key} = $hla;
-}
-close IN;
+# open IN, "$db/Allelelist.txt" or die "$!\n";
+# while(<IN>){
+#         chomp;
+# 	if(/version/){$version=$_}
+#         next if(/^#/);
+#         my ($id, $name) = (split /,/, $_)[0,1];
+#         my $key = "HLA:"."$id";
+#         my $hla=$name;
+#         $hashc{$key} = $hla;
+# }
+# close IN;
 
 sub exon_blast{
     foreach my $class(@hlas){

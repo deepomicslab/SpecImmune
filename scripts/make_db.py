@@ -61,7 +61,6 @@ def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir, gene_
         cmd = f"""
         samtools faidx "{gene_fasta_filename}"
         bwa index "{gene_fasta_filename}"
-        {script_dir}/../bin/faToTwoBit "{gene_dir}"/{gene_name}.fasta "{gene_dir}"/{gene_name}.2bit
         makeblastdb -in "{gene_dir}"/{gene_name}.fasta -dbtype nucl -parse_seqids -out "{gene_dir}"/{gene_name}
         """
         print(cmd, flush=True)
@@ -76,7 +75,6 @@ def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir, gene_
     cmd = f"""
     samtools faidx "{merged_fasta_filename}"
     bwa index "{merged_fasta_filename}"
-    {script_dir}/../bin/faToTwoBit "{merged_fasta_filename}" "{os.path.join(output_base_dir, 'HLA.full.2bit')}"
     makeblastdb -in "{merged_fasta_filename}" -dbtype nucl -parse_seqids -out "{os.path.join(output_base_dir, 'HLA.full')}"
     """
     print(cmd, flush=True)
