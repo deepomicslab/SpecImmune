@@ -58,7 +58,7 @@ def main(args):
         elif args["analyze_method"] == "assembly":
             command = f"""
             ## forth: assembly
-            python3 {sys.path[0]}/assembly.py -o {args["o"]} -n {args["n"]} -j {args["j"]} -y {args["y"]}
+            python3 {sys.path[0]}/assembly.py -i {args["i"]} -o {args["o"]} -n {args["n"]} -j {args["j"]} -y {args["y"]}
             """
             if args["mode"] >= 1:
                 os.system(command)

@@ -2,8 +2,10 @@ import os
 from Bio import SeqIO
 import argparse
 import sys
+import pysam
 
 from alignment_modules import Read_Type
+from db_objects import My_db
 
 ## canu -nanopore  A.long_read.fq.gz -d test -p test genomeSize=4000
 
@@ -16,14 +18,16 @@ def get_first_contig(fasta_file, output_file):
             break
         out.close()
 
+def get_longest_read_length(fq):
+    longest_read = 0
+    with pysam.FastxFile(fq) as fh:
+        for entry in fh:
+            if len(entry.sequence) > longest_read:
+                longest_read = len(entry.sequence)
+    return longest_read
 
-def assembly(fq, outdir, genome_size, gene, index, flye_param):
 
-    """
-    -pacbio      <files>
-    -nanopore    <files>
-    -pacbio-hifi <files>
-    """
+def assembly(fq, outdir, genome_size, gene, index, flye_param, allele):
     prefix = f"{gene}_{index}"
     assmbly_dir = outdir + f"/{prefix}"
     # cmd = f"""
@@ -31,20 +35,26 @@ def assembly(fq, outdir, genome_size, gene, index, flye_param):
 
     # """
     # contig = f"{assmbly_dir}/{prefix}.contigs.fasta"
+    longest_read = get_longest_read_length(fq)
 
-    cmd = f"""
-        flye --min-overlap 1000 {flye_param} {fq} --out-dir {assmbly_dir} --genome-size {genome_size} --threads {args["j"]}
-    """
+    if longest_read > 1000:
 
-    print (cmd)
-    os.system(cmd)
-    contig = f"{assmbly_dir}/assembly.fasta"
+        cmd = f"""
+            flye --min-overlap 1000 {flye_param} {fq} --out-dir {assmbly_dir} --genome-size {genome_size} --threads {args["j"]}
+        """
 
-    ### only keep the first contig in the final result if there are multiple contigs
-    get_first_contig(contig, f"{outdir}/hla.allele.{index}.{gene}.fasta")
-    
+        print (cmd)
+        os.system(cmd)
+        contig = f"{assmbly_dir}/assembly.fasta"
 
-    
+        ### only keep the first contig in the final result if there are multiple contigs
+        get_first_contig(contig, f"{outdir}/hla.allele.{index}.{gene}.fasta")
+    else:
+        cmd = f"""
+            samtools faidx {my_db.full_db}  {allele} > {outdir}/hla.allele.{index}.{gene}.fasta
+        """
+        print (cmd)
+        os.system(cmd)
 
     return contig
 
@@ -54,9 +64,9 @@ def assembly_all(outdir, genome_size, flye_param):
     gene_index_dict = {}
     for fq in os.listdir(outdir):
         if fq.endswith(".fq.gz"):
-            prefix = fq.split(".")[0]
-            if len(prefix.split("*")) > 1:
-                gene = prefix.split("*")[0]
+            allele = fq.split(".")[0]
+            if len(allele.split("*")) > 1:
+                gene = allele.split("*")[0]
             else:
                 continue
             if gene in gene_index_dict:
@@ -65,7 +75,7 @@ def assembly_all(outdir, genome_size, flye_param):
                 gene_index_dict[gene] = 1
             fq = os.path.join(outdir, fq)
             
-            assembly(fq, outdir, genome_size, gene, gene_index_dict[gene], flye_param)
+            assembly(fq, outdir, genome_size, gene, gene_index_dict[gene], flye_param, allele)
 
 
 if __name__ == "__main__":  
@@ -76,6 +86,7 @@ if __name__ == "__main__":
 
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
     required.add_argument("-n", type=str, help="Sample ID", metavar="\b")
+    required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=5)
     optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio].", metavar="\b", default="pacbio")
     optional.add_argument("-h", "--help", action="help")
@@ -86,6 +97,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     read_type = Read_Type(args["y"])
+    my_db = My_db(args)
     flye_param = read_type.get_flye_param()
     outdir = args["o"] + "/" + args["n"]
 

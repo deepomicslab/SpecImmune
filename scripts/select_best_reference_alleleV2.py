@@ -158,7 +158,6 @@ def split_assign_reads(gene, first_pair, record_read_allele_dict, outdir, raw_fq
 
     filter_fq(allele_name_list[1], read_assign_dict, raw_fq, outfile)
 
-
 def determine_largest(a, b):
     if a > b:
         return 0
