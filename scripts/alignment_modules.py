@@ -1,66 +1,4 @@
 
-
-
-class Alignment():
-
-    def __init__(self, args):
-                self.args = args
-
-        self.reference = 
-
-        self.bamfile = 
-        self.sort_bam = None
-        self.threads = args["j"]
-        self.tool = tool
-
-
-
-    def index_db(self):
-        ref_index = self.reference[:-5] + self.args["y"] + ".mmi"
-        # print ("search the reference index:", ref_index)
-        if not os.path.isfile(ref_index):
-            print ("start build Minimap2 index for the reference...")
-            os.system(f"minimap2 {minimap_para} -d {ref_index} {self.db} ")
-        else:
-            print (f"Detect Minimap2 index for the reference: {ref_index}")
-        self.db = ref_index
-
-    
-
-    def run(self):
-    
-        if args["minimap_index"] == 1:
-            self.index_db()
-        # map raw reads to database
-        alignDB_order = f"""
-        fq={parameter.raw_fq}
-        ref={self.db}
-        outdir={parameter.outdir}
-        sample={parameter.sample}
-        # minimap2 -t {self.threads} {minimap_para} -a $ref $fq |samtools view -bS -o {self.bamfile}
-        bwa mem -R '@RG\\tID:foo\\tSM:bar' -t {self.threads} {my_db.full_db} $fq |samtools view -bS -o {self.bamfile}
-        echo alignment done.
-        """
-        # print (alignDB_order)
-        os.system(alignDB_order)
-
-    def sort_bam(self):
-
-    
-    def count_depth(self):
-
-        cmd = """
-        sample=%s
-        outdir=%s
-        hla=%s
-        hla_ref=%s
-        minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
-        samtools index $outdir/$hla.bam
-        samtools depth -d 1000000 -aa $outdir/$hla.bam >$outdir/$hla.depth
-        """%(parameter.sample, parameter.outdir, gene, my_db.get_gene_alleles(gene), parameter.threads, minimap_para, args["a"])
-        os.system(cmd)
-
-
 import os
 import pysam
 
@@ -105,28 +43,56 @@ class LongReadAligner:
         os.system(f"samtools depth -a {bam_file} > {output_depth}")
 
 
-reference = "reference.fasta"  # Replace with the path to your reference FASTA file
-fastq = "reads.fastq"  # Replace with the path to your raw FASTQ file
+### a class to accept read type, nanopore, pacbio or pacbio-hifi, add two functions to choose paramter for minimap2 and flyte
+class Read_Type:
+    def __init__(self, read_type):
+        self.read_type = read_type
+    
+    def get_minimap2_param(self):
+        if self.read_type == "nanopore":
+            return " -x map-ont "
+        elif self.read_type == "pacbio":
+            return " -x map-pb "
+        elif self.read_type == "pacbio-hifi":
+            return " -x map-hifi "
+        else:
+            raise ValueError("Invalid read type specified.")
+    
+    def get_flye_param(self):
+        if self.read_type == "nanopore":
+            return "--nano-raw"
+        elif self.read_type == "pacbio":
+            return "--pacbio-raw"
+        elif self.read_type == "pacbio-hifi":
+            return "--pacbio-hifi"
+        else:
+            raise ValueError("Invalid read type specified.")
 
-aligner = LongReadAligner(reference, fastq, alignment_method="minimap2")
 
-# Index the reference (if not already indexed)
-aligner.index_reference()
+if __name__ == "__main__":
 
-# Perform alignment
-output_sam = "aligned_reads.sam"
-aligner.align_reads(output_sam)
+    reference = "reference.fasta"  # Replace with the path to your reference FASTA file
+    fastq = "reads.fastq"  # Replace with the path to your raw FASTQ file
 
-# Sort the resulting BAM file
-input_bam = "aligned_reads.sam"
-output_bam = "sorted_reads.bam"
-aligner.sort_bam(input_bam, output_bam)
+    aligner = LongReadAligner(reference, fastq, alignment_method="minimap2")
 
-# Calculate depth from the sorted BAM file
-output_depth = "depth.txt"
-aligner.calculate_depth(output_bam, output_depth)
+    # Index the reference (if not already indexed)
+    aligner.index_reference()
 
-# Print the depth file
-with open(output_depth, 'r') as depth_file:
-    for line in depth_file:
-        print(line.strip())
+    # Perform alignment
+    output_sam = "aligned_reads.sam"
+    aligner.align_reads(output_sam)
+
+    # Sort the resulting BAM file
+    input_bam = "aligned_reads.sam"
+    output_bam = "sorted_reads.bam"
+    aligner.sort_bam(input_bam, output_bam)
+
+    # Calculate depth from the sorted BAM file
+    output_depth = "depth.txt"
+    aligner.calculate_depth(output_bam, output_depth)
+
+    # Print the depth file
+    with open(output_depth, 'r') as depth_file:
+        for line in depth_file:
+            print(line.strip())

@@ -14,6 +14,7 @@ from downsample_bam import main
 from read_objects import My_read, My_locus, Read_bin
 from determine_gene import get_focus_gene
 from db_objects import My_db
+from alignment_modules import Read_Type
 
 
 
@@ -247,7 +248,7 @@ if __name__ == "__main__":
     optional.add_argument("-m", type=int, help="1 represents typing, 0 means only read assignment", metavar="\b", default=1)
     optional.add_argument("-k", type=int, help="The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking", metavar="\b", default=5)
     optional.add_argument("-a", type=str, help="Prefix of filtered fastq file.", metavar="\b", default="long_read")
-    optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio].", metavar="\b", default="pacbio")
+    optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio|pacbio-hifi].", metavar="\b", default="pacbio")
     optional.add_argument("--minimap_index", type=int, help="Whether build Minimap2 index for the reference [0|1]. Using index can reduce memory usage.", metavar="\b", default=1)
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
     optional.add_argument("--strand_bias_pvalue_cutoff", type=float, help="Remove a variant if the allele observations are biased toward one strand (forward or reverse). Recommand setting 0 to high-depth data.", metavar="\b", default=0.01)
@@ -268,12 +269,9 @@ if __name__ == "__main__":
 
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
-
-    minimap_para = ''
-    if args["y"] == "pacbio":
-        minimap_para = " -x map-pb "
-    elif args["y"] == "nanopore":
-        minimap_para = " -x map-ont "
+    
+    read_type = Read_Type(args["y"])
+    minimap_para = read_type.get_minimap2_param()
 
 
     ###assign reads

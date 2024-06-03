@@ -25,6 +25,7 @@ from db_objects import My_db
 from get_allele_depth import Get_depth
 from read_binning import filter_fq
 from get_db_version import get_IMGT_version
+from alignment_modules import Read_Type
 
 # gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
   
@@ -315,11 +316,8 @@ def cal_sim_of_alleles(allele1, allele2):
 
 def map2db(args, gene):
 
-    minimap_para = ''
-    if args["y"] == "pacbio":
-        minimap_para = " -x map-pb "
-    elif args["y"] == "nanopore":
-        minimap_para = " -x map-ont "
+    read_type = Read_Type(args["y"])
+    minimap_para = read_type.get_minimap2_param()
 
     outdir = args["o"] + "/" + args["n"]
     sam = outdir + "/" + args["n"] + "." + gene + ".db.sam"
@@ -503,7 +501,7 @@ if __name__ == "__main__":
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     # optional.add_argument("-m", type=int, help="1 represents typing, 0 means only read assignment", metavar="\b", default=1)
-    optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio].", metavar="\b", default="pacbio")
+    optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio|pacbio-hifi].", metavar="\b", default="pacbio")
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 

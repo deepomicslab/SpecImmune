@@ -46,14 +46,25 @@ def main(args):
 
 
         
-        
-        command = f"""
-        ## forth: call & phasing variant & typing
-        python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} -i {args["i"]}
+        if args["analyze_method"] == "phase":
+            command = f"""
+            ## forth: call & phasing variant & typing
+            python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} -i {args["i"]}
 
-        """
-        if args["mode"] >= 1:
-            os.system(command)
+            """
+            if args["mode"] >= 1:
+                os.system(command)
+
+        elif args["analyze_method"] == "assembly":
+            command = f"""
+            ## forth: assembly
+            python3 {sys.path[0]}/assembly.py -o {args["o"]} -n {args["n"]} -j {args["j"]} -y {args["y"]}
+            """
+            if args["mode"] >= 1:
+                os.system(command)
+        else:
+            print("Please choose phase or assembly as analyze method.")
+            return
     
     else:
         command = f"""
@@ -84,9 +95,10 @@ if __name__ == "__main__":
     # optional.add_argument("-d", type=float, help="Minimum score difference to assign a read to a gene.", metavar="\b", default=0.001)
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     optional.add_argument("--mode", type=int, help="4 represents all steps, 3 skip first, 2 skip two, 3, skipt three", metavar="\b", default=4)
+    optional.add_argument("--analyze_method", type=str, help="phase/assembly", metavar="\b", default="phase")
     optional.add_argument("-k", type=int, help="The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking", metavar="\b", default=5)
     # optional.add_argument("-a", type=str, help="Prefix of filtered fastq file.", metavar="\b", default="long_read")
-    optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio].", metavar="\b", default="pacbio")
+    optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio|pacbio-hifi].", metavar="\b", default="pacbio")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
     # optional.add_argument("-dr", "--db_ref", type=str, help="database reference", metavar="\b", \
     #                        default=sys.path[0] + "/../db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta")
