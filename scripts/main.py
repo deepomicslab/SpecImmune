@@ -31,7 +31,7 @@ def main(args):
         if args["mode"] >= 3:
             os.system(command)
 
-        return
+        # return
 
         # build individual ref when first run
         my_db = My_db(args)

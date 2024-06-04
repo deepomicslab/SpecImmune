@@ -146,7 +146,7 @@ def parse_all_hla_hla_input(truth_dict):
     for sample in truth_dict:
         # input_file = f"hla_nanopore/hla_la/{sample}.txt"  # HLA*LA
         # input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output0/fredhutch-hla-{sample}/hlala.like.results.txt"  # SpecHLA
-        input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output6/fredhutch-hla-{sample}/fredhutch-hla-{sample}.HLA.type.result.txt"  # SpecLong
+        input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output5/fredhutch-hla-{sample}/fredhutch-hla-{sample}.HLA.type.result.txt"  # SpecLong
         print (input_file)
         ## check if input file exists use os
         if os.path.exists(input_file):
