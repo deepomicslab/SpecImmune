@@ -116,7 +116,7 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
             allele_pair_obj.allele_1_obj.get_coverage(record_allele_length[allele_pair_obj.allele_1])
             allele_pair_obj.allele_2_obj.get_coverage(record_allele_length[allele_pair_obj.allele_2])
 
-            if gene in ["HLA-DPA1", 'HLA-DRB1', "HLA-A"] :  # not DPB1
+            if gene in ['HLA-DRB1'] :  # not DPB1 , "HLA-A" "HLA-DPA1", 
                 depth_cutoff = 0.25
                 depth_l = [allele_pair_obj.allele_1_obj.depth, allele_pair_obj.allele_2_obj.depth]
                 if min(depth_l)/max(depth_l) < depth_cutoff:

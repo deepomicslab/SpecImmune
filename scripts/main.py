@@ -31,8 +31,9 @@ def main(args):
         if args["mode"] >= 3:
             os.system(command)
 
+        return
+
         # build individual ref when first run
-        
         my_db = My_db(args)
         print(f"""python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}""")
         command = f"""
