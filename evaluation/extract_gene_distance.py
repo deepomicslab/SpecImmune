@@ -4,6 +4,7 @@ import pickle
 
 sys.path.insert(0, sys.path[0]+'/../scripts/')
 from determine_gene import get_focus_gene
+from read_objects import get_interval_distance
 
 
 ## given a gene GTF file, extract the chr and interval of each gene, then given a gene list, return the distance matrix of these genes
@@ -41,12 +42,14 @@ def cal_distance(gene_list, gene_dict):
                 if chr1 != chr2:
                     distance = float("inf")
                 else:
-                    distance = abs(start1 - start2)
+                    distance = get_interval_distance([start1, end1], [start2, end2])
 
             distance_matrix[(gene1, gene2)] = distance
             distance_matrix[(gene2, gene1)] = distance
     return distance_matrix
 
+
+#### https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.ncbiRefSeq.gtf.gz
 gtf_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38.ncbiRefSeq.gtf"
 
 args = {}
@@ -57,6 +60,6 @@ gene_dict = extract_gene_distance(gtf_file)
 distance_matrix = cal_distance(gene_list, gene_dict)
 # store the distance matrix with pickle
 
-with open(args["i"] + '.distance_matrix.pkl', 'wb') as f:
+with open("../gene_dist/" + args["i"] + '.distance_matrix.pkl', 'wb') as f:
     pickle.dump(distance_matrix, f)
 print (distance_matrix)

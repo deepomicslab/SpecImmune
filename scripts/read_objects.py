@@ -138,13 +138,16 @@ class My_locus():  # the match for a single read in all the alleles of a locus
             if read_obj.match_end_pos > self.end:
                 self.end = read_obj.match_end_pos
 
+## given two intervals, get the distance between them
+def get_interval_distance(interval1, interval2):
+    return max(interval1[0], interval2[0]) - min(interval1[1], interval2[1])
 
 class Read_bin():  # the match for a single read in all the alleles of a locus
 
     def __init__(self, loci_object_dict):
         self.loci_object_dict = loci_object_dict
     
-    def assign_multiple(self, identity_diff = 0.01):
+    def assign_multiple(self, distance_matrix, identity_cutoff = 0.85, identity_diff = 0.01, dist_cutoff = 500):
 
         record_identity = {}
         for loci_name in self.loci_object_dict:
@@ -154,17 +157,31 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
         record_interval = []
         gene_score = sorted(record_identity.items(), key=lambda item: item[1], reverse = True)
         highest_identity = gene_score[0][1]
+        if highest_identity < identity_cutoff:   ## if the identity is too low, then skip
+            return assigned_locus
         for i in range(len(gene_score)):
             loci_name = gene_score[i][0]
             if highest_identity - self.loci_object_dict[loci_name].represent_identity > identity_diff:
                 break
             my_interval = [self.loci_object_dict[loci_name].start,self.loci_object_dict[loci_name].end]  
 
-            if len(record_interval) >= 2:
+            if len(record_interval) >= 2: # if there is at least a start and a end, then check overlap
                 store_intervalue = [min(record_interval), max(record_interval)]
                 # print (store_intervalue)
+                best_locus = assigned_locus[0]
+                ### get the distance between best_locus and loci_name, check if the key is in the matrix
+                if (best_locus, loci_name) in distance_matrix:
+                    distance = distance_matrix[(best_locus, loci_name)]
+                    ### get the distance between store_intervalue and my_interval
+                    local_distance = get_interval_distance(store_intervalue, my_interval)
+                    # skip if the distance in read is shorter than real distance
+                    if distance - local_distance > dist_cutoff:
+                        # print ("distance", distance, local_distance, store_intervalue, my_interval, best_locus, loci_name, highest_identity, self.loci_object_dict[loci_name].represent_identity)
+                        continue
+
+
                 if self.intervals_overlap(store_intervalue, my_interval):
-                    print ("overlap", store_intervalue, my_interval, assigned_locus, loci_name, highest_identity, self.loci_object_dict[loci_name].represent_identity)
+                    print ("#overlap", store_intervalue, my_interval, assigned_locus, loci_name, highest_identity, self.loci_object_dict[loci_name].represent_identity)
                     continue
                 # else:
                 #     print ("non overlap", store_intervalue, my_interval)
@@ -174,13 +191,6 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
         # print (assigned_locus)
         # print ("#####\n")
         return assigned_locus
-
-    # def intervals_overlap(self, interval1, interval2):
-    #     # Check if intervals overlap
-    #     if interval1[1] >= interval2[0] and interval2[1] >= interval1[0]:
-    #         return True
-    #     else:
-    #         return False
 
     def intervals_overlap(self, interval1, interval2):
         """

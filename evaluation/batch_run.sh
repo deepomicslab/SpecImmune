@@ -2,7 +2,7 @@
 
 # Specify the file list file
 file_list_file="/mnt/d/HLAPro_backup/Nanopore_optimize/data/fastq.list"
-outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/output6"
+outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/output5"
 
 # file_list_file="/mnt/d/HLAPro_backup/Nanopore_optimize/data/complex_reads/pacbio_hifi_hla.list"
 # outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/output_pac"
@@ -19,8 +19,8 @@ while IFS= read -r file_path; do
 
 
     echo $file_basename
-    if [ "1" == "1" ]; then
-    # if [ "$file_basename" == "fredhutch-hla-KOSE" ]; then
+    # if [ "1" == "1" ]; then
+    if [ "$file_basename" == "fredhutch-hla-KOSE" ]; then
 
         # python $tool -n $file_basename -o $outdir -j 15 -y pacbio -i HLA -r $file_path --db /mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/ 
 

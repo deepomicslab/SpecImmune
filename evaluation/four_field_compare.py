@@ -3,7 +3,7 @@ import re
 from collections import defaultdict
 import numpy as np
 
-import sys
+import sys, os
 sys.path.insert(0, sys.path[0]+'/../scripts/')
 
 from get_lite_db import convert_field_for_allele
@@ -146,9 +146,14 @@ def parse_all_hla_hla_input(truth_dict):
     for sample in truth_dict:
         # input_file = f"hla_nanopore/hla_la/{sample}.txt"  # HLA*LA
         # input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output0/fredhutch-hla-{sample}/hlala.like.results.txt"  # SpecHLA
-        input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output5/fredhutch-hla-{sample}/fredhutch-hla-{sample}.HLA.type.result.txt"  # SpecLong
+        input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output6/fredhutch-hla-{sample}/fredhutch-hla-{sample}.HLA.type.result.txt"  # SpecLong
         print (input_file)
-        input_dict = parse_hla_hla_input(input_file)
+        ## check if input file exists use os
+        if os.path.exists(input_file):
+            input_dict = parse_hla_hla_input(input_file)
+        else:
+            print(f"File {input_file} does not exist")
+            input_dict = {}
         all_hla_la_result[sample] = input_dict
     return all_hla_la_result
 
@@ -297,7 +302,10 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
         # for gene in truth_dict[sample]:
         for gene in gene_list:
             true_list = truth_dict[sample][gene]
-            # print (sample, gene, all_hla_la_result[sample])
+            if gene not in all_hla_la_result[sample]:
+                print (sample, gene, all_hla_la_result[sample])
+                continue
+            
             hla_la_list = all_hla_la_result[sample][gene]
             if true_list[1] == '':
                 true_list[1] = true_list[0]

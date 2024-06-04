@@ -7,6 +7,7 @@ import os
 import pysam
 import gzip
 import argparse
+import pickle
 from collections import defaultdict
 
 
@@ -16,6 +17,15 @@ from determine_gene import get_focus_gene
 from db_objects import My_db
 from alignment_modules import Read_Type
 
+def load_gene_distance():
+    # read the dict stored by pickle in ../gene_dist/HLA.distance_matrix.pkl, check if the file exists
+    if os.path.isfile(f"../gene_dist/{args['i']}.distance_matrix.pkl"):
+        with open("../gene_dist/HLA.distance_matrix.pkl", 'rb') as f:
+            distance_matrix = pickle.load(f)
+    else:
+        print("File does not exist.")
+        distance_matrix = {}
+    return distance_matrix
 
 
 class Score_Obj():
@@ -52,12 +62,13 @@ class Score_Obj():
         f = open(assign_file, 'w')
         # print (len(self.loci_score))
         for read_name in self.loci_score: # for each read
-            # if "508262af-89b0-42c3-8d64-07cbcf21d8b0" != read_name:
-            #     continue
-            # print (read_name, self.primary_dict[read_name])
+
             read_bin = Read_bin(self.loci_score[read_name])
-            assigned_locus = read_bin.assign_multiple()
+            # identity_cutoff = 0.85, identity_diff = 0.01, dist_cutoff = 500
+            assigned_locus = read_bin.assign_multiple(distance_matrix, args["min_identity"], args["max_identity_diff"], args["max_distance"]) 
             # print ("\n\n")
+            if "d51d293b-36fc-4a12-9978-46fbad8a7c18" == read_name:  ## fredhutch-hla-KOSE
+                print (read_name, self.primary_dict[read_name], assigned_locus)            
 
             print (read_name, ",".join(assigned_locus), sep = "\t", file = f)
             self.read_loci[read_name] = assigned_locus
@@ -164,7 +175,7 @@ class Pacbio_Binning():
         echo alignment done.
         """
         # print (alignDB_order)
-        os.system(alignDB_order)
+        # os.system(alignDB_order)
 
     def read_bam(self):
         # observe each read, assign it to gene based on alignment records
@@ -212,7 +223,6 @@ def filter_fq(gene, dict, raw_fq, outfile):
     out.close()
     os.system('gzip -f %s'%(outfile))
 
-
 class Parameters():
 
     def __init__(self):
@@ -244,6 +254,9 @@ if __name__ == "__main__":
     optional.add_argument("-p", type=str, help="The population of the sample [Asian, Black, Caucasian, Unknown, nonuse] for annotation. Unknown means use mean allele frequency in all populations. nonuse indicates only adopting mapping score and considering zero-frequency alleles.", metavar="\b", default="Unknown")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=5)
     optional.add_argument("-d", type=float, help="Minimum score difference to assign a read to a gene.", metavar="\b", default=0.001)
+    optional.add_argument("--min_identity", type=float, help="Minimum identity to assign a read.", metavar="\b", default=0.85)
+    optional.add_argument("--max_distance", type=int, help="max distance diff between read and hg38.", metavar="\b", default=2000)
+    optional.add_argument("--max_identity_diff", type=float, help="A read assigned to two loci if the identity difference is lower than this.", metavar="\b", default=0.01)
     optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     optional.add_argument("-m", type=int, help="1 represents typing, 0 means only read assignment", metavar="\b", default=1)
     optional.add_argument("-k", type=int, help="The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking", metavar="\b", default=5)
@@ -273,7 +286,7 @@ if __name__ == "__main__":
     read_type = Read_Type(args["y"])
     minimap_para = read_type.get_minimap2_param()
 
-
+    distance_matrix = load_gene_distance()
     ###assign reads
     if args["m"] == 10086:
         print ("skip assignment, just for testing")
