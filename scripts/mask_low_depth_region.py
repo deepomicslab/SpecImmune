@@ -103,7 +103,8 @@ class Mask_low():
         mean_depth_dict = {}
         for gene in self.depth_dict.keys():
             depth_list = self.depth_dict[gene]
-            mean_depth = np.mean(depth_list[1000:-1000])
+            # mean_depth = np.mean(depth_list[1000:-1000])
+            mean_depth = np.mean(depth_list)
             mean_depth_dict[gene] = round(mean_depth)
             # exon_intervals = self.read_exons(gene)
             exon_intervals = []

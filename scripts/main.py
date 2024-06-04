@@ -34,17 +34,16 @@ def main(args):
         # build individual ref when first run
         
         my_db = My_db(args)
-        print(f"""python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}""")
-        command = f"""
-        ## third: build individual reference for each HLA locus
-        python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
-        python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
-        """
+        # print(f"""python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}""")
         # command = f"""
-        # ## third: build individual reference for each HLA locus, two ref version
-        # python3 {sys.path[0]}/get_2_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}
-        # python3 {sys.path[0]}/build_2_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
+        # ## third: build individual reference for each HLA locus
+        # python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
+        # python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
         # """
+        command = f"""
+        ## third: build individual reference for each HLA locus, two ref version
+        python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {my_db.full_db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} 
+        """
         if args["first_run"]:
             if args["mode"] >= 2:
                 os.system(command)
