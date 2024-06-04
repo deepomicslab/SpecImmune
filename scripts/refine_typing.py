@@ -157,7 +157,7 @@ def select_by_alignment(align_list, gene):
         # 
         # print (">>>>>>>>>>max_match_len allele and max_identity allele don't match, report possible alleles")  
         len_diff_cutoff = 0.5 
-        ide_diff_cutoff = 0.0001
+        ide_diff_cutoff = 0.0002
         max_match_len = match_sorted_list[0][2]
         match_len_with_max_identity = identity_sorted_list[0][1]
 
@@ -214,7 +214,7 @@ def select_by_alignment(align_list, gene):
 
 def output(record_best_match, gene_list, result_file, version_info):
     f = open(result_file, 'w')
-    print (version_info, file = f)
+    print ("#", version_info, file = f)
     print ("Locus   Chromosome      Allele", file = f)
     for gene in gene_list:
         for ch in [1, 2]:
