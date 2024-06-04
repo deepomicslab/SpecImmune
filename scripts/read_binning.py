@@ -19,11 +19,12 @@ from alignment_modules import Read_Type
 
 def load_gene_distance():
     # read the dict stored by pickle in ../gene_dist/HLA.distance_matrix.pkl, check if the file exists
-    if os.path.isfile(f"../gene_dist/{args['i']}.distance_matrix.pkl"):
-        with open("../gene_dist/HLA.distance_matrix.pkl", 'rb') as f:
+    matrix_file = f"{sys.path[0]}/../gene_dist/{args['i']}.distance_matrix.pkl"
+    if os.path.isfile(matrix_file):
+        with open(matrix_file, 'rb') as f:
             distance_matrix = pickle.load(f)
     else:
-        print("File does not exist.")
+        print(matrix_file, "File does not exist.")
         distance_matrix = {}
     return distance_matrix
 
