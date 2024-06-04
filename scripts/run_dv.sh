@@ -51,7 +51,8 @@ singularity run -B /usr/lib/locale/:/usr/lib/locale/ \
   --output_vcf=/out_dir/$out_vcf_file \
   --output_gvcf=/out_dir/$out_gvcf_file \
   --intermediate_results_dir /out_dir/intermediate_results_dir \
-  --num_shards=$threads
+  --num_shards=$threads \
+  --sample_name='SAMPLE'
 
 
 # whatshap phase -o $out_phased_vcf --reference=$ref $out_vcf $bam --ignore-read-group
