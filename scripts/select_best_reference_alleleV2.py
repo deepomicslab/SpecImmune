@@ -26,6 +26,7 @@ from get_allele_depth import Get_depth
 from read_binning import filter_fq
 from get_db_version import get_IMGT_version
 from alignment_modules import Read_Type
+from check_if_homo import if_homo
 
 # gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
   
@@ -137,12 +138,13 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
 
     # print ("record_allele_pair_match_len", len(record_allele_pair_match_len))
     tag_list, highest_score = choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_identity,record_allele_pair_sep_match)
+    first_pair = tag_list[0]
     tag_list = order_result_pair(tag_list, record_allele_pair_sep_match)
     type_allele_result =  generate_output(tag_list)          
 
 
 
-    return highest_score, type_allele_result, tag_list[0]
+    return highest_score, type_allele_result, first_pair, record_allele_pair_sep_match
 
 def split_assign_reads(gene, first_pair, record_read_allele_dict, outdir, raw_fq):
     allele_name_list = first_pair.split("&")
@@ -386,19 +388,19 @@ def output_spechla_format(args, result_dict):
     # print (f"\nObjective value:\t", end = "\t", file = out)
     out.close()
 
-def output_hlala_format(args, result_dict, reads_num_dict):
+def output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict):
     outdir = args["o"] + "/" + args["n"]
     result = f"""{outdir}/{args["n"]}.{args["i"]}.type.result.txt"""
     version_info = get_IMGT_version(args)
     f = open(result, 'w')
     print (version_info, file = f)
-    print ("Locus   Chromosome      Allele  Reads_num", file = f)
+    print ("Locus   Chromosome      Allele  Reads_num   Homo_p", file = f)
     for gene in gene_list:
         if len(result_dict[gene]) == 1:
             result_dict[gene].append(result_dict[gene][0])
         for ch in [1, 2]:
             result_dict[gene][ch-1] = result_dict[gene][ch-1].replace(',', ';')
-            print (gene, ch, result_dict[gene][ch-1], reads_num_dict[gene], sep="\t", file = f)
+            print (gene, ch, result_dict[gene][ch-1], reads_num_dict[gene], homo_p_value_dict[gene], sep="\t", file = f)
     f.close()
     print ("result is", result)
 
@@ -413,6 +415,7 @@ def main(args):
 
     result_dict = {}
     reads_num_dict = {}
+    homo_p_value_dict = {}
 
 
     for gene in gene_list:
@@ -446,40 +449,47 @@ def main(args):
 
         print (gene, "read num:", len(record_read_allele_dict), "mapped allele num:", len(allele_name_dict))
         if len(record_read_allele_dict) >= args["min_read_num"] and len(allele_name_dict) > 1:
-            objective_value, type_allele_result, first_pair = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)
+            objective_value, type_allele_result, first_pair, record_allele_pair_sep_match = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)
             split_assign_reads(gene, first_pair, record_read_allele_dict, outdir, gene_fq)  # output assigned reads to fastq
 
             print (gene, type_allele_result, "\n\n")
+            homo_p_value = if_homo(record_allele_pair_sep_match, first_pair)
+            homo_p_value_dict[gene] = homo_p_value
+            if homo_p_value < 0.001:
+                type_allele_result = [type_allele_result[0]] 
+
+
             
 
-            homo_hete_ratio = (objective_value - allele_match_dict[type_allele_result[0].split(",")[0]])/ allele_match_dict[type_allele_result[0].split(",")[0]]
+            # homo_hete_ratio = (objective_value - allele_match_dict[type_allele_result[0].split(",")[0]])/ allele_match_dict[type_allele_result[0].split(",")[0]]
             
-            homo_hete_ratio_cutoff = args["b"]
+            # homo_hete_ratio_cutoff = args["b"]
 
-            if gene == "HLA-DPA1":
-                homo_hete_ratio_cutoff = 0.001
-            # if gene == "DQA1":
-            #     homo_hete_ratio_cutoff = 0.01
+            # if gene == "HLA-DPA1":
+            #     homo_hete_ratio_cutoff = 0.001
+            # # if gene == "DQA1":
+            # #     homo_hete_ratio_cutoff = 0.01
 
-            print (homo_hete_ratio, homo_hete_ratio_cutoff)
+            # print (homo_hete_ratio, homo_hete_ratio_cutoff)
 
-            if gene == "HLA-C":
-                if cal_sim_of_alleles(type_allele_result[0].split(",")[0], type_allele_result[1].split(",")[0]) != 6:
-                    if homo_hete_ratio  <  homo_hete_ratio_cutoff:
-                        type_allele_result = [type_allele_result[0]]
+            # if gene == "HLA-C":
+            #     if cal_sim_of_alleles(type_allele_result[0].split(",")[0], type_allele_result[1].split(",")[0]) != 6:
+            #         if homo_hete_ratio  <  homo_hete_ratio_cutoff:
+            #             type_allele_result = [type_allele_result[0]]
             
-            else:
-                if homo_hete_ratio  <  homo_hete_ratio_cutoff:
-                    type_allele_result = [type_allele_result[0]]      
+            # else:
+            #     if homo_hete_ratio  <  homo_hete_ratio_cutoff:
+            #         type_allele_result = [type_allele_result[0]]      
         else:
             print ("support read number is too low or the mapped allele num is too low for %s, skip typing"%(gene))
             type_allele_result  = ['-', '-']
+            homo_p_value_dict[gene] = 'NA'
 
 
         result_dict[gene] = type_allele_result
         print (gene, type_allele_result, "\n\n")
     # output_spechla_format(args, result_dict)
-    output_hlala_format(args, result_dict, reads_num_dict)
+    output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict)
     
 
 
@@ -514,5 +524,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    # gene_list = ["HLA-C"]
+    # gene_list = ["HLA-A"]
     main(args)
