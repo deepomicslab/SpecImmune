@@ -41,6 +41,11 @@ def main(args):
         python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
         python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
         """
+        # command = f"""
+        # ## third: build individual reference for each HLA locus, two ref version
+        # python3 {sys.path[0]}/get_2_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}
+        # python3 {sys.path[0]}/build_2_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
+        # """
         if args["first_run"]:
             if args["mode"] >= 2:
                 os.system(command)

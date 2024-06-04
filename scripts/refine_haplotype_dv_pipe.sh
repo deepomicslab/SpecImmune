@@ -14,7 +14,8 @@ longphase=$scripts_dir/../bin/longphase
 # Sniffles 
 refined_sv=$gene_work_dir/HLA_$hla.snisv.vcf
 filtered_sv=$gene_work_dir/HLA_$hla.snisv.filtered.vcf
-snv_vcf=$gene_work_dir/../$sample.$hla.phased.vcf.gz
+snv_vcf=$gene_work_dir/../$sample.$hla.dv.vcf
+phased_snv_vcf=$gene_work_dir/$sample.$hla.dv.phased.vcf.gz
 
 # def
 run_sniffles() {
@@ -73,14 +74,17 @@ esac
 echo "sniffles for $sample !"
 run_sniffles $genotype_error $minsupport $mapq $cluster_binsize $cluster_r $cluster_merge_pos
 
+#whatshap phase
+whatshap phase -o $phased_snv_vcf --reference=$hla_ref $snv_vcf $bam --ignore-read-group
+
 # Whatshap haplotag
 echo "haplotag for $sample !"
-echo "whatshap haplotag --ignore-read-groups -o $gene_work_dir/haplotagged.$hla.bam --reference $hla_ref $snv_vcf $bam --output-haplotag-list $gene_work_dir/hap.tsv"
+echo "whatshap haplotag --ignore-read-groups -o $gene_work_dir/haplotagged.$hla.bam --reference $hla_ref $phased_snv_vcf $bam --output-haplotag-list $gene_work_dir/hap.tsv"
 whatshap haplotag \
     --ignore-read-groups  \
     -o $gene_work_dir/haplotagged.$hla.bam \
     --reference $hla_ref \
-    $snv_vcf \
+    $phased_snv_vcf \
     $bam \
     --output-haplotag-list $gene_work_dir/hap.tsv
 
@@ -99,7 +103,7 @@ samtools index $gene_work_dir/haplotagged.$hla.bam
 # Longphase
 # todo:: change to spechap here 
 echo "longphase for $sample !"
-$longphase phase -s $snv_vcf \
+$longphase phase -s $phased_snv_vcf \
     -b $gene_work_dir/haplotagged.$hla.bam \
     -r $hla_ref \
     --sv-file $refined_sv \
@@ -118,7 +122,7 @@ bcftools sort $snv_sv_merged -Oz -o $sorted_snv_sv_merged
 tabix -f $sorted_snv_sv_merged
 
 if [[ "$hla" =~ ^(A|B|C)$ ]]; then
-    sorted_snv_sv_merged=$snv_vcf
+    sorted_snv_sv_merged=$phased_snv_vcf
 else
     sorted_snv_sv_merged=$gene_work_dir/$sample.$hla.snv_sv.merged.sorted.vcf.gz
     # sorted_snv_sv_merged=$snv_vcf

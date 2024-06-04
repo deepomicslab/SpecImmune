@@ -34,15 +34,15 @@ def download_and_convert(url):
     os.system(prefetch_command)
 
     # Convert the downloaded SRA file to SAM format using sam-dump
-    sam_dump_command = f"sam-dump {err_number}/{err_number}.sra > {err_number}.sam"
+    sam_dump_command = f"sam-dump {sample_name}/{err_number}/{err_number}.sra > {sample_name}/{err_number}/{err_number}.sam"
     os.system(sam_dump_command)
     
     # Convert SAM to BAM format using samtools and move to the sample directory
-    bam_command = f"samtools view -Sb {err_number}.sam > {sample_name}/{bam_filename}"
+    bam_command = f"samtools view -Sb {sample_name}/{err_number}/{err_number}.sam > {sample_name}/{err_number}/{bam_filename}"
     os.system(bam_command)
 
     # Optionally, remove the intermediate SAM file to save space
-    os.remove(f"{err_number}.sam")
+    os.remove(f"{sample_name}/{err_number}/{err_number}.sam")
 
 # Input file path
 input_file = 'igsr_HGSVC2_PacBio_CLR.txt'

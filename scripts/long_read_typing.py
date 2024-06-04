@@ -91,6 +91,8 @@ class Fasta():
         print ("xxx", hla_ref)
         # call snp
         mask_bed=f"{parameter.outdir}/low_depth.bed"
+        ovcf=f"{parameter.outdir}/{parameter.sample}.{gene}.dv.vcf"
+        ogvcf=f"{parameter.outdir}/{parameter.sample}.{gene}.dv.g.vcf"
         call_phase_cmd= f"""
             set_dp={args["k"]}
             avg_depth=$(samtools depth -a {bam} | awk '{awk_script}')
@@ -108,6 +110,8 @@ class Fasta():
             zcat {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf.gz >{parameter.outdir}/{parameter.sample}.{gene}.phased.vcf          
             bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.phased.vcf
             tabix -f {parameter.outdir}/{parameter.sample}.{gene}.phased.vcf.gz
+
+            # bash {sys.path[0]}/run_dv.sh {hla_ref} {bam} {ovcf} {ogvcf} {parameter.threads} {interval_dict[gene]}
         """
         os.system(call_phase_cmd)
 
@@ -119,6 +123,9 @@ class Fasta():
         sv_cmd = f"""
             bash {sys.path[0]}/refine_haplotype_pipe.sh {bam} {hla_ref} {gene} {interval_dict[gene]} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample} 
         """
+        # sv_cmd = f"""
+        #     bash {sys.path[0]}/refine_haplotype_dv_pipe.sh {bam} {hla_ref} {gene} {interval_dict[gene]} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample} 
+        # """
         os.system(sv_cmd)
 
         ## reconstruct HLA sequence based on the phased snps & sv
