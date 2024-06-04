@@ -66,77 +66,16 @@ class Score_Obj():
 
             read_bin = Read_bin(self.loci_score[read_name])
             # identity_cutoff = 0.85, identity_diff = 0.01, dist_cutoff = 500
-            assigned_locus = read_bin.assign_multiple(distance_matrix, args["min_identity"], args["max_identity_diff"], args["max_distance"]) 
+            assigned_locus = read_bin.assign_multiple(distance_matrix, read_name, args["min_identity"], args["max_identity_diff"], args["max_distance"]) 
             # print ("\n\n")
-            if "d51d293b-36fc-4a12-9978-46fbad8a7c18" == read_name:  ## fredhutch-hla-KOSE
-                print (read_name, self.primary_dict[read_name], assigned_locus)            
+            # if "d51d293b-36fc-4a12-9978-46fbad8a7c18" == read_name:  ## fredhutch-hla-KOSE
+            #     print (read_name, self.primary_dict[read_name], assigned_locus)            
 
             print (read_name, ",".join(assigned_locus), sep = "\t", file = f)
             self.read_loci[read_name] = assigned_locus
         f.close()
         return self.read_loci
 
-
-class Score_Obj_bk():
-    # determine which gene to assign
-    def __init__(self):
-        self.loci_score = {}
-        self.loci_mismatch_score = {}
-        self.read_loci = {}
-    
-    def add_read(self, read_obj):
-        # score = round(read_obj.match_rate * (1 - read_obj.mismatch_rate), 6)
-        score = read_obj.match_rate
-        if read_obj.read_name not in self.loci_score:
-            self.loci_score[read_obj.read_name] = {}
-            self.loci_score[read_obj.read_name][read_obj.loci_name] = [score, read_obj.match_num]
-        elif read_obj.loci_name not in self.loci_score[read_obj.read_name]:
-            self.loci_score[read_obj.read_name][read_obj.loci_name] = [score, read_obj.match_num]
-        else:
-            if score > self.loci_score[read_obj.read_name][read_obj.loci_name][0]:
-                self.loci_score[read_obj.read_name][read_obj.loci_name] = [score, read_obj.match_num]
-    
-    def assign(self, assign_file):
-        f = open(assign_file, 'w')
-        # print (len(self.loci_score))
-        for read_name in self.loci_score: # for each read
-            assigned_locus = []
-            gene_score = sorted(self.loci_score[read_name].items(), key=lambda item: item[1][0], reverse = True)
-            gene_match_len = sorted(self.loci_score[read_name].items(), key=lambda  x: x[1][1], reverse = True)
-            # if len(gene_score) > 1 and (gene_score[0][0] == "DQB1"):
-            #     print (read_name, gene_score[:2])
-            if gene_score[0][1][0] <= Min_score:
-                continue
-            if len(gene_score) == 1: # mapped to only one gene, directly assign to that gene
-                assigned_locus = [gene_score[0][0]]
-            else:
-                # real-data based adjustment
-                
-
-                # if gene_score[0][0] == "DRB1" or gene_score[1][0] == "DRB1":
-                #     print (read_name, gene_score[0][0], gene_score[:5], gene_match_len[:5])
-                if gene_score[0][0] in ["HLA-U"] and gene_score[1][0] == "HLA-A" :
-                    assigned_locus = ["HLA-A"]                
-                elif gene_score[0][0] == "HLA-DRB1" and gene_score[0][1][0] - gene_score[1][1][0] < 0.05:  # 0.02 0.05
-                    continue
-                elif gene_score[0][0] == "HLA-DQB1" and gene_score[0][1][0] < 0.9:
-                    continue
-                elif gene_score[0][0] == 'HLA-DPB2' and gene_score[1][0] == "HLA-DPA1":
-                    assigned_locus = ["HLA-DPA1"]
-                elif gene_score[0][0] in ['HLA-DPB1', "HLA-DPA1"] and gene_score[1][0] in ['HLA-DPB1', "HLA-DPA1"]:
-                    assigned_locus = ['HLA-DPB1', "HLA-DPA1"]
-                # map to more than one gene, check the score difference
-                elif gene_score[0][1][0] - gene_score[1][1][0] >= Min_diff:
-                    assigned_locus = [gene_score[0][0]]
-                # score diff too small, can not determine which gene to assign
-                # discard this read
-                else:
-                    continue
-            # print ("assigned locus", assigned_locus)
-            print (read_name, assigned_locus, file = f)
-            self.read_loci[read_name] = assigned_locus
-        f.close()
-        return self.read_loci
 
 class Pacbio_Binning():
 
@@ -176,7 +115,7 @@ class Pacbio_Binning():
         echo alignment done.
         """
         # print (alignDB_order)
-        os.system(alignDB_order)
+        # os.system(alignDB_order)
 
     def read_bam(self):
         # observe each read, assign it to gene based on alignment records
@@ -257,7 +196,7 @@ if __name__ == "__main__":
     optional.add_argument("-d", type=float, help="Minimum score difference to assign a read to a gene.", metavar="\b", default=0.001)
     optional.add_argument("--min_identity", type=float, help="Minimum identity to assign a read.", metavar="\b", default=0.85)
     optional.add_argument("--max_distance", type=int, help="max distance diff between read and hg38.", metavar="\b", default=2000)
-    optional.add_argument("--max_identity_diff", type=float, help="A read assigned to two loci if the identity difference is lower than this.", metavar="\b", default=0.01)
+    optional.add_argument("--max_identity_diff", type=float, help="A read assigned to two loci if the identity difference is lower than this.", metavar="\b", default=0.1)
     optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     optional.add_argument("-m", type=int, help="1 represents typing, 0 means only read assignment", metavar="\b", default=1)
     optional.add_argument("-k", type=int, help="The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking", metavar="\b", default=5)

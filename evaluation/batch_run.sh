@@ -9,7 +9,7 @@ outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/output5"
 
 
 
-tool="/home/wangshuai/softwares/SpecLong/scripts/main.py"
+tool="/home/wangshuai/softwares/SpecLong/scripts/main_test.py"
 
 # Read the file list file line by line
 while IFS= read -r file_path; do
