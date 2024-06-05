@@ -68,7 +68,7 @@ class My_allele_pair():
     def assign_reads(self, record_read_allele_dict):
         read_assign_dict = {}
         # test_tag = "HLA-S*01:01:01:01&HLA-S*01:02:01:03"
-        # test_tag = "HLA-S*01:02:01:02&HLA-S*01:02:01:03"
+        # test_tag = "HLA-A*30:01:01:01&HLA-A*68:278"
         for read_name in record_read_allele_dict:
 
             ### read not support both allele

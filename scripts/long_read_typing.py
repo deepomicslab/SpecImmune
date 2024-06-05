@@ -10,7 +10,7 @@ import argparse
 from collections import defaultdict
 
 
-from downsample_bam import main
+from downsample_bam import downsample_func
 from read_objects import My_read, My_locus, Read_bin
 from determine_gene import get_focus_gene
 from db_objects import My_db
@@ -69,7 +69,7 @@ class Fasta():
         input_depth = f"{parameter.outdir}/{gene}.depth"
         output_bam = f"{parameter.outdir}/{gene}.downsample.bam"
         output_depth = f"{parameter.outdir}/{gene}.downsample.depth"
-        downsample_ratio = main(input_bam, output_bam, input_depth, output_depth, max_depth, seed)
+        downsample_ratio = downsample_func(input_bam, output_bam, input_depth, output_depth, max_depth, seed)
         print (f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
         if downsample_ratio < 1:
             os.system(f"rm {input_bam}")
@@ -147,7 +147,7 @@ class Fasta():
             seed = args["seed"]
             output_bam = f"{parameter.outdir}/{gene}.{index}.downsample.bam"
             output_depth = f"{parameter.outdir}/{gene}.{index}.downsample.depth"
-            downsample_ratio = main(bam, output_bam, depth_file, output_depth, max_depth, seed)
+            downsample_ratio = downsample_func(bam, output_bam, depth_file, output_depth, max_depth, seed)
             if ":" in interval_dict[gene]:
                 interval_split=interval_dict[gene].split(":")
                 interval=f"{interval_split[0]}_ref{index+1}:{interval_split[1]}"

@@ -27,6 +27,7 @@ from read_binning import filter_fq
 from get_db_version import get_IMGT_version
 from alignment_modules import Read_Type
 from check_if_homo import if_homo
+from downsample_bam import downsample_func
 
 # gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
   
@@ -205,8 +206,8 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
 
 
     # len_diff_cutoff = 1e-2  #1e-4 
-    len_diff_cutoff = 0 
-    ide_diff_cutoff = 0   # 1e-4  # 0.001
+    len_diff_cutoff = 1e-3 
+    ide_diff_cutoff = 1e-4   # 1e-4  # 0.001
     # if gene  in ["DQA1", "DRB1", "DPA1"]:
     #     len_diff_cutoff = 1e-3
 
@@ -275,8 +276,9 @@ def generate_output(tag_list):
             for i in range(2):
                 type_allele_result[i].add(pair[i])
         else:
-            max_digit_num_list1 = [get_most_common_allele(type_allele_result[0], pair[0]), get_most_common_allele(type_allele_result[1], pair[1])]
-            max_digit_num_list2 = [get_most_common_allele(type_allele_result[1], pair[0]), get_most_common_allele(type_allele_result[1], pair[1])]
+            max_digit_num_list1 = [get_most_common_allele(type_allele_result[0], pair[0]), get_most_common_allele(type_allele_result[1], pair[0])]
+            max_digit_num_list2 = [get_most_common_allele(type_allele_result[1], pair[1]), get_most_common_allele(type_allele_result[1], pair[1])]
+            # print (max_digit_num_list1, max_digit_num_list2)
 
             if max_digit_num_list1[0] > max_digit_num_list1[1]:
                 direction = "forward"
@@ -288,15 +290,18 @@ def generate_output(tag_list):
                 direction = "forward"
             else:
                 direction = "forward"
+            # print (direction)
             if direction == "forward":
                 for i in range(2):
                     type_allele_result[i].add(pair[i])
             else:
                 for i in range(2):
                     type_allele_result[i].add(pair[1-i])
+        
+        # print (pair, type_allele_result)
     for i in range(2):
         type_allele_result[i] = ",".join(list(type_allele_result[i]))
-    print ("type_allele_result", type_allele_result)
+    # print ("type_allele_result", type_allele_result)
     return type_allele_result
 
 
@@ -331,7 +336,7 @@ def generate_output_bk(tag_list):
                             type_allele_result[0] += "," + p
                         if same_index != 1:
                             type_allele_result[1] += "," + p
-    print ("type_allele_result", type_allele_result)
+    # print ("type_allele_result", type_allele_result)
     return type_allele_result
 
 def order_result_pair(type_allele_result, record_allele_pair_sep_match):
@@ -346,7 +351,7 @@ def order_result_pair(type_allele_result, record_allele_pair_sep_match):
         #     tag = allele_list[1] + "&" + allele_list[0]
 
         sort_type_allele_result.append(tag)
-    print ("sort_type_allele_result", sort_type_allele_result)
+    # print ("sort_type_allele_result", sort_type_allele_result)
     return sort_type_allele_result
 
 def cal_sim_of_alleles(allele1, allele2):
@@ -403,6 +408,15 @@ def map2db(args, gene):
     else:
         print("Depth file is detected.")
     # os.system(alignDB_order)
+
+    ### downsample the bam file, bug here, cannot downsample as the depth file is not correct
+    # seed = 8
+    # output_bam = outdir + "/" + args["n"] + "." + gene + ".db.sub.bam"
+    # output_depth = outdir + "/" + args["n"] + "." + gene + ".db.sub.depth"
+    # downsample_ratio = downsample_func(bam, output_bam, depth_file, output_depth, args["max_depth"], seed)
+    # print ("downsample_ratio", downsample_ratio)
+    # if downsample_ratio < 1:
+    #     bam, depth_file = output_bam, output_depth
 
     return bam, depth_file, sort_depth_file
 
@@ -532,7 +546,10 @@ def main(args):
 
 
         result_dict[gene] = type_allele_result
-        print (gene, type_allele_result, "\n\n")
+        if len(type_allele_result) == 2:
+            print (gene, "hete", type_allele_result[0], "****", type_allele_result[1], "\n\n")
+        else:
+            print (gene, "homo", type_allele_result[0], "\n\n")
     # output_spechla_format(args, result_dict)
     output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict)
     
@@ -556,6 +573,7 @@ if __name__ == "__main__":
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     # optional.add_argument("-m", type=int, help="1 represents typing, 0 means only read assignment", metavar="\b", default=1)
     optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio|pacbio-hifi].", metavar="\b", default="pacbio")
+    # optional.add_argument("--max_depth", type=int, help="maximum depth for each HLA locus. Downsample if exceed this value.", metavar="\b", default=10000)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
@@ -569,5 +587,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    # gene_list = ["HFE"]
+    # gene_list = ["HLA-A"]
     main(args)

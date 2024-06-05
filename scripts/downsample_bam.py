@@ -35,7 +35,7 @@ def handle_bam(output_bam, output_depth):
     os.system(cmd)
 
 
-def main(input_bam, output_bam, input_depth, output_depth, max_depth, seed):
+def downsample_func(input_bam, output_bam, input_depth, output_depth, max_depth, seed):
 
     get_depth = Get_depth(input_depth)
     get_depth.record_depth()
@@ -46,6 +46,7 @@ def main(input_bam, output_bam, input_depth, output_depth, max_depth, seed):
             depth_list = get_depth.depth_dict[gene][allele]
 
     mean_depth = np.mean(depth_list)
+    # print ("mean_depth", mean_depth, len(depth_list), depth_list, input_depth)
 
     if mean_depth <= max_depth:
         return 1

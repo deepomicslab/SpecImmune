@@ -11,7 +11,6 @@ import pickle
 from collections import defaultdict
 
 
-from downsample_bam import main
 from read_objects import My_read, My_locus, Read_bin
 from determine_gene import get_focus_gene
 from db_objects import My_db
