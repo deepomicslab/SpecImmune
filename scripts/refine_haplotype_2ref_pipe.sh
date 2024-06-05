@@ -9,13 +9,18 @@ mask_bed=$5
 gene_work_dir=$6
 threads=$7
 sample=$8
+allele_idx=$9
 scripts_dir=$(dirname $0)
 longphase=$scripts_dir/../bin/longphase
 # Sniffles 
 refined_sv=$gene_work_dir/HLA_$hla.snisv.vcf
 filtered_sv=$gene_work_dir/HLA_$hla.snisv.filtered.vcf
-snv_vcf=$gene_work_dir/../$sample.$hla.dv.vcf
-phased_snv_vcf=$gene_work_dir/$sample.$hla.dv.phased.vcf.gz
+snv_vcf=$gene_work_dir/../$sample.$hla.$allele_idx.phased.vcf.gz
+hom_snv_vcf=$gene_work_dir/../$sample.$hla.$allele_idx.phased.hom.vcf.gz
+
+# only keep 1/1
+bcftools view -g hom $snv_vcf -Oz -o $hom_snv_vcf
+tabix -f $hom_snv_vcf
 
 # def
 run_sniffles() {
@@ -74,19 +79,16 @@ esac
 echo "sniffles for $sample !"
 run_sniffles $genotype_error $minsupport $mapq $cluster_binsize $cluster_r $cluster_merge_pos
 
-#whatshap phase
-whatshap phase -o $phased_snv_vcf --reference=$hla_ref $snv_vcf $bam --ignore-read-group
-tabix -f $phased_snv_vcf
 # Whatshap haplotag
-echo "haplotag for $sample !"
-echo "whatshap haplotag --ignore-read-groups -o $gene_work_dir/haplotagged.$hla.bam --reference $hla_ref $phased_snv_vcf $bam --output-haplotag-list $gene_work_dir/hap.tsv"
-whatshap haplotag \
-    --ignore-read-groups  \
-    -o $gene_work_dir/haplotagged.$hla.bam \
-    --reference $hla_ref \
-    $phased_snv_vcf \
-    $bam \
-    --output-haplotag-list $gene_work_dir/hap.tsv
+# echo "haplotag for $sample !"
+# echo "whatshap haplotag --ignore-read-groups -o $gene_work_dir/haplotagged.$hla.bam --reference $hla_ref $snv_vcf $bam --output-haplotag-list $gene_work_dir/hap.tsv"
+# whatshap haplotag \
+#     --ignore-read-groups  \
+#     -o $gene_work_dir/haplotagged.$hla.bam \
+#     --reference $hla_ref \
+#     $snv_vcf \
+#     $bam \
+#     --output-haplotag-list $gene_work_dir/hap.tsv
 
 
 # whatshap split --output-h1 $outdir/h0.bam --output-h2 $gene_work_dir/h1.bam $gene_work_dir/haplotagged.bam $gene_work_dir/hap.tsv --output-untagged $gene_work_dir/untag.bam
@@ -98,33 +100,34 @@ whatshap haplotag \
 # samtools index $gene_work_dir/h1_untag.bam
 
 
-samtools index $gene_work_dir/haplotagged.$hla.bam
+# samtools index $gene_work_dir/haplotagged.$hla.bam
 
 # Longphase
 # todo:: change to spechap here 
-echo "longphase for $sample !"
-$longphase phase -s $phased_snv_vcf \
-    -b $gene_work_dir/haplotagged.$hla.bam \
-    -r $hla_ref \
-    --sv-file $refined_sv \
-    -o $gene_work_dir/longphase \
-    --ont
+# echo "longphase for $sample !"
+# $longphase phase -s $snv_vcf \
+#     -b $gene_work_dir/haplotagged.$hla.bam \
+#     -r $hla_ref \
+#     --sv-file $refined_sv \
+#     -o $gene_work_dir/longphase \
+#     --ont
 
 echo "filtering for $sample !"
-bcftools view -i 'GT!="0/0" && GT!="." && GT!="./." && INFO/PRECISE=1' $gene_work_dir/longphase_SV.vcf -o $filtered_sv
+# bcftools view -i 'GT!="0/0" && GT!="." && GT!="./." && INFO/PRECISE=1' $gene_work_dir/longphase_SV.vcf -o $filtered_sv
+bcftools view -i 'INFO/PRECISE=1' -g hom $refined_sv -o $filtered_sv
 
-fmt_sv=$gene_work_dir/HLA_$hla.snisv.filtered.fmt.vcf
+fmt_sv=$gene_work_dir/HLA_$hla.$allele_idx.snisv.filtered.fmt.vcf
 python $scripts_dir/vcf2seq.py $filtered_sv $hla_ref $fmt_sv
-snv_sv_merged=$gene_work_dir/$sample.$hla.snv_sv.merged.vcf.gz
-bcftools concat $fmt_sv $gene_work_dir/longphase.vcf -Oz -o $snv_sv_merged
-sorted_snv_sv_merged=$gene_work_dir/$sample.$hla.snv_sv.merged.sorted.vcf.gz
+snv_sv_merged=$gene_work_dir/$sample.$hla.$allele_idx.snv_sv.merged.vcf.gz
+bcftools concat $fmt_sv $hom_snv_vcf -Oz -o $snv_sv_merged
+sorted_snv_sv_merged=$gene_work_dir/$sample.$hla.$allele_idx.snv_sv.merged.sorted.vcf.gz
 bcftools sort $snv_sv_merged -Oz -o $sorted_snv_sv_merged
 tabix -f $sorted_snv_sv_merged
 
 if [[ "$hla" =~ ^(A|B|C)$ ]]; then
-    sorted_snv_sv_merged=$phased_snv_vcf
+    sorted_snv_sv_merged=$hom_snv_vcf
 else
-    sorted_snv_sv_merged=$gene_work_dir/$sample.$hla.snv_sv.merged.sorted.vcf.gz
+    sorted_snv_sv_merged=$gene_work_dir/$sample.$hla.$allele_idx.snv_sv.merged.sorted.vcf.gz
     # sorted_snv_sv_merged=$snv_vcf
 fi
 
@@ -210,5 +213,6 @@ fi
 
 echo "gene : $hla"
 echo "file : $sorted_snv_sv_merged"
-samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
-samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
+hap_idx=$(expr $allele_idx + 1)
+samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.$hap_idx.raw.fa
+# samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa

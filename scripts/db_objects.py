@@ -46,6 +46,10 @@ class My_db():
         ### record representative allele of each gene
         # return self.gene_all_alleles_dir + f"/{gene}.fasta"
         return self.individual_ref_dir + f"/{gene}/{gene}.fasta"
+    
+    def get_gene_alleles_2ref(self, gene, ref_idx):
+        ### record representative allele of each gene
+        return self.individual_ref_dir + f"/{gene}/{gene}.{ref_idx+1}.fasta"
 
 
     def get_gene_all_alleles(self, gene):
