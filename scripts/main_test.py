@@ -18,11 +18,11 @@ def main(args):
 
         command = f"""
         ## first: read binning
-        python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]}
+        python3 {sys.path[0]}/read_binning.py -m 2 -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]}
         ## second: find a pair of alleles for each HLA locus
         """
-        # if args["mode"] >= 4:
-        #     os.system(command)
+        if args["mode"] >= 4:
+            os.system(command)
         # return
         command = f"""
         ## second: find a pair of alleles for each HLA locus

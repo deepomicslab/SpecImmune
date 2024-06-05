@@ -7,7 +7,7 @@ outdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads/
 
 for i in {1..5}
 do
-    sample=pacbio_dp50_acc95_$i
+    sample=pacbio_dp50_acc98_$i
 
     #### simulation
     # mkdir $outdir/$sample
@@ -22,7 +22,7 @@ do
 
 
     #### run
-    # python3 ../scripts/main_test.py -n $sample -o $outdir -j 15 -y pacbio -i HLA -r $outdir/$sample/${sample}.fastq.gz --db ../db/ --mode 3
+    python3 ../scripts/main_test.py -n $sample -o $outdir -j 15 -y pacbio -i HLA -r $outdir/$sample/${sample}.fastq.gz --db ../db/ --mode 3
 
     #### evaluation
     # python3 ../evaluation/assess_read_bin.py $outdir/$sample/${sample}.assign.txt $outdir/$sample/$sample.HLA.sep.fa $outdir/$sample/${sample}.fastq.gz 
