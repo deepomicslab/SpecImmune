@@ -204,16 +204,21 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     highest_match_score = sorted_record_allele_pair_match_len[0][1]
 
 
-    len_diff_cutoff =  1e-4 
-    ide_diff_cutoff = 0.001
+    # len_diff_cutoff = 1e-2  #1e-4 
+    len_diff_cutoff = 0 
+    ide_diff_cutoff = 0   # 1e-4  # 0.001
     # if gene  in ["DQA1", "DRB1", "DPA1"]:
     #     len_diff_cutoff = 1e-3
-    if gene  in ["HLA-DPA1"]:
-        len_diff_cutoff = 1e-2
-    if gene  in ["HLA-DRB1"]:
-        len_diff_cutoff = 5e-2
-    if gene  in ["HLA-C"]:
-        len_diff_cutoff =  1e-3
+
+
+    # if gene  in ["HLA-DPA1"]:
+    #     len_diff_cutoff = 1e-2
+    # if gene  in ["HLA-DRB1"]:
+    #     len_diff_cutoff = 5e-2
+    # if gene  in ["HLA-C"]:
+    #     len_diff_cutoff =  1e-3
+
+
     # if gene  in ["DPB1"]:
     #     len_diff_cutoff = 1e-2
 
@@ -254,40 +259,79 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
 
     return full_result_list, highest_match_score
 
+def get_most_common_allele(allele_list, allele):
+    max_digit_num = 0
+    for a in allele_list:
+        same_digit_num = cal_sim_of_alleles(allele, a)
+        if same_digit_num > max_digit_num:
+            max_digit_num = same_digit_num
+    return max_digit_num
+
 def generate_output(tag_list):
+    type_allele_result = [set(), set()]
+    for tag in tag_list:
+        pair = tag.split("&")
+        if len(type_allele_result[0]) == 0:
+            for i in range(2):
+                type_allele_result[i].add(pair[i])
+        else:
+            max_digit_num_list1 = [get_most_common_allele(type_allele_result[0], pair[0]), get_most_common_allele(type_allele_result[1], pair[1])]
+            max_digit_num_list2 = [get_most_common_allele(type_allele_result[1], pair[0]), get_most_common_allele(type_allele_result[1], pair[1])]
+
+            if max_digit_num_list1[0] > max_digit_num_list1[1]:
+                direction = "forward"
+            elif max_digit_num_list1[0] < max_digit_num_list1[1]:
+                direction = "backward"
+            elif max_digit_num_list2[0] > max_digit_num_list2[1]:
+                direction = "backward"
+            elif max_digit_num_list2[0] < max_digit_num_list2[1]:
+                direction = "forward"
+            else:
+                direction = "forward"
+            if direction == "forward":
+                for i in range(2):
+                    type_allele_result[i].add(pair[i])
+            else:
+                for i in range(2):
+                    type_allele_result[i].add(pair[1-i])
+    for i in range(2):
+        type_allele_result[i] = ",".join(list(type_allele_result[i]))
+    print ("type_allele_result", type_allele_result)
+    return type_allele_result
+
+
+def generate_output_bk(tag_list):
     type_allele_result = ['', '']
     for tag in tag_list:
         pair = tag.split("&")
         if len(type_allele_result[0]) == 0:
             type_allele_result = pair
-            # if type_allele_result[0] == 'C*04:01:01:11':
-            #     type_allele_result[0] = 'C*04:01:01:01,C*04:01:01:11'
-            # if type_allele_result[1] == 'C*04:01:01:11':
-            #     type_allele_result[1] = 'C*04:01:01:01,C*04:01:01:11'
-        else:
-            
+        else: 
             for p in pair:
                 max_digit_num = [0, 0]
                 keep = True
+                same_index = 99
                 for i in range(2):
                     for allele in type_allele_result[i].split(","):
                         if p == allele: 
                             keep = False
+                            same_index = i
                         same_digit_num = cal_sim_of_alleles(p, allele)
                         # print (p, allele, same_digit_num)
                         if same_digit_num > max_digit_num[i]:
                             max_digit_num[i] = same_digit_num
+                print (p, keep, same_index, max_digit_num, type_allele_result)
                 if keep:
-                    # if p == 'C*04:01:01:11':
-                    #     p = 'C*04:01:01:01,C*04:01:01:11'
-                    if max_digit_num[0] > max_digit_num[1]:
+                    if max_digit_num[0] > max_digit_num[1] and same_index != 0:
                         type_allele_result[0] += "," + p
-                    elif max_digit_num[0] < max_digit_num[1]:
+                    elif max_digit_num[0] < max_digit_num[1] and same_index != 1:
                         type_allele_result[1] += "," + p
                     else:
-                        type_allele_result[0] += "," + p
-                        type_allele_result[1] += "," + p
-
+                        if same_index != 0:
+                            type_allele_result[0] += "," + p
+                        if same_index != 1:
+                            type_allele_result[1] += "," + p
+    print ("type_allele_result", type_allele_result)
     return type_allele_result
 
 def order_result_pair(type_allele_result, record_allele_pair_sep_match):
@@ -302,6 +346,7 @@ def order_result_pair(type_allele_result, record_allele_pair_sep_match):
         #     tag = allele_list[1] + "&" + allele_list[0]
 
         sort_type_allele_result.append(tag)
+    print ("sort_type_allele_result", sort_type_allele_result)
     return sort_type_allele_result
 
 def cal_sim_of_alleles(allele1, allele2):
@@ -353,11 +398,11 @@ def map2db(args, gene):
     echo alignment done.
     """
     # if the depth_file is not detected 
-    # if not os.path.exists(depth_file):
-    #     os.system(alignDB_order)
-    # else:
-    #     print("Depth file is detected.")
-    os.system(alignDB_order)
+    if not os.path.exists(depth_file):
+        os.system(alignDB_order)
+    else:
+        print("Depth file is detected.")
+    # os.system(alignDB_order)
 
     return bam, depth_file, sort_depth_file
 
@@ -524,5 +569,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    # gene_list = ["HLA-A"]
+    # gene_list = ["HFE"]
     main(args)
