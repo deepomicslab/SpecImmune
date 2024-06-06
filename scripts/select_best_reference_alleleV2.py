@@ -447,19 +447,31 @@ def output_spechla_format(args, result_dict):
     # print (f"\nObjective value:\t", end = "\t", file = out)
     out.close()
 
-def output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict):
+def output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict, p_value_cutoff=0.001):
     outdir = args["o"] + "/" + args["n"]
     result = f"""{outdir}/{args["n"]}.{args["i"]}.type.result.txt"""
     version_info = get_IMGT_version(args)
     f = open(result, 'w')
     print (version_info, file = f)
-    print ("Locus   Chromosome      Allele  Reads_num   Homo_p", file = f)
+    print ("Locus   Chromosome      Allele  Reads_num   homo_flag   Homo_p  Hete_pair", file = f)
     for gene in gene_list:
-        if len(result_dict[gene]) == 1:
-            result_dict[gene].append(result_dict[gene][0])
+        # if len(result_dict[gene]) == 1:
+        #     result_dict[gene].append(result_dict[gene][0])
+        homo_flag = False
+        if homo_p_value_dict[gene] != 'NA' and homo_p_value_dict[gene] < p_value_cutoff:
+            homo_flag = True
+        
+        if not homo_flag:
+            print (gene, "hete", result_dict[gene][0], "****", result_dict[gene][1], "\n\n")
+        else:
+            print (gene, "homo", result_dict[gene][0], "****", result_dict[gene][1], "\n\n")
+
         for ch in [1, 2]:
             result_dict[gene][ch-1] = result_dict[gene][ch-1].replace(',', ';')
-            print (gene, ch, result_dict[gene][ch-1], reads_num_dict[gene], homo_p_value_dict[gene], sep="\t", file = f)
+            type_allele = result_dict[gene][ch-1]
+            if homo_flag:  # homo
+                type_allele = result_dict[gene][0]
+            print (gene, ch, type_allele, reads_num_dict[gene], homo_flag, homo_p_value_dict[gene], result_dict[gene][ch-1], sep="\t", file = f)
     f.close()
     print ("result is", result)
 
@@ -514,8 +526,8 @@ def main(args):
             print (gene, type_allele_result, "\n\n")
             homo_p_value = if_homo(record_allele_pair_sep_match, first_pair)
             homo_p_value_dict[gene] = homo_p_value
-            if homo_p_value < 0.001:
-                type_allele_result = [type_allele_result[0]] 
+            # if homo_p_value < 0.001:
+            #     type_allele_result = [type_allele_result[0]] 
 
 
             
@@ -546,10 +558,7 @@ def main(args):
 
 
         result_dict[gene] = type_allele_result
-        if len(type_allele_result) == 2:
-            print (gene, "hete", type_allele_result[0], "****", type_allele_result[1], "\n\n")
-        else:
-            print (gene, "homo", type_allele_result[0], "\n\n")
+
     # output_spechla_format(args, result_dict)
     output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict)
     

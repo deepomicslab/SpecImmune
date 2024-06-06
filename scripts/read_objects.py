@@ -23,6 +23,10 @@ class My_read():
         self.get_match_length(read)
         self.match_rate = self.identity
         self.mismatch_rate = 1 - self.match_rate
+
+        # if self.read_name == "5d767760-9f0d-43a8-a115-0d4535e88218":
+        #     if self.allele_name == "HLA-A*68:278" or self.allele_name == "HLA-A*30:01:01:01":
+        #         print ("***", self.allele_name, self.match_num, self.mismatch_num, self.alignment_len, self.identity, self.match_start_pos, self.match_end_pos, self.reference_start, self.reference_end, self.loci_name, self.read_length, self.read_match_ratio, self.primary)
         
     def get_match_length(self, read):
         ### the NM tag consists all insertion, deletion and mismatches in the alignment
