@@ -11,8 +11,8 @@ do
 
     #### simulation
     # mkdir $outdir/$sample
-    # perl simu.data.haplotype.hla.pl $sample $outdir/$sample
-    # pbsim --prefix $outdir/$sample/$sample --depth 50 --hmm_model pbsim_model/P4C2.model --accuracy-mean 0.95 $outdir/$sample/$sample.HLA.sep.fa
+    perl simu.data.haplotype.hla.pl $sample $outdir/$sample
+    pbsim --prefix $outdir/$sample/$sample --depth 50 --hmm_model pbsim_model/P4C2.model --accuracy-mean 0.95 $outdir/$sample/$sample.HLA.sep.fa
 
     # cat $outdir/$sample/${sample}_*fastq>$outdir/$sample/${sample}.fastq
     # rm $outdir/$sample/${sample}_*fastq
