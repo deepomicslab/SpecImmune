@@ -25,7 +25,7 @@ from db_objects import My_db
 from get_allele_depth import Get_depth
 from read_binning import filter_fq
 from get_db_version import get_IMGT_version
-from alignment_modules import Read_Type
+from alignment_modules import Read_Type, map2db_blast
 from check_if_homo import if_homo
 from downsample_bam import downsample_func
 
@@ -33,7 +33,7 @@ from downsample_bam import downsample_func
   
 
 
-def construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_length):
+def construct_matrix(args, gene, bam, record_candidate_alleles):
 
     bamfile = pysam.AlignmentFile(bam, 'r')  
 
@@ -46,10 +46,11 @@ def construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_le
         if read.is_unmapped:
             continue
 
-        my_read = My_read(read)
+        my_read = My_read()
+        my_read.load_bam(read)
 
-        read_name = read.query_name
-        allele_name = read.reference_name
+        read_name = my_read.read_name
+        allele_name = my_read.allele_name
         gene = my_read.loci_name
 
         if allele_name not in record_candidate_alleles[gene]:
@@ -65,6 +66,37 @@ def construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_le
 
 
     bamfile.close()
+    print_read_matrix(args, gene, record_read_allele_dict, allele_name_dict)
+    return record_read_allele_dict, allele_name_dict
+
+
+def construct_matrix_blast(args, gene, blast_file):
+
+    f = open(blast_file, 'r')
+
+    record_read_allele_dict = defaultdict(dict)
+    allele_name_dict = defaultdict(int)
+
+    for line in f:
+        # skip is empty or comment line
+        if not line or line.startswith("#"):
+            continue
+        my_read = My_read()
+        my_read.load_blast(line)
+
+        read_name = my_read.read_name
+        allele_name = my_read.allele_name
+        gene = my_read.loci_name
+
+        if allele_name not in record_read_allele_dict[read_name]:
+            record_read_allele_dict[read_name][allele_name] = my_read
+            allele_name_dict[allele_name] += 1
+        # elif record_read_allele_dict[read_name][allele_name].identity < my_read.identity:
+        elif record_read_allele_dict[read_name][allele_name].match_num < my_read.match_num:
+            record_read_allele_dict[read_name][allele_name] = my_read
+    f.close()
+
+
     print_read_matrix(args, gene, record_read_allele_dict, allele_name_dict)
     return record_read_allele_dict, allele_name_dict
 
@@ -96,6 +128,7 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
     read_num = len(read_name_list)
     allele_name_list = list(allele_name_dict.keys())
     allele_num = len(allele_name_list)
+
 
     # print ("read_num:", read_num, "allele_num:", allele_num)
 
@@ -409,15 +442,6 @@ def map2db(args, gene):
         print("Depth file is detected.")
     # os.system(alignDB_order)
 
-    ### downsample the bam file, bug here, cannot downsample as the depth file is not correct
-    # seed = 8
-    # output_bam = outdir + "/" + args["n"] + "." + gene + ".db.sub.bam"
-    # output_depth = outdir + "/" + args["n"] + "." + gene + ".db.sub.depth"
-    # downsample_ratio = downsample_func(bam, output_bam, depth_file, output_depth, args["max_depth"], seed)
-    # print ("downsample_ratio", downsample_ratio)
-    # if downsample_ratio < 1:
-    #     bam, depth_file = output_bam, output_depth
-
     return bam, depth_file, sort_depth_file
 
 def output_spechla_format(args, result_dict):
@@ -475,6 +499,33 @@ def output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict, p_
     f.close()
     print ("result is", result)
 
+def select_candidate_allele(record_allele_length, allele_match_dict, allele_mismatch_dict, max_allele_num):
+    ## define dict to save the raw depth of each allele
+    allele_raw_dp = {}
+    allele_raw_identity = {}
+
+    for allele in allele_match_dict:
+        allele_raw_dp[allele] = allele_match_dict[allele]/record_allele_length[allele]
+        allele_raw_identity[allele] = allele_match_dict[allele]/(allele_match_dict[allele] + allele_mismatch_dict[allele])
+    filter_allele_name_dict = {}
+    ## sort allele_raw_dp based on value
+    # sorted_dict = sorted(allele_raw_dp.items(), key=lambda x: x[1], reverse=True)
+    sorted_dict = sorted(allele_raw_identity.items(), key=lambda x: x[1], reverse=True)
+    for i in range(min([max_allele_num, len(sorted_dict)])):
+        print (sorted_dict[i], allele_match_dict[sorted_dict[i][0]])
+        filter_allele_name_dict[sorted_dict[i][0]] = 1
+    return filter_allele_name_dict
+    
+
+def cal_allele_match_len(record_read_allele_dict):
+    allele_match_dict = defaultdict(int)
+    allele_mismatch_dict = defaultdict(int)
+    for read_name in record_read_allele_dict:
+        for allele_name in record_read_allele_dict[read_name]:
+            allele_match_dict[allele_name] += record_read_allele_dict[read_name][allele_name].match_num
+            allele_mismatch_dict[allele_name] += record_read_allele_dict[read_name][allele_name].mismatch_num
+    return allele_match_dict, allele_mismatch_dict
+
 def main(args):
 
     if not os.path.exists(args["o"]):
@@ -491,33 +542,43 @@ def main(args):
 
     for gene in gene_list:
         print (f"start type {gene} for {args['n']}...\n")
-        allele_match_dict = defaultdict(int)
-        allele_read_num_dict = defaultdict(int)
+
         gene_fq=f"{outdir}/{gene}.long_read.fq.gz"
+        my_db.get_allele_length(gene)
+        record_allele_length = my_db.allele_len_dict
 
+
+        #  load alignment from bam
         bam, depth_file, sort_depth_file = map2db(args, gene)
-
         get_depth = Get_depth(depth_file)
         get_depth.record_depth()
-        record_candidate_alleles, record_allele_length = get_depth.select(sort_depth_file, gene_list, args["candidate_allele_num"])
-        # gene="A"
-        # print ("record_candidate_alleles num:", len(record_candidate_alleles[gene]))
-        print (bam)
+        record_candidate_alleles, record_allele_length_no_use = get_depth.select(sort_depth_file, gene_list, args["candidate_allele_num"])
 
-        record_read_allele_dict, allele_name_dict = construct_matrix(args, gene, bam, record_candidate_alleles, record_allele_length)
+        if args["align_method"] == "minimap2":
+            record_read_allele_dict, allele_name_dict = construct_matrix(args, gene, bam, record_candidate_alleles)
+        elif args["align_method"] == "blastn":
+            #  load alignment from blast
+            blast_file = map2db_blast(args, gene, my_db)
+            record_read_allele_dict, allele_name_dict = construct_matrix_blast(args, gene, blast_file)
+
+
+            allele_match_dict, allele_mismatch_dict = cal_allele_match_len(record_read_allele_dict)
+            reads_num_dict[gene] = len(record_read_allele_dict)
+
+
+            # allele_name_dict = select_candidate_allele(record_allele_length, allele_match_dict, allele_mismatch_dict, 500)
+            allele_name_dict = {}
+            for allele in record_candidate_alleles[gene]:
+                allele_name_dict[allele] = 1
+            print (allele_name_dict)
+
+
+
         print ("finish matrix construction")
-        reads_num_dict[gene] = len(record_read_allele_dict)
-        # record_read_allele_dict = examine_reads(record_read_allele_dict)
-        # print (len(record_read_allele_dict)) 
-
-        for read_name in record_read_allele_dict:
-            for allele_name in record_read_allele_dict[read_name]:
-                allele_match_dict[allele_name] += record_read_allele_dict[read_name][allele_name].match_num
-                allele_read_num_dict[allele_name] += 1
         
-        # for allele_name in allele_match_dict:
-        #     print ("speclong depth", allele_name, allele_match_dict[allele_name], round(allele_match_dict[allele_name]/record_allele_length[allele_name]),allele_read_num_dict[allele_name])
 
+
+        
         print (gene, "read num:", len(record_read_allele_dict), "mapped allele num:", len(allele_name_dict))
         if len(record_read_allele_dict) >= args["min_read_num"] and len(allele_name_dict) > 1:
             objective_value, type_allele_result, first_pair, record_allele_pair_sep_match = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)
@@ -582,6 +643,7 @@ if __name__ == "__main__":
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     # optional.add_argument("-m", type=int, help="1 represents typing, 0 means only read assignment", metavar="\b", default=1)
     optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio|pacbio-hifi].", metavar="\b", default="pacbio")
+    optional.add_argument("--align_method", type=str, help="[minimap2|blastn|bwa].", metavar="\b", default="minimap2")
     # optional.add_argument("--max_depth", type=int, help="maximum depth for each HLA locus. Downsample if exceed this value.", metavar="\b", default=10000)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
     optional.add_argument("-h", "--help", action="help")

@@ -69,6 +69,77 @@ class Read_Type:
             raise ValueError("Invalid read type specified.")
 
 
+def map2db(args, gene, my_db):
+
+    read_type = Read_Type(args["y"])
+    minimap_para = read_type.get_minimap2_param()
+
+    outdir = args["o"] + "/" + args["n"]
+    sam = outdir + "/" + args["n"] + "." + gene + ".db.sam"
+    bam = outdir + "/" + args["n"] + "." + gene + ".db.bam"
+    depth_file = outdir + "/" + args["n"] + "." + gene + ".db.depth"
+    sort_depth_file = outdir + "/" + args["n"] + "." + gene + ".db.sort.depth.txt"
+    # ref={args["f"] }
+    # map raw reads to database
+
+    ref = my_db.get_gene_all_alleles(gene)
+    # ref="/mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/db/HLA/whole/HLA_A.fasta"
+
+    alignDB_order = f"""
+    fq={args["r"]}
+    
+    outdir={args["o"]}/{args["n"]}
+    sample={args["n"]}
+
+    fq=$outdir/{gene}.long_read.fq.gz
+
+    ref={ref}
+
+    minimap2 -t {args["j"]} {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
+
+    # bwa index $ref
+    # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref $fq > {sam}
+
+    samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
+    samtools index {bam}
+    samtools depth -aa {bam}>{depth_file}
+    rm {sam}
+    echo alignment done.
+    """
+    # if the depth_file is not detected 
+    if not os.path.exists(depth_file):
+        os.system(alignDB_order)
+    else:
+        print("Depth file is detected.")
+    # os.system(alignDB_order)
+
+    return bam, depth_file, sort_depth_file
+
+def map2db_blast(args, gene, my_db):
+
+    outdir = args["o"] + "/" + args["n"]
+    blast_file = outdir + "/" + args["n"] + "." + gene + ".db.blast.txt"
+
+    alignDB_order = f"""
+    outdir={args["o"]}/{args["n"]}
+    sample={args["n"]}
+  
+    fq=$outdir/{gene}.long_read.fq.gz
+    seqtk seq -A $fq > $outdir/{gene}.long_read.fasta
+
+    blastn -query $outdir/{gene}.long_read.fasta -outfmt 7 -out {blast_file} -db {my_db.get_blast_index(gene)}  -num_threads {args["j"]} -max_target_seqs 10000
+    echo blast is done.
+    """
+    # if the blast_file is not detected 
+    if not os.path.exists(blast_file):
+        os.system(alignDB_order)
+    else:
+        print("blast_file is detected.")
+    # os.system(alignDB_order)
+
+    return blast_file
+
+
 if __name__ == "__main__":
 
     reference = "reference.fasta"  # Replace with the path to your reference FASTA file

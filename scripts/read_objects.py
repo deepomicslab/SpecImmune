@@ -2,7 +2,7 @@ import sys
 
 class My_read():
 
-    def __init__(self, read):
+    def __init__(self):
         self.alignment_len = 0
         self.match_num = 0
         self.mismatch_num = 0
@@ -20,15 +20,16 @@ class My_read():
         self.read_match_ratio = 0
         self.primary = False
 
-        self.get_match_length(read)
-        self.match_rate = self.identity
-        self.mismatch_rate = 1 - self.match_rate
+        self.match_rate = None
+        self.mismatch_rate = None
+
+        # self.get_match_length(read)
 
         # if self.read_name == "5d767760-9f0d-43a8-a115-0d4535e88218":
         #     if self.allele_name == "HLA-A*68:278" or self.allele_name == "HLA-A*30:01:01:01":
         #         print ("***", self.allele_name, self.match_num, self.mismatch_num, self.alignment_len, self.identity, self.match_start_pos, self.match_end_pos, self.reference_start, self.reference_end, self.loci_name, self.read_length, self.read_match_ratio, self.primary)
         
-    def get_match_length(self, read):
+    def load_bam(self, read):
         ### the NM tag consists all insertion, deletion and mismatches in the alignment
 
         # Get the alignment length in the read
@@ -68,6 +69,56 @@ class My_read():
             self.loci_name = "KIR2DL5"
         if self.alignment_len < 400 and self.allele_name[0:3] == "KIR":
             self.identity = 0
+
+        self.match_rate = self.identity
+        self.mismatch_rate = 1 - self.match_rate
+
+    def load_blast(self, line): # format 7
+        field = line.strip().split("\t")
+
+        # Get the alignment length in the read
+        self.alignment_len = int(field[3])
+
+        # Get the alignment start position in the read
+        self.match_start_pos = int(field[6])
+
+        # Get the alignment end position in the read
+        self.match_end_pos = int(field[7])
+
+        ## reverse match_start_pos and match_end_pos if match_end_pos < match_start_pos
+        if self.match_end_pos < self.match_start_pos:
+            self.match_start_pos, self.match_end_pos = self.match_end_pos, self.match_start_pos
+
+
+        self.reference_start = int(field[8])
+        self.reference_end = int(field[9])
+        ## reverse reference_start and reference_end if reference_end < reference_start
+        if self.reference_end < self.reference_start:
+            self.reference_start, self.reference_end = self.reference_end, self.reference_start
+
+        self.identity = float(field[2])/100
+        self.match_num = round(self.identity * self.alignment_len)
+
+        self.primary = False
+
+        
+        if self.alignment_len == 0:
+            print ("unmapped read")
+            sys.exit(0)
+        
+        self.mismatch_num = self.alignment_len - self.match_num
+
+        self.read_name = field[0]
+        self.allele_name = field[1]
+        self.loci_name = self.allele_name.split("*")[0]
+
+        if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
+            self.loci_name = "KIR2DL5"
+        if self.alignment_len < 400 and self.allele_name[0:3] == "KIR":
+            self.identity = 0
+
+        self.match_rate = self.identity
+        self.mismatch_rate = 1 - self.match_rate
 
 class My_locus():  # the match for a single read in all the alleles of a locus
 

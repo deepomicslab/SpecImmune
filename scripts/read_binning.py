@@ -124,7 +124,8 @@ class Pacbio_Binning():
                 continue
             # print (read)
             # read_obj = Read_Obj(read)
-            read_obj = My_read(read)
+            read_obj = My_read()
+            read_obj.load_bam(read)
             scor.add_read(read_obj)
             # print (read_obj.read_name, read_obj.mismatch_rate, read_obj.allele_name )
         read_loci = scor.assign(self.assign_file)

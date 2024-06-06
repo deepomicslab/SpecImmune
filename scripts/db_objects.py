@@ -41,11 +41,13 @@ class My_db():
         self.root = args["db"]
 
         self.all_alleles = f"""{args["db"]}/whole/merge.fasta"""    ### 17446
+        self.allele_len_dict = {}
 
     def get_gene_alleles(self, gene):
         ### record representative allele of each gene
         # return self.gene_all_alleles_dir + f"/{gene}.fasta"
         return self.individual_ref_dir + f"/{gene}/{gene}.fasta"
+
     
     def get_gene_alleles_2ref(self, gene, ref_idx):
         ### record representative allele of each gene
@@ -64,6 +66,29 @@ class My_db():
         # ref = f"""{self.root}/whole/{gene}.fasta"""
         ref = f"""{self.root}/whole/{gene}/{gene}.fasta"""
         # ref = f"""{self.root}/clean_whole/{gene}.fasta"""
+        return ref
+
+    def get_allele_length(self, gene):
+        fai_file = f"""{self.root}/whole/{gene}/{gene}.fasta.fai"""
+        ## check if faidx file exists
+        if not os.path.exists(fai_file):
+            print (fai_file)
+            print ("fai file does not exist")
+            return
+        f = open(fai_file, "r")
+        for line in f:
+            length = int(line.split("\t")[1])
+            allele = line.split("\t")[0]
+            self.allele_len_dict[allele] = length
+        # print (self.allele_len_dict)
+        f.close()
+
+
+    def get_blast_index(self, gene):
+
+        ref = f"""{self.root}/whole/{gene}/{gene}"""
+
+
         return ref
 
      
