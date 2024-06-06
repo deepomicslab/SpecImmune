@@ -115,7 +115,7 @@ class Pacbio_Binning():
         echo alignment done.
         """
         # print (alignDB_order)
-        # os.system(alignDB_order)
+        os.system(alignDB_order)
 
     def read_bam(self):
         # observe each read, assign it to gene based on alignment records
