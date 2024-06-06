@@ -126,44 +126,14 @@ def map2db_blast(args, gene, my_db):
   
     fq=$outdir/{gene}.long_read.fq.gz
     seqtk seq -A $fq > $outdir/{gene}.long_read.fasta
-
-    blastn -query $outdir/{gene}.long_read.fasta -outfmt 7 -out {blast_file} -db {my_db.get_blast_index(gene)}  -num_threads {args["j"]} -max_target_seqs 10000
+    seqtk sample $outdir/{gene}.long_read.fasta 100 >$outdir/{gene}.long_read.sub.fasta
+    echo start blastn...
+    blastn -query $outdir/{gene}.long_read.sub.fasta -outfmt 7 -out {blast_file} -db {my_db.get_blast_index(gene)}  -num_threads {args["j"]} -max_target_seqs 10000
     echo blast is done.
     """
-    # if the blast_file is not detected 
-    if not os.path.exists(blast_file):
-        os.system(alignDB_order)
-    else:
-        print("blast_file is detected.")
-    # os.system(alignDB_order)
+
+    os.system(alignDB_order)
 
     return blast_file
 
 
-if __name__ == "__main__":
-
-    reference = "reference.fasta"  # Replace with the path to your reference FASTA file
-    fastq = "reads.fastq"  # Replace with the path to your raw FASTQ file
-
-    aligner = LongReadAligner(reference, fastq, alignment_method="minimap2")
-
-    # Index the reference (if not already indexed)
-    aligner.index_reference()
-
-    # Perform alignment
-    output_sam = "aligned_reads.sam"
-    aligner.align_reads(output_sam)
-
-    # Sort the resulting BAM file
-    input_bam = "aligned_reads.sam"
-    output_bam = "sorted_reads.bam"
-    aligner.sort_bam(input_bam, output_bam)
-
-    # Calculate depth from the sorted BAM file
-    output_depth = "depth.txt"
-    aligner.calculate_depth(output_bam, output_depth)
-
-    # Print the depth file
-    with open(output_depth, 'r') as depth_file:
-        for line in depth_file:
-            print(line.strip())

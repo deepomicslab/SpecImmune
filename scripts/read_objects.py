@@ -96,8 +96,63 @@ class My_read():
         if self.reference_end < self.reference_start:
             self.reference_start, self.reference_end = self.reference_end, self.reference_start
 
-        self.identity = float(field[2])/100
-        self.match_num = round(self.identity * self.alignment_len)
+        self.primary = False
+
+        
+        if self.alignment_len == 0:
+            print ("unmapped read")
+            sys.exit(0)
+
+        # self.identity = float(field[2])/100
+        # self.match_num = round(self.identity * self.alignment_len)
+        # self.mismatch_num = self.alignment_len - self.match_num
+
+        self.mismatch_num = int(field[4]) + int(field[5])
+        self.match_num = self.alignment_len - self.mismatch_num
+        self.identity = self.match_num/self.alignment_len
+
+        self.read_name = field[0]
+        self.allele_name = field[1]
+        self.loci_name = self.allele_name.split("*")[0]
+
+        if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
+            self.loci_name = "KIR2DL5"
+        if self.alignment_len < 400 and self.allele_name[0:3] == "KIR":
+            self.identity = 0
+
+        self.match_rate = self.identity
+        self.mismatch_rate = 1 - self.match_rate
+
+    def load_second_blast(self, line): # format 7
+        field = line.strip().split("\t")
+
+        # Get the alignment length in the read
+        self.alignment_len += int(field[3])
+
+        # Get the alignment start position in the read
+        match_start_pos = int(field[6])
+
+        # Get the alignment end position in the read
+        match_end_pos = int(field[7])
+
+        ## reverse match_start_pos and match_end_pos if match_end_pos < match_start_pos
+        if match_end_pos < match_start_pos:
+            match_start_pos, match_end_pos = match_end_pos, match_start_pos
+        if match_start_pos < self.match_start_pos:
+            self.match_start_pos = match_start_pos
+        if match_end_pos > self.match_end_pos:
+            self.match_end_pos = match_end_pos
+
+
+        reference_start = int(field[8])
+        reference_end = int(field[9])
+        ## reverse reference_start and reference_end if reference_end < reference_start
+        if reference_end < reference_start:
+            reference_start, reference_end = reference_end, reference_start
+        if reference_start < self.reference_start:
+            self.reference_start = reference_start
+        if reference_end > self.reference_end:
+            self.reference_end = reference_end
 
         self.primary = False
 
@@ -106,7 +161,9 @@ class My_read():
             print ("unmapped read")
             sys.exit(0)
         
-        self.mismatch_num = self.alignment_len - self.match_num
+        self.mismatch_num += (int(field[4]) + int(field[5]))
+        self.match_num = self.alignment_len - self.mismatch_num
+        self.identity = self.match_num/self.alignment_len
 
         self.read_name = field[0]
         self.allele_name = field[1]

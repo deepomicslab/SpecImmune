@@ -81,19 +81,21 @@ def construct_matrix_blast(args, gene, blast_file):
         # skip is empty or comment line
         if not line or line.startswith("#"):
             continue
-        my_read = My_read()
-        my_read.load_blast(line)
-
-        read_name = my_read.read_name
-        allele_name = my_read.allele_name
-        gene = my_read.loci_name
+            
+        read_name = line.split("\t")[0]
+        allele_name = line.split("\t")[1]
+        gene = allele_name.split("*")[0]
 
         if allele_name not in record_read_allele_dict[read_name]:
+            my_read = My_read()
+            my_read.load_blast(line)
             record_read_allele_dict[read_name][allele_name] = my_read
             allele_name_dict[allele_name] += 1
         # elif record_read_allele_dict[read_name][allele_name].identity < my_read.identity:
-        elif record_read_allele_dict[read_name][allele_name].match_num < my_read.match_num:
-            record_read_allele_dict[read_name][allele_name] = my_read
+        # elif record_read_allele_dict[read_name][allele_name].match_num < my_read.match_num:
+        #     record_read_allele_dict[read_name][allele_name] = my_read
+        else:
+            record_read_allele_dict[read_name][allele_name].load_second_blast(line) 
     f.close()
 
 
@@ -243,7 +245,6 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     ide_diff_cutoff = 1e-4   # 1e-4  # 0.001
     # if gene  in ["DQA1", "DRB1", "DPA1"]:
     #     len_diff_cutoff = 1e-3
-
 
     # if gene  in ["HLA-DPA1"]:
     #     len_diff_cutoff = 1e-2
@@ -570,8 +571,6 @@ def main(args):
             allele_name_dict = {}
             for allele in record_candidate_alleles[gene]:
                 allele_name_dict[allele] = 1
-            print (allele_name_dict)
-
 
 
         print ("finish matrix construction")
@@ -658,5 +657,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    # gene_list = ["HLA-A"]
+    # gene_list = ["HLA-C"]
     main(args)

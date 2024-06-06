@@ -26,7 +26,7 @@ def main(args):
         # return
         command = f"""
         ## second: find a pair of alleles for each HLA locus
-        python3 {sys.path[0]}/select_best_reference_alleleV2.py -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
+        python3 {sys.path[0]}/select_best_reference_alleleV2.py --align_method blastn -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
         """
         if args["mode"] >= 3:
             os.system(command)
