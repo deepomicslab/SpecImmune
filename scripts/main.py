@@ -18,7 +18,7 @@ def main(args):
 
         command = f"""
         ## first: read binning
-        python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]}
+        python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} --min_identity {args["min_identity"]}
         ## second: find a pair of alleles for each HLA locus
         """
         if args["mode"] >= 4:
@@ -108,6 +108,8 @@ if __name__ == "__main__":
     # optional.add_argument("-dr", "--db_ref", type=str, help="database reference", metavar="\b", \
     #                        default=sys.path[0] + "/../db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta")
     optional.add_argument("-f", "--first_run", type=bool, help="set False for rerun", metavar="\b", default=True)
+    optional.add_argument("--min_identity", type=float, help="Minimum identity to assign a read.", metavar="\b", default=0.85)
+
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 

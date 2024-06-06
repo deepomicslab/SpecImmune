@@ -10,7 +10,7 @@ class My_db():
         # self.db = f"""{args["db"]}/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"""
 
         self.gene_class = args["i"]
-        self.individual_ref_dir = f"""{args["o"]}/individual_ref"""
+        self.individual_ref_dir = f"""{args["o"]}/{args["n"]}/individual_ref"""
         if not os.path.exists(self.individual_ref_dir):
             os.makedirs(self.individual_ref_dir)
 
