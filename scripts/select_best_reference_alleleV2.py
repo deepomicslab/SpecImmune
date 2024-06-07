@@ -25,7 +25,7 @@ from db_objects import My_db
 from get_allele_depth import Get_depth
 from read_binning import filter_fq
 from get_db_version import get_IMGT_version
-from alignment_modules import Read_Type, map2db_blast
+from alignment_modules import Read_Type, map2db_blast, map2db
 from check_if_homo import if_homo
 from downsample_bam import downsample_func
 
@@ -399,7 +399,7 @@ def cal_sim_of_alleles(allele1, allele2):
             break
     return same_digit_num
 
-def map2db(args, gene):
+def map2db_bk(args, gene):
 
     read_type = Read_Type(args["y"])
     minimap_para = read_type.get_minimap2_param()
@@ -550,7 +550,7 @@ def main(args):
 
 
         #  load alignment from bam
-        bam, depth_file, sort_depth_file = map2db(args, gene)
+        bam, depth_file, sort_depth_file = map2db(args, gene, my_db)
         get_depth = Get_depth(depth_file)
         get_depth.record_depth()
         record_candidate_alleles, record_allele_length_no_use = get_depth.select(sort_depth_file, gene_list, args["candidate_allele_num"])
@@ -657,5 +657,5 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    # gene_list = ["HLA-C"]
+    # gene_list = ["HLA-B"]
     main(args)

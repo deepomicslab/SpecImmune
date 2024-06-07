@@ -93,6 +93,9 @@ def map2db(args, gene, my_db):
 
     fq=$outdir/{gene}.long_read.fq.gz
 
+    seqtk sample $outdir/{gene}.long_read.fq.gz 500 >$outdir/{gene}.long_read.sub.fq
+    fq=$outdir/{gene}.long_read.sub.fq
+
     ref={ref}
 
     minimap2 -t {args["j"]} {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
@@ -107,11 +110,11 @@ def map2db(args, gene, my_db):
     echo alignment done.
     """
     # if the depth_file is not detected 
-    if not os.path.exists(depth_file):
-        os.system(alignDB_order)
-    else:
-        print("Depth file is detected.")
-    # os.system(alignDB_order)
+    # if not os.path.exists(depth_file):
+    #     os.system(alignDB_order)
+    # else:
+    #     print("Depth file is detected.")
+    os.system(alignDB_order)
 
     return bam, depth_file, sort_depth_file
 
@@ -126,9 +129,9 @@ def map2db_blast(args, gene, my_db):
   
     fq=$outdir/{gene}.long_read.fq.gz
     seqtk seq -A $fq > $outdir/{gene}.long_read.fasta
-    seqtk sample $outdir/{gene}.long_read.fasta 100 >$outdir/{gene}.long_read.sub.fasta
+    seqtk sample $outdir/{gene}.long_read.fasta 500 >$outdir/{gene}.long_read.sub.fasta
     echo start blastn...
-    blastn -query $outdir/{gene}.long_read.sub.fasta -outfmt 7 -out {blast_file} -db {my_db.get_blast_index(gene)}  -num_threads {args["j"]} -max_target_seqs 10000
+    blastn -query $outdir/{gene}.long_read.sub.fasta -outfmt 7 -out {blast_file} -db {my_db.get_blast_index(gene)}  -num_threads {args["j"]} -max_target_seqs 10000 -max_hsps 1
     echo blast is done.
     """
 
