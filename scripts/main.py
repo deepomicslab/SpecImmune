@@ -26,12 +26,12 @@ def main(args):
 
         command = f"""
         ## second: find a pair of alleles for each HLA locus
-        python3 {sys.path[0]}/select_best_reference_alleleV2.py -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
+        python3 {sys.path[0]}/select_best_reference_alleleV2.py --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
         """
         if args["mode"] >= 3:
             os.system(command)
 
-        # return
+        return
 
         # build individual ref when first run
         my_db = My_db(args)
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     #                        default=sys.path[0] + "/../db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta")
     optional.add_argument("-f", "--first_run", type=bool, help="set False for rerun", metavar="\b", default=True)
     optional.add_argument("--min_identity", type=float, help="Minimum identity to assign a read.", metavar="\b", default=0.85)
-
+    optional.add_argument("--hete_p", type=float, help="Hete pvalue.", metavar="\b", default=1e-30) 
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 

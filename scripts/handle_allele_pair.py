@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 def determine_largest(a, b, seed = 8):
     if a > b:
@@ -19,14 +20,19 @@ class Align_Obj(object):
         self.depth = 0
         self.identity = 0
         self.assigned_reads = []
+        self.identity_list = []
 
         self.reference_start = float("inf")
         self.reference_end = 0
         self.coverage = 0
+        self.median_identity = 0
 
     def add_read(self, match_num, mismatch_num):
         self.match_num += match_num
         self.mismatch_num  += mismatch_num
+    
+    def add_read_identity(self, identity):
+        self.identity_list.append(identity)
     
     def add_read_ref(self, start, end):
         if start < self.reference_start:
@@ -42,6 +48,9 @@ class Align_Obj(object):
             self.identity = self.match_num / (self.match_num + self.mismatch_num)
             # if self.name == "HLA-A*02:01:01:35&HLA-A*03:08:01:02":
             #     print (self.name, self.match_num, self.mismatch_num, self.identity)
+    
+    def get_median_identity(self):
+        self.median_identity = np.median(self.identity_list)
     
     def get_depth(self, allele_length):
         self.depth = (self.match_num + self.mismatch_num)/allele_length
@@ -91,11 +100,13 @@ class My_allele_pair():
                 read_assign_dict[read_name] = [self.allele_1]
                 self.allele_1_obj.add_read(record_read_allele_dict[read_name][self.allele_1].match_num, record_read_allele_dict[read_name][self.allele_1].mismatch_num)
                 self.pair_obj.add_read(record_read_allele_dict[read_name][self.allele_1].match_num, record_read_allele_dict[read_name][self.allele_1].mismatch_num)
+                self.pair_obj.add_read_identity(record_read_allele_dict[read_name][self.allele_1].identity)
                 self.allele_1_obj.add_read_ref(record_read_allele_dict[read_name][self.allele_1].reference_start, record_read_allele_dict[read_name][self.allele_1].reference_end)
             else:
                 read_assign_dict[read_name] = [self.allele_2]
                 self.allele_2_obj.add_read(record_read_allele_dict[read_name][self.allele_2].match_num, record_read_allele_dict[read_name][self.allele_2].mismatch_num)
                 self.pair_obj.add_read(record_read_allele_dict[read_name][self.allele_2].match_num, record_read_allele_dict[read_name][self.allele_2].mismatch_num)
+                self.pair_obj.add_read_identity(record_read_allele_dict[read_name][self.allele_2].identity)
                 self.allele_2_obj.add_read_ref(record_read_allele_dict[read_name][self.allele_2].reference_start, record_read_allele_dict[read_name][self.allele_2].reference_end)
             
             # if self.tag == test_tag:
@@ -111,5 +122,6 @@ class My_allele_pair():
         self.allele_1_obj.get_identity()
         self.allele_2_obj.get_identity()
         self.pair_obj.get_identity()
+        self.pair_obj.get_median_identity()
 
         return read_assign_dict

@@ -26,7 +26,7 @@ from get_allele_depth import Get_depth
 from read_binning import filter_fq
 from get_db_version import get_IMGT_version
 from alignment_modules import Read_Type, map2db_blast, map2db
-from check_if_homo import if_homo
+from check_if_homo import if_homo, if_homo2
 from downsample_bam import downsample_func
 
 # gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
@@ -161,6 +161,7 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
             
             record_allele_pair_match_len[tag] = allele_pair_obj.pair_obj.match_num
             record_allele_pair_identity[tag] = allele_pair_obj.pair_obj.identity
+            # record_allele_pair_identity[tag] = allele_pair_obj.pair_obj.median_identity
 
             record_allele_pair_sep_match[tag] = {}
             record_allele_pair_sep_match[tag][allele_name_list[i]] = {}
@@ -216,13 +217,13 @@ def print_match_results(sorted_record_allele_pair_match_len, record_allele_pair_
         print(
             i, 
             int(sorted_record_allele_pair_match_len[i][1]), 
-            round(record_allele_pair_identity[tag],3), 
+            round(record_allele_pair_identity[tag],4), 
             allele_list[0],
-            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),
+            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],4),
             round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),
             round(record_allele_pair_sep_match[tag][allele_list[0]]["coverage"],3),
             allele_list[1], 
-            round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3), 
+            round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],4), 
             round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]),
             round(record_allele_pair_sep_match[tag][allele_list[1]]["coverage"],3), 
             sep=",", 
@@ -399,52 +400,6 @@ def cal_sim_of_alleles(allele1, allele2):
             break
     return same_digit_num
 
-def map2db_bk(args, gene):
-
-    read_type = Read_Type(args["y"])
-    minimap_para = read_type.get_minimap2_param()
-
-    outdir = args["o"] + "/" + args["n"]
-    sam = outdir + "/" + args["n"] + "." + gene + ".db.sam"
-    bam = outdir + "/" + args["n"] + "." + gene + ".db.bam"
-    depth_file = outdir + "/" + args["n"] + "." + gene + ".db.depth"
-    sort_depth_file = outdir + "/" + args["n"] + "." + gene + ".db.sort.depth.txt"
-    # ref={args["f"] }
-    # map raw reads to database
-
-    ref = my_db.get_gene_all_alleles(gene)
-    # ref="/mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/db/HLA/whole/HLA_A.fasta"
-
-    alignDB_order = f"""
-    fq={args["r"]}
-    
-    outdir={args["o"]}/{args["n"]}
-    sample={args["n"]}
-
-    fq=$outdir/{gene}.long_read.fq.gz
-
-    ref={ref}
-
-    minimap2 -t {args["j"]} {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
-
-    # bwa index $ref
-    # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref $fq > {sam}
-
-    samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
-    samtools index {bam}
-    samtools depth -aa {bam}>{depth_file}
-    rm {sam}
-    echo alignment done.
-    """
-    # if the depth_file is not detected 
-    if not os.path.exists(depth_file):
-        os.system(alignDB_order)
-    else:
-        print("Depth file is detected.")
-    # os.system(alignDB_order)
-
-    return bam, depth_file, sort_depth_file
-
 def output_spechla_format(args, result_dict):
     outdir = args["o"] + "/" + args["n"]
     out = open(f"{outdir}/hla.new.result.txt", 'w')
@@ -472,7 +427,7 @@ def output_spechla_format(args, result_dict):
     # print (f"\nObjective value:\t", end = "\t", file = out)
     out.close()
 
-def output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict, p_value_cutoff=0.001):
+def output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict, p_value_cutoff=0.0001):
     outdir = args["o"] + "/" + args["n"]
     result = f"""{outdir}/{args["n"]}.{args["i"]}.type.result.txt"""
     version_info = get_IMGT_version(args)
@@ -564,7 +519,7 @@ def main(args):
 
 
             allele_match_dict, allele_mismatch_dict = cal_allele_match_len(record_read_allele_dict)
-            reads_num_dict[gene] = len(record_read_allele_dict)
+            
 
 
             # allele_name_dict = select_candidate_allele(record_allele_length, allele_match_dict, allele_mismatch_dict, 500)
@@ -572,7 +527,7 @@ def main(args):
             for allele in record_candidate_alleles[gene]:
                 allele_name_dict[allele] = 1
 
-
+        reads_num_dict[gene] = len(record_read_allele_dict)
         print ("finish matrix construction")
         
 
@@ -584,7 +539,7 @@ def main(args):
             split_assign_reads(gene, first_pair, record_read_allele_dict, outdir, gene_fq)  # output assigned reads to fastq
 
             print (gene, type_allele_result, "\n\n")
-            homo_p_value = if_homo(record_allele_pair_sep_match, first_pair)
+            homo_p_value = if_homo2(record_allele_pair_sep_match, first_pair)
             homo_p_value_dict[gene] = homo_p_value
             # if homo_p_value < 0.001:
             #     type_allele_result = [type_allele_result[0]] 
@@ -620,7 +575,7 @@ def main(args):
         result_dict[gene] = type_allele_result
 
     # output_spechla_format(args, result_dict)
-    output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict)
+    output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict, args["hete_p"])
     
 
 
@@ -638,6 +593,7 @@ if __name__ == "__main__":
     optional.add_argument("--candidate_allele_num", type=int, help="Maintain this number of alleles for ILP step.", metavar="\b", default=100)
     optional.add_argument("--min_read_num", type=int, help="min support read number.", metavar="\b", default=2)
     optional.add_argument("-b", type=float, help="The match length increase ratio lower than this value is homo [0-1].", metavar="\b", default=0.0007)
+    optional.add_argument("--hete_p", type=float, help="Hete pvalue.", metavar="\b", default=1e-30)
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     # optional.add_argument("-m", type=int, help="1 represents typing, 0 means only read assignment", metavar="\b", default=1)
@@ -657,5 +613,6 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    # gene_list = ["HLA-B"]
+    gene_list = ['HLA-A', 'HLA-B', 'HLA-C', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRB1']
+    # gene_list = ['HLA-C']
     main(args)

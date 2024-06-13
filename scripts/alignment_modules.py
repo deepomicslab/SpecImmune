@@ -98,7 +98,7 @@ def map2db(args, gene, my_db):
 
     ref={ref}
 
-    minimap2 -t {args["j"]} {minimap_para} -p 0.1 -N 100000 -a $ref $fq > {sam}
+    minimap2 -t {args["j"]} {minimap_para} -E 4,2 -p 0.1 -N 100000 -a $ref $fq > {sam}
 
     # bwa index $ref
     # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref $fq > {sam}
@@ -131,7 +131,7 @@ def map2db_blast(args, gene, my_db):
     seqtk seq -A $fq > $outdir/{gene}.long_read.fasta
     seqtk sample $outdir/{gene}.long_read.fasta 500 >$outdir/{gene}.long_read.sub.fasta
     echo start blastn...
-    blastn -query $outdir/{gene}.long_read.sub.fasta -outfmt 7 -out {blast_file} -db {my_db.get_blast_index(gene)}  -num_threads {args["j"]} -max_target_seqs 10000 -max_hsps 1
+    blastn -query $outdir/{gene}.long_read.sub.fasta -outfmt 7 -out {blast_file} -db {my_db.get_blast_index(gene)}  -num_threads {args["j"]} -max_target_seqs 10000 -max_hsps 1 -task megablast
     echo blast is done.
     """
 

@@ -257,6 +257,9 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
                     if distance - local_distance > dist_cutoff:
                         confict_flag = True
                         # continue
+                else:  # cannot find the distance in the matrix
+                    confict_flag = True
+
                 if local_distance <= 0:
                     # print ("#overlap", store_intervalue, my_interval, assigned_locus, loci_name, highest_identity, self.loci_object_dict[loci_name].represent_identity)
                     confict_flag = True
