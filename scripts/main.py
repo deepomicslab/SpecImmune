@@ -28,8 +28,8 @@ def main(args):
         ## second: find a pair of alleles for each HLA locus
         python3 {sys.path[0]}/select_best_reference_alleleV2.py --max_read_num {args["max_read_num"]} --candidate_allele_num {args["candidate_allele_num"]} --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
         """
-        if args["mode"] >= 3:
-            os.system(command)
+        # if args["mode"] >= 3:
+        #     os.system(command)
 
         # return
 
