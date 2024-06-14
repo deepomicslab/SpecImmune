@@ -18,8 +18,7 @@ def read_hla_file(filename):
                 if iti>0:
                     continue
                 allele=it.split(",")[0]
-                # gene_tag=allele.split("*")[0]
-                gene_tag=items[0]
+                gene_tag=allele.split("*")[0]
                 print("result :", gene_tag, allele) 
                 gene_ref_dict[gene_tag].append(allele)
 
@@ -37,8 +36,11 @@ def build_HLA_ref():
     # Write the reference file
     # shell code
     for gene, alleles in gene_ref_dict.items():
-        if '-' in alleles[0] or len(alleles)==0:
+        if len(alleles)==0:
             continue
+        else:
+            if '-' in alleles[0]:
+                continue
         allele_dir=f"{db_build_dir}/{gene}"
         if not os.path.exists(allele_dir):
             os.makedirs(allele_dir)
@@ -59,8 +61,11 @@ def build_HLA_ref():
 
 def map_phased_reads_2_ref():
     for gene, alleles in gene_ref_dict.items():
-        if '-' in alleles[0] or len(alleles)==0:
+        if len(alleles)==0:
             continue
+        else:
+            if '-' in alleles[0]:
+                continue
         for allele_idx, allele in enumerate(alleles):
             fq=f"{outdir}/{sample}/{allele}.fq.gz"
             ref=f"{db_build_dir}/{gene}/{gene}.{allele_idx+1}.fasta"
