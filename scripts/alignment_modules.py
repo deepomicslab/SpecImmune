@@ -114,7 +114,7 @@ def map2db(args, gene, my_db, read_num=500):
     #     os.system(alignDB_order)
     # else:
     #     print("Depth file is detected.")
-    # os.system(alignDB_order)
+    os.system(alignDB_order)
 
     return bam, depth_file, sort_depth_file
 

@@ -18,18 +18,18 @@ def main(args):
 
         command = f"""
         ## first: read binning
-        python3 {sys.path[0]}/read_binning.py -m 2 -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} --min_identity {args["min_identity"]}
+        python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} --min_identity {args["min_identity"]}
         ## second: find a pair of alleles for each HLA locus
         """
-        # if args["mode"] >= 4:
-        #     os.system(command)
+        if args["mode"] >= 4:
+            os.system(command)
 
         command = f"""
         ## second: find a pair of alleles for each HLA locus
         python3 {sys.path[0]}/select_best_reference_alleleV2.py --max_read_num {args["max_read_num"]} --candidate_allele_num {args["candidate_allele_num"]} --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
         """
-        # if args["mode"] >= 3:
-        #     os.system(command)
+        if args["mode"] >= 3:
+            os.system(command)
 
         # return
 
@@ -45,10 +45,10 @@ def main(args):
         ## third: build individual reference for each HLA locus, two ref version
         python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {my_db.full_db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} 
         """
-        if args["first_run"]:
-            if args["mode"] >= 2:
-                print ("<<<<get_2ref_align.py")
-                os.system(command)
+        # if args["first_run"]:
+        if args["mode"] >= 2:
+            print ("<<<<get_2ref_align.py")
+            os.system(command)
 
 
         
@@ -96,9 +96,7 @@ if __name__ == "__main__":
     required.add_argument("-n", type=str, help="Sample ID", metavar="\b")
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
     required.add_argument("-i", type=str, help="HLA,KIR,CYP,IG_TR",metavar="\b", default="HLA")
-    # optional.add_argument("-p", type=str, help="The population of the sample [Asian, Black, Caucasian, Unknown, nonuse] for annotation. Unknown means use mean allele frequency in all populations. nonuse indicates only adopting mapping score and considering zero-frequency alleles.", metavar="\b", default="Unknown")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=5)
-    # optional.add_argument("-d", type=float, help="Minimum score difference to assign a read to a gene.", metavar="\b", default=0.001)
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     optional.add_argument("--mode", type=int, help="4 represents all steps, 3 skip first, 2 skip two, 3, skipt three", metavar="\b", default=4)
     optional.add_argument("--analyze_method", type=str, help="phase/assembly", metavar="\b", default="phase")
@@ -106,15 +104,12 @@ if __name__ == "__main__":
     # optional.add_argument("-a", type=str, help="Prefix of filtered fastq file.", metavar="\b", default="long_read")
     optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio|pacbio-hifi].", metavar="\b", default="pacbio")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
-    # optional.add_argument("-dr", "--db_ref", type=str, help="database reference", metavar="\b", \
-    #                        default=sys.path[0] + "/../db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta")
     optional.add_argument("-f", "--first_run", type=bool, help="set False for rerun", metavar="\b", default=True)
     optional.add_argument("--min_identity", type=float, help="Minimum identity to assign a read.", metavar="\b", default=0.85)
-    optional.add_argument("--hete_p", type=float, help="Hete pvalue.", metavar="\b", default=1e-30) 
-    optional.add_argument("--candidate_allele_num", type=int, help="Maintain this number of alleles for ILP step.", metavar="\b", default=100)
+    optional.add_argument("--hete_p", type=float, help="Hete pvalue.", metavar="\b", default=0.3) 
+    optional.add_argument("--candidate_allele_num", type=int, help="Maintain this number of alleles for ILP step.", metavar="\b", default=200)
     optional.add_argument("--min_read_num", type=int, help="min support read number for each locus.", metavar="\b", default=2)
-    optional.add_argument("--max_read_num", type=int, help="max support read number for each locus.", metavar="\b", default=1000)
-    # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
+    optional.add_argument("--max_read_num", type=int, help="max support read number for each locus.", metavar="\b", default=500)
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
 

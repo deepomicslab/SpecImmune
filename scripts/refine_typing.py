@@ -237,7 +237,7 @@ def get_blast_info(blastfile, tag):
         if field[1] in ["HLA-A*03:08:01:02", "HLA-A*03:01:01:12"]:
             print("field", field, align_info)    
         align_list.append(align_info)
-    print("align_list_0", align_list)
+    # print("align_list_0", align_list)
     identity_sorted_list = sorted(align_list, key=get_3_element, reverse = True)
     return identity_sorted_list
 

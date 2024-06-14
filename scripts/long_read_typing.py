@@ -146,6 +146,7 @@ class Fasta():
             
             # If the BAM file does not exist, skip the current iteration
             if not os.path.exists(bam):
+                print (f"{bam} does not exist", flush=True)
                 continue
             
             hla_ref = my_db.get_gene_alleles_2ref(gene, index)
@@ -228,6 +229,7 @@ class Fasta():
     def get_fasta(self):
         for gene in gene_list:
             # self.vcf2fasta(gene)
+            print (gene)
             self.vcf2fasta2ref(gene)
         # self.annotation()
 
