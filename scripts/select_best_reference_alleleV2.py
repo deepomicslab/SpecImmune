@@ -577,6 +577,7 @@ if __name__ == "__main__":
     # optional.add_argument("-m", type=int, help="1 represents typing, 0 means only read assignment", metavar="\b", default=1)
     optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio|pacbio-hifi].", metavar="\b", default="pacbio")
     optional.add_argument("--align_method", type=str, help="[minimap2|blastn|bwa].", metavar="\b", default="minimap2")
+    optional.add_argument("--test", type=bool, help="for test.", metavar="\b", default=False)
     # optional.add_argument("--max_depth", type=int, help="maximum depth for each HLA locus. Downsample if exceed this value.", metavar="\b", default=10000)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
     optional.add_argument("-h", "--help", action="help")
@@ -590,7 +591,7 @@ if __name__ == "__main__":
 
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
-
-    # gene_list = ['HLA-A', 'HLA-B', 'HLA-C', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRB1']
-    # gene_list = ['HLA-DPB1']
+    if args["test"]:
+        # gene_list = ['HLA-A', 'HLA-B', 'HLA-C', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRB1']
+        gene_list = ['HLA-DPB1']
     main(args)
