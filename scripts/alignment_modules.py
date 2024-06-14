@@ -110,10 +110,10 @@ def map2db(args, gene, my_db, read_num=500):
     echo alignment done.
     """
     # if the depth_file is not detected 
-    if not os.path.exists(depth_file):
+    if not os.path.exists(depth_file) or not os.path.exists(bam):
         os.system(alignDB_order)
     else:
-        print("Depth file is detected.")
+        print("Depth and BAM file is detected.")
     # os.system(alignDB_order)
 
     return bam, depth_file, sort_depth_file

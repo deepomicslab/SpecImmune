@@ -9,7 +9,7 @@ outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/output6"
 
 
 
-tool="/home/wangshuai/softwares/SpecLong/scripts/main.py"
+tool="/home/wangshuai/softwares/SpecLong/scripts/main_test.py"
 
 # Read the file list file line by line
 while IFS= read -r file_path; do
@@ -19,8 +19,8 @@ while IFS= read -r file_path; do
 
 
     echo $file_basename
-    # if [ "1" == "1" ]; then
-    if [ "$file_basename" == "fredhutch-hla-FH14" ]; then
+    if [ "1" == "1" ]; then
+    # if [ "$file_basename" == "fredhutch-hla-GO85" ]; then
 
         # python $tool -n $file_basename -o $outdir -j 15 -y pacbio -i HLA -r $file_path --db /mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/ 
 
@@ -34,9 +34,6 @@ while IFS= read -r file_path; do
         #perl /mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/script/whole/annoHLA.pl -p nonuse   -s $file_basename -i output/$file_basename -r tgs 
         #python ~/softwares//SpecHLA/script//refine_typing.py -n $file_basename  -o output/$file_basename/
     fi
-    #cat output/$file_basename/hla.result.txt
-    #break;
-        # Add your code here to perform actions on the file
 
 done < "$file_list_file"
 

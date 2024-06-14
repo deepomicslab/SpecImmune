@@ -216,9 +216,10 @@ if __name__ == "__main__":
         sys.exit(0)
 
     parameter = Parameters()
-    # Min_score = 0.1  #the read is too long, so the score can be very low.
     Min_score = 0  #the read is too long, so the score can be very low.
     Min_diff = args["d"]  #0.001
+
+    print ("start read binning...")
 
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)

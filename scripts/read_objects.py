@@ -256,10 +256,22 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
         if highest_identity < identity_cutoff:   ## if the identity is too low, then skip
             return assigned_locus
         
+        #### avoid the reads with short match length to be assigned to HLA-DRB1
+        # if gene_score[0][0] == "HLA-DRB1" and self.loci_object_dict[gene_score[0][0]].represent_match_num < 300:
+        #     print ("skip", read_name, gene_score, self.loci_object_dict[gene_score[0][0]].represent_match_num)
+        #     return assigned_locus
+        
         for i in range(len(gene_score)):
             loci_name = gene_score[i][0]
+
             if highest_identity - self.loci_object_dict[loci_name].represent_identity > identity_diff:
                 break
+
+            #### avoid the reads with short match length to be assigned to HLA-DRB1
+            if loci_name == "HLA-DRB1" and self.loci_object_dict[loci_name].represent_match_num < 300:
+                # print ("skip", read_name, loci_name, self.loci_object_dict[loci_name].represent_match_num, gene_score)
+                continue
+
             my_interval = [self.loci_object_dict[loci_name].start,self.loci_object_dict[loci_name].end]  
 
             confict_flag = False
@@ -302,14 +314,15 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
                     #        self.loci_object_dict[best_locus].represent_identity)
                 else:
                     continue
-            # print (loci_name, self.loci_object_dict[loci_name].represent_identity, my_interval)
-            assigned_locus.append(loci_name)
+            else:
+                assigned_locus.append(loci_name)
             record_interval += my_interval
         # print (assigned_locus)
         # print ("#####\n")
-        if read_name == "de1312c7-eb67-4965-8840-e7cf736ea5d4":
+        if len(assigned_locus) > 1 and assigned_locus[0] == assigned_locus[1]:
             print ("###########", gene_score, 
                     assigned_locus, 
+                    read_name,
                     self.loci_object_dict[gene_score[0][0]].represent_match_num, 
                     self.loci_object_dict[gene_score[1][0]].represent_match_num)
         return assigned_locus

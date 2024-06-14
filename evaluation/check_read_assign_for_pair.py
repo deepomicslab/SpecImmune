@@ -81,8 +81,12 @@ def compare_columns(file_path, column1, column2):
 # column1 = 'HLA-C*07:1120N'
 # column2 = 'HLA-C*07:02:01:03'
 
-file_path = "/mnt/d/HLAPro_backup/Nanopore_optimize/output6/fredhutch-hla-FH14/fredhutch-hla-FH14.HLA-DPB1.read.matrix.csv"
-column1 = 'HLA-DPB1*04:01:01:01'
-column2 = 'HLA-DPB1*04:01:01:110'
+# file_path = "/mnt/d/HLAPro_backup/Nanopore_optimize/output6/fredhutch-hla-FH14/fredhutch-hla-FH14.HLA-DPB1.read.matrix.csv"
+# column1 = 'HLA-DPB1*04:01:01:01'
+# column2 = 'HLA-DPB1*04:01:01:110'
+
+file_path = "/mnt/d/HLAPro_backup/Nanopore_optimize/output6/fredhutch-hla-FH14/fredhutch-hla-FH14.HLA-DRB1.read.matrix.csv"
+column1 = 'HLA-DRB1*04:03:01:01'
+column2 = 'HLA-DRB1*04:01:01:01'
 
 compare_columns(file_path, column1, column2)
