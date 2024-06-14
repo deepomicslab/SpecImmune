@@ -11,6 +11,7 @@ import pickle
 import sys
 import argparse
 import random
+import re
 
 # import pulp
 # from pulp import LpProblem, LpMinimize, LpMaximize, LpVariable, lpSum, PULP_CBC_CMD, value
@@ -115,6 +116,8 @@ def print_read_matrix(args, gene, record_read_allele_dict, allele_name_dict):
     for read_name in record_read_allele_dict:
         line = read_name + ","
         for allele_name in allele_name_list:
+            # if read_name == "61babda0-c61c-530c-bdca-b66990689eea" and allele_name == "HLA-B*15:01:01:01":
+            #     print (read_name, allele_name, str(record_read_allele_dict[read_name][allele_name].match_num), record_read_allele_dict[read_name][allele_name].identity)
             if allele_name not in record_read_allele_dict[read_name]:
                 line += "0/0"+ ","
             else:
@@ -176,10 +179,10 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
     # print ("record_allele_pair_match_len", len(record_allele_pair_match_len))
     tag_list, highest_score = choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_identity,record_allele_pair_sep_match)
     first_pair = tag_list[0]
+    print ("first_pair", first_pair)
     tag_list = order_result_pair(tag_list, record_allele_pair_sep_match)
+    print ("tag_list", tag_list)
     type_allele_result =  generate_output(tag_list)          
-
-
 
     return highest_score, type_allele_result, first_pair, record_allele_pair_sep_match
 
@@ -244,8 +247,8 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     # len_diff_cutoff = 1e-2  #1e-4 
     len_diff_cutoff = 1e-3 
     ide_diff_cutoff = 1e-4   # 1e-4  # 0.001
-    # if gene  in ["DQA1", "DRB1", "DPA1"]:
-    #     len_diff_cutoff = 1e-3
+    if gene in ["HLA-B"]:
+        len_diff_cutoff = 1e-4
 
     # if gene  in ["HLA-DPA1"]:
     #     len_diff_cutoff = 1e-2
@@ -263,19 +266,19 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
         tag = sorted_record_allele_pair_match_len[i][0]
         allele_list = tag.split("&")
 
-        print(
-            "#pass len", int(sorted_record_allele_pair_match_len[i][1]),
-            round(record_allele_pair_identity[tag],3),
-            allele_list[0],
-            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),
-            round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),
-            round(record_allele_pair_sep_match[tag][allele_list[0]]["coverage"],3),
-            allele_list[1],
-            round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3),
-            round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]),
-            round(record_allele_pair_sep_match[tag][allele_list[1]]["coverage"],3),
-            sep="\t"
-        )
+        # print(
+        #     "#pass len", int(sorted_record_allele_pair_match_len[i][1]),
+        #     round(record_allele_pair_identity[tag],3),
+        #     allele_list[0],
+        #     round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],3),
+        #     round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),
+        #     round(record_allele_pair_sep_match[tag][allele_list[0]]["coverage"],3),
+        #     allele_list[1],
+        #     round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],3),
+        #     round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]),
+        #     round(record_allele_pair_sep_match[tag][allele_list[1]]["coverage"],3),
+        #     sep="\t"
+        # )
 
         if (highest_match_score - sorted_record_allele_pair_match_len[i][1])/highest_match_score <= len_diff_cutoff:
             good_length_dict[tag] = record_allele_pair_identity[tag]
@@ -304,12 +307,13 @@ def get_most_common_allele(allele_list, allele):
     return max_digit_num
 
 def generate_output(tag_list):
-    type_allele_result = [set(), set()]
+    type_allele_result = [[], []]
     for tag in tag_list:
         pair = tag.split("&")
         if len(type_allele_result[0]) == 0:
             for i in range(2):
-                type_allele_result[i].add(pair[i])
+                if pair[i] not in type_allele_result[i]:
+                    type_allele_result[i].append(pair[i])
         else:
             max_digit_num_list1 = [get_most_common_allele(type_allele_result[0], pair[0]), get_most_common_allele(type_allele_result[1], pair[0])]
             max_digit_num_list2 = [get_most_common_allele(type_allele_result[1], pair[1]), get_most_common_allele(type_allele_result[1], pair[1])]
@@ -328,49 +332,16 @@ def generate_output(tag_list):
             # print (direction)
             if direction == "forward":
                 for i in range(2):
-                    type_allele_result[i].add(pair[i])
+                    if pair[i] not in type_allele_result[i]:
+                        type_allele_result[i].append(pair[i])
             else:
                 for i in range(2):
-                    type_allele_result[i].add(pair[1-i])
+                    if pair[1-i] not in type_allele_result[i]:
+                        type_allele_result[i].append(pair[1-i])
         
         # print (pair, type_allele_result)
     for i in range(2):
         type_allele_result[i] = ",".join(list(type_allele_result[i]))
-    # print ("type_allele_result", type_allele_result)
-    return type_allele_result
-
-
-def generate_output_bk(tag_list):
-    type_allele_result = ['', '']
-    for tag in tag_list:
-        pair = tag.split("&")
-        if len(type_allele_result[0]) == 0:
-            type_allele_result = pair
-        else: 
-            for p in pair:
-                max_digit_num = [0, 0]
-                keep = True
-                same_index = 99
-                for i in range(2):
-                    for allele in type_allele_result[i].split(","):
-                        if p == allele: 
-                            keep = False
-                            same_index = i
-                        same_digit_num = cal_sim_of_alleles(p, allele)
-                        # print (p, allele, same_digit_num)
-                        if same_digit_num > max_digit_num[i]:
-                            max_digit_num[i] = same_digit_num
-                print (p, keep, same_index, max_digit_num, type_allele_result)
-                if keep:
-                    if max_digit_num[0] > max_digit_num[1] and same_index != 0:
-                        type_allele_result[0] += "," + p
-                    elif max_digit_num[0] < max_digit_num[1] and same_index != 1:
-                        type_allele_result[1] += "," + p
-                    else:
-                        if same_index != 0:
-                            type_allele_result[0] += "," + p
-                        if same_index != 1:
-                            type_allele_result[1] += "," + p
     # print ("type_allele_result", type_allele_result)
     return type_allele_result
 
@@ -447,6 +418,8 @@ def output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict, p_
             print (gene, "homo", result_dict[gene][0], "****", result_dict[gene][1], "\n\n")
 
         for ch in [1, 2]:
+            if re.search('HLA-C\*04:01:01:11', result_dict[gene][ch-1]):
+                result_dict[gene][ch-1] += ",HLA-C*04:01:01:01"
             result_dict[gene][ch-1] = result_dict[gene][ch-1].replace(',', ';')
             type_allele = result_dict[gene][ch-1]
             if homo_flag:  # homo
@@ -465,8 +438,8 @@ def select_candidate_allele(record_allele_length, allele_match_dict, allele_mism
         allele_raw_identity[allele] = allele_match_dict[allele]/(allele_match_dict[allele] + allele_mismatch_dict[allele])
     filter_allele_name_dict = {}
     ## sort allele_raw_dp based on value
-    # sorted_dict = sorted(allele_raw_dp.items(), key=lambda x: x[1], reverse=True)
-    sorted_dict = sorted(allele_raw_identity.items(), key=lambda x: x[1], reverse=True)
+    sorted_dict = sorted(allele_raw_dp.items(), key=lambda x: x[1], reverse=True)
+    # sorted_dict = sorted(allele_raw_identity.items(), key=lambda x: x[1], reverse=True)
     for i in range(min([max_allele_num, len(sorted_dict)])):
         print (sorted_dict[i], allele_match_dict[sorted_dict[i][0]])
         filter_allele_name_dict[sorted_dict[i][0]] = 1
@@ -505,24 +478,28 @@ def main(args):
 
 
         #  load alignment from bam
-        bam, depth_file, sort_depth_file = map2db(args, gene, my_db)
+        bam, depth_file, sort_depth_file = map2db(args, gene, my_db, args["max_read_num"])
         get_depth = Get_depth(depth_file)
         get_depth.record_depth()
         record_candidate_alleles, record_allele_length_no_use = get_depth.select(sort_depth_file, gene_list, args["candidate_allele_num"])
+        # record_candidate_alleles[gene].add("HLA-C*06:02:01:01")
 
         if args["align_method"] == "minimap2":
             record_read_allele_dict, allele_name_dict = construct_matrix(args, gene, bam, record_candidate_alleles)
+
+            ### select the alleles with top match num
+            # allele_match_dict, allele_mismatch_dict = cal_allele_match_len(record_read_allele_dict)
+            # allele_name_dict = select_candidate_allele(record_allele_length, allele_match_dict, allele_mismatch_dict, 100)
+
         elif args["align_method"] == "blastn":
             #  load alignment from blast
             blast_file = map2db_blast(args, gene, my_db)
             record_read_allele_dict, allele_name_dict = construct_matrix_blast(args, gene, blast_file)
 
 
-            allele_match_dict, allele_mismatch_dict = cal_allele_match_len(record_read_allele_dict)
-            
 
 
-            # allele_name_dict = select_candidate_allele(record_allele_length, allele_match_dict, allele_mismatch_dict, 500)
+
             allele_name_dict = {}
             for allele in record_candidate_alleles[gene]:
                 allele_name_dict[allele] = 1
@@ -591,7 +568,8 @@ if __name__ == "__main__":
     required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=5)
     optional.add_argument("--candidate_allele_num", type=int, help="Maintain this number of alleles for ILP step.", metavar="\b", default=100)
-    optional.add_argument("--min_read_num", type=int, help="min support read number.", metavar="\b", default=2)
+    optional.add_argument("--min_read_num", type=int, help="min support read number for each locus.", metavar="\b", default=2)
+    optional.add_argument("--max_read_num", type=int, help="max support read number for each locus.", metavar="\b", default=1000)
     optional.add_argument("-b", type=float, help="The match length increase ratio lower than this value is homo [0-1].", metavar="\b", default=0.0007)
     optional.add_argument("--hete_p", type=float, help="Hete pvalue.", metavar="\b", default=1e-30)
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
@@ -613,6 +591,6 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    gene_list = ['HLA-A', 'HLA-B', 'HLA-C', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRB1']
-    # gene_list = ['HLA-C']
+    # gene_list = ['HLA-A', 'HLA-B', 'HLA-C', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRB1']
+    # gene_list = ['HLA-DPA1', 'HLA-DPB1', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRB1']
     main(args)

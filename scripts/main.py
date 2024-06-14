@@ -18,20 +18,20 @@ def main(args):
 
         command = f"""
         ## first: read binning
-        python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} --min_identity {args["min_identity"]}
+        python3 {sys.path[0]}/read_binning.py -m 2 -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} --min_identity {args["min_identity"]}
         ## second: find a pair of alleles for each HLA locus
         """
-        if args["mode"] >= 4:
-            os.system(command)
+        # if args["mode"] >= 4:
+        #     os.system(command)
 
         command = f"""
         ## second: find a pair of alleles for each HLA locus
-        python3 {sys.path[0]}/select_best_reference_alleleV2.py --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
+        python3 {sys.path[0]}/select_best_reference_alleleV2.py --max_read_num {args["max_read_num"]} --candidate_allele_num {args["candidate_allele_num"]} --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
         """
         if args["mode"] >= 3:
             os.system(command)
 
-        return
+        # return
 
         # build individual ref when first run
         my_db = My_db(args)
@@ -47,6 +47,7 @@ def main(args):
         """
         if args["first_run"]:
             if args["mode"] >= 2:
+                print ("<<<<get_2ref_align.py")
                 os.system(command)
 
 
@@ -110,6 +111,9 @@ if __name__ == "__main__":
     optional.add_argument("-f", "--first_run", type=bool, help="set False for rerun", metavar="\b", default=True)
     optional.add_argument("--min_identity", type=float, help="Minimum identity to assign a read.", metavar="\b", default=0.85)
     optional.add_argument("--hete_p", type=float, help="Hete pvalue.", metavar="\b", default=1e-30) 
+    optional.add_argument("--candidate_allele_num", type=int, help="Maintain this number of alleles for ILP step.", metavar="\b", default=100)
+    optional.add_argument("--min_read_num", type=int, help="min support read number for each locus.", metavar="\b", default=2)
+    optional.add_argument("--max_read_num", type=int, help="max support read number for each locus.", metavar="\b", default=1000)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 

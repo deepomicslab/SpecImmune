@@ -18,7 +18,8 @@ def read_hla_file(filename):
                 if iti>0:
                     continue
                 allele=it.split(",")[0]
-                gene_tag=allele.split("*")[0]
+                # gene_tag=allele.split("*")[0]
+                gene_tag=items[0]
                 print("result :", gene_tag, allele) 
                 gene_ref_dict[gene_tag].append(allele)
 

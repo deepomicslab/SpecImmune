@@ -1,5 +1,7 @@
 import sys
 
+MATCH_LEN_THRESHOLD = 2
+
 class My_read():
 
     def __init__(self):
@@ -33,7 +35,9 @@ class My_read():
         ### the NM tag consists all insertion, deletion and mismatches in the alignment
 
         # Get the alignment length in the read
-        self.alignment_len = read.query_alignment_length
+        # self.alignment_len = read.query_alignment_length
+        gap_num, map_len, long_gap = self.count_cigar(read)
+        self.alignment_len = map_len
 
         self.read_length = read.query_length
         # self.read_match_ratio = self.alignment_len/self.read_length
@@ -58,8 +62,8 @@ class My_read():
             print ("unmapped read", read.query_name, read.cigar)
             sys.exit(0)
         
-        self.match_num = self.alignment_len - self.mismatch_num
-        self.identity = self.match_num/self.alignment_len
+        self.match_num = self.alignment_len - self.mismatch_num 
+        self.identity = self.match_num/(self.alignment_len - long_gap)
 
         self.read_name = read.query_name
         self.allele_name = read.reference_name
@@ -72,6 +76,26 @@ class My_read():
 
         self.match_rate = self.identity
         self.mismatch_rate = 1 - self.match_rate
+
+        if self.match_num < 0:
+            print ("negative match num", self.match_num, self.mismatch_num, self.alignment_len, self.identity, self.read_name, self.allele_name, self.loci_name)
+            print (gap_num, map_len, long_gap)
+            sys.exit(0)
+        
+
+    def count_cigar(self, read, long_cutoff = 50):
+        gap_num = 0
+        map_len = 0
+        long_gap = 0
+        for ci in read.cigar:
+            if ci[0] == 0:
+                map_len += ci[1]
+            elif ci[0] == 1 or ci[0] == 2:
+                gap_num += ci[1]
+                map_len += ci[1]
+                if ci[1] > long_cutoff:
+                    long_gap += ci[1]
+        return gap_num, map_len, long_gap
 
     def load_blast(self, line): # format 7
         field = line.strip().split("\t")
@@ -199,7 +223,8 @@ class My_locus():  # the match for a single read in all the alleles of a locus
         self.read_name = read_obj.read_name
         # if read_obj.read_name == "m54329U_200715_194535/18942351/ccs":
         #     print (read_obj.allele_name, read_obj.identity, read_obj.match_num, read_obj.match_start_pos, read_obj.match_end_pos)
-        if read_obj.identity > self.represent_identity:
+        ### a new record should have a higher identity and match length not too short (>0.5*old record match length)
+        if read_obj.identity > self.represent_identity and self.represent_match_num/read_obj.match_num < MATCH_LEN_THRESHOLD:
             self.represent_identity = read_obj.identity
             self.represent_match_num = read_obj.match_num
 
@@ -226,9 +251,6 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
         assigned_locus = []
         record_interval = []
         gene_score = sorted(record_identity.items(), key=lambda item: item[1], reverse = True)
-
-        # if read_name == "e55f5884-50a1-43bc-a3eb-1003f364caa5":
-        #     print ("###########", gene_score)
 
         highest_identity = gene_score[0][1]
         if highest_identity < identity_cutoff:   ## if the identity is too low, then skip
@@ -268,16 +290,16 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
                 #     print ("non overlap", store_intervalue, my_interval)
             if confict_flag:
                 ## if the match len of this locus is far long than the first, assign the read to this locus
-                if self.loci_object_dict[loci_name].represent_match_num / self.loci_object_dict[assigned_locus[0]].represent_match_num > 2:
+                if self.loci_object_dict[loci_name].represent_match_num / self.loci_object_dict[assigned_locus[0]].represent_match_num > MATCH_LEN_THRESHOLD:
                     assigned_locus = [loci_name]
                     record_interval = my_interval
-                    print (read_name, 
-                           loci_name, 
-                           self.loci_object_dict[loci_name].represent_match_num, 
-                           self.loci_object_dict[loci_name].represent_identity, 
-                           best_locus, 
-                           self.loci_object_dict[best_locus].represent_match_num,
-                           self.loci_object_dict[best_locus].represent_identity)
+                    # print (read_name, 
+                    #        loci_name, 
+                    #        self.loci_object_dict[loci_name].represent_match_num, 
+                    #        self.loci_object_dict[loci_name].represent_identity, 
+                    #        best_locus, 
+                    #        self.loci_object_dict[best_locus].represent_match_num,
+                    #        self.loci_object_dict[best_locus].represent_identity)
                 else:
                     continue
             # print (loci_name, self.loci_object_dict[loci_name].represent_identity, my_interval)
@@ -285,6 +307,11 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
             record_interval += my_interval
         # print (assigned_locus)
         # print ("#####\n")
+        if read_name == "de1312c7-eb67-4965-8840-e7cf736ea5d4":
+            print ("###########", gene_score, 
+                    assigned_locus, 
+                    self.loci_object_dict[gene_score[0][0]].represent_match_num, 
+                    self.loci_object_dict[gene_score[1][0]].represent_match_num)
         return assigned_locus
 
     def intervals_overlap(self, interval1, interval2):

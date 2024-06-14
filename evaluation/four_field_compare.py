@@ -11,7 +11,7 @@ from get_lite_db import convert_field_for_allele
 
 gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 # gene_list = ['C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
-# gene_list = ['C']
+gene_list = ['DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 
 def hla_to_numeric(hla_string):
     # Remove the gene prefix (all non-digit characters up to the asterisk)

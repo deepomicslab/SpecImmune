@@ -69,7 +69,7 @@ class Read_Type:
             raise ValueError("Invalid read type specified.")
 
 
-def map2db(args, gene, my_db):
+def map2db(args, gene, my_db, read_num=500):
 
     read_type = Read_Type(args["y"])
     minimap_para = read_type.get_minimap2_param()
@@ -93,12 +93,12 @@ def map2db(args, gene, my_db):
 
     fq=$outdir/{gene}.long_read.fq.gz
 
-    seqtk sample $outdir/{gene}.long_read.fq.gz 500 >$outdir/{gene}.long_read.sub.fq
+    seqtk sample $outdir/{gene}.long_read.fq.gz {read_num} >$outdir/{gene}.long_read.sub.fq
     fq=$outdir/{gene}.long_read.sub.fq
 
     ref={ref}
 
-    minimap2 -t {args["j"]} {minimap_para} -E 4,2 -p 0.1 -N 100000 -a $ref $fq > {sam}
+    minimap2 -t {args["j"]} {minimap_para} -E 8,4 -p 0.1 -N 100000 -a $ref $fq > {sam} # 
 
     # bwa index $ref
     # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref $fq > {sam}
@@ -114,7 +114,7 @@ def map2db(args, gene, my_db):
     #     os.system(alignDB_order)
     # else:
     #     print("Depth file is detected.")
-    os.system(alignDB_order)
+    # os.system(alignDB_order)
 
     return bam, depth_file, sort_depth_file
 
