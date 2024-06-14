@@ -12,6 +12,8 @@ def compare_columns(file_path, column1, column2):
 
     column1_num = 0
     column2_num = 0
+    column1_match = 0
+    column2_match = 0
     equal_num = 0
     x = []
     y = []
@@ -21,7 +23,8 @@ def compare_columns(file_path, column1, column2):
         field2 = df[column2][i].split("/")
         x.append(float(field1[1]))
         y.append(float(field2[1]))
-
+        column1_match += int(field1[0])
+        column2_match += int(field2[0])
         if field1[1] > field2[1]:
             print (df['allele'][i], column1, field1[1], field2[1], field1[0], field2[0], sep="\t")
             column1_num += 1
@@ -32,7 +35,7 @@ def compare_columns(file_path, column1, column2):
             # print ("equal")
             equal_num += 1
 
-    print (column1_num, column2_num, equal_num)
+    print (column1_num, column2_num, equal_num, column1_match, column2_match)
 
     # plot the data
     # import matplotlib.pyplot as plt
@@ -78,8 +81,8 @@ def compare_columns(file_path, column1, column2):
 # column1 = 'HLA-C*07:1120N'
 # column2 = 'HLA-C*07:02:01:03'
 
-file_path = "/mnt/d/HLAPro_backup/Nanopore_optimize/output6/fredhutch-hla-FH14/fredhutch-hla-FH14.HLA-B.read.matrix.csv"
-column1 = 'HLA-B*40:01:02:01'
-column2 = 'HLA-B*40:10:01:02'
+file_path = "/mnt/d/HLAPro_backup/Nanopore_optimize/output6/fredhutch-hla-FH14/fredhutch-hla-FH14.HLA-DPB1.read.matrix.csv"
+column1 = 'HLA-DPB1*04:01:01:01'
+column2 = 'HLA-DPB1*04:01:01:110'
 
 compare_columns(file_path, column1, column2)

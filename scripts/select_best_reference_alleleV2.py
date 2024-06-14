@@ -156,11 +156,11 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
             allele_pair_obj.allele_1_obj.get_coverage(record_allele_length[allele_pair_obj.allele_1])
             allele_pair_obj.allele_2_obj.get_coverage(record_allele_length[allele_pair_obj.allele_2])
 
-            if gene in ['HLA-DRB1'] :  # not DPB1 , "HLA-A" "HLA-DPA1", 
-                depth_cutoff = 0.25
-                depth_l = [allele_pair_obj.allele_1_obj.depth, allele_pair_obj.allele_2_obj.depth]
-                if min(depth_l)/max(depth_l) < depth_cutoff:
-                    continue
+            # if gene in ['HLA-DRB1'] :  # not DPB1 , "HLA-A" "HLA-DPA1", 
+            #     depth_cutoff = 0.25
+            #     depth_l = [allele_pair_obj.allele_1_obj.depth, allele_pair_obj.allele_2_obj.depth]
+            #     if min(depth_l)/max(depth_l) < depth_cutoff:
+            #         continue
             
             record_allele_pair_match_len[tag] = allele_pair_obj.pair_obj.match_num
             record_allele_pair_identity[tag] = allele_pair_obj.pair_obj.identity
@@ -179,9 +179,9 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
     # print ("record_allele_pair_match_len", len(record_allele_pair_match_len))
     tag_list, highest_score = choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_identity,record_allele_pair_sep_match)
     first_pair = tag_list[0]
-    print ("first_pair", first_pair)
+    # print ("first_pair", first_pair)
     tag_list = order_result_pair(tag_list, record_allele_pair_sep_match)
-    print ("tag_list", tag_list)
+    # print ("tag_list", tag_list)
     type_allele_result =  generate_output(tag_list)          
 
     return highest_score, type_allele_result, first_pair, record_allele_pair_sep_match
@@ -284,7 +284,7 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
             good_length_dict[tag] = record_allele_pair_identity[tag]
         else:
             break
-
+    print ("# pass match len cutoff", len(good_length_dict))
     identity_sorted_list = sorted(good_length_dict.items(), key=lambda x: x[1], reverse=True)
     match_len_with_max_identity = identity_sorted_list[0][1]
     full_result_list = []
@@ -592,5 +592,5 @@ if __name__ == "__main__":
     my_db = My_db(args)
 
     # gene_list = ['HLA-A', 'HLA-B', 'HLA-C', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRB1']
-    # gene_list = ['HLA-DPA1', 'HLA-DPB1', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRB1']
+    # gene_list = ['HLA-DPB1']
     main(args)
