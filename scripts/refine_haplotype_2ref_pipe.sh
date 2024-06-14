@@ -1,6 +1,4 @@
 #!/bin/bash
-
-# 参数列表
 bam=$1
 hla_ref=$2
 hla=$3

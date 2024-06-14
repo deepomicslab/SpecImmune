@@ -8,6 +8,7 @@ import pysam
 import gzip
 import argparse
 from collections import defaultdict
+import subprocess
 
 
 from downsample_bam import downsample_func
@@ -136,73 +137,91 @@ class Fasta():
             os.system(order)
 
 
+
     def vcf2fasta2ref(self, gene):
-        awk_script = '{{sum+=$3}} END {{ if (NR>0) print sum/NR; else print 0; }}'
+        awk_script = '{sum+=$3} END { if (NR>0) print sum/NR; else print 0; }'
+
         for index in range(2):
-            bam=f"{parameter.outdir}/{gene}.{index}.bam"
-            # if the bam file is empty, skip the typing
+            bam = f"{parameter.outdir}/{gene}.{index}.bam"
+            
+            # If the BAM file does not exist, skip the current iteration
             if not os.path.exists(bam):
                 continue
-            hla_ref=my_db.get_gene_alleles_2ref(gene, index)
-            depth_file=f"{parameter.outdir}/{gene}.{index}.depth"
-            mask_bed=f"{parameter.outdir}/low_depth.bed"
+            
+            hla_ref = my_db.get_gene_alleles_2ref(gene, index)
+            depth_file = f"{parameter.outdir}/{gene}.{index}.depth"
+            mask_bed = f"{parameter.outdir}/low_depth.bed"
             max_depth = args["max_depth"]
             seed = args["seed"]
             output_bam = f"{parameter.outdir}/{gene}.{index}.downsample.bam"
             output_depth = f"{parameter.outdir}/{gene}.{index}.downsample.depth"
+            
             downsample_ratio = downsample_func(bam, output_bam, depth_file, output_depth, max_depth, seed)
+            
+            interval = f"{interval_dict[gene]}_ref{index+1}"
             if ":" in interval_dict[gene]:
-                interval_split=interval_dict[gene].split(":")
-                interval=f"{interval_split[0]}_ref{index+1}:{interval_split[1]}"
-            else:
-                interval=f"{interval_dict[gene]}_ref{index+1}"
-            print (f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
+                interval_split = interval_dict[gene].split(":")
+                interval = f"{interval_split[0]}_ref{index+1}:{interval_split[1]}"
+            
+            print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
+            
             if downsample_ratio < 1:
-                os.system(f"rm {bam}")
-                os.system(f"rm {depth_file}")
-                os.system(f"mv {output_bam} {bam}")
-                os.system(f"mv {output_depth} {depth_file}")
+                os.remove(bam)
+                os.remove(depth_file)
+                os.rename(output_bam, bam)
+                os.rename(output_depth, depth_file)
 
-            call_phase_cmd= f"""
+            call_phase_cmd = f"""
             set_dp={args["k"]}
             avg_depth=$(samtools depth -a {bam} | awk '{awk_script}')
-            if (( $(echo "$avg_depth < 5" | bc -l) )) && [ {args['y']} = "pacbio" ]; then
+            if (( $(echo "$avg_depth < 5" | bc -l) )) && [ "{args['y']}" = "pacbio" ]; then
                 set_dp=0
-            else
-                set_dp=5
             fi
             python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {parameter.outdir} -w 20 -d $set_dp
-            
             cp {mask_bed} {parameter.outdir}/{gene}.{index}.low_depth.bed
             longshot -F -c 2 -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval} --bam {bam} --ref {hla_ref} --out {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf 
             bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf
             tabix -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf.gz
-            zcat {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf.gz >{parameter.outdir}/{parameter.sample}.{gene}.{index}.phased.vcf          
+            zcat {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf.gz > {parameter.outdir}/{parameter.sample}.{gene}.{index}.phased.vcf          
             bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.phased.vcf
             tabix -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.phased.vcf.gz
             """
-            os.system(call_phase_cmd)
-            print ("call snp done", flush=True)
-            # call sv & phase snv-sv
-            gene_work_dir=f"{parameter.outdir}/{gene}_{index}_work"
+            
+            # Debug: Print the command before execution
+            print("Executing call_phase_cmd:", call_phase_cmd, flush=True)
+
+            try:
+                subprocess.run(call_phase_cmd, shell=True, check=True, executable='/bin/bash')
+            except subprocess.CalledProcessError as e:
+                print(f"Error executing call_phase_cmd: {e}", flush=True)
+                continue
+
+            print("Call SNP done", flush=True)
+            
+            gene_work_dir = f"{parameter.outdir}/{gene}_{index}_work"
             if not os.path.exists(gene_work_dir):
                 os.makedirs(gene_work_dir)
+            
             sv_cmd = f"""
-                bash {sys.path[0]}/refine_haplotype_2ref_pipe.sh {bam} {hla_ref} {gene} {interval} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample} {index}
+            bash {sys.path[0]}/refine_haplotype_2ref_pipe.sh {bam} {hla_ref} {gene} {interval} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample} {index}
             """
-            # sv_cmd = f"""
-            #     bash {sys.path[0]}/refine_haplotype_dv_pipe.sh {bam} {hla_ref} {gene} {interval_dict[gene]} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample} 
-            # """
-            os.system(sv_cmd)
-                
-            # generate sequence
-            order = f"""
-            echo ">{gene}_{index}" >{parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
-            cat {gene_work_dir}/{gene}.{index+1}.raw.fa|grep -v ">" >>{parameter.outdir}/hla.allele.{index+1}.{gene}.fasta    
-            samtools faidx {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta    
-            """
-            os.system(order)
+            
+            # Debug: Print the sv_cmd before execution
+            print("Executing sv_cmd:", sv_cmd, flush=True)
 
+            try:
+                subprocess.run(sv_cmd, shell=True, check=True, executable='/bin/bash')
+            except subprocess.CalledProcessError as e:
+                print(f"Error executing sv_cmd: {e}", flush=True)
+                continue
+            
+            # Generate sequence
+            order = f"""
+            echo ">{gene}_{index}" > {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
+            cat {gene_work_dir}/{gene}.{index+1}.raw.fa | grep -v ">" >> {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta    
+            samtools faidx {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
+            """
+            subprocess.run(order, shell=True, check=True, executable='/bin/bash')
 
 
 
