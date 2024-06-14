@@ -6,13 +6,7 @@ from determine_gene import get_focus_gene_from_class
 from alignment_modules import Read_Type
 
 def read_hla_file(filename):
-    # 使用字典来存储每个样本的HLA类型
-    hla_data = {}
-
     with open(filename, 'r') as file:
-        # 创建一个csv阅读器，假设字段是通过制表符分隔的
-        
-        # 遍历文件中的每一行
         next(file)
         next(file)
         for idx, row in enumerate(file):
@@ -30,14 +24,11 @@ def read_hla_file(filename):
 
             
 def replace_single_contig_name(input_file, output_file, new_contig_name):
-    # 读取FASTA文件
     record = next(SeqIO.parse(input_file, "fasta"))
     
-    # 更改contig名字
     record.id = new_contig_name
     record.description = new_contig_name
     
-    # 写入新的FASTA文件
     SeqIO.write([record], output_file, "fasta")
     print("Contig name replaced successfully.")
 
@@ -45,6 +36,8 @@ def build_HLA_ref():
     # Write the reference file
     # shell code
     for gene, alleles in gene_ref_dict.items():
+        if len(alleles)==0:
+            continue
         allele_dir=f"{db_build_dir}/{gene}"
         if not os.path.exists(allele_dir):
             os.makedirs(allele_dir)

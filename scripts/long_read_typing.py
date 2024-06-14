@@ -140,6 +140,9 @@ class Fasta():
         awk_script = '{{sum+=$3}} END {{ if (NR>0) print sum/NR; else print 0; }}'
         for index in range(2):
             bam=f"{parameter.outdir}/{gene}.{index}.bam"
+            # if the bam file is empty, skip the typing
+            if not os.path.exists(bam):
+                continue
             hla_ref=my_db.get_gene_alleles_2ref(gene, index)
             depth_file=f"{parameter.outdir}/{gene}.{index}.depth"
             mask_bed=f"{parameter.outdir}/low_depth.bed"
