@@ -104,6 +104,9 @@ class Mask_low():
         for gene in self.depth_dict.keys():
             depth_list = self.depth_dict[gene]
             # mean_depth = np.mean(depth_list[1000:-1000])
+            # get 0 ratio in the deoth list
+            zero_ratio = depth_list.count(0)/len(depth_list)
+            print(f"Zero ratio for {gene} is {zero_ratio}", flush=True)
             depth_list_copy = [x for x in depth_list if x != 0]
 
             mean_depth = np.mean(depth_list_copy)

@@ -351,7 +351,6 @@ class Fasta():
         call_phase_cmd = f"""
         python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {outdir} -w 20 -d {int(set_dp)}
         cp {mask_bed} {outdir}/{gene}{suffix}.low_depth.bed
-
         longshot -F -c {min_cov} -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval} --bam {bam} --ref {hla_ref} --out {outdir}/{sample}.{gene}{suffix}.longshot.vcf
         bgzip -f {outdir}/{sample}.{gene}{suffix}.longshot.vcf
         tabix -f {outdir}/{sample}.{gene}{suffix}.longshot.vcf.gz
@@ -370,16 +369,13 @@ class Fasta():
         sv_cmd = f"""bash {refine_script} {bam} {hla_ref} {gene} {interval} {mask_bed} {gene_work_dir} {threads} {sample}"""
         if index is not None:
             sv_cmd = f"{sv_cmd} {index}"
-            
         self.run_command(sv_cmd, f"sv for {gene}{suffix}")
 
     def process_gene(self, gene, hla_ref, interval, bam, depth_file, mask_bed, set_dp, min_cov, args, parameter, awk_script, index=None):
         self.process_phase(gene, bam, depth_file, mask_bed, hla_ref, interval, set_dp, min_cov, args, parameter, index)
-
         gene_work_dir = f"{parameter.outdir}/{gene}_work" if index is None else f"{parameter.outdir}/{gene}_{index}_work"
         if not os.path.exists(gene_work_dir):
             os.makedirs(gene_work_dir)
-
         self.process_sv(gene, bam, hla_ref, interval, mask_bed, gene_work_dir, parameter, index)
         self.generate_sequence(gene, index, gene_work_dir, parameter.outdir)
 
@@ -387,10 +383,6 @@ class Fasta():
         awk_script = '{sum+=$3} END { if (NR>0) print sum/NR; else print 0; }'
         max_depth = args["max_depth"]
         seed = args["seed"]
-        
-
-
-
         if self.is_hom(gene):
             print(f"Processing homo {gene}", flush=True)
             bam = f"{parameter.outdir}/{gene}.bam"
