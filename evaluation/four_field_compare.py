@@ -7,6 +7,7 @@ import sys, os
 sys.path.insert(0, sys.path[0]+'/../scripts/')
 
 from get_lite_db import convert_field_for_allele
+from determine_gene import get_focus_gene
 
 
 gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
@@ -48,6 +49,68 @@ def parse_truth(truth_file):
     # print (truth_dict)
     return truth_dict
 
+def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/upload/"):
+    all_truth_dict = {}
+    for file in os.listdir(align_dir):
+        if file.endswith("_extracted_HLA_align.txt"):
+            truth_file = os.path.join(align_dir, file)
+            sample_truth_dict, sample_name = parse_truth_from_align(truth_file)
+            all_truth_dict[sample_name] = sample_truth_dict
+    # print (all_truth_dict)
+    return all_truth_dict
+
+def parse_truth_from_align(truth_file):
+    # truth_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/upload/HG00096_extracted_HLA_align.txt"
+    match_len_dict = defaultdict(dict)
+    identity_dict = defaultdict(dict)
+    sample_truth_dict = {}
+    with open(truth_file, 'r') as f:
+        for idx, line in enumerate(f):
+            field = line.strip().split()
+            sample_name = field[0]
+            gene = field[1].split("-")[-1]
+            # if gene == "C":
+            #     print (field)
+            hap = field[2]
+            allele_name = field[3]
+            match_len = field[4]
+            identity = field[5]   
+
+            if hap not in match_len_dict[gene]:
+                match_len_dict[gene][hap] = {}
+                identity_dict[gene][hap] = {}
+
+            match_len_dict[gene][hap][allele_name] = match_len
+            identity_dict[gene][hap][allele_name] = identity
+    
+    ## for each gene, find the alleles with top 5% match_len and 5% identity
+    for gene in match_len_dict:
+        sample_truth_dict[gene] = ['', '']
+        ## sort the alleles by match_len
+        for hap in match_len_dict[gene]:
+            sorted_match_len = sorted(match_len_dict[gene][hap].items(), key=lambda x: x[1], reverse=True)
+            sorted_identity = sorted(identity_dict[gene][hap].items(), key=lambda x: x[1], reverse=True)
+
+            ## select the top 5% alleles by match_len
+            top_5_percent_match_len = find_top_5_percent(sorted_match_len)
+            top_5_percent_identity = find_top_5_percent(sorted_identity)
+
+            ## find the intersection of the two sets
+            top_5_percent = list(set(top_5_percent_match_len).intersection(set(top_5_percent_identity)))
+            hap_index = int(hap[-1]) -1
+            sample_truth_dict[gene][hap_index] = top_5_percent
+            # print (top_5_percent, "/".join(top_5_percent))
+    # print (sample_truth_dict)
+    return sample_truth_dict, sample_name
+
+
+## given a sorted dictionary, find the top 5% alleles
+def find_top_5_percent(sorted_dict, ratio = 0.05):
+    top_5_percent = []
+    for i in range(len(sorted_dict)):
+        if i/len(sorted_dict) < ratio:
+            top_5_percent.append(sorted_dict[i][0])
+    return top_5_percent
 
 def parse_hla_hla_input(input_file):
     genes=[]
@@ -148,6 +211,22 @@ def parse_all_hla_hla_input(truth_dict):
         # input_file = f"hla_nanopore/hla_la/{sample}.txt"  # HLA*LA
         # input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output0/fredhutch-hla-{sample}/hlala.like.results.txt"  # SpecHLA
         input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output6/fredhutch-hla-{sample}/fredhutch-hla-{sample}.HLA.type.result.txt"  # SpecLong
+        print (input_file)
+        ## check if input file exists use os
+        if os.path.exists(input_file):
+            input_dict = parse_hla_hla_input(input_file)
+        else:
+            print(f"File {input_file} does not exist")
+            input_dict = {}
+        all_hla_la_result[sample] = input_dict
+    return all_hla_la_result
+
+def parse_all_spleclong_pacbio_input(outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/out_pac1/"):
+    all_hla_la_result = {}
+    ## for all folder in outdir
+    for folder in os.listdir(outdir):
+        sample = folder
+        input_file = os.path.join(outdir, folder, f"{sample}.HLA.type.result.txt")
         print (input_file)
         ## check if input file exists use os
         if os.path.exists(input_file):
@@ -302,9 +381,12 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
         #     continue
         # for gene in truth_dict[sample]:
         for gene in gene_list:
+            if gene not in truth_dict[sample]:
+                print ("truth_dict not in ", sample, gene, truth_dict[sample].keys())
+                continue
             true_list = truth_dict[sample][gene]
             if gene not in all_hla_la_result[sample]:
-                print (sample, gene, all_hla_la_result[sample])
+                print ("all_hla_la_result not in ", sample, gene, all_hla_la_result[sample])
                 continue
             
             hla_la_list = all_hla_la_result[sample][gene]
@@ -318,8 +400,10 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
                 hla_la_list[0] = hla_la_list[1]
 
             for i in range(2):
-                # print (true_list[i])
-                true_list[i] = true_list[i].split("/")
+                # print (sample, gene, true_list[i], truth_dict[sample][gene])
+                ## if true_list[i] is not a list, split it
+                if type(true_list[i]) is not list:
+                    true_list[i] = true_list[i].split("/")
                 # print (hla_la_list, hla_la_list[i])
                 if re.search(";", hla_la_list[i]):
                     hla_la_list[i] = hla_la_list[i].split(";")
@@ -427,6 +511,20 @@ def main():
     compare_four(truth_dict, all_hla_la_result, gene_list, 8)
     count_report_allele(truth_dict, all_hla_la_result)
 
+def main_pacbio(gene_list):
+    ## remove HLA- prefix in gene_list
+    # gene_list = [x.split("-")[-1] for x in gene_list]
+    gene_list = ['C']
+    all_truth_dict = parse_truth_from_align_all()
+    all_hla_la_result = parse_all_spleclong_pacbio_input()
+    new_truth_dict = {}
+    for sample in all_hla_la_result:
+        pure_sample = sample.split(".")[0]
+        new_truth_dict[sample] = all_truth_dict[pure_sample]
+    # print (new_truth_dict.keys(), new_truth_dict["HG00514.1"].keys())
+    # print (all_hla_la_result.keys())
+    # compare_four(new_truth_dict, all_hla_la_result, gene_list, 8)
+    # count_report_allele(all_truth_dict, all_hla_la_result)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='compare results')
@@ -435,5 +533,11 @@ if __name__ == "__main__":
     # parser.add_argument('output', help='Output VCF file path')
 
     # args = parser.parse_args()
-    main()
+    # main()
     # assess_sim()
+    args = {}
+    args["i"] = "HLA"
+    gene_list, interval_dict =  get_focus_gene(args)
+    main_pacbio(gene_list)
+    
+    
