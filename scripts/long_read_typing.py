@@ -297,7 +297,7 @@ class Fasta():
 
 
     def calculate_avg_depth(self, bam, awk_script):
-        avg_depth_cmd = f"samtools depth -a {bam} | awk '{awk_script}'"
+        avg_depth_cmd = f"samtools depth  {bam} | awk '{awk_script}'"
         return float(subprocess.check_output(avg_depth_cmd, shell=True).strip())
 
     def run_command(self, cmd, description):
@@ -405,6 +405,8 @@ class Fasta():
             avg_depth, downsample_ratio = self.downsample_and_process(bam, output_bam, depth_file, output_depth, max_depth, seed, downsample_func, awk_script)
             print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
             set_dp = int(max(0.3 * avg_depth, 0)) if args['y'] != 'pacbio' or avg_depth >= 5 else 0
+            if args['y'] == "nanopore" and set_dp==0:
+                set_dp=1
             min_cov = 2 if args['y'] == 'pacbio' else set_dp
             interval = f"{interval_dict[gene]}"
             self.process_gene(gene, hla_ref, interval, bam, depth_file, mask_bed, set_dp, min_cov, args, parameter, awk_script)
@@ -424,6 +426,8 @@ class Fasta():
                 avg_depth, downsample_ratio = self.downsample_and_process(bam, output_bam, depth_file, output_depth, max_depth, seed, downsample_func, awk_script)
                 print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
                 set_dp = int(max(0.3 * avg_depth, 0)) if args['y'] != 'pacbio' or avg_depth >= 5 else 0
+                if args['y'] == "nanopore" and set_dp==0:
+                    set_dp=1
                 min_cov = 2 if args['y'] == 'pacbio' else set_dp
 
 
