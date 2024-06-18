@@ -140,14 +140,11 @@ def select_by_alignment(align_list, gene):
     print (">>>>>>>>>", match_sorted_list[:10])
     min_ide_diff_cutoff = 0.0002
     if len(intersection_alleles) > 0:
-        select_allele_list = intersection_alleles[0].split(">")
-        select_allele = select_allele_list[0]
-        
-        if gene != "HLA-DPB1":  
+        for z in range(len(intersection_alleles)):
+            select_allele_list = intersection_alleles[z].split(">")
             full_result_list.append(select_allele_list)   
-            # print (">>>>>>>>>>max_match_len allele and max_identity allele match, typed allele:", select_allele)  
-        else:  # although max_match_len allele and max_identity allele match, still report ambiguity alleles for DPB1
-            # print (">>>>>>>>>>report possible alleles for DPB1")  
+        if gene == "HLA-DPB1":  
+            full_result_list = []
             for i in range(len(identity_sorted_list)):
                 if (identity_sorted_list[0][3] - identity_sorted_list[i][3])/identity_sorted_list[0][3] <= min_ide_diff_cutoff:
                     full_result_list.append(identity_sorted_list[i])
