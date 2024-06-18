@@ -78,7 +78,7 @@ class Mask_low():
             for interval in exon_intervals:
                 mask_region = self.get_low_region(depth_list, mask_region, interval[0], interval[1])
         else: # full length
-            mask_region = self.get_low_region(depth_list, mask_region, 1000, len(depth_list)-1000)
+            mask_region = self.get_low_region(depth_list, mask_region, 1, len(depth_list))
         return mask_region
 
 

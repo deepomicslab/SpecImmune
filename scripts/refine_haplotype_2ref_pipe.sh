@@ -16,6 +16,8 @@ filtered_sv=$gene_work_dir/HLA_$hla.snisv.filtered.vcf
 snv_vcf=$gene_work_dir/../$sample.$hla.$allele_idx.phased.vcf.gz
 hom_snv_vcf=$gene_work_dir/../$sample.$hla.$allele_idx.phased.hom.vcf.gz
 
+samtools index $bam
+
 # only keep 1/1
 bcftools view -g hom $snv_vcf -Oz -o $hom_snv_vcf
 tabix -f $hom_snv_vcf
@@ -212,5 +214,10 @@ fi
 echo "gene : $hla"
 echo "file : $sorted_snv_sv_merged"
 hap_idx=$(expr $allele_idx + 1)
+echo "mask bed:"
+cat $mask_bed
+echo """
+samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.$hap_idx.raw.fa
+"""
 samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.$hap_idx.raw.fa
 # samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa

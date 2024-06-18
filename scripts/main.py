@@ -47,7 +47,7 @@ def main(args):
         """
         # if args["first_run"]:
         if args["mode"] >= 2:
-            print ("<<<<get_2ref_align.py")
+            print (f"<<<<get_2ref_align.py\n {command}", flush=True)
             os.system(command)
 
 
@@ -69,7 +69,7 @@ def main(args):
             if args["mode"] >= 1:
                 os.system(command)
         else:
-            print("Please choose phase or assembly as analyze method.")
+            print("Please choose phase or assembly as analyze method.", flush=True)
             return
     
     else:

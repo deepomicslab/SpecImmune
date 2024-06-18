@@ -45,20 +45,38 @@ def build_HLA_ref():
         allele_dir=f"{db_build_dir}/{gene}"
         if not os.path.exists(allele_dir):
             os.makedirs(allele_dir)
-        for allele_idx, allele in enumerate(alleles):
-            allele_idx+=1
-            print(f"processing {gene} {allele} {allele_idx}")
+
+        # for hom
+        if alleles[0] == alleles[1]:
+            allele=alleles[0]
+            print(f"processing {gene} {allele} homo")
             cmd=f"""
-                samtools faidx {db_ref} {allele}>{allele_dir}/{gene}.raw.{allele_idx}.fasta
+                samtools faidx {db_ref} {allele}>{allele_dir}/{gene}.raw.fasta
             """
             os.system(cmd)
-            replace_single_contig_name(f"{allele_dir}/{gene}.raw.{allele_idx}.fasta", f"{allele_dir}/{gene}.{allele_idx}.fasta", f"{gene}_ref{allele_idx}")
+            replace_single_contig_name(f"{allele_dir}/{gene}.raw.fasta", f"{allele_dir}/{gene}.fasta", f"{gene}")
             index_cmd=f"""
-                samtools faidx {allele_dir}/{gene}.{allele_idx}.fasta
-                bwa index {allele_dir}/{gene}.{allele_idx}.fasta
-                makeblastdb -in {allele_dir}/{gene}.{allele_idx}.fasta -dbtype nucl -parse_seqids -out {allele_dir}/{gene}.{allele_idx}
+                samtools faidx {allele_dir}/{gene}.fasta
+                bwa index {allele_dir}/{gene}.fasta
+                makeblastdb -in {allele_dir}/{gene}.fasta -dbtype nucl -parse_seqids -out {allele_dir}/{gene}
             """
             os.system(index_cmd)
+        else:
+            # for het
+            for allele_idx, allele in enumerate(alleles):
+                allele_idx+=1
+                print(f"processing {gene} {allele} {allele_idx}")
+                cmd=f"""
+                    samtools faidx {db_ref} {allele}>{allele_dir}/{gene}.raw.{allele_idx}.fasta
+                """
+                os.system(cmd)
+                replace_single_contig_name(f"{allele_dir}/{gene}.raw.{allele_idx}.fasta", f"{allele_dir}/{gene}.{allele_idx}.fasta", f"{gene}_ref{allele_idx}")
+                index_cmd=f"""
+                    samtools faidx {allele_dir}/{gene}.{allele_idx}.fasta
+                    bwa index {allele_dir}/{gene}.{allele_idx}.fasta
+                    makeblastdb -in {allele_dir}/{gene}.{allele_idx}.fasta -dbtype nucl -parse_seqids -out {allele_dir}/{gene}.{allele_idx}
+                """
+                os.system(index_cmd)
 
 def map_phased_reads_2_ref():
     for gene, alleles in gene_ref_dict.items():
@@ -68,19 +86,35 @@ def map_phased_reads_2_ref():
             if '-' == alleles[0]:
                 continue
         print (f"processing alignment for {gene}")
-        for allele_idx, allele in enumerate(alleles):
-            fq=f"{outdir}/{sample}/{allele}.fq.gz"
-            ref=f"{db_build_dir}/{gene}/{gene}.{allele_idx+1}.fasta"
-            bam=f"{outdir}/{sample}/{gene}.{allele_idx}.bam"
-            depth_file=f"{outdir}/{sample}/{gene}.{allele_idx}.depth"
+        # for hom
+        if alleles[0] == alleles[1]:
+            fq=f"{outdir}/{sample}/{gene}.long_read.fq.gz"
+            ref=f"{db_build_dir}/{gene}/{gene}.fasta"
+            bam=f"{outdir}/{sample}/{gene}.bam"
+            depth_file=f"{outdir}/{sample}/{gene}.depth"
             # minimap
-            # minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
+            # minimap2 -t %s %s -a $hla_ref $outdir/$hla.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
             cmd=f"""
                 minimap2 -t {threads} -a {ref} {minimap_para} {fq} | samtools view -bS -F 0x800 -| samtools sort - >{bam}
-                samtools index {bam} 
+                samtools index {bam}
                 samtools depth -d 1000000 -aa {bam} > {depth_file}
             """
             os.system(cmd)
+        else:
+            # for het
+            for allele_idx, allele in enumerate(alleles):
+                fq=f"{outdir}/{sample}/{allele}.fq.gz"
+                ref=f"{db_build_dir}/{gene}/{gene}.{allele_idx+1}.fasta"
+                bam=f"{outdir}/{sample}/{gene}.{allele_idx}.bam"
+                depth_file=f"{outdir}/{sample}/{gene}.{allele_idx}.depth"
+                # minimap
+                # minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
+                cmd=f"""
+                    minimap2 -t {threads} -a {ref} {minimap_para} {fq} | samtools view -bS -F 0x800 -| samtools sort - >{bam}
+                    samtools index {bam} 
+                    samtools depth -d 1000000 -aa {bam} > {depth_file}
+                """
+                os.system(cmd)
             
 
 def main():

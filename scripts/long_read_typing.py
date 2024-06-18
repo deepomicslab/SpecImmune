@@ -136,93 +136,303 @@ class Fasta():
             """
             os.system(order)
 
+    def is_hom(self, gene):
+        # if elf.individual_ref_dir + f"/{gene}/{gene}.{ref_idx+1}.fasta" and elf.individual_ref_dir + f"/{gene}/{gene}.{ref_idx+2}.fasta" exists
+        if os.path.exists(my_db.get_gene_alleles_2ref(gene, 0)) and os.path.exists(my_db.get_gene_alleles_2ref(gene, 1)):
+            return False
+        return True
 
+
+    # def vcf2fasta2ref(self, gene):
+    #     awk_script = '{sum+=$3} END { if (NR>0) print sum/NR; else print 0; }'
+
+    #     if self.is_hom(gene):
+    #         bam=f"{parameter.outdir}/{gene}.bam"
+    #         hla_ref = my_db.get_gene_alleles_ref(gene)
+    #         depth_file = f"{parameter.outdir}/{gene}.depth"
+    #         mask_bed = f"{parameter.outdir}/low_depth.bed"
+    #         max_depth = args["max_depth"]
+    #         seed = args["seed"]
+    #         output_bam = f"{parameter.outdir}/{gene}.downsample.bam"
+    #         output_depth = f"{parameter.outdir}/{gene}.downsample.depth"
+    #         downsample_ratio = downsample_func(bam, output_bam, depth_file, output_depth, max_depth, seed)
+    #         interval = f"{interval_dict[gene]}"
+    #         print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
+    #         if downsample_ratio < 1:
+    #             os.remove(bam)
+    #             os.remove(depth_file)
+    #             os.rename(output_bam, bam)
+    #             os.rename(output_depth, depth_file)
+    #         avg_depth_cmd = f"samtools depth -a {bam} | awk '{awk_script}'"
+    #         avg_depth = float(subprocess.check_output(avg_depth_cmd, shell=True).strip())
+    #         set_dp = max(0.1 * avg_depth, 0) if args['y'] != 'pacbio' or avg_depth >= 5 else 0
+    #         min_cov = 2 if args['y'] == 'pacbio' else set_dp
+    #         call_phase_cmd = f"""
+    #         python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {parameter.outdir} -w 20 -d {int(set_dp)}
+    #         cp {mask_bed} {parameter.outdir}/{gene}.low_depth.bed
+    #         longshot -F -c {min_cov} -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval} --bam {bam} --ref {hla_ref} --out {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf
+    #         bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf
+    #         tabix -f {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf.gz
+    #         zcat {parameter.outdir}/{parameter.sample}.{gene}.longshot.vcf.gz > {parameter.outdir}/{parameter.sample}.{gene}.phased.vcf
+    #         bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.phased.vcf
+    #         tabix -f {parameter.outdir}/{parameter.sample}.{gene}.phased.vcf.gz
+    #         """
+    #         print("Executing call_phase_cmd:", call_phase_cmd, flush=True)
+    #         try:
+    #             subprocess.run(call_phase_cmd, shell=True, check=True, executable='/bin/bash')
+    #         except subprocess.CalledProcessError as e:
+    #             print(f"Error executing call_phase_cmd: {e}", flush=True)
+    #             return
+    #         print("Call SNP done", flush=True)
+    #         gene_work_dir = f"{parameter.outdir}/{gene}_work"
+    #         if not os.path.exists(gene_work_dir):
+    #             os.makedirs(gene_work_dir)
+    #         sv_cmd = f"""
+    #         bash {sys.path[0]}/refine_haplotype_pipe.sh {bam} {hla_ref} {gene} {interval} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample}
+    #         """
+    #         print("Executing sv_cmd:", sv_cmd, flush=True)
+    #         try:
+    #             subprocess.run(sv_cmd, shell=True, check=True, executable='/bin/bash')
+    #         except subprocess.CalledProcessError as e:
+    #             print(f"Error executing sv_cmd: {e}", flush=True)
+    #             return
+    #         # generate sequence for two haplotypes
+    #         for index in range(2):
+    #             order = f"""
+    #             echo ">{gene}_{index}" > {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
+    #             cat {gene_work_dir}/{gene}.{index+1}.raw.fa | grep -v ">" >> {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
+    #             samtools faidx {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
+    #             """
+    #             subprocess.run(order, shell=True, check=True, executable='/bin/bash')  
+    #     else:
+    #         for index in range(2):
+    #             bam = f"{parameter.outdir}/{gene}.{index}.bam"
+                
+    #             # If the BAM file does not exist, skip the current iteration
+    #             if not os.path.exists(bam):
+    #                 print(f"{bam} does not exist", flush=True)
+    #                 continue
+                
+    #             hla_ref = my_db.get_gene_alleles_2ref(gene, index)
+    #             depth_file = f"{parameter.outdir}/{gene}.{index}.depth"
+    #             mask_bed = f"{parameter.outdir}/low_depth.bed"
+    #             max_depth = args["max_depth"]
+    #             seed = args["seed"]
+    #             output_bam = f"{parameter.outdir}/{gene}.{index}.downsample.bam"
+    #             output_depth = f"{parameter.outdir}/{gene}.{index}.downsample.depth"
+                
+    #             downsample_ratio = downsample_func(bam, output_bam, depth_file, output_depth, max_depth, seed)
+                
+    #             interval = f"{interval_dict[gene]}_ref{index+1}"
+    #             if ":" in interval_dict[gene]:
+    #                 interval_split = interval_dict[gene].split(":")
+    #                 interval = f"{interval_split[0]}_ref{index+1}:{interval_split[1]}"
+                
+    #             print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
+                
+    #             if downsample_ratio < 1:
+    #                 os.remove(bam)
+    #                 os.remove(depth_file)
+    #                 os.rename(output_bam, bam)
+    #                 os.rename(output_depth, depth_file)
+
+    #             # Calculate the average depth
+    #             avg_depth_cmd = f"samtools depth -a {bam} | awk '{awk_script}'"
+    #             avg_depth = float(subprocess.check_output(avg_depth_cmd, shell=True).strip())
+                
+    #             # Assign set_dp as 0.1 of the average depth, with a minimum value of 0 if required
+    #             set_dp = max(0.1 * avg_depth, 0) if args['y'] != 'pacbio' or avg_depth >= 5 else 0
+
+    #             min_cov = 2 if args['y'] == 'pacbio' else set_dp
+    #             # Construct the command to call phase
+    #             call_phase_cmd = f"""
+    #             python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {parameter.outdir} -w 20 -d {int(set_dp)}
+    #             cp {mask_bed} {parameter.outdir}/{gene}.{index}.low_depth.bed
+
+    #             longshot -F -c {min_cov} -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval} --bam {bam} --ref {hla_ref} --out {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf
+    #             bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf
+    #             tabix -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf.gz
+    #             zcat {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf.gz > {parameter.outdir}/{parameter.sample}.{gene}.{index}.phased.vcf
+    #             bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.phased.vcf
+    #             tabix -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.phased.vcf.gz
+    #             """
+        
+
+    #             # Debug: Print the command before execution
+    #             print("Executing call_phase_cmd:", call_phase_cmd, flush=True)
+
+    #             try:
+    #                 subprocess.run(call_phase_cmd, shell=True, check=True, executable='/bin/bash')
+    #             except subprocess.CalledProcessError as e:
+    #                 print(f"Error executing call_phase_cmd: {e}", flush=True)
+    #                 continue
+
+    #             print("Call SNP done", flush=True)
+                
+    #             gene_work_dir = f"{parameter.outdir}/{gene}_{index}_work"
+    #             if not os.path.exists(gene_work_dir):
+    #                 os.makedirs(gene_work_dir)
+                
+    #             sv_cmd = f"""
+    #             bash {sys.path[0]}/refine_haplotype_2ref_pipe.sh {bam} {hla_ref} {gene} {interval} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample} {index}
+    #             """
+                
+    #             # Debug: Print the sv_cmd before execution
+    #             print("Executing sv_cmd:", sv_cmd, flush=True)
+
+    #             try:
+    #                 subprocess.run(sv_cmd, shell=True, check=True, executable='/bin/bash')
+    #             except subprocess.CalledProcessError as e:
+    #                 print(f"Error executing sv_cmd: {e}", flush=True)
+    #                 continue
+                
+    #             # Generate sequence
+    #             order = f"""
+    #             echo ">{gene}_{index}" > {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
+    #             cat {gene_work_dir}/{gene}.{index+1}.raw.fa | grep -v ">" >> {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta    
+    #             samtools faidx {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
+    #             """
+    #             subprocess.run(order, shell=True, check=True, executable='/bin/bash')
+
+
+
+    def calculate_avg_depth(self, bam, awk_script):
+        avg_depth_cmd = f"samtools depth -a {bam} | awk '{awk_script}'"
+        return float(subprocess.check_output(avg_depth_cmd, shell=True).strip())
+
+    def run_command(self, cmd, description):
+        print(f"Executing {description}:\n{cmd}", flush=True)
+        try:
+            subprocess.run(cmd, shell=True, check=True, executable='/bin/bash')
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing {description}: {e}", flush=True)
+            raise
+
+    def downsample_and_process(self, bam, output_bam, depth_file, output_depth, max_depth, seed, downsample_func, awk_script):
+        downsample_ratio = downsample_func(bam, output_bam, depth_file, output_depth, max_depth, seed)
+        if downsample_ratio < 1:
+            os.remove(bam)
+            os.remove(depth_file)
+            os.rename(output_bam, bam)
+            os.rename(output_depth, depth_file)
+        avg_depth = self.calculate_avg_depth(bam, awk_script)
+        return avg_depth, downsample_ratio
+
+    # def generate_sequence(self, gene, index, gene_work_dir, output_dir):
+    #     order = f"""
+    #     echo ">{gene}_{index}" > {output_dir}/hla.allele.{index+1}.{gene}.fasta
+    #     cat {gene_work_dir}/{gene}.{index+1}.raw.fa | grep -v ">" >> {output_dir}/hla.allele.{index+1}.{gene}.fasta
+    #     samtools faidx {output_dir}/hla.allele.{index+1}.{gene}.fasta
+    #     """
+    #     self.run_command(order, f"sequence generation for {gene}_{index}")
+
+    def generate_sequence(self, gene, index, gene_work_dir, output_dir):
+        if index is None:
+            for idx in range(2):
+                order = f"""
+                echo ">{gene}_{idx}" > {output_dir}/hla.allele.{idx+1}.{gene}.fasta
+                cat {gene_work_dir}/{gene}.{idx+1}.raw.fa | grep -v ">" >> {output_dir}/hla.allele.{idx+1}.{gene}.fasta
+                samtools faidx {output_dir}/hla.allele.{idx+1}.{gene}.fasta
+                """
+                self.run_command(order, f"sequence generation for {gene}_{idx}")
+        else:
+            order = f"""
+            echo ">{gene}_{index}" > {output_dir}/hla.allele.{index+1}.{gene}.fasta
+            cat {gene_work_dir}/{gene}.{index+1}.raw.fa | grep -v ">" >> {output_dir}/hla.allele.{index+1}.{gene}.fasta
+            samtools faidx {output_dir}/hla.allele.{index+1}.{gene}.fasta
+            """
+            self.run_command(order, f"sequence generation for {gene}_{index}")
+
+    def process_phase(self, gene, bam, depth_file, mask_bed, hla_ref, interval, set_dp, min_cov, args, parameter, index=None):
+        sample = parameter.sample
+        outdir = parameter.outdir
+
+        suffix = f".{index}" if index is not None else ""
+        call_phase_cmd = f"""
+        python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {outdir} -w 20 -d {int(set_dp)}
+        cp {mask_bed} {outdir}/{gene}{suffix}.low_depth.bed
+
+        longshot -F -c {min_cov} -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval} --bam {bam} --ref {hla_ref} --out {outdir}/{sample}.{gene}{suffix}.longshot.vcf
+        bgzip -f {outdir}/{sample}.{gene}{suffix}.longshot.vcf
+        tabix -f {outdir}/{sample}.{gene}{suffix}.longshot.vcf.gz
+        zcat {outdir}/{sample}.{gene}{suffix}.longshot.vcf.gz > {outdir}/{sample}.{gene}{suffix}.phased.vcf
+        bgzip -f {outdir}/{sample}.{gene}{suffix}.phased.vcf
+        tabix -f {outdir}/{sample}.{gene}{suffix}.phased.vcf.gz
+        """
+        self.run_command(call_phase_cmd, f"call phase for {gene}{suffix}")
+
+    def process_sv(self, gene, bam, hla_ref, interval, mask_bed, gene_work_dir, parameter, index=None):
+        sample = parameter.sample
+        threads = parameter.threads
+
+        suffix = f"_{index}" if index is not None else ""
+        refine_script = f"{sys.path[0]}/refine_haplotype_pipe.sh" if index is None else f"{sys.path[0]}/refine_haplotype_2ref_pipe.sh"
+        sv_cmd = f"""bash {refine_script} {bam} {hla_ref} {gene} {interval} {mask_bed} {gene_work_dir} {threads} {sample}"""
+        if index is not None:
+            sv_cmd = f"{sv_cmd} {index}"
+            
+        self.run_command(sv_cmd, f"sv for {gene}{suffix}")
+
+    def process_gene(self, gene, hla_ref, interval, bam, depth_file, mask_bed, set_dp, min_cov, args, parameter, awk_script, index=None):
+        self.process_phase(gene, bam, depth_file, mask_bed, hla_ref, interval, set_dp, min_cov, args, parameter, index)
+
+        gene_work_dir = f"{parameter.outdir}/{gene}_work" if index is None else f"{parameter.outdir}/{gene}_{index}_work"
+        if not os.path.exists(gene_work_dir):
+            os.makedirs(gene_work_dir)
+
+        self.process_sv(gene, bam, hla_ref, interval, mask_bed, gene_work_dir, parameter, index)
+        self.generate_sequence(gene, index, gene_work_dir, parameter.outdir)
 
     def vcf2fasta2ref(self, gene):
         awk_script = '{sum+=$3} END { if (NR>0) print sum/NR; else print 0; }'
+        max_depth = args["max_depth"]
+        seed = args["seed"]
+        
 
-        for index in range(2):
-            bam = f"{parameter.outdir}/{gene}.{index}.bam"
-            
-            # If the BAM file does not exist, skip the current iteration
+
+
+        if self.is_hom(gene):
+            print(f"Processing homo {gene}", flush=True)
+            bam = f"{parameter.outdir}/{gene}.bam"
             if not os.path.exists(bam):
-                print (f"{bam} does not exist", flush=True)
-                continue
-            
-            hla_ref = my_db.get_gene_alleles_2ref(gene, index)
-            depth_file = f"{parameter.outdir}/{gene}.{index}.depth"
+                print(f"{bam} does not exist", flush=True)
+                return
+            hla_ref = my_db.get_gene_alleles_ref(gene)
+            depth_file = f"{parameter.outdir}/{gene}.depth"
             mask_bed = f"{parameter.outdir}/low_depth.bed"
-            max_depth = args["max_depth"]
-            seed = args["seed"]
-            output_bam = f"{parameter.outdir}/{gene}.{index}.downsample.bam"
-            output_depth = f"{parameter.outdir}/{gene}.{index}.downsample.depth"
-            
-            downsample_ratio = downsample_func(bam, output_bam, depth_file, output_depth, max_depth, seed)
-            
-            interval = f"{interval_dict[gene]}_ref{index+1}"
-            if ":" in interval_dict[gene]:
-                interval_split = interval_dict[gene].split(":")
-                interval = f"{interval_split[0]}_ref{index+1}:{interval_split[1]}"
-            
+            output_bam = f"{parameter.outdir}/{gene}.downsample.bam"
+            output_depth = f"{parameter.outdir}/{gene}.downsample.depth"
+            avg_depth, downsample_ratio = self.downsample_and_process(bam, output_bam, depth_file, output_depth, max_depth, seed, downsample_func, awk_script)
             print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
-            
-            if downsample_ratio < 1:
-                os.remove(bam)
-                os.remove(depth_file)
-                os.rename(output_bam, bam)
-                os.rename(output_depth, depth_file)
+            set_dp = int(max(0.3 * avg_depth, 0)) if args['y'] != 'pacbio' or avg_depth >= 5 else 0
+            min_cov = 2 if args['y'] == 'pacbio' else set_dp
+            interval = f"{interval_dict[gene]}"
+            self.process_gene(gene, hla_ref, interval, bam, depth_file, mask_bed, set_dp, min_cov, args, parameter, awk_script)
+        else:
+            print(f"Processing hete {gene}", flush=True)
+            for index in range(2):
+                bam = f"{parameter.outdir}/{gene}.{index}.bam"
+                if not os.path.exists(bam):
+                    print(f"{bam} does not exist", flush=True)
+                    continue
 
-            call_phase_cmd = f"""
-            set_dp={args["k"]}
-            avg_depth=$(samtools depth -a {bam} | awk '{awk_script}')
-            if (( $(echo "$avg_depth < 5" | bc -l) )) && [ "{args['y']}" = "pacbio" ]; then
-                set_dp=0
-            fi
-            python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {parameter.outdir} -w 20 -d $set_dp
-            cp {mask_bed} {parameter.outdir}/{gene}.{index}.low_depth.bed
-            longshot -F -c 2 -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval} --bam {bam} --ref {hla_ref} --out {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf 
-            bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf
-            tabix -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf.gz
-            zcat {parameter.outdir}/{parameter.sample}.{gene}.{index}.longshot.vcf.gz > {parameter.outdir}/{parameter.sample}.{gene}.{index}.phased.vcf          
-            bgzip -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.phased.vcf
-            tabix -f {parameter.outdir}/{parameter.sample}.{gene}.{index}.phased.vcf.gz
-            """
-            
-            # Debug: Print the command before execution
-            print("Executing call_phase_cmd:", call_phase_cmd, flush=True)
+                hla_ref = my_db.get_gene_alleles_2ref(gene, index)
+                depth_file = f"{parameter.outdir}/{gene}.{index}.depth"
+                mask_bed = f"{parameter.outdir}/low_depth.bed"
+                output_bam = f"{parameter.outdir}/{gene}.{index}.downsample.bam"
+                output_depth = f"{parameter.outdir}/{gene}.{index}.downsample.depth"
+                avg_depth, downsample_ratio = self.downsample_and_process(bam, output_bam, depth_file, output_depth, max_depth, seed, downsample_func, awk_script)
+                print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
+                set_dp = int(max(0.3 * avg_depth, 0)) if args['y'] != 'pacbio' or avg_depth >= 5 else 0
+                min_cov = 2 if args['y'] == 'pacbio' else set_dp
 
-            try:
-                subprocess.run(call_phase_cmd, shell=True, check=True, executable='/bin/bash')
-            except subprocess.CalledProcessError as e:
-                print(f"Error executing call_phase_cmd: {e}", flush=True)
-                continue
 
-            print("Call SNP done", flush=True)
-            
-            gene_work_dir = f"{parameter.outdir}/{gene}_{index}_work"
-            if not os.path.exists(gene_work_dir):
-                os.makedirs(gene_work_dir)
-            
-            sv_cmd = f"""
-            bash {sys.path[0]}/refine_haplotype_2ref_pipe.sh {bam} {hla_ref} {gene} {interval} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample} {index}
-            """
-            
-            # Debug: Print the sv_cmd before execution
-            print("Executing sv_cmd:", sv_cmd, flush=True)
+                interval = f"{interval_dict[gene]}_ref{index+1}"
+                if ":" in interval_dict[gene]:
+                    interval_split = interval_dict[gene].split(":")
+                    interval = f"{interval_split[0]}_ref{index+1}:{interval_split[1]}"
 
-            try:
-                subprocess.run(sv_cmd, shell=True, check=True, executable='/bin/bash')
-            except subprocess.CalledProcessError as e:
-                print(f"Error executing sv_cmd: {e}", flush=True)
-                continue
-            
-            # Generate sequence
-            order = f"""
-            echo ">{gene}_{index}" > {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
-            cat {gene_work_dir}/{gene}.{index+1}.raw.fa | grep -v ">" >> {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta    
-            samtools faidx {parameter.outdir}/hla.allele.{index+1}.{gene}.fasta
-            """
-            subprocess.run(order, shell=True, check=True, executable='/bin/bash')
+                self.process_gene(gene, hla_ref, interval, bam, depth_file, mask_bed, set_dp, min_cov, args, parameter, awk_script, index)
 
 
 

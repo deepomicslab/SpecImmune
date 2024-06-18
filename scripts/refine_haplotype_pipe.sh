@@ -15,6 +15,7 @@ longphase=$scripts_dir/../bin/longphase
 refined_sv=$gene_work_dir/HLA_$hla.snisv.vcf
 filtered_sv=$gene_work_dir/HLA_$hla.snisv.filtered.vcf
 snv_vcf=$gene_work_dir/../$sample.$hla.phased.vcf.gz
+samtools index $bam
 
 # def
 run_sniffles() {
