@@ -242,7 +242,8 @@ def parse_all_spleclong_pacbio_input(outdir="/mnt/d/HLAPro_backup/Nanopore_optim
     ## for all folder in outdir
     for folder in os.listdir(outdir):
         sample = folder
-        input_file = os.path.join(outdir, folder, f"{sample}.HLA.type.result.txt")
+        # input_file = os.path.join(outdir, folder, f"{sample}.HLA.type.result.txt")
+        input_file = os.path.join(outdir, folder, f"hlala.like.results.txt")
         print (input_file)
         ## check if input file exists use os
         if os.path.exists(input_file):
