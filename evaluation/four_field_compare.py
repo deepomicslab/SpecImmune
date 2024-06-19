@@ -88,20 +88,32 @@ def parse_truth_from_align(truth_file):
         sample_truth_dict[gene] = ['', '']
         ## sort the alleles by match_len
         for hap in match_len_dict[gene]:
-            sorted_match_len = sorted(match_len_dict[gene][hap].items(), key=lambda x: x[1], reverse=True)
-            sorted_identity = sorted(identity_dict[gene][hap].items(), key=lambda x: x[1], reverse=True)
-
-            ## select the top 5% alleles by match_len
-            top_5_percent_match_len = find_top_5_percent(sorted_match_len)
-            top_5_percent_identity = find_top_5_percent(sorted_identity)
-
-            ## find the intersection of the two sets
-            top_5_percent = list(set(top_5_percent_match_len).intersection(set(top_5_percent_identity)))
+            top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap])
             hap_index = int(hap[-1]) -1
-            sample_truth_dict[gene][hap_index] = top_5_percent
+            sample_truth_dict[gene][hap_index] = top_alleles
             # print (top_5_percent, "/".join(top_5_percent))
     # print (sample_truth_dict)
     return sample_truth_dict, sample_name
+
+def select_top_alleles(my_match_len_dict, my_identity_dict):
+    len_diff_cutoff = 0.01
+    ide_diff_cutoff = 0.05 # 0.0002
+    sorted_match_len = sorted(my_match_len_dict.items(), key=lambda x: x[1], reverse=True)
+    
+    ## find the alleles with match len no shorter than len_diff_cutoff compared to the longest match len
+    good_length_list = {}
+    for allele, match_len in my_match_len_dict.items():
+        if float(match_len) >= float(sorted_match_len[0][1]) * (1-len_diff_cutoff):
+            good_length_list[allele] = my_identity_dict[allele]
+
+    sorted_identity = sorted(good_length_list.items(), key=lambda x: x[1], reverse=True)
+    ## find the alleles with identity no shorter than ide_diff_cutoff compared to the highest identity
+    good_identity_list = []
+    for allele, identity in good_length_list.items():
+        if float(identity) >= float(sorted_identity[0][1]) * (1-ide_diff_cutoff):
+            good_identity_list.append(allele)
+    
+    return good_identity_list
 
 
 ## given a sorted dictionary, find the top 5% alleles
@@ -382,11 +394,11 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
         # for gene in truth_dict[sample]:
         for gene in gene_list:
             if gene not in truth_dict[sample]:
-                print ("truth_dict not in ", sample, gene, truth_dict[sample].keys())
+                # print ("truth_dict not in ", sample, gene, truth_dict[sample].keys())
                 continue
             true_list = truth_dict[sample][gene]
             if gene not in all_hla_la_result[sample]:
-                print ("all_hla_la_result not in ", sample, gene, all_hla_la_result[sample])
+                # print ("all_hla_la_result not in ", sample, gene, all_hla_la_result[sample])
                 continue
             
             hla_la_list = all_hla_la_result[sample][gene]
@@ -513,8 +525,8 @@ def main():
 
 def main_pacbio(gene_list):
     ## remove HLA- prefix in gene_list
-    # gene_list = [x.split("-")[-1] for x in gene_list]
-    gene_list = ['C']
+    gene_list = [x.split("-")[-1] for x in gene_list]
+    gene_list = ['B']
     all_truth_dict = parse_truth_from_align_all()
     all_hla_la_result = parse_all_spleclong_pacbio_input()
     new_truth_dict = {}
@@ -523,7 +535,7 @@ def main_pacbio(gene_list):
         new_truth_dict[sample] = all_truth_dict[pure_sample]
     # print (new_truth_dict.keys(), new_truth_dict["HG00514.1"].keys())
     # print (all_hla_la_result.keys())
-    # compare_four(new_truth_dict, all_hla_la_result, gene_list, 8)
+    compare_four(new_truth_dict, all_hla_la_result, gene_list, 8)
     # count_report_allele(all_truth_dict, all_hla_la_result)
 
 if __name__ == "__main__":

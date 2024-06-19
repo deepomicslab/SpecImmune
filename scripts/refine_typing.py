@@ -134,27 +134,25 @@ def select_by_alignment(align_list, gene):
     # for mat in match_sorted_list:
     #     print (mat, file = f)
     # f.close()
-
+    len_diff_cutoff = 1 #0.1
+    ide_diff_cutoff = 1 #0.0002
     print ("ienti:",identity_sorted_list)
     intersection_alleles = list(set(max_match_len_alleles) & set(max_identity_alleles))   
     print (">>>>>>>>>", match_sorted_list[:10])
-    min_ide_diff_cutoff = 0.0002
     if len(intersection_alleles) > 0:
         for z in range(len(intersection_alleles)):
             select_allele_list = intersection_alleles[z].split(">")
             full_result_list.append(select_allele_list)   
-        if gene == "HLA-DPB1":  
+        if gene == "HLA-DPB1" or gene == "HLA-C":  
             full_result_list = []
             for i in range(len(identity_sorted_list)):
-                if (identity_sorted_list[0][3] - identity_sorted_list[i][3])/identity_sorted_list[0][3] <= min_ide_diff_cutoff:
+                if (identity_sorted_list[0][3] - identity_sorted_list[i][3])/identity_sorted_list[0][3] <= len_diff_cutoff:
                     full_result_list.append(identity_sorted_list[i])
                     if len(full_result_list) >= 10:
                         break
     else:
         # 
         # print (">>>>>>>>>>max_match_len allele and max_identity allele don't match, report possible alleles")  
-        len_diff_cutoff = 0.1
-        ide_diff_cutoff = 0.0002
         max_match_len = match_sorted_list[0][2]
         match_len_with_max_identity = identity_sorted_list[0][1]
 
