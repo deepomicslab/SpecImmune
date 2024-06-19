@@ -134,8 +134,8 @@ def select_by_alignment(align_list, gene):
     # for mat in match_sorted_list:
     #     print (mat, file = f)
     # f.close()
-    len_diff_cutoff = 1 #0.1
-    ide_diff_cutoff = 1 #0.0002
+    len_diff_cutoff = 0.1
+    ide_diff_cutoff = 0.0002
     print ("ienti:",identity_sorted_list)
     intersection_alleles = list(set(max_match_len_alleles) & set(max_identity_alleles))   
     print (">>>>>>>>>", match_sorted_list[:10])
@@ -156,25 +156,6 @@ def select_by_alignment(align_list, gene):
         max_match_len = match_sorted_list[0][2]
         match_len_with_max_identity = identity_sorted_list[0][1]
 
-        max_identity = identity_sorted_list[0][3]
-        identiy_with_max_match_len = match_sorted_list[0][3]
-
-        # for allele_info in match_sorted_list[:10]:
-        #     print(allele_info, "length")
-        # # print ("match bases**************************")
-
-        
-        # for allele_info in identity_sorted_list[:10]:
-        #     print(allele_info, "identity")
-
-        # match_len_diff_ratio = (max_match_len - match_len_with_max_identity) / match_len_with_max_identity
-        # identity_diff_ratio = (max_identity - identiy_with_max_match_len) / identiy_with_max_match_len
-
-        # if match_len_diff_ratio > 0.3:
-        #     full_result_list = match_sorted_list[:5]
-        # else:
-        #     full_result_list = identity_sorted_list[:5] + match_sorted_list[:5]
-
         good_length_list = []
         for i in range(len(match_sorted_list)):
             if (max_match_len - match_sorted_list[i][2])/max_match_len <= len_diff_cutoff:
@@ -192,19 +173,7 @@ def select_by_alignment(align_list, gene):
                 # print (match_len_with_max_identity, identity_sorted_list[i][3], (match_len_with_max_identity - identity_sorted_list[i][3])/match_len_with_max_identity)
                 if len(full_result_list) >= 30:
                     break
-        
-        # for allele_info in identity_sorted_list[:20]:
-        #     print(allele_info, "length and identity")
-            
-        # # if get_help_from_1000G == False:
-        # print ("check to determine use highest identity or match length in person.")
 
-        # print ("identity **************************")
-
-        # print ("selected allele is ", select_allele_list[0])
-        # print (select_allele_list)
-        # return select_allele_list
-    # print (full_result_list)
     return full_result_list
 
 def output(record_best_match, gene_list, result_file, version_info):
