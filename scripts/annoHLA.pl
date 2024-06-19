@@ -34,7 +34,7 @@ print "parameter:\tsample:$sample\tdir:$dir\tpop:$pop\twxs:$wxs\tG_nom:$g_nom\td
 my $version="";
 my $k = 2;
 my $bias = 1;
-if($wxs eq "tgs"){$bias = 0.4} # gap score in TGS
+if($wxs eq "tgs"){$bias = 1} # gap score in TGS
 my (%hashp,%hashp2, %hashpp, %hashg, %hashc, %hash,%hashdd);
 # my $db="$Bin/../db/HLA";
 my $bin="$Bin/../bin";

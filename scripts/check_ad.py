@@ -18,7 +18,7 @@ def calculate_haplotype_frequencies(vcf_file):
                 total_heterozygous_sites += 1
                 
                 # Compare allele depths to determine haplotype support
-                if ad[0] > ad[1]:
+                if ad[gt[0]] > ad[gt[1]]:
                     haplotype1_support += 1
                     #print(record.pos, gt, ad, "sup 0")
                 else:
