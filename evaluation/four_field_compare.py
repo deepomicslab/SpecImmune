@@ -73,15 +73,19 @@ def parse_truth_from_align(truth_file):
             #     print (field)
             hap = field[2]
             allele_name = field[3]
-            match_len = field[4]
-            identity = field[5]   
+            match_len = int(field[4])
+            identity = float(field[5])   
 
             if hap not in match_len_dict[gene]:
                 match_len_dict[gene][hap] = {}
                 identity_dict[gene][hap] = {}
 
-            match_len_dict[gene][hap][allele_name] = match_len
-            identity_dict[gene][hap][allele_name] = identity
+            if allele_name not in match_len_dict[gene][hap]:
+                match_len_dict[gene][hap][allele_name] = match_len
+                identity_dict[gene][hap][allele_name] = identity
+            elif match_len > match_len_dict[gene][hap][allele_name]:
+                match_len_dict[gene][hap][allele_name] = match_len
+                identity_dict[gene][hap][allele_name] = identity
     
     ## for each gene, find the alleles with top 5% match_len and 5% identity
     for gene in match_len_dict:
@@ -448,8 +452,8 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
             gene_dict[gene][0] += max([fir, sec])
             gene_dict[gene][1] += 2
 
-            if max([fir, sec]) != 2:
-                print (sample, gene, true_list, "<<<>>>" ,hla_la_list, max([fir, sec]))
+            # if max([fir, sec]) != 2:
+            #     print (sample, gene, true_list, "<<<>>>" ,hla_la_list, max([fir, sec]))
 
 
             # print (true_list, hla_la_list, fir, sec)
@@ -526,7 +530,7 @@ def main():
 def main_pacbio(gene_list):
     ## remove HLA- prefix in gene_list
     gene_list = [x.split("-")[-1] for x in gene_list]
-    gene_list = ['B']
+    # gene_list = ['B']
     all_truth_dict = parse_truth_from_align_all()
     all_hla_la_result = parse_all_spleclong_pacbio_input()
     new_truth_dict = {}
