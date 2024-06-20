@@ -134,7 +134,7 @@ def select_by_alignment(align_list, gene):
     # for mat in match_sorted_list:
     #     print (mat, file = f)
     # f.close()
-qs    len_diff_cutoff = 0.02
+    len_diff_cutoff = 0.02
     ide_diff_cutoff = 0.0004
     print ("ienti:",identity_sorted_list)
     intersection_alleles = list(set(max_match_len_alleles) & set(max_identity_alleles))   
