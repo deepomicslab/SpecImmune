@@ -2,6 +2,7 @@ import argparse
 import re
 from collections import defaultdict
 import numpy as np
+import csv
 
 import sys, os
 sys.path.insert(0, sys.path[0]+'/../scripts/')
@@ -463,6 +464,78 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
         # print (gene, items)
         print (gene, round(items[0]/items[1],2))
 
+def compare_four_old(truth_dict, all_hla_la_result_old, gene_list, digit=8):
+    gene_dict = {}
+    for sample in truth_dict:
+        # if sample != "FH14":
+        #     continue
+        # for gene in truth_dict[sample]:
+        for gene in gene_list:
+            if gene not in truth_dict[sample]:
+                # print ("truth_dict not in ", sample, gene, truth_dict[sample].keys())
+                continue
+            true_list = truth_dict[sample][gene]
+            if gene+"_1" not in all_hla_la_result_old[sample]:
+                # print ("all_hla_la_result not in ", sample, gene, all_hla_la_result[sample])
+                continue
+            
+            hla_la_list = [all_hla_la_result_old[sample][gene+"_1"], all_hla_la_result_old[sample][gene+"_2"]] 
+            if true_list[1] == '':
+                true_list[1] = true_list[0]
+            if true_list[0] == '':
+                true_list[0] = true_list[1]
+            if hla_la_list[1] == '':
+                hla_la_list[1] = hla_la_list[0]
+            if hla_la_list[0] == '':
+                hla_la_list[0] = hla_la_list[1]
+
+            for i in range(2):
+                # print (sample, gene, true_list[i], truth_dict[sample][gene])
+                ## if true_list[i] is not a list, split it
+                if type(true_list[i]) is not list:
+                    true_list[i] = true_list[i].split("/")
+                # print (hla_la_list, hla_la_list[i])
+                if re.search(";", hla_la_list[i]):
+                    hla_la_list[i] = hla_la_list[i].split(";")
+                elif re.search(",", hla_la_list[i]):
+                    hla_la_list[i] = hla_la_list[i].split(",")
+                else:
+                    hla_la_list[i] = [hla_la_list[i]]
+                # print ("xx", hla_la_list, hla_la_list[i])
+                hla_la_list[i] = [del_prefix(x) for x in hla_la_list[i]]
+                true_list[i] = [del_prefix(x) for x in true_list[i]]
+
+                # print ("yy", true_list[i] , hla_la_list[i])
+                true_list[i] = convert_field(true_list[i], digit)
+                hla_la_list[i] = convert_field(hla_la_list[i], digit)
+
+            fir = 0
+            if has_intersection(true_list[0], hla_la_list[0]):
+                fir += 1
+            if has_intersection(true_list[1], hla_la_list[1]):
+                fir += 1   
+
+            sec = 0
+            if has_intersection(true_list[0], hla_la_list[1]):
+                sec += 1
+            if has_intersection(true_list[1], hla_la_list[0]):
+                sec += 1  
+
+            if gene not in gene_dict:
+                gene_dict[gene] = [0, 0]
+            gene_dict[gene][0] += max([fir, sec])
+            gene_dict[gene][1] += 2
+
+            # if max([fir, sec]) != 2:
+            #     print (sample, gene, true_list, "<<<>>>" ,hla_la_list, max([fir, sec]))
+
+
+            # print (true_list, hla_la_list, fir, sec)
+        # break
+    for gene, items in gene_dict.items():
+        # print (gene, items)
+        print (gene, round(items[0]/items[1],2))
+
 def count_report_allele(truth_dict, all_hla_la_result):
     count_list = []
     count_gene_array = defaultdict(list)
@@ -534,14 +607,33 @@ def main_pacbio(gene_list):
     # gene_list = ['B']
     all_truth_dict = parse_truth_from_align_all()
     all_hla_la_result = parse_all_spleclong_pacbio_input()
+    all_old_hlala_result = parse_hlala_pacbio()
     new_truth_dict = {}
     for sample in all_hla_la_result:
         pure_sample = sample.split(".")[0]
         new_truth_dict[sample] = all_truth_dict[pure_sample]
+
     # print (new_truth_dict.keys(), new_truth_dict["HG00514.1"].keys())
     # print (all_hla_la_result.keys())
     compare_four(new_truth_dict, all_hla_la_result, gene_list, 8)
+    compare_four_old(new_truth_dict, all_old_hlala_result, gene_list, 8)
     # count_report_allele(all_truth_dict, all_hla_la_result)
+
+def parse_hlala_pacbio(file_path):
+    # Initialize the dictionary to hold the parsed data
+    data_dict = defaultdict(dict)
+    
+    with open(file_path, 'r') as tsvfile:
+        reader = csv.DictReader(tsvfile, delimiter='\t')
+        
+        for row in reader:
+            sample = row['Sample']
+            # For each gene, add it to the sample's dictionary
+            for gene in row:
+                if gene != 'Sample':
+                    data_dict[sample][gene] = row[gene]
+    
+    return data_dict
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='compare results')
