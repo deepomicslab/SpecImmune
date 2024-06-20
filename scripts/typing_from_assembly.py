@@ -50,12 +50,6 @@ def minimap(sample, hap_index, input_sam):
     print (command)
     os.system(command)
 
-def minimap_exon(sample, hap_index):
-    # command = f"minimap2 {record_truth_file_dict[sample][hap_index]} {HLA_data}  -o {result_path}/{sample}.h{hap_index+1}.paf -t 10"
-    command = f"minimap2 {record_truth_file_dict[sample][hap_index]} {single_exon_database_fasta}  -o {result_path}/{sample}.h{hap_index+1}.exon.sam -a -t {args['j']}"
-    # print (command)
-    os.system(command)
-
 def ana_paf(input_paf, gene, sample):
     # Open the PAF file
     align_list = []

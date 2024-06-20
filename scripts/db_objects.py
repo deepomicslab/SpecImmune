@@ -4,11 +4,6 @@ class My_db():
 
     def __init__(self, args):
 
-
-        # self.db = f"{sys.path[0]}/../db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"
-        # self.db = f"{sys.path[0]}/../db/ref/hla_gen.format.filter.extend.DRB.no26789.v2.fasta"
-        # self.db = f"""{args["db"]}/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"""
-
         self.gene_class = args["i"]
         self.individual_ref_dir = f"""{args["o"]}/{args["n"]}/individual_ref"""
         if not os.path.exists(self.individual_ref_dir):
@@ -17,22 +12,24 @@ class My_db():
         if self.gene_class == "HLA":
             self.full_db = f"""{args["db"]}/whole/HLA.full.fasta"""   # 15578 alleles
             self.lite_db = f"""{args["db"]}/whole/HLA.lite.fasta"""   # 6172 alleles
-            # self.lite_db = f"/mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/db/ref/hla_gen.format.filter.extend.DRB.no26789.fasta"
+            self.subdir = "whole"
 
         elif self.gene_class == "KIR":
             # self.lite_db = f"""{args["db"]}/KIR/ref/KIR.extend.select.fasta""" ## 72
-            self.lite_db = f"""{args["db"]}/KIR/ref/KIR.extend.fasta"""  ## 848
-            self.full_db = f"""{args["db"]}/KIR/ref/KIR.extend.fasta"""  ## 848
+            self.lite_db = f"""{args["db"]}/KIR/KIR.full.fasta"""  ## 848
+            self.full_db = f"""{args["db"]}/KIR/KIR.lite.fasta"""  ## 848
+            self.subdir = "KIR"
 
         elif self.gene_class == "CYP":
             self.lite_db = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""  # 1020
             # self.lite_db = f"""{args["db"]}/CYP/ref/CYP.select.fasta"""  # 537
             self.full_db = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""  # 1020
+            self.subdir = "CYP"
         
         elif self.gene_class == "IG_TR":
             self.full_db = f"""{args["db"]}/IG_TR/IG.TR.merge.allele.fasta"""
             self.lite_db = self.full_db
-
+            self.subdir = "IG_TR"
         else:
             print ("wrong gene_class")
 
@@ -68,12 +65,12 @@ class My_db():
         # else:
         #     print ("wrong gene_class")
         # ref = f"""{self.root}/whole/{gene}.fasta"""
-        ref = f"""{self.root}/whole/{gene}/{gene}.fasta"""
-        # ref = f"""{self.root}/clean_whole/{gene}.fasta"""
+        ref = f"""{self.root}/{self.subdir}/{gene}/{gene}.fasta"""
         return ref
 
     def get_allele_length(self, gene):
-        fai_file = f"""{self.root}/whole/{gene}/{gene}.fasta.fai"""
+        fai_file = f"""{self.root}/{self.subdir}/{gene}/{gene}.fasta.fai"""
+        # fai_file = f"""{self.root}/whole/{gene}/{gene}.fasta.fai"""
         ## check if faidx file exists
         if not os.path.exists(fai_file):
             print (fai_file)
@@ -90,7 +87,7 @@ class My_db():
 
     def get_blast_index(self, gene):
 
-        ref = f"""{self.root}/whole/{gene}/{gene}"""
+        ref = f"""{self.root}/{self.subdir}/{gene}/{gene}"""
 
 
         return ref
