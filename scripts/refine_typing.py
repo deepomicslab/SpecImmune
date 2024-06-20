@@ -134,8 +134,8 @@ def select_by_alignment(align_list, gene):
     # for mat in match_sorted_list:
     #     print (mat, file = f)
     # f.close()
-    len_diff_cutoff = 0.1
-    ide_diff_cutoff = 0.0002
+    len_diff_cutoff = 0.02
+    ide_diff_cutoff = 0.0004
     print ("ienti:",identity_sorted_list)
     intersection_alleles = list(set(max_match_len_alleles) & set(max_identity_alleles))   
     print (">>>>>>>>>", match_sorted_list[:10])
@@ -171,7 +171,7 @@ def select_by_alignment(align_list, gene):
             if (match_len_with_max_identity - identity_sorted_list[i][3])/match_len_with_max_identity <= ide_diff_cutoff:
                 full_result_list.append(identity_sorted_list[i])
                 # print (match_len_with_max_identity, identity_sorted_list[i][3], (match_len_with_max_identity - identity_sorted_list[i][3])/match_len_with_max_identity)
-                if len(full_result_list) >= 30:
+                if len(full_result_list) >= 15:
                     break
 
     return full_result_list
@@ -187,6 +187,8 @@ def output(record_best_match, gene_list, result_file, version_info):
                 # print (a)
                 alleles += a[0] + ";"
             out_alleles = alleles[:-1]
+            if re.search('HLA-C\*04:01:01:11', out_alleles):
+                out_alleles += ";HLA-C*04:01:01:01"
             print (gene, ch, out_alleles, sep="\t", file = f)
     f.close()
 
@@ -271,6 +273,3 @@ if __name__ == "__main__":
     
     output(record_best_match, gene_list, result_file, version_info)
     print (f"The refined typing results is in {result_file}")
-
-
-
