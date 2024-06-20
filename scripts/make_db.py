@@ -122,7 +122,7 @@ def create_KIR_directories_and_save_sequences(fasta_path, output_base_dir, gene_
     all_sequences = []
     for gene_name, seq_records in gene_sequences.items():
         gene_dir = os.path.join(output_base_dir, gene_name)
-        if gene_dir.startswith("KIR2DL5"):
+        if gene_name.startswith("KIR2DL5"):
             gene_dir = os.path.join(output_base_dir, "KIR2DL5")
 
         os.makedirs(gene_dir, exist_ok=True)
