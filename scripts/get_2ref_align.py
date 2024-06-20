@@ -135,7 +135,8 @@ if __name__ == "__main__":
     outdir=sys.argv[4]
     data_type=sys.argv[5]
     threads=sys.argv[6]
-    ref_file = f"{outdir}/{sample}/{sample}.HLA.type.result.txt"
+    gene_class = sys.argv[7]
+    ref_file = f"{outdir}/{sample}/{sample}.{sys.argv[6]}.type.result.txt"
 
     read_type = Read_Type(data_type)
     minimap_para = read_type.get_minimap2_param()
@@ -143,7 +144,7 @@ if __name__ == "__main__":
     if not os.path.exists(db_build_dir):
         os.makedirs(db_build_dir)
     # for HLA allele
-    gene_list, interval_dict =  get_focus_gene_from_class('HLA')
+    gene_list, interval_dict =  get_focus_gene_from_class(sys.argv[6])
     gene_ref_dict={}
     for gene in gene_list:
         gene_ref_dict[gene]=[]

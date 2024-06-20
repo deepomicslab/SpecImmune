@@ -10,9 +10,9 @@ do
     sample=KIR_dp50_acc98_$i
 
     #### simulation
-    mkdir $outdir/$sample
-    perl simu.data.haplotype.kir2.pl $sample $outdir/$sample
-    pbsim --prefix $outdir/$sample/$sample --depth 50 --hmm_model pbsim_model/P4C2.model --accuracy-mean 0.95 $outdir/$sample/$sample.HLA.sep.fa
+    # mkdir $outdir/$sample
+    # perl simu.data.haplotype.kir2.pl $sample $outdir/$sample
+    # pbsim --prefix $outdir/$sample/$sample --depth 50 --hmm_model pbsim_model/P4C2.model --accuracy-mean 0.95 $outdir/$sample/$sample.KIR.sep.fa
 
     # cat $outdir/$sample/${sample}_*fastq>$outdir/$sample/${sample}.fastq
     # rm $outdir/$sample/${sample}_*fastq
@@ -22,10 +22,10 @@ do
 
 
     #### run
-    # python3 ../scripts/main_test.py -n $sample -o $outdir -j 15 -y pacbio -i KIR -r $outdir/$sample/${sample}.fastq.gz --db ../db/ --mode 3
+    python3 ../scripts/main_test.py -n $sample -o $outdir -j 15 -y pacbio -i KIR -r $outdir/$sample/${sample}.fastq.gz --db ../db/ 
 
     #### evaluation
-    # python3 ../evaluation/assess_read_bin.py $outdir/$sample/${sample}.assign.txt $outdir/$sample/$sample.HLA.sep.fa $outdir/$sample/${sample}.fastq.gz 
+    # python3 ../evaluation/assess_read_bin.py $outdir/$sample/${sample}.assign.txt $outdir/$sample/$sample.KIR.sep.fa $outdir/$sample/${sample}.fastq.gz 
     # python3 ../evaluation/assess_typing.py -i KIR --true $outdir/$sample/$sample.KIR.hap.alleles.txt --infer $outdir/$sample/${sample}.KIR.type.result.txt 
     break
 

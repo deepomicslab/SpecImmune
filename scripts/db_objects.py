@@ -17,7 +17,7 @@ class My_db():
         elif self.gene_class == "KIR":
             # self.lite_db = f"""{args["db"]}/KIR/ref/KIR.extend.select.fasta""" ## 72
             self.lite_db = f"""{args["db"]}/KIR/KIR.full.fasta"""  ## 848
-            self.full_db = f"""{args["db"]}/KIR/KIR.lite.fasta"""  ## 848
+            self.full_db = f"""{args["db"]}/KIR/KIR.full.fasta"""  ## 848
             self.subdir = "KIR"
 
         elif self.gene_class == "CYP":
