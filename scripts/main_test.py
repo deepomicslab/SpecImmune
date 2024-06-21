@@ -18,18 +18,18 @@ def main(args):
 
         command = f"""
         ## first: read binning
-        python3 {sys.path[0]}/read_binning.py -m 2 -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} --min_identity {args["min_identity"]}
+        python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} --min_identity {args["min_identity"]}
         ## second: find a pair of alleles for each HLA locus
         """
-        if args["mode"] >= 4:
-            os.system(command)
+        # if args["mode"] >= 4:
+        #     os.system(command)
 
         command = f"""
         ## second: find a pair of alleles for each HLA locus
         python3 {sys.path[0]}/select_best_reference_alleleV2.py --max_read_num {args["max_read_num"]} --candidate_allele_num {args["candidate_allele_num"]} --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
         """
-        if args["mode"] >= 3:
-            os.system(command)
+        # if args["mode"] >= 3:
+        #     os.system(command)
 
         # return
 

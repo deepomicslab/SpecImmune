@@ -2,7 +2,7 @@ import csv
 import sys
 import os
 from Bio import SeqIO
-from determine_gene import get_focus_gene_from_class
+from determine_gene import get_focus_gene
 from alignment_modules import Read_Type
 
 def read_hla_file(filename):
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     if not os.path.exists(db_build_dir):
         os.makedirs(db_build_dir)
     # for HLA allele
-    gene_list, interval_dict =  get_focus_gene_from_class(gene_class)
+    gene_list, interval_dict =  get_focus_gene(gene_class)
     gene_ref_dict={}
     for gene in gene_list:
         gene_ref_dict[gene]=[]
