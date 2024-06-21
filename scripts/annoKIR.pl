@@ -39,7 +39,7 @@ my $bin = "$Bin/../bin";
 my @genes = (
     "KIR2DL1", "KIR2DL2", "KIR2DL3", "KIR2DL4", "KIR2DP1", "KIR2DS1", 
     "KIR2DS2", "KIR2DS3", "KIR2DS4", "KIR2DS5", "KIR3DL1", "KIR3DL2", 
-    "KIR3DL3", "KIR3DP1", "KIR3DS1", "KIR2DL5"
+    "KIR3DL3", "KIR3DP1", "KIR3DS1", "KIR2DL5A", "KIR2DL5B"
 );
 
 my (%hash, %hashs, $ref);
