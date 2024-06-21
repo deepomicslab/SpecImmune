@@ -233,43 +233,33 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(0)
 
-    # HLA_data = "%s/../db/whole/hla_gen.fasta"%(sys.path[0])
-    HLA_data = f"{args['db']}/whole/HLA.full.fasta"
+    # if args["i"] == "HLA":
+    full_fasta_data = f"{args['db']}/{args['i']}/{args['i']}.full.fasta"
     version_info = get_IMGT_version(args)
     gene_list, interval_dict =  get_focus_gene(args)
-
     if not os.path.exists(args["o"]):
         os.system("mkdir %s"%(args["o"]))
-    if not os.path.isfile(HLA_data):
+    if not os.path.isfile(full_fasta_data):
         # os.system("cat %s/../db/whole/HLA_*.fasta > %s/../db/whole/hla_gen.fasta"%(sys.path[0], sys.path[0]))
         # cat call fasta in gene subdir to one file
-        os.system(f"cat {args['db']}/whole/*/*.fasta > {HLA_data}")
-
-    
+        os.system(f"cat {args['db']}/{args['i']}/*/*.fasta > {full_fasta_data}")
     # inputdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/output/fredhutch-hla-1347-4843/"
     inputdir = args['o']
     result_path = args['o']
     sample = args['n']
-
     result_file = result_path + "/" + "hlala.like.results.txt"
-    all_align_result_file = result_path + "/" + "hla.map.results.txt"
+    all_align_result_file = result_path + "/" + "{args['i']}.map.results.txt"
     # gene_list = ["A", "B", "C", "DPA1", "DPB1", "DQA1", "DQB1", "DRB1"]
-
     record_best_match = {}
-    blastfile = f"{result_path}/hla.blast.summary.txt"
-
+    blastfile = f"{result_path}/{args['i']}.blast.summary.txt"
     print (f"optimize typing results by balancing alignment length and identity ")
-
     for hap_index in range(2):
-
         for gene in gene_list:
             if gene not in record_best_match:
                 record_best_match[gene] = {}
             tag = f"{gene}_{hap_index+1}"
             align_list = get_blast_info(blastfile, tag)
-
             full_result_list = select_by_alignment(align_list, gene)
-            record_best_match[gene][hap_index+1] = full_result_list
-    
+            record_best_match[gene][hap_index+1] = full_result_list       
     output(record_best_match, gene_list, result_file, version_info)
     print (f"The refined typing results is in {result_file}")
