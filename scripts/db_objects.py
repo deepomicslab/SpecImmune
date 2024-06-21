@@ -1,4 +1,8 @@
 import os
+import re
+import os
+
+
 
 class My_db():
 
@@ -39,13 +43,27 @@ class My_db():
 
         self.all_alleles = f"""{args["db"]}/whole/merge.fasta"""    ### 17446
         self.allele_len_dict = {}
+        self.version_info = "# version:  N/A"
+        self.get_db_version(args)
+
+    def get_db_version(self, args):
+        g_file = "%s/%s/release_version.txt"%(args['db'], self.subdir)
+
+        ## if the release_version.txt does not exist, return "N/A"
+        if not os.path.exists(g_file):
+            print (f"release_version.txt does not exist in {g_file}")
+            pass
+        else:
+            for line in open(g_file):
+                if re.search("# version:", line):
+                    self.version_info = line.strip()
+
 
     def get_gene_alleles(self, gene):
         ### record representative allele of each gene
         # return self.gene_all_alleles_dir + f"/{gene}.fasta"
         return self.individual_ref_dir + f"/{gene}/{gene}.fasta"
 
-    
     def get_gene_alleles_2ref(self, gene, ref_idx):
         ### record representative allele of each gene
         return self.individual_ref_dir + f"/{gene}/{gene}.{ref_idx+1}.fasta"

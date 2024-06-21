@@ -13,8 +13,9 @@ import re
 import sys
 import pysam
 import argparse
+
 from determine_gene import get_focus_gene
-from get_db_version import get_IMGT_version
+from db_objects import My_db
 
 
 def get_1_element(lst):
@@ -233,17 +234,11 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(0)
 
-    # if args["i"] == "HLA":
-    full_fasta_data = f"{args['db']}/{args['i']}/{args['i']}.full.fasta"
-    version_info = get_IMGT_version(args)
+    my_db = My_db(args)    
     gene_list, interval_dict =  get_focus_gene(args)
+    
     if not os.path.exists(args["o"]):
         os.system("mkdir %s"%(args["o"]))
-    if not os.path.isfile(full_fasta_data):
-        # os.system("cat %s/../db/whole/HLA_*.fasta > %s/../db/whole/hla_gen.fasta"%(sys.path[0], sys.path[0]))
-        # cat call fasta in gene subdir to one file
-        os.system(f"cat {args['db']}/{args['i']}/*/*.fasta > {full_fasta_data}")
-    # inputdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/output/fredhutch-hla-1347-4843/"
     inputdir = args['o']
     result_path = args['o']
     sample = args['n']
@@ -260,6 +255,7 @@ if __name__ == "__main__":
             tag = f"{gene}_{hap_index+1}"
             align_list = get_blast_info(blastfile, tag)
             full_result_list = select_by_alignment(align_list, gene)
-            record_best_match[gene][hap_index+1] = full_result_list       
-    output(record_best_match, gene_list, result_file, version_info)
+            record_best_match[gene][hap_index+1] = full_result_list   
+    
+    output(record_best_match, gene_list, result_file, my_db.version_info)
     print (f"The refined typing results is in {result_file}")
