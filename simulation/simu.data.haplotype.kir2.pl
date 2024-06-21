@@ -28,7 +28,7 @@ while(<IN>){
         $id = substr($_, 1);  # remove '>'
         $hash{$id} = '';  # initialize sequence
         my $gene = (split /\*/, $id)[0];
-        if($gene =~ /KIR2DL5/){$gene = "KIR2DL5"}
+        # if($gene =~ /KIR2DL5/){$gene = "KIR2DL5"}
         $hashc{$gene} .= "$id\t";
     } else {
         $hash{$id} .= $_;  # append to sequence

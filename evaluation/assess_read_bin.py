@@ -7,6 +7,9 @@ def extract_read_names(file_path):
     read_names = {}
     with open(file_path, 'r') as file:
         for line in file:
+            # print (line)
+            if len(line.strip().split('\t')) < 2:
+                continue
             read_name, gene_name = line.strip().split('\t')
             if gene_name not in read_names:
                 read_names[gene_name] = []
@@ -56,12 +59,14 @@ def extract_read_names_from_fastq(gzipped_fastq_file, read_allele_dict):
 def compare(true_read_names, infer_read_names):
     for gene in true_read_names:
         if gene not in infer_read_names:
-            print ("error")
-            sys.exit(0)
-        true_reads = true_read_names[gene]
-        infer_reads = infer_read_names[gene]
+            print ("error", gene)
+            # sys.exit(0)
+            recall, accuracy = 0, 0
+        else:
+            true_reads = true_read_names[gene]
+            infer_reads = infer_read_names[gene]
 
-        recall, accuracy = calculate_recall_and_accuracy(true_reads, infer_reads)
+            recall, accuracy = calculate_recall_and_accuracy(true_reads, infer_reads)
         print (gene, recall, accuracy)
 
 
@@ -94,16 +99,12 @@ def cal_bin_accuracy(hap_fasta, fastq, read_assign):
 
 if __name__ == "__main__":  
 
-    # read_assign = "/home/wangshuai/softwares/SpecLong/test/test/test_HLA/test_HLA.assign.txt"
-    # hap_fasta = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/test.HLA.sep.fa"
-    # fastq = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/test.fastq.gz"
-
-    # print (read_names)
-
     # python3 ../evaluation/assess_read_bin.py $outdir/$sample/${sample}.assign.txt $outdir/$sample/$sample.HLA.sep.fa $outdir/$sample/${sample}.fastq.gz 
 
     read_assign = sys.argv[1]
     hap_fasta = sys.argv[2]
     fastq = sys.argv[3]
+
+    print (read_assign, hap_fasta, fastq)
 
     cal_bin_accuracy(hap_fasta, fastq, read_assign)
