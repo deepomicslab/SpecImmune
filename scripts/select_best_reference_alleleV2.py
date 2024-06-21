@@ -25,7 +25,6 @@ from determine_gene import get_focus_gene
 from db_objects import My_db
 from get_allele_depth import Get_depth
 from read_binning import filter_fq
-from get_db_version import get_IMGT_version
 from alignment_modules import Read_Type, map2db_blast, map2db
 from check_if_homo import if_homo, if_homo2
 from downsample_bam import downsample_func
@@ -402,9 +401,8 @@ def output_spechla_format(args, result_dict):
 def output_hlala_format(args, result_dict, reads_num_dict, homo_p_value_dict, p_value_cutoff=0.0001):
     outdir = args["o"] + "/" + args["n"]
     result = f"""{outdir}/{args["n"]}.{args["i"]}.type.result.txt"""
-    version_info = get_IMGT_version(args)
     f = open(result, 'w')
-    print (version_info, file = f)
+    print (my_db.version_info, file = f)
     print ("Locus   Chromosome      Allele  Reads_num   homo_flag   Homo_p  Hete_pair", file = f)
     for gene in gene_list:
         # if len(result_dict[gene]) == 1:
