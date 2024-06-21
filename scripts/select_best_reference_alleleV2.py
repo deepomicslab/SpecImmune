@@ -20,7 +20,6 @@ import pysam
 
 from read_objects import My_read
 from handle_allele_pair import My_allele_pair
-from filter_reads import examine_reads
 from determine_gene import get_focus_gene
 from db_objects import My_db
 from get_allele_depth import Get_depth
