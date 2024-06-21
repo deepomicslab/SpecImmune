@@ -50,14 +50,14 @@ my $workdir = "$dir/tmp";
 
 
 sub tgs_blast{
-        open BOUT, ">$dir/hla.blast.summary.txt";  # new 
+        open BOUT, ">$dir/HLA.blast.summary.txt";  # new 
 	foreach my $class(@hlas){
-		my $ref = "$db/whole/$class/$class";
+		my $ref = "$db/HLA/$class/$class";
 		for(my $i=1;$i<=$k;$i++){
 			my $tag = "$class"."_"."$i";
-			my $fa = "$fadir/hla.allele.$i.$class.fasta";
-                        # if fa file not exist or empty, skip
-                        if(!-e $fa || -z $fa){next}
+			my $fa = "$fadir/HLA.allele.$i.$class.fasta";
+                     # if fa file not exist or empty, skip
+                     if(!-e $fa || -z $fa){next}
 			system("blastn -query $fa -out $fadir/tmp/$tag.blast.out1 -db $ref -outfmt 7 -num_threads 4 -max_target_seqs 10000000 -perc_identity 95 -qcov_hsp_perc 10");
 			my (%hash_max,%hash11,%hash12, %hash21, %hash22,$gene,$score);
 			open IN1, "$workdir/$tag.blast.out1" or die "$!\n";
@@ -70,23 +70,23 @@ sub tgs_blast{
 			}
 			close IN1;
 			$score=85;
-              		my $ff=0;
-              		foreach my $key(sort keys %hash11){
-                      		my @tt = (split /:/, $key);
-                      		my $kid = "$tt[0]".":"."$tt[1]";
-                        	my ($fre,$fre2)=(0,0);
-                      		if(exists $hashp{$kid}){$fre=$hashp{$kid};$fre2=$hashp2{$kid}} ## population frequency of 4 digit hla allele
-                      		my $s = 100 * (1 - $hash12{$key}/$hash11{$key}); #blast score
-                                print BOUT "$tag\t$key\t$hash12{$key}\t$hash11{$key}\t$s\n";  # new 
-                      		next if($pop ne "nonuse" && $fre2 == 0);
-                      		my $scorel=$s;
+                     my $ff=0;
+                     foreach my $key(sort keys %hash11){
+                            my @tt = (split /:/, $key);
+                            my $kid = "$tt[0]".":"."$tt[1]";
+                     my ($fre,$fre2)=(0,0);
+                     if(exists $hashp{$kid}){$fre=$hashp{$kid};$fre2=$hashp2{$kid}} ## population frequency of 4 digit hla allele
+                     my $s = 100 * (1 - $hash12{$key}/$hash11{$key}); #blast score
+                     print BOUT "$tag\t$key\t$hash12{$key}\t$hash11{$key}\t$s\n";  # new 
+                     next if($pop ne "nonuse" && $fre2 == 0);
+                     my $scorel=$s;
 
-                      		if($scorel >= $score){
-                             		$score = $scorel;
-                             		$gene = $key;
-                             		$ff=$fre;
-                             		$hash_max{$scorel} .= "$gene;$s\t";
-                      		}
+                     if($scorel >= $score){
+                            $score = $scorel;
+                            $gene = $key;
+                            $ff=$fre;
+                            $hash_max{$scorel} .= "$gene;$s\t";
+                     }
              		}
              		$hash{$tag} = $hash_max{$score};
              		`rm -rf $fadir/$class.temp*`;

@@ -330,16 +330,16 @@ class Fasta():
         if index is None:
             for idx in range(2):
                 order = f"""
-                echo ">{gene}_{idx}" > {output_dir}/hla.allele.{idx+1}.{gene}.fasta
-                cat {gene_work_dir}/{gene}.{idx+1}.raw.fa | grep -v ">" >> {output_dir}/hla.allele.{idx+1}.{gene}.fasta
-                samtools faidx {output_dir}/hla.allele.{idx+1}.{gene}.fasta
+                echo ">{gene}_{idx}" > {output_dir}/{args['i']}.allele.{idx+1}.{gene}.fasta
+                cat {gene_work_dir}/{gene}.{idx+1}.raw.fa | grep -v ">" >> {output_dir}/{args['i']}.allele.{idx+1}.{gene}.fasta
+                samtools faidx {output_dir}/{args['i']}.allele.{idx+1}.{gene}.fasta
                 """
                 self.run_command(order, f"sequence generation for {gene}_{idx}")
         else:
             order = f"""
-            echo ">{gene}_{index}" > {output_dir}/hla.allele.{index+1}.{gene}.fasta
-            cat {gene_work_dir}/{gene}.{index+1}.raw.fa | grep -v ">" >> {output_dir}/hla.allele.{index+1}.{gene}.fasta
-            samtools faidx {output_dir}/hla.allele.{index+1}.{gene}.fasta
+            echo ">{gene}_{index}" > {output_dir}/{args['i']}.allele.{index+1}.{gene}.fasta
+            cat {gene_work_dir}/{gene}.{index+1}.raw.fa | grep -v ">" >> {output_dir}/{args['i']}.allele.{index+1}.{gene}.fasta
+            samtools faidx {output_dir}/{args['i']}.allele.{index+1}.{gene}.fasta
             """
             self.run_command(order, f"sequence generation for {gene}_{index}")
 
@@ -440,15 +440,26 @@ class Fasta():
         # self.annotation()
 
     def annotation(self):
-        print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}""")
-        print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}""")
-        anno = f"""
-        perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}
-        cat {parameter.outdir}/hla.result.txt
-        python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}  -i {args["i"]}
-        """
-        # print (anno)
-        os.system(anno)
+        if args['i'] == "HLA":
+            print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}""")
+            print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]}""")
+            anno = f"""
+            perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}
+            cat {parameter.outdir}/hla.result.txt
+            python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}  -i {args["i"]}
+            """
+            # print (anno)
+            os.system(anno)
+        elif args['i'] == "KIR":
+            print(f"""perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]}""")
+            print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]}""")
+            anno = f"""
+            perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]}
+            cat {parameter.outdir}/kir.result.txt
+            python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}  -i {args["i"]}
+            """
+            # print (anno)
+            os.system(anno)
 
 
     #python3 {parameter.whole_dir}/g_group_annotation.py -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -j {args["j"]} 
