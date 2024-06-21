@@ -50,6 +50,14 @@ def minimap(sample, hap_index, input_sam):
     print (command)
     os.system(command)
 
+def bwa(sample, hap_index, input_sam):
+    command = f"""
+    #bwa index {record_truth_file_dict[sample][hap_index]}
+    bwa mem {record_truth_file_dict[sample][hap_index]} {HLA_data} -t {args['j']} -o {input_sam}
+    """
+    print (command)
+    os.system(command)
+
 def ana_paf(input_paf, gene, sample):
     # Open the PAF file
     align_list = []
@@ -427,6 +435,7 @@ if __name__ == "__main__":
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
     required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
+    optional.add_argument("--map_tool", type=str, help="bwa or minimap2.", metavar="\b", default="minimap2")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=10)
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
@@ -464,7 +473,13 @@ if __name__ == "__main__":
 
         for hap_index in range(2):
             input_sam = f"{result_path}/{sample}.h{hap_index+1}.{my_db.gene_class}.sam"
-            minimap(sample, hap_index, input_sam)
+            if args['map_tool'] == "minimap2":
+                minimap(sample, hap_index, input_sam)
+            elif args['map_tool'] == "bwa":
+                bwa(sample, hap_index, input_sam)
+            else:
+                print ("Please choose minimap2 or bwa as map tool.")
+                sys.exit(0)
             assembly_file = record_truth_file_dict[sample][hap_index]
             # open the input FASTA file
             
