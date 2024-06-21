@@ -69,8 +69,8 @@ class My_read():
         self.allele_name = read.reference_name
         self.loci_name = self.allele_name.split("*")[0]
 
-        if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
-            self.loci_name = "KIR2DL5"
+        # if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
+        #     self.loci_name = "KIR2DL5"
         if self.alignment_len < 400 and self.allele_name[0:3] == "KIR":
             self.identity = 0
 
@@ -139,8 +139,8 @@ class My_read():
         self.allele_name = field[1]
         self.loci_name = self.allele_name.split("*")[0]
 
-        if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
-            self.loci_name = "KIR2DL5"
+        # if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
+        #     self.loci_name = "KIR2DL5"
         if self.alignment_len < 400 and self.allele_name[0:3] == "KIR":
             self.identity = 0
 
@@ -193,8 +193,8 @@ class My_read():
         self.allele_name = field[1]
         self.loci_name = self.allele_name.split("*")[0]
 
-        if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
-            self.loci_name = "KIR2DL5"
+        # if self.loci_name == "KIR2DL5A" or self.loci_name == "KIR2DL5B":
+        #     self.loci_name = "KIR2DL5"
         if self.alignment_len < 400 and self.allele_name[0:3] == "KIR":
             self.identity = 0
 

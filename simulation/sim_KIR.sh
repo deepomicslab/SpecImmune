@@ -22,11 +22,11 @@ do
 
 
     #### run
-    python3 ../scripts/main_test.py -n $sample -o $outdir -j 15 -y pacbio -i KIR -r $outdir/$sample/${sample}.fastq.gz --db ../db/ 
+    python3 ../scripts/main.py -n $sample -o $outdir -j 15 -y pacbio -i KIR -r $outdir/$sample/${sample}.fastq.gz --db ../db/ 
 
     #### evaluation
-    # python3 ../evaluation/assess_read_bin.py $outdir/$sample/${sample}.assign.txt $outdir/$sample/$sample.KIR.sep.fa $outdir/$sample/${sample}.fastq.gz 
-    # python3 ../evaluation/assess_typing.py -i KIR --true $outdir/$sample/$sample.KIR.hap.alleles.txt --infer $outdir/$sample/${sample}.KIR.type.result.txt 
+    python3 ../evaluation/assess_read_bin.py $outdir/$sample/${sample}.assign.txt $outdir/$sample/$sample.KIR.sep.fa $outdir/$sample/${sample}.fastq.gz 
+    python3 ../evaluation/assess_typing.py -i KIR --true $outdir/$sample/$sample.KIR.hap.alleles.txt --infer $outdir/$sample/${sample}.KIR.type.result.txt 
     break
 
 done
