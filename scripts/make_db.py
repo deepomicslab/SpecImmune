@@ -173,6 +173,8 @@ def create_CYP_directories_and_save_sequences(fasta_path, output_base_dir, gene_
         # Extract the gene name from the description, assuming the format is ">HLA:HLA00001 A*01:01:01:01 3503 bp"
         allele_name = seq_record.id
         gene_name = allele_name.split('*')[0]
+        if gene_name not in gene_list:
+            continue
         
 
         # Update the sequence ID and name
