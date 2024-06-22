@@ -2,7 +2,6 @@ import os
 import argparse
 import subprocess
 from Bio import SeqIO
-from determine_gene import get_focus_gene
 
 def download_file(url, output_path):
     """
@@ -17,7 +16,7 @@ def download_file(url, output_path):
     else:
         raise Exception(f"Failed to download file from {url}")
 
-def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir, gene_list, interval_dict):
+def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir, gene_list):
     """
     Parse a FASTA file, create directories based on gene names, 
     and save corresponding sequences to these directories.
@@ -158,7 +157,7 @@ def create_KIR_directories_and_save_sequences(fasta_path, output_base_dir, gene_
     print(f"All sequences have been categorized by gene and saved in {output_base_dir}")
     print(f"Merged FASTA file created and indexed at {merged_fasta_filename}")
 
-def create_CYP_directories_and_save_sequences(fasta_path, output_base_dir, gene_list, interval_dict):
+def create_CYP_directories_and_save_sequences(fasta_path, output_base_dir, gene_list):
     """
     Parse a FASTA file, create directories based on gene names, 
     and save corresponding sequences to these directories.
@@ -245,7 +244,6 @@ def make_HLA_db():
     if not os.path.exists(HLA_dir):
         os.makedirs(HLA_dir)
 
-    gene_list, interval_dict = get_focus_gene("HLA")
     if not args.HLA_fa:
         local_fasta_filename = os.path.join(HLA_dir, "hla_gen.fasta")
         local_release_version = os.path.join(HLA_dir, "release_version.txt")
@@ -253,10 +251,16 @@ def make_HLA_db():
         download_file(release_version, local_release_version)
     else:
         local_fasta_filename = args.HLA_fa
+    gene_list = []
+    for record in SeqIO.parse(local_fasta_filename, "fasta"):
+        ctg_name=record.id.split('*')[0]
+        if ctg_name.startswith('rs'):
+            continue
+        gene_list.append(ctg_name)
     
 
     # Parse the FASTA file and save sequences by gene
-    create_HLA_directories_and_save_sequences(local_fasta_filename, HLA_dir, gene_list, interval_dict)
+    create_HLA_directories_and_save_sequences(local_fasta_filename, HLA_dir, gene_list)
 
 
 def remove_duplicate_contigs(fasta_file, output_file):
@@ -277,7 +281,6 @@ def make_KIR_db():
     if not os.path.exists(KIR_dir):
         os.makedirs(KIR_dir)
 
-    gene_list, interval_dict = get_focus_gene("KIR")
     if not args.KIR_fa:
         local_fasta_filename = os.path.join(KIR_dir, "kir_gen.fasta")
         local_release_version = os.path.join(KIR_dir, "release_version.txt")
@@ -288,8 +291,14 @@ def make_KIR_db():
     
     unique_fasta_filename = os.path.join(KIR_dir, "kir_gen_unique.fasta")
     remove_duplicate_contigs(local_fasta_filename, unique_fasta_filename)
+    gene_list=[]
+    for record in SeqIO.parse(unique_fasta_filename, "fasta"):
+        ctg_name=record.id.split('*')[0]
+        if ctg_name.startswith('rs'):
+            continue
+        gene_list.append(ctg_name)
     # Parse the FASTA file and save sequences by gene
-    create_KIR_directories_and_save_sequences(unique_fasta_filename, KIR_dir, gene_list, interval_dict)
+    create_KIR_directories_and_save_sequences(unique_fasta_filename, KIR_dir, gene_list)
 
 def make_CYP_db():
     # Path to save the downloaded FASTA file within the output directory
@@ -298,15 +307,21 @@ def make_CYP_db():
     if not os.path.exists(CYP_dir):
         os.makedirs(CYP_dir)
 
-    gene_list, interval_dict = get_focus_gene("CYP")
     if not args.CYP_fa:
         local_fasta_filename = os.path.join(CYP_dir, "cyp_gen.fasta")
         local_release_version = os.path.join(CYP_dir, "release_version.txt")
     else:
         local_fasta_filename = args.CYP_fa
+    # change gene_list to the contig names in the fasta file
+    gene_list = []
+    for record in SeqIO.parse(local_fasta_filename, "fasta"):
+        ctg_name=record.id.split('*')[0]
+        if ctg_name.startswith('rs'):
+            continue
+        gene_list.append(ctg_name)
     
     # Parse the FASTA file and save sequences by gene
-    create_CYP_directories_and_save_sequences(local_fasta_filename, CYP_dir, gene_list, interval_dict)
+    create_CYP_directories_and_save_sequences(local_fasta_filename, CYP_dir, gene_list)
 
 
 def main():
