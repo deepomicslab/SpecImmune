@@ -25,9 +25,8 @@ class My_db():
             self.subdir = "KIR"
 
         elif self.gene_class == "CYP":
-            self.lite_db = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""  # 1020
-            # self.lite_db = f"""{args["db"]}/CYP/ref/CYP.select.fasta"""  # 537
-            self.full_db = f"""{args["db"]}/CYP/ref/CYP.merge.fasta"""  # 1020
+            self.lite_db = f"""{args["db"]}/CYP/CYP.full.fasta"""  
+            self.full_db = f"""{args["db"]}/CYP/CYP.full.fasta"""  
             self.subdir = "CYP"
         
         elif self.gene_class == "IG_TR":

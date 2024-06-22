@@ -27,8 +27,9 @@ def choose_allele():
 	allele_dict = {}
 	for gene in gene_list:
 		alleles = gene_allele_dict[gene]
+		print (gene, alleles)
 		if len(alleles) == 0:
-			allele_dict[gene] = ["-","-"]
+			allele_dict[gene] = []
 		else:
 			allele_dict[gene] = random.sample(alleles, 2)
 	return allele_dict
@@ -37,11 +38,18 @@ def choose_allele():
 def output():
 	with open(out_fa, "w") as f:
 		for gene in allele_dict:
+			if len(allele_dict[gene]) == 0:
+				print (f"{gene} has no alleles")
+				continue
 			for allele in allele_dict[gene]:
+				# print (allele)
 				f.write(f">{allele}\n{allele_seq_dict[allele]}\n")
 	with open(out_allele, "w") as f:
 		f.write("Gene\tHap1\tHap2\n")
 		for gene in allele_dict:
+			if len(allele_dict[gene]) == 0:
+				print (f"{gene} has no alleles")
+				continue
 			f.write(f"{gene}\t{allele_dict[gene][0]}\t{allele_dict[gene][1]}\n")
 
 sample, outdir = sys.argv[1], sys.argv[2]
@@ -50,7 +58,7 @@ if not os.path.exists(outdir + "/" + sample):
 	os.makedirs(outdir + "/" + sample)
 gene_list, interval_dict =  get_focus_gene("CYP")
 
-db_fasta = "/mnt/d/HLAPro_backup/Nanopore_optimize/SpecComplex/db/CYP/ref/CYP.merge.fasta"
+db_fasta = "../db/CYP/CYP.full.fasta"
 out_fa = f"{outdir}/{sample}.CYP.sep.fa"
 out_allele = f"{outdir}/{sample}.CYP.hap.alleles.txt"
 
