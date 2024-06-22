@@ -23,7 +23,7 @@ do
 
 
     #### run
-    python3 ../scripts/main.py -n $sample -o $resultdir -j 15 -y pacbio -i CYP -r $outdir/$sample/${sample}.fastq.gz --db ../db/ 
+    # python3 ../scripts/main.py -n $sample -o $resultdir -j 15 -y pacbio -i CYP -r $outdir/$sample/${sample}.fastq.gz --db ../db/ 
 
     #### evaluation
     python3 ../evaluation/assess_read_bin.py $resultdir/$sample/${sample}.assign.txt $outdir/$sample/$sample.CYP.sep.fa $outdir/$sample/${sample}.fastq.gz 
