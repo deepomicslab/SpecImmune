@@ -50,7 +50,7 @@ def parse_truth(truth_file):
     # print (truth_dict)
     return truth_dict
 
-def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/upload/"):
+def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"):
     all_truth_dict = {}
     for file in os.listdir(align_dir):
         if file.endswith("_extracted_HLA_align.txt"):
@@ -60,7 +60,7 @@ def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize
     # print (all_truth_dict)
     return all_truth_dict
 
-def parse_truth_from_align(truth_file):
+def parse_truth_from_align(truth_file, cov_cutoff = 0.98):
     # truth_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/upload/HG00096_extracted_HLA_align.txt"
     match_len_dict = defaultdict(dict)
     identity_dict = defaultdict(dict)
@@ -76,6 +76,10 @@ def parse_truth_from_align(truth_file):
             allele_name = field[3]
             match_len = int(field[4])
             identity = float(field[5])   
+
+            true_allele_len = allele_length_dict[allele_name]
+            if match_len/true_allele_len < cov_cutoff:
+                continue
 
             if hap not in match_len_dict[gene]:
                 match_len_dict[gene][hap] = {}
@@ -649,6 +653,7 @@ def parse_hlala_pacbio(file_path="HLA-LA.merge.result.txt"):
 
 def cal_gene_len(db_dir):
     gene_length_dict = {}
+    allele_length_dict = {}
     # for each dir in the db_dir
     for gene in os.listdir(db_dir):
         gene_dir = os.path.join(db_dir, gene)
@@ -665,6 +670,7 @@ def cal_gene_len(db_dir):
                     for line in f:
                         length = int(line.split("\t")[1])
                         allele = line.split("\t")[0]
+                        allele_length_dict[allele] = length
                         # print (allele, length)
                         gene_length_dict[gene].append(length)
                     f.close()
@@ -672,10 +678,10 @@ def cal_gene_len(db_dir):
     for gene in gene_length_dict:
         pure_gene = del_prefix(gene)
         gene_mean_len[pure_gene] = np.mean(gene_length_dict[gene])
-    # print (gene_mean_len)
-    return gene_mean_len
+    # print (allele_length_dict)
+    return gene_mean_len, allele_length_dict
 
-def assess_gene_copy(mean_len, max_match, max_identity, min_mat=0.99, min_identi = 0.98):
+def assess_gene_copy(mean_len, max_match, max_identity, min_mat=0.9, min_identi = 0.98):
     if max_match > mean_len * min_mat and max_identity > min_identi:
         return True
     return False
@@ -695,7 +701,7 @@ if __name__ == "__main__":
     db_dir = f"../db/{gene_class}/"
 
     gene_list, interval_dict =  get_focus_gene(gene_class)
-    gene_mean_len = cal_gene_len(db_dir)
+    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
     main_pacbio(gene_list)
     
     
