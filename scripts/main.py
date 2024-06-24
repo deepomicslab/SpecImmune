@@ -18,7 +18,8 @@ def main(args):
 
         command = f"""
         ## first: read binning
-        python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} --min_identity {args["min_identity"]}
+        python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} \
+            --db {args["db"]} --min_identity {args["min_identity"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
         ## second: find a pair of alleles for each HLA locus
         """
         if args["mode"] >= 4:
@@ -26,7 +27,9 @@ def main(args):
 
         command = f"""
         ## second: find a pair of alleles for each HLA locus
-        python3 {sys.path[0]}/select_best_reference_alleleV2.py --max_read_num {args["max_read_num"]} --candidate_allele_num {args["candidate_allele_num"]} --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} --db {args["db"]}
+        python3 {sys.path[0]}/select_best_reference_alleleV2.py --max_read_num {args["max_read_num"]} --candidate_allele_num {args["candidate_allele_num"]} \
+            --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
+            --db {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
         """
         if args["mode"] >= 3:
             os.system(command)
@@ -43,7 +46,8 @@ def main(args):
         # """
         command = f"""
         ## third: build individual reference for each HLA locus, two ref version
-        python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {my_db.full_db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} {args["i"]}
+        python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {my_db.full_db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} {args["i"]} \
+            {args["seq_tech"]} {args["RNA_type"]}
         """
         # if args["first_run"]:
         if args["mode"] >= 2:
@@ -55,7 +59,8 @@ def main(args):
         if args["analyze_method"] == "phase":
             command = f"""
             ## forth: call & phasing variant & typing
-            python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} -i {args["i"]}
+            python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} \
+                -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
 
             """
             if args["mode"] >= 1:
@@ -111,7 +116,7 @@ if __name__ == "__main__":
     optional.add_argument("--min_read_num", type=int, help="min support read number for each locus.", metavar="\b", default=2)
     optional.add_argument("--max_read_num", type=int, help="max support read number for each locus.", metavar="\b", default=500)
     optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")
-    optional.add_argument("--seq_tech", type=int, help="Amplicon sequencing or WGS sequencing [wgs|amplicon].", metavar="\b", default="wgs")
+    optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon|rna].", metavar="\b", default="wgs")
 
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 

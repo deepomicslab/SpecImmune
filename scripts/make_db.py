@@ -40,7 +40,7 @@ def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir, gene_
         seq_record.description = ""
         gene_name = gene_name if gene_name in gene_list else f"HLA-{gene_name}"
 
-        print(seq_record.id, seq_record.name, seq_record.description, flush=True)
+        # print(seq_record.id, seq_record.name, seq_record.description, flush=True)
         
         if gene_name not in gene_sequences:
             gene_sequences[gene_name] = []
@@ -252,11 +252,20 @@ def make_HLA_db():
     else:
         local_fasta_filename = args.HLA_fa
     gene_list = []
+    no_hla_tag=['MICA', 'MICB', 'TAP1', 'TAP2', 'HFE']
     for record in SeqIO.parse(local_fasta_filename, "fasta"):
-        ctg_name=record.id.split('*')[0]
-        if ctg_name.startswith('rs'):
-            continue
-        gene_list.append(ctg_name)
+        description_parts = record.description.split()
+        gene_name = description_parts[1].split('*')[0]
+        # gene_name = gene_name if gene_name in gene_list else f"HLA-{gene_name}"
+        sequence_name = description_parts[1]
+        if gene_name in no_hla_tag:
+            gene_list.append(gene_name)
+
+        else:
+            gene_list.append(f"HLA-{gene_name}")
+    gene_list=list(set(gene_list))
+
+    print(gene_list)
     
 
     # Parse the FASTA file and save sequences by gene
@@ -292,11 +301,13 @@ def make_KIR_db():
     unique_fasta_filename = os.path.join(KIR_dir, "kir_gen_unique.fasta")
     remove_duplicate_contigs(local_fasta_filename, unique_fasta_filename)
     gene_list=[]
-    for record in SeqIO.parse(unique_fasta_filename, "fasta"):
-        ctg_name=record.id.split('*')[0]
-        if ctg_name.startswith('rs'):
-            continue
-        gene_list.append(ctg_name)
+    for record in SeqIO.parse(local_fasta_filename, "fasta"):
+        description_parts = record.description.split()
+        gene_name = description_parts[1].split('*')[0]
+        # gene_name = gene_name if gene_name in gene_list else f"HLA-{gene_name}"
+        sequence_name = description_parts[1]
+        gene_list.append(gene_name)
+    gene_list=list(set(gene_list))
     # Parse the FASTA file and save sequences by gene
     create_KIR_directories_and_save_sequences(unique_fasta_filename, KIR_dir, gene_list)
 
@@ -325,12 +336,12 @@ def make_CYP_db():
 
 
 def main():
-    # make_HLA_db()
+    make_HLA_db()
     # make_KIR_db()
-    if args.HLA_fa:
-        make_HLA_db()
-    if args.KIR_fa:
-        make_KIR_db()
+    # if args.HLA_fa:
+    #     make_HLA_db()
+    # if args.KIR_fa:
+    #     make_KIR_db()
     if args.CYP_fa:
         make_CYP_db()
 

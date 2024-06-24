@@ -14,9 +14,9 @@ class My_db():
             os.makedirs(self.individual_ref_dir)
 
         if self.gene_class == "HLA":
-            self.full_db = f"""{args["db"]}/whole/HLA.full.fasta"""   # 15578 alleles
-            self.lite_db = f"""{args["db"]}/whole/HLA.lite.fasta"""   # 6172 alleles
-            self.subdir = "whole"
+            self.full_db = f"""{args["db"]}/HLA/HLA.full.fasta"""   # 15578 alleles
+            self.lite_db = f"""{args["db"]}/HLA/HLA.lite.fasta"""   # 6172 alleles
+            self.subdir = "HLA"
 
         elif self.gene_class == "KIR":
             # self.lite_db = f"""{args["db"]}/KIR/ref/KIR.extend.select.fasta""" ## 72

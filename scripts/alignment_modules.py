@@ -45,18 +45,33 @@ class LongReadAligner:
 
 ### a class to accept read type, nanopore, pacbio or pacbio-hifi, add two functions to choose paramter for minimap2 and flyte
 class Read_Type:
-    def __init__(self, read_type):
+    def __init__(self, seq_tech, read_type, RNA_type):
+        self.seq_tech=seq_tech
         self.read_type = read_type
+        self.RNA_type = RNA_type
     
     def get_minimap2_param(self):
-        if self.read_type == "nanopore":
-            return " -x map-ont "
-        elif self.read_type == "pacbio":
-            return " -x map-pb "
-        elif self.read_type == "pacbio-hifi":
-            return " -x map-hifi "
-        else:
-            raise ValueError("Invalid read type specified.")
+        if self.seq_tech in ["wgs", "amplicon"]:
+            if self.read_type == "nanopore":
+                return " -x map-ont "
+            elif self.read_type == "pacbio":
+                return " -x map-pb "
+            elif self.read_type == "pacbio-hifi":
+                return " -x map-hifi "
+            else:
+                raise ValueError("Invalid read type specified.")
+        elif self.seq_tech in ["rna"]:
+            if self.RNA_type == "traditional":
+                return " -ax splice:hq -uf "
+            elif self.RNA_type == "2D":
+                return " -ax splice "
+            elif self.RNA_type == "Direct":
+                return " -ax splice -uf -k14 "
+            elif self.RNA_type == "SIRV":
+                return " -ax splice --splice-flank=no "
+            else:
+                raise ValueError("Invalid RNA type specified.")
+
     
     def get_flye_param(self):
         if self.read_type == "nanopore":
@@ -71,7 +86,7 @@ class Read_Type:
 
 def map2db(args, gene, my_db, read_num=500):
 
-    read_type = Read_Type(args["y"])
+    read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
     minimap_para = read_type.get_minimap2_param()
 
     outdir = args["o"] + "/" + args["n"]

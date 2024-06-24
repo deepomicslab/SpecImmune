@@ -578,6 +578,8 @@ if __name__ == "__main__":
     optional.add_argument("--test", type=bool, help="for test.", metavar="\b", default=False)
     # optional.add_argument("--max_depth", type=int, help="maximum depth for each HLA locus. Downsample if exceed this value.", metavar="\b", default=10000)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
+    optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")
+    optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon|rna].", metavar="\b", default="wgs")
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
 
