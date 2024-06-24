@@ -100,7 +100,7 @@ class Pacbio_Binning():
         self.db = ref_index
 
     def map2db(self):
-        if args["minimap_index"] == 1:
+        if args["minimap_index"] == 1 and args["seq_tech"] != 'rna':
             self.index_db()
         # map raw reads to database
         alignDB_order = f"""
@@ -174,7 +174,7 @@ class Parameters():
         self.threads = args["j"]
         self.bin = "%s/../bin/"%(sys.path[0])      
         self.outdir = "%s/%s/"%(outdir, self.sample)
-        self.whole_dir = "%s/whole/"%(sys.path[0])
+        # self.whole_dir = "%s/whole/"%(sys.path[0])
 
         if not os.path.exists(args["o"]):
             os.system("mkdir %s"%(args["o"]))
@@ -208,6 +208,8 @@ if __name__ == "__main__":
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
     optional.add_argument("--seed", type=int, help="seed to generate random numbers", metavar="\b", default=8)
     optional.add_argument("--max_depth", type=int, help="maximum depth for each HLA locus. Downsample if exceed this value.", metavar="\b", default=2000)
+    optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")
+    optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon|rna].", metavar="\b", default="wgs")
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
 
@@ -224,7 +226,7 @@ if __name__ == "__main__":
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
     
-    read_type = Read_Type(args["y"])
+    read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
     minimap_para = read_type.get_minimap2_param()
 
     distance_matrix = load_gene_distance()

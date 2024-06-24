@@ -27,7 +27,7 @@ def downsample_bam(input_bam, output_bam, downsample_ratio, seed):
     input_samfile.close()
     output_samfile.close()
 
-def handle_bam(output_bam, output_depth):
+def get_bam_dp(output_bam, output_depth):
     cmd = f"""
     samtools index {output_bam}
     samtools depth -d 1000000 -aa {output_bam} > {output_depth}
@@ -53,7 +53,7 @@ def downsample_func(input_bam, output_bam, input_depth, output_depth, max_depth,
     else:
         downsample_ratio = float(max_depth)/mean_depth
         downsample_bam(input_bam, output_bam, downsample_ratio, seed)
-        handle_bam(output_bam, output_depth)
+        get_bam_dp(output_bam, output_depth)
         return downsample_ratio
 
 

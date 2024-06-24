@@ -136,9 +136,11 @@ if __name__ == "__main__":
     data_type=sys.argv[5]
     threads=sys.argv[6]
     gene_class = sys.argv[7]
+    seq_tech = sys.argv[8]
+    RNA_type = sys.argv[9]
     ref_file = f"{outdir}/{sample}/{sample}.{gene_class}.type.result.txt"
 
-    read_type = Read_Type(data_type)
+    read_type = Read_Type(seq_tech, data_type, RNA_type)
     minimap_para = read_type.get_minimap2_param()
 
     if not os.path.exists(db_build_dir):
