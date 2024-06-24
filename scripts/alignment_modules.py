@@ -60,15 +60,30 @@ class Read_Type:
                 return " -x map-hifi "
             else:
                 raise ValueError("Invalid read type specified.")
-        elif self.seq_tech in ["rna"]:
+        # for splice alignment
+        # elif self.seq_tech in ["rna"]:
+        #     if self.RNA_type == "traditional":
+        #         return " -ax splice:hq -uf "
+        #     elif self.RNA_type == "2D":
+        #         return " -ax splice "
+        #     elif self.RNA_type == "Direct":
+        #         return " -ax splice -uf -k14 "
+        #     elif self.RNA_type == "SIRV":
+        #         return " -ax splice --splice-flank=no "
+        #     else:
+        #         raise ValueError("Invalid RNA type specified.")
+            
+    # for cds alignment
+    def get_bwa_param(self):
+        if self.seq_tech in ["rna"]:
             if self.RNA_type == "traditional":
-                return " -ax splice:hq -uf "
+                return " -x pacbio "
             elif self.RNA_type == "2D":
-                return " -ax splice "
+                return " -x ont2d "
             elif self.RNA_type == "Direct":
-                return " -ax splice -uf -k14 "
+                return " -x pacbio "
             elif self.RNA_type == "SIRV":
-                return " -ax splice --splice-flank=no "
+                return " -x pacbio "
             else:
                 raise ValueError("Invalid RNA type specified.")
 
@@ -87,7 +102,11 @@ class Read_Type:
 def map2db(args, gene, my_db, read_num=500):
     # map binned reads to all alleles of each locus
     read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
-    minimap_para = read_type.get_minimap2_param()
+    if args["seq_tech"] == "rna":
+        bwa_para = read_type.get_bwa_param()
+    else:
+        minimap_para = read_type.get_minimap2_param()
+    # minimap_para = read_type.get_minimap2_param()
 
     outdir = args["o"] + "/" + args["n"]
     sam = outdir + "/" + args["n"] + "." + gene + ".db.sam"
@@ -100,24 +119,40 @@ def map2db(args, gene, my_db, read_num=500):
     ref = my_db.get_gene_all_alleles(gene)
     # ref="/mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/db/HLA/whole/HLA_A.fasta"
 
-    alignDB_order = f"""
-    outdir={args["o"]}/{args["n"]}
-    fq=$outdir/{gene}.long_read.fq.gz
+    if args["seq_tech"] == "rna":
+        alignDB_order = f"""
+        fq={args["r"]}
+        outdir={args["o"]}/{args["n"]}
+        sample={args["n"]}
+        fq=$outdir/{gene}.long_read.fq.gz
+        seqtk sample $outdir/{gene}.long_read.fq.gz {read_num} >$outdir/{gene}.long_read.sub.fq
+        fq=$outdir/{gene}.long_read.sub.fq
+        ref={ref}
+        bwa mem {bwa_para} -t {args["j"]} $ref $fq | samtools view -bS -F 0x800 -| samtools sort - >{bam}
+        samtools index {bam}
+        samtools depth -aa {bam}>{depth_file}
+        rm {sam}
+        echo alignment done.
+        """
+    else:
+        alignDB_order = f"""
+        fq={args["r"]}
+        outdir={args["o"]}/{args["n"]}
+        sample={args["n"]}
+        fq=$outdir/{gene}.long_read.fq.gz
+        seqtk sample $outdir/{gene}.long_read.fq.gz {read_num} >$outdir/{gene}.long_read.sub.fq
+        fq=$outdir/{gene}.long_read.sub.fq
+        ref={ref}
+        minimap2 -t {args["j"]} {minimap_para} -E 8,4 -p 0.1 -N 100000 -a $ref $fq > {sam} # 
+        # bwa index $ref
+        # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref $fq > {sam}
+        samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
+        samtools index {bam}
+        samtools depth -aa {bam}>{depth_file}
+        rm {sam}
+        echo alignment done.
+        """
 
-    seqtk sample $outdir/{gene}.long_read.fq.gz {read_num} >$outdir/{gene}.long_read.sub.fq
-    fq=$outdir/{gene}.long_read.sub.fq
-
-    minimap2 -t {args["j"]} {minimap_para} -E 8,4 -p 0.1 -N 100000 -a {ref} $fq > {sam} # 
-
-    # bwa index {ref}
-    # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} {ref} $fq > {sam}
-
-    samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
-    samtools index {bam}
-    samtools depth -aa {bam}>{depth_file}
-    rm {sam}
-    echo alignment done.
-    """
     # print (alignDB_order)
     # if the depth_file is not detected or empty, then run the alignment
     if not os.path.exists(depth_file) or not os.path.exists(bam) or os.path.getsize(depth_file) == 0 or os.path.getsize(bam) == 0:

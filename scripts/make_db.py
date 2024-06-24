@@ -266,11 +266,48 @@ def make_HLA_db():
     gene_list=list(set(gene_list))
 
     print(gene_list)
-    
-
     # Parse the FASTA file and save sequences by gene
     create_HLA_directories_and_save_sequences(local_fasta_filename, HLA_dir, gene_list)
 
+def make_HLA_exon_db():
+    # URL to download the FASTA file
+    HLA_exon_fasta_url = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/hla_nuc.fasta"
+    release_version = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/release_version.txt"
+
+    # Path to save the downloaded FASTA file within the output directory
+    HLA_exon_dir = os.path.join(args.outdir, "HLA_CDS")
+    print(HLA_exon_dir)
+    if not os.path.exists(HLA_exon_dir):
+        os.makedirs(HLA_exon_dir)
+
+    if not args.HLA_exon_fa:
+        local_fasta_filename = os.path.join(HLA_exon_dir, "hla_nuc.fasta")
+        local_release_version = os.path.join(HLA_exon_dir, "release_version.txt")
+        download_file(HLA_exon_fasta_url, local_fasta_filename)
+        download_file(release_version, local_release_version)
+    else:
+        local_fasta_filename = args.HLA_exon_fa
+    # remove duplicate contigs
+    unique_fasta_filename = os.path.join(HLA_exon_dir, "hla_nuc_unique.fasta")
+    remove_duplicate_contigs(local_fasta_filename, unique_fasta_filename)
+
+    gene_list = []
+    no_hla_tag=['MICA', 'MICB', 'TAP1', 'TAP2', 'HFE']
+    for record in SeqIO.parse(unique_fasta_filename, "fasta"):
+        description_parts = record.description.split()
+        gene_name = description_parts[1].split('*')[0]
+        # gene_name = gene_name if gene_name in gene_list else f"HLA-{gene_name}"
+        sequence_name = description_parts[1]
+        if gene_name in no_hla_tag:
+            gene_list.append(gene_name)
+
+        else:
+            gene_list.append(f"HLA-{gene_name}")
+    gene_list=list(set(gene_list))
+
+    print(gene_list)
+    # Parse the FASTA file and save sequences by gene
+    create_HLA_directories_and_save_sequences(unique_fasta_filename, HLA_exon_dir, gene_list)
 
 def remove_duplicate_contigs(fasta_file, output_file):
     sequences = {}
@@ -336,7 +373,8 @@ def make_CYP_db():
 
 
 def main():
-    make_HLA_db()
+    # make_HLA_db()
+    make_HLA_exon_db()
     # make_KIR_db()
     # if args.HLA_fa:
     #     make_HLA_db()
@@ -354,6 +392,7 @@ if __name__ == "__main__":
     required.add_argument("-o","--outdir", help="Directory to save the gene-specific sequences")
     # add default hla_gene.fa
     optional.add_argument("--HLA_fa", help="hla_gene")
+    optional.add_argument("--HLA_exon_fa", help="hla_exon_gene")
     optional.add_argument("--KIR_fa", help="kir_gene")
     optional.add_argument("--CYP_fa", help="cyp_gene")
     args = parser.parse_args()

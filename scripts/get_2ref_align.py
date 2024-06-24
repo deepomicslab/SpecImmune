@@ -2,7 +2,7 @@ import csv
 import sys
 import os
 from Bio import SeqIO
-from determine_gene import get_focus_gene
+from determine_gene import get_focus_gene, get_folder_list
 from alignment_modules import Read_Type
 
 def read_hla_file(filename):
@@ -78,7 +78,7 @@ def build_HLA_ref():
                 """
                 os.system(index_cmd)
 
-def map_phased_reads_2_ref():
+def map_phased_reads_2_ref_minimap():
     for gene, alleles in gene_ref_dict.items():
         if len(alleles)==0:
             continue
@@ -115,13 +115,51 @@ def map_phased_reads_2_ref():
                     samtools depth -d 1000000 -aa {bam} > {depth_file}
                 """
                 os.system(cmd)
+    
+def map_phased_reads_2_ref_bwa():
+    for gene, alleles in gene_ref_dict.items():
+        if len(alleles)==0:
+            continue
+        else:
+            if '-' == alleles[0]:
+                continue
+        print (f"processing alignment for {gene}")
+        # for hom
+        if alleles[0] == alleles[1]:
+            fq=f"{outdir}/{sample}/{gene}.long_read.fq.gz"
+            ref=f"{db_build_dir}/{gene}/{gene}.fasta"
+            bam=f"{outdir}/{sample}/{gene}.bam"
+            depth_file=f"{outdir}/{sample}/{gene}.depth"
+            # bwa
+            # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t %s $hla_ref $outdir/$hla.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
+            cmd=f"""
+                bwa mem {bwa_para} -t {threads} {ref} {fq} | samtools view -bS -F 0x800 -| samtools sort - >{bam}
+                samtools index {bam}
+                samtools depth -d 1000000 -aa {bam} > {depth_file}
+            """
+            os.system(cmd)
+        else:
+            # for het
+            for allele_idx, allele in enumerate(alleles):
+                fq=f"{outdir}/{sample}/{allele}.fq.gz"
+                ref=f"{db_build_dir}/{gene}/{gene}.{allele_idx+1}.fasta"
+                bam=f"{outdir}/{sample}/{gene}.{allele_idx}.bam"
+                depth_file=f"{outdir}/{sample}/{gene}.{allele_idx}.depth"
+                # bwa
+                # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t %s $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
+                cmd=f"""
+                    bwa mem {bwa_para} -t {threads} {ref} {fq} | samtools view -bS -F 0x800 -| samtools sort - >{bam}
+                    samtools index {bam} 
+                    samtools depth -d 1000000 -aa {bam} > {depth_file}
+                """
+                os.system(cmd)
             
 
 def main():
     read_hla_file(ref_file)
     print(gene_ref_dict)
     build_HLA_ref()
-    map_phased_reads_2_ref()
+    map_phased_reads_2_ref_bwa() if seq_tech == 'rna' else map_phased_reads_2_ref_minimap()
 
 
 if __name__ == "__main__":
@@ -141,12 +179,18 @@ if __name__ == "__main__":
     ref_file = f"{outdir}/{sample}/{sample}.{gene_class}.type.result.txt"
 
     read_type = Read_Type(seq_tech, data_type, RNA_type)
-    minimap_para = read_type.get_minimap2_param()
+    if seq_tech == 'rna':
+        bwa_para = read_type.get_bwa_param()
+    else:
+        minimap_para = read_type.get_minimap2_param()
 
     if not os.path.exists(db_build_dir):
         os.makedirs(db_build_dir)
     # for HLA allele
-    gene_list, interval_dict =  get_focus_gene(gene_class)
+    # gene_list, interval_dict =  get_focus_gene(gene_class)
+    db_folder=os.path.dirname(db_ref)
+    gene_list = get_folder_list(db_folder)
+    
     gene_ref_dict={}
     for gene in gene_list:
         gene_ref_dict[gene]=[]

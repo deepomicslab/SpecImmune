@@ -13,7 +13,7 @@ import subprocess
 
 from downsample_bam import downsample_func
 from read_objects import My_read, My_locus, Read_bin
-from determine_gene import get_focus_gene
+from determine_gene import get_focus_gene, get_folder_list
 from db_objects import My_db
 from alignment_modules import Read_Type
 
@@ -22,6 +22,7 @@ class Pacbio_Binning():
 
     def __init__(self):
         self.db = my_db.full_db
+        self.cds_db=my_db.full_cds_db
 
         self.sam = f"""{parameter.outdir}/{parameter.sample}.db.bam"""
 
@@ -441,22 +442,22 @@ class Fasta():
 
     def annotation(self):
         if args['i'] == "HLA":
-            print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}""")
+            print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
             print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]}""")
             anno = f"""
             perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}
             cat {parameter.outdir}/hla.result.txt
-            python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}  -i {args["i"]}
+            python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}  -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
             """
             # print (anno)
             os.system(anno)
         elif args['i'] == "KIR":
             print(f"""perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]}""")
-            print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]}""")
+            print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
             anno = f"""
             perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]}
             cat {parameter.outdir}/kir.result.txt
-            python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}  -i {args["i"]}
+            python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}  -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
             """
             # print (anno)
             os.system(anno)
@@ -507,8 +508,14 @@ if __name__ == "__main__":
     Min_score = 0  #the read is too long, so the score can be very low.
     Min_diff = args["d"]  #0.001
 
-    gene_list, interval_dict =  get_focus_gene(args)
+    # gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
+
+    db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
+    gene_list = get_folder_list(db_folder)
+    interval_dict={}
+    for gene in gene_list:
+        interval_dict[gene]=gene
 
     read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
     minimap_para = read_type.get_minimap2_param()
