@@ -116,7 +116,8 @@ if __name__ == "__main__":
     optional.add_argument("--min_read_num", type=int, help="min support read number for each locus.", metavar="\b", default=2)
     optional.add_argument("--max_read_num", type=int, help="max support read number for each locus.", metavar="\b", default=500)
     optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")
-    optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon|rna].", metavar="\b", default="wgs")
+    optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon].", metavar="\b", default="wgs")
+
 
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
