@@ -109,4 +109,39 @@ class My_db():
 
         return ref
 
-     
+
+
+"""
+def read_G_annotation(db):
+    g_file = f"{db}/HLA/hla_nom_g.txt"
+    G_annotation_dict = {}
+    i = 0
+    for line in open(g_file):
+        if re.search("# version:", line):
+            version_info = line
+        if line[0] == "#":
+            continue
+        # line.replace(":","_", 10000)
+        line = re.sub(":","_",line)
+        array = line.strip().split(";")
+        gene = array[0][:-1]
+        
+        if len(array[-1]) == 0:
+            
+            g_name = gene + "_" + array[-2]
+            # print (g_name)
+            G_annotation_dict[g_name] = g_name
+        else:
+            g_name = gene + "_" + array[-1]
+            alleles = array[-2].split("/")
+            for each in alleles:
+                each = gene + "_" + each
+                G_annotation_dict[each] = g_name
+        # print (array, g_name)
+        # print (G_annotation_dict)
+        # print (len(array))
+        # if i > 2:
+        #     break
+        i += 1
+    return G_annotation_dict, version_info
+"""
