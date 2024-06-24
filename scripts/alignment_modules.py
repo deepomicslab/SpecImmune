@@ -143,7 +143,7 @@ def map2db(args, gene, my_db, read_num=500):
         seqtk sample $outdir/{gene}.long_read.fq.gz {read_num} >$outdir/{gene}.long_read.sub.fq
         fq=$outdir/{gene}.long_read.sub.fq
         ref={ref}
-        minimap2 -t {args["j"]} {minimap_para} -E 8,4 -p 0.1 -N 100000 -a $ref $fq > {sam} # 
+        minimap2 -t {args["j"]} {minimap_para} -E 8,4 -p 0.1 -N 100000 -a $ref $fq > {sam}
         # bwa index $ref
         # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref $fq > {sam}
         samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
@@ -190,6 +190,7 @@ def read_bin_map2db(args, my_db):
     minimap_para = read_type.get_minimap2_param()
 
     minimap_db = my_db.full_db
+    cds_bwa_db = my_db.full_cds_db
     if args["minimap_index"] == 1 and args["seq_tech"] != 'rna':
         ref_index = my_db.full_db[:-5] + args["y"] + ".mmi"
         # print ("search the reference index:", ref_index)
@@ -202,14 +203,14 @@ def read_bin_map2db(args, my_db):
 
     outbam = f"""{args["o"]}/{args["n"]}/{args["n"]}.db.bam"""
     # map raw reads to database
-    if args["seq_tech"] == 'rna':
+    if args["seq_tech"] != 'rna':
         alignDB_order = f"""
         minimap2 -t {args["j"]} {minimap_para} -a {minimap_db} {args["r"]} |samtools view -bS -o {outbam}
         echo alignment done.
         """
     else:
         alignDB_order = f"""
-        bwa mem -R '@RG\\tID:foo\\tSM:bar' -t {args["j"]} {my_db.full_db} {args["r"]} |samtools view -bS -o {outbam}
+        bwa mem -t {args["j"]} {cds_bwa_db} {args["r"]} |samtools view -bS -o {outbam}
         echo alignment done.
         """
     # print (alignDB_order)

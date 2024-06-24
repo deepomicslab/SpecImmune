@@ -76,13 +76,26 @@ run_sniffles $genotype_error $minsupport $mapq $cluster_binsize $cluster_r $clus
 
 # Whatshap haplotag
 echo "haplotag for $sample !"
-echo "whatshap haplotag --ignore-read-groups -o $gene_work_dir/haplotagged.$hla.bam --reference $hla_ref $snv_vcf $bam --output-haplotag-list $gene_work_dir/hap.tsv"
+# fix dup HD in header
+if [ $(samtools view -H $bam | grep -c '^@HD') -gt 1 ]; then
+    fixed_bam=$gene_work_dir/fixed.bam
+    samtools view -H $bam | awk 'BEGIN {last_hd_line=-1} /^@HD/ {last_hd_line=NR} {lines[NR]=$0} END {for (i=1; i<=NR; i++) if (i != last_hd_line) print lines[i]}' | samtools reheader - $bam > $fixed_bam
+else
+  echo "The BAM file does not contain multiple @HD lines."
+  fixed_bam=$bam
+fi
+
+samtools index $fixed_bam
+
+
+
+echo "whatshap haplotag --ignore-read-groups -o $gene_work_dir/haplotagged.$hla.bam --reference $hla_ref $snv_vcf $fixed_bam --output-haplotag-list $gene_work_dir/hap.tsv"
 whatshap haplotag \
     --ignore-read-groups  \
     -o $gene_work_dir/haplotagged.$hla.bam \
     --reference $hla_ref \
     $snv_vcf \
-    $bam \
+    $fixed_bam \
     --output-haplotag-list $gene_work_dir/hap.tsv
 
 

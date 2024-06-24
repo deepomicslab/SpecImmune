@@ -591,8 +591,8 @@ if __name__ == "__main__":
 
     # gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
-    :q
-    
+    db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
+    gene_list = get_folder_list(db_folder)
     if args["test"]:
         # gene_list = ['HLA-A', 'HLA-B', 'HLA-C', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRB1']
         gene_list = ['HLA-DRB1']

@@ -152,6 +152,7 @@ def map_phased_reads_2_ref_bwa():
                     samtools index {bam} 
                     samtools depth -d 1000000 -aa {bam} > {depth_file}
                 """
+                print(cmd)
                 os.system(cmd)
             
 
