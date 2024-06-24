@@ -122,8 +122,8 @@ def select_by_alignment(align_list, gene):
         return []
     full_result_list = []
     # match_sorted_list = sorted(align_list, key=get_1_element, reverse = True)
-    if gene == "HLA-A":
-        print("align:", align_list[0])
+    # if gene == "HLA-A":
+    #     print("align:", align_list[0])
     match_sorted_list = sorted(align_list, key=get_2_element, reverse = True)  # match length - mismatch
     match_sorted_list = resort_list_with_same_alleles(match_sorted_list, 1, 3)
     identity_sorted_list = sorted(align_list, key=get_3_element, reverse = True)
@@ -137,9 +137,9 @@ def select_by_alignment(align_list, gene):
     # f.close()
     len_diff_cutoff = 0.02
     ide_diff_cutoff = 0.0004
-    print ("ienti:",identity_sorted_list)
+    # print ("ienti:",identity_sorted_list)
     intersection_alleles = list(set(max_match_len_alleles) & set(max_identity_alleles))   
-    print (">>>>>>>>>", match_sorted_list[:10])
+    # print (">>>>>>>>>", match_sorted_list[:10])
     if len(intersection_alleles) > 0:
         for z in range(len(intersection_alleles)):
             select_allele_list = intersection_alleles[z].split(">")
@@ -161,8 +161,8 @@ def select_by_alignment(align_list, gene):
         for i in range(len(match_sorted_list)):
             if (max_match_len - match_sorted_list[i][2])/max_match_len <= len_diff_cutoff:
                 good_length_list.append(match_sorted_list[i])
-                if gene=="HLA-A":
-                    print("match_sorted_list", match_sorted_list[i])
+                # if gene=="HLA-A":
+                #     print("match_sorted_list", match_sorted_list[i])
         # print (len(good_length_list), "len(good_length_list)")
         identity_sorted_list = sorted(good_length_list, key=get_3_element, reverse = True)
         identity_sorted_list = resort_list_with_same_alleles(identity_sorted_list, 3, 1)

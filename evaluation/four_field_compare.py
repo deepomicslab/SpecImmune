@@ -9,7 +9,7 @@ sys.path.insert(0, sys.path[0]+'/../scripts/')
 
 from get_lite_db import convert_field_for_allele
 from determine_gene import get_focus_gene
-
+from db_objects import My_db
 
 gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 # gene_list = ['C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
@@ -50,7 +50,7 @@ def parse_truth(truth_file):
     # print (truth_dict)
     return truth_dict
 
-def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/upload/"):
+def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"):
     all_truth_dict = {}
     for file in os.listdir(align_dir):
         if file.endswith("_extracted_HLA_align.txt"):
@@ -60,7 +60,7 @@ def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize
     # print (all_truth_dict)
     return all_truth_dict
 
-def parse_truth_from_align(truth_file):
+def parse_truth_from_align(truth_file, cov_cutoff = 0.98):
     # truth_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/upload/HG00096_extracted_HLA_align.txt"
     match_len_dict = defaultdict(dict)
     identity_dict = defaultdict(dict)
@@ -76,6 +76,10 @@ def parse_truth_from_align(truth_file):
             allele_name = field[3]
             match_len = int(field[4])
             identity = float(field[5])   
+
+            true_allele_len = allele_length_dict[allele_name]
+            if match_len/true_allele_len < cov_cutoff:
+                continue
 
             if hap not in match_len_dict[gene]:
                 match_len_dict[gene][hap] = {}
@@ -93,14 +97,14 @@ def parse_truth_from_align(truth_file):
         sample_truth_dict[gene] = ['', '']
         ## sort the alleles by match_len
         for hap in match_len_dict[gene]:
-            top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap])
+            top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene)
             hap_index = int(hap[-1]) -1
             sample_truth_dict[gene][hap_index] = top_alleles
             # print (top_5_percent, "/".join(top_5_percent))
     # print (sample_truth_dict)
     return sample_truth_dict, sample_name
 
-def select_top_alleles(my_match_len_dict, my_identity_dict):
+def select_top_alleles(my_match_len_dict, my_identity_dict, gene):
     len_diff_cutoff = 0.01
     ide_diff_cutoff = 0.05 # 0.0002
     sorted_match_len = sorted(my_match_len_dict.items(), key=lambda x: x[1], reverse=True)
@@ -112,6 +116,11 @@ def select_top_alleles(my_match_len_dict, my_identity_dict):
             good_length_list[allele] = my_identity_dict[allele]
 
     sorted_identity = sorted(good_length_list.items(), key=lambda x: x[1], reverse=True)
+
+    copy_flag = assess_gene_copy(gene_mean_len[gene], float(sorted_match_len[0][1]), float(sorted_identity[0][1]))
+    if not copy_flag:
+        return []
+
     ## find the alleles with identity no shorter than ide_diff_cutoff compared to the highest identity
     good_identity_list = []
     for allele, identity in good_length_list.items():
@@ -406,6 +415,10 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
             if gene not in all_hla_la_result[sample]:
                 # print ("all_hla_la_result not in ", sample, gene, all_hla_la_result[sample])
                 continue
+
+            if true_list[0] == [] or true_list[1] == []:
+                print ("copy != 2 for ", sample, gene, true_list)
+                continue
             
             hla_la_list = all_hla_la_result[sample][gene]
             if true_list[1] == '':
@@ -477,6 +490,9 @@ def compare_four_old(truth_dict, all_hla_la_result_old, gene_list, digit=8):
             true_list = truth_dict[sample][gene]
             if gene+"_1" not in all_hla_la_result_old[sample]:
                 # print ("all_hla_la_result not in ", sample, gene, all_hla_la_result[sample])
+                continue
+            if true_list[0] == [] or true_list[1] == []:
+                print ("copy != 2 for ", sample, gene, true_list)
                 continue
             
             hla_la_list = [all_hla_la_result_old[sample][gene+"_1"], all_hla_la_result_old[sample][gene+"_2"]] 
@@ -619,7 +635,7 @@ def main_pacbio(gene_list):
     compare_four_old(new_truth_dict, all_old_hlala_result, gene_list, 8)
     # count_report_allele(all_truth_dict, all_hla_la_result)
 
-def parse_hlala_pacbio(file_path):
+def parse_hlala_pacbio(file_path="HLA-LA.merge.result.txt"):
     # Initialize the dictionary to hold the parsed data
     data_dict = defaultdict(dict)
     
@@ -635,6 +651,42 @@ def parse_hlala_pacbio(file_path):
     
     return data_dict
 
+def cal_gene_len(db_dir):
+    gene_length_dict = {}
+    allele_length_dict = {}
+    # for each dir in the db_dir
+    for gene in os.listdir(db_dir):
+        gene_dir = os.path.join(db_dir, gene)
+        if os.path.isdir(gene_dir):
+            for file in os.listdir(gene_dir):
+                if file.endswith(".fasta"):
+                    fai_file = f"{gene_dir}/{file}.fai"
+                    if not os.path.exists(fai_file):
+                        # print (fai_file)
+                        # print ("fai file does not exist")
+                        return
+                    gene_length_dict[gene] = []
+                    f = open(fai_file, "r")
+                    for line in f:
+                        length = int(line.split("\t")[1])
+                        allele = line.split("\t")[0]
+                        allele_length_dict[allele] = length
+                        # print (allele, length)
+                        gene_length_dict[gene].append(length)
+                    f.close()
+    gene_mean_len = {}
+    for gene in gene_length_dict:
+        pure_gene = del_prefix(gene)
+        gene_mean_len[pure_gene] = np.mean(gene_length_dict[gene])
+    # print (allele_length_dict)
+    return gene_mean_len, allele_length_dict
+
+def assess_gene_copy(mean_len, max_match, max_identity, min_mat=0.9, min_identi = 0.98):
+    if max_match > mean_len * min_mat and max_identity > min_identi:
+        return True
+    return False
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='compare results')
     # parser.add_argument('truth', help='Input VCF file path')
@@ -644,9 +696,12 @@ if __name__ == "__main__":
     # args = parser.parse_args()
     # main()
     # assess_sim()
-    args = {}
-    args["i"] = "HLA"
-    gene_list, interval_dict =  get_focus_gene(args)
+
+    gene_class = "HLA"
+    db_dir = f"../db/{gene_class}/"
+
+    gene_list, interval_dict =  get_focus_gene(gene_class)
+    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
     main_pacbio(gene_list)
     
     
