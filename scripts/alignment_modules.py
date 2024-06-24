@@ -85,7 +85,7 @@ class Read_Type:
 
 
 def map2db(args, gene, my_db, read_num=500):
-
+    # map binned reads to all alleles of each locus
     read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
     minimap_para = read_type.get_minimap2_param()
 
@@ -101,22 +101,16 @@ def map2db(args, gene, my_db, read_num=500):
     # ref="/mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/db/HLA/whole/HLA_A.fasta"
 
     alignDB_order = f"""
-    fq={args["r"]}
-    
     outdir={args["o"]}/{args["n"]}
-    sample={args["n"]}
-
     fq=$outdir/{gene}.long_read.fq.gz
 
     seqtk sample $outdir/{gene}.long_read.fq.gz {read_num} >$outdir/{gene}.long_read.sub.fq
     fq=$outdir/{gene}.long_read.sub.fq
 
-    ref={ref}
+    minimap2 -t {args["j"]} {minimap_para} -E 8,4 -p 0.1 -N 100000 -a {ref} $fq > {sam} # 
 
-    minimap2 -t {args["j"]} {minimap_para} -E 8,4 -p 0.1 -N 100000 -a $ref $fq > {sam} # 
-
-    # bwa index $ref
-    # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref $fq > {sam}
+    # bwa index {ref}
+    # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} {ref} $fq > {sam}
 
     samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
     samtools index {bam}
@@ -156,6 +150,7 @@ def map2db_blast(args, gene, my_db):
     return blast_file
 
 def read_bin_map2db(args, my_db):
+    # map raw fastq to the database of all alleles
     read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
     minimap_para = read_type.get_minimap2_param()
 
