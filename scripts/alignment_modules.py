@@ -155,4 +155,32 @@ def map2db_blast(args, gene, my_db):
 
     return blast_file
 
+def read_bin_map2db(args, my_db):
+    read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
+    minimap_para = read_type.get_minimap2_param()
 
+    minimap_db = my_db.full_db
+    if args["minimap_index"] == 1 and args["seq_tech"] != 'rna':
+        ref_index = my_db.full_db[:-5] + args["y"] + ".mmi"
+        # print ("search the reference index:", ref_index)
+        if not os.path.isfile(ref_index):
+            print ("start build Minimap2 index for the reference...")
+            os.system(f"minimap2 {minimap_para} -d {ref_index} {my_db.full_db} ")
+        else:
+            print (f"Detect Minimap2 index for the reference: {ref_index}")
+        minimap_db = ref_index
+
+    outbam = f"""{args["o"]}/{args["n"]}/{args["n"]}.db.bam"""
+    # map raw reads to database
+    if args["seq_tech"] == 'rna':
+        alignDB_order = f"""
+        minimap2 -t {args["j"]} {minimap_para} -a {minimap_db} {args["r"]} |samtools view -bS -o {outbam}
+        echo alignment done.
+        """
+    else:
+        alignDB_order = f"""
+        bwa mem -R '@RG\\tID:foo\\tSM:bar' -t {args["j"]} {my_db.full_db} {args["r"]} |samtools view -bS -o {outbam}
+        echo alignment done.
+        """
+    # print (alignDB_order)
+    os.system(alignDB_order)

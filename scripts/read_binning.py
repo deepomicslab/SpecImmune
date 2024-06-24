@@ -14,7 +14,7 @@ from collections import defaultdict
 from read_objects import My_read, My_locus, Read_bin
 from determine_gene import get_focus_gene
 from db_objects import My_db
-from alignment_modules import Read_Type
+from alignment_modules import Read_Type, read_bin_map2db
 
 def load_gene_distance():
     # read the dict stored by pickle in ../gene_dist/HLA.distance_matrix.pkl, check if the file exists
@@ -80,41 +80,13 @@ class Pacbio_Binning():
 
     def __init__(self):
         self.db = my_db.full_db
-
         self.sam = f"""{parameter.outdir}/{parameter.sample}.db.bam"""
         
         if args["m"] != 2:
-            self.map2db()
+            read_bin_map2db(args, my_db)
 
         self.bamfile = pysam.AlignmentFile(self.sam, 'rb')   
         self.assign_file = f"{parameter.outdir}/{parameter.sample}.assign.txt"
-
-    def index_db(self):
-        ref_index = self.db[:-5] + args["y"] + ".mmi"
-        # print ("search the reference index:", ref_index)
-        if not os.path.isfile(ref_index):
-            print ("start build Minimap2 index for the reference...")
-            os.system(f"minimap2 {minimap_para} -d {ref_index} {self.db} ")
-        else:
-            print (f"Detect Minimap2 index for the reference: {ref_index}")
-        self.db = ref_index
-
-    def map2db(self):
-        if args["minimap_index"] == 1 and args["seq_tech"] != 'rna':
-            self.index_db()
-        # map raw reads to database
-        alignDB_order = f"""
-        fq={parameter.raw_fq}
-        ref={self.db}
-        outdir={parameter.outdir}
-        bin={sys.path[0]}/../bin
-        sample={parameter.sample}
-        # minimap2 -t {parameter.threads} {minimap_para} -a $ref $fq |samtools view -bS -o {self.sam}
-        bwa mem -R '@RG\\tID:foo\\tSM:bar' -t {parameter.threads} {my_db.full_db} $fq |samtools view -bS -o {self.sam}
-        echo alignment done.
-        """
-        # print (alignDB_order)
-        os.system(alignDB_order)
 
     def read_bam(self):
         # observe each read, assign it to gene based on alignment records

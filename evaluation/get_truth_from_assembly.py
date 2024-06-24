@@ -27,17 +27,17 @@ for sample in record_truth_file_dict:
     #     continue
     print (record_truth_file_dict[sample])
     ## check if the bwa index exsits for record_truth_file_dict[sample][0], if not. index
-    for i in range(2):
-        prefix = record_truth_file_dict[sample][i]
-        bwt = prefix + ".bwt"
-        if not os.path.exists(bwt):
-            print (f"indexing {record_truth_file_dict[sample][i]}, {bwt} does not exist")
-            cmd = f"""bwa index {record_truth_file_dict[sample][i]}"""
-            os.system(cmd)
-        else:
-            print (f"{record_truth_file_dict[sample][i]} already indexed")
+    # for i in range(2):
+    #     prefix = record_truth_file_dict[sample][i]
+    #     bwt = prefix + ".bwt"
+    #     if not os.path.exists(bwt):
+    #         print (f"indexing {record_truth_file_dict[sample][i]}, {bwt} does not exist")
+    #         cmd = f"""bwa index {record_truth_file_dict[sample][i]}"""
+    #         os.system(cmd)
+    #     else:
+    #         print (f"{record_truth_file_dict[sample][i]} already indexed")
     # for gene_class in ["HLA", "CYP", "KIR"]:
-    for gene_class in ["HLA","KIR"]:
+    for gene_class in ["CYP"]:
         cmd = f"""
         python3 ../scripts/typing_from_assembly.py --map_tool bwa -1 {record_truth_file_dict[sample][0]} -2 {record_truth_file_dict[sample][1]} -n {sample} -i {gene_class} -o {outdir} -j 15 --db {db}
         """
