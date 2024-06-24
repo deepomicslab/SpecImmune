@@ -16,7 +16,8 @@ class My_db():
         if self.gene_class == "HLA":
             self.full_db = f"""{args["db"]}/HLA/HLA.full.fasta"""   # 15578 alleles
             self.lite_db = f"""{args["db"]}/HLA/HLA.lite.fasta"""   # 6172 alleles
-            self.subdir = "HLA"
+            self.full_cds_db = f"""{args["db"]}/HLA_CDS/HLA.full.fasta"""
+            self.subdir = "HLA_CDS" if args["seq_tech"] == "rna" else "HLA"
 
         elif self.gene_class == "KIR":
             # self.lite_db = f"""{args["db"]}/KIR/ref/KIR.extend.select.fasta""" ## 72

@@ -223,6 +223,8 @@ if __name__ == "__main__":
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
     required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
+    optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")
+    optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon|rna].", metavar="\b", default="wgs")
 
     
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
