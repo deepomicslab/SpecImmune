@@ -60,7 +60,7 @@ def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize
     # print (all_truth_dict)
     return all_truth_dict
 
-def parse_truth_from_align(truth_file, cov_cutoff = 0.95):
+def parse_truth_from_align(truth_file, cov_cutoff = 0.95, ide_cutoff = 0.99):
     # truth_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/upload/HG00096_extracted_HLA_align.txt"
     match_len_dict = defaultdict(dict)
     identity_dict = defaultdict(dict)
@@ -75,7 +75,9 @@ def parse_truth_from_align(truth_file, cov_cutoff = 0.95):
             hap = field[2]
             allele_name = field[3]
             match_len = int(field[4])
-            identity = float(field[5])   
+            identity = float(field[5])  
+            if  identity < ide_cutoff:
+                continue
 
             true_allele_len = allele_length_dict[allele_name]
             if match_len/true_allele_len < cov_cutoff:
@@ -94,7 +96,7 @@ def parse_truth_from_align(truth_file, cov_cutoff = 0.95):
     
     ## for each gene, find the alleles with top 5% match_len and 5% identity
     for gene in match_len_dict:
-        sample_truth_dict[gene] = ['', '']
+        sample_truth_dict[gene] = [[], []]
         ## sort the alleles by match_len
         for hap in match_len_dict[gene]:
             top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene)
@@ -104,9 +106,7 @@ def parse_truth_from_align(truth_file, cov_cutoff = 0.95):
     # print (sample_truth_dict)
     return sample_truth_dict, sample_name
 
-def select_top_alleles(my_match_len_dict, my_identity_dict, gene):
-    len_diff_cutoff = 0.01
-    ide_diff_cutoff = 0.05 # 0.0002
+def select_top_alleles(my_match_len_dict, my_identity_dict, gene, len_diff_cutoff = 0.01, ide_diff_cutoff = 0.05):
     sorted_match_len = sorted(my_match_len_dict.items(), key=lambda x: x[1], reverse=True)
     
     ## find the alleles with match len no shorter than len_diff_cutoff compared to the longest match len
@@ -117,9 +117,9 @@ def select_top_alleles(my_match_len_dict, my_identity_dict, gene):
 
     sorted_identity = sorted(good_length_list.items(), key=lambda x: x[1], reverse=True)
 
-    copy_flag = assess_gene_copy(gene_mean_len[gene], float(sorted_match_len[0][1]), float(sorted_identity[0][1]))
-    if not copy_flag:
-        return []
+    # copy_flag = assess_gene_copy(gene_mean_len[gene], float(sorted_match_len[0][1]), float(sorted_identity[0][1]))
+    # if not copy_flag:
+    #     return []
 
     ## find the alleles with identity no shorter than ide_diff_cutoff compared to the highest identity
     good_identity_list = []
@@ -128,14 +128,6 @@ def select_top_alleles(my_match_len_dict, my_identity_dict, gene):
             good_identity_list.append(allele)
     
     return good_identity_list
-
-## given a sorted dictionary, find the top 5% alleles
-def find_top_5_percent(sorted_dict, ratio = 0.05):
-    top_5_percent = []
-    for i in range(len(sorted_dict)):
-        if i/len(sorted_dict) < ratio:
-            top_5_percent.append(sorted_dict[i][0])
-    return top_5_percent
 
 def parse_hla_hla_input(input_file):
     genes=[]
