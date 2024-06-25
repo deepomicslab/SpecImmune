@@ -420,6 +420,10 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
                 continue
             
             hla_la_list = all_hla_la_result[sample][gene]
+            if hla_la_list[1] == '' and hla_la_list[0] == '':
+                print ("inferred empty", sample, gene, hla_la_list)
+                continue
+            
             if true_list[1] == '':
                 true_list[1] = true_list[0]
             if true_list[0] == '':
@@ -474,7 +478,7 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
         # break
     for gene, items in gene_dict.items():
         # print (gene, items)
-        print (gene, round(items[0]/items[1],2))
+        print (gene, items[0], items[1], round(items[0]/items[1],2))
 
 def compare_four_old(truth_dict, all_hla_la_result_old, gene_list, digit=8):
     gene_dict = {}
