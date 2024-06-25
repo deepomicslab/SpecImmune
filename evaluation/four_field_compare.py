@@ -423,7 +423,7 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
             if hla_la_list[1] == '' and hla_la_list[0] == '':
                 print ("inferred empty", sample, gene, hla_la_list)
                 continue
-            
+
             if true_list[1] == '':
                 true_list[1] = true_list[0]
             if true_list[0] == '':
@@ -624,8 +624,13 @@ def main_pacbio(gene_list):
     ## remove HLA- prefix in gene_list
     gene_list = [x.split("-")[-1] for x in gene_list]
     # gene_list = ['B']
+
     all_truth_dict = parse_truth_from_align_all()
     all_hla_la_result = parse_all_spleclong_pacbio_input()
+
+    # all_truth_dict = parse_truth_from_align_all("/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/hgscv2_truth_bwa_zip/")
+    # all_hla_la_result = parse_all_spleclong_pacbio_input("/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/kir_typing_out/")
+
     all_old_hlala_result = parse_hlala_pacbio()
     new_truth_dict = {}
     for sample in all_hla_la_result:
