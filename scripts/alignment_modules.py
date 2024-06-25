@@ -154,7 +154,6 @@ def map2db(args, gene, my_db, read_num=500):
         bwa mem {bwa_para} -t {args["j"]} $ref {sub_fastq} | samtools view -bS -F 0x800 -| samtools sort - >{bam}
         samtools index {bam}
         samtools depth -aa {bam}>{depth_file}
-        rm {sam}
         echo alignment done.
         """
     else:
