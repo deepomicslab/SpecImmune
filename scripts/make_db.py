@@ -312,9 +312,10 @@ def make_HLA_exon_db():
 def remove_duplicate_contigs(fasta_file, output_file):
     sequences = {}
     for record in SeqIO.parse(fasta_file, "fasta"):
-        if str(record.seq) not in sequences:
-            sequences[str(record.seq)] = record
+        if record.id not in sequences:
+            sequences[record.id] = record
     SeqIO.write(sequences.values(), output_file, "fasta")
+
 
 def make_KIR_db():
     # URL to download the FASTA file

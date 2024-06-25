@@ -14,7 +14,7 @@ import sys
 import pysam
 import argparse
 
-from determine_gene import get_focus_gene
+from determine_gene import get_focus_gene, get_folder_list
 from db_objects import My_db
 
 
@@ -237,7 +237,10 @@ if __name__ == "__main__":
         sys.exit(0)
 
     my_db = My_db(args)    
-    gene_list, interval_dict =  get_focus_gene(args)
+    # gene_list, interval_dict =  get_focus_gene(args)
+
+    db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
+    gene_list = get_folder_list(db_folder)
     
     if not os.path.exists(args["o"]):
         os.system("mkdir %s"%(args["o"]))

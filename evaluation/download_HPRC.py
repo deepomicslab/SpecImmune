@@ -1,6 +1,7 @@
 import csv
 import os
 import subprocess
+from tqdm import tqdm
 
 def get_file_size(s3_url):
     """Get the size of a file from an S3 URL using aws s3 ls command with --no-sign-request."""
@@ -30,13 +31,13 @@ def download_from_s3(s3_url, local_path):
         print(f"Failed to download {s3_url}: {e}")
         return False
 
-def download_files(urls, sample_id, data_type, max_size_gb=400):
+def download_files(urls, sample_id, data_type, max_size_gb=300):
     """Download files from S3 based on size constraints."""
     downloaded_size = 0
     max_size_bytes = max_size_gb * 1024 ** 3
     failed_downloads = []
 
-    for i, url in enumerate(urls):
+    for i, url in enumerate(tqdm(urls, desc=f"Downloading {data_type} files for {sample_id}")):
         if not url:
             continue
 
@@ -92,7 +93,5 @@ def process_tsv(tsv_file):
         print("\nAll downloads completed successfully.")
 
 if __name__ == "__main__":
-    tsv_file = 'hprc_year1_level1_aws_locs.csv'  # Replace with your TSV file path
+    tsv_file = 'forth_part.csv'  # Replace with your TSV file path
     process_tsv(tsv_file)
-
-# restrict by the disk storage, set max size to 400GB for each sample
