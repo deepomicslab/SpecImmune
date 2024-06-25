@@ -350,6 +350,7 @@ class Fasta():
 
         suffix = f".{index}" if index is not None else ""
         call_phase_cmd = f"""
+        samtools index {bam}
         python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {outdir} -w 20 -d {int(set_dp)}
         cp {mask_bed} {outdir}/{gene}{suffix}.low_depth.bed
         longshot -F -c {min_cov} -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval} --bam {bam} --ref {hla_ref} --out {outdir}/{sample}.{gene}{suffix}.longshot.vcf
@@ -441,11 +442,15 @@ class Fasta():
         # self.annotation()
 
     def annotation(self):
+        if args['seq_tech'] == "rna":
+            rna_tag=0
+        else:
+            rna_tag=1
         if args['i'] == "HLA":
             print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
             print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]}""")
             anno = f"""
-            perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]}
+            perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -t {rna_tag} -d {args["db"]}
             cat {parameter.outdir}/hla.result.txt
             python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}  -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
             """
@@ -455,7 +460,7 @@ class Fasta():
             print(f"""perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]}""")
             print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
             anno = f"""
-            perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]}
+            perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]} -t {rna_tag} -g {args["g"]}
             cat {parameter.outdir}/kir.result.txt
             python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}  -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
             """

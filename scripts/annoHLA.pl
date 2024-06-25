@@ -4,6 +4,7 @@ use Getopt::Long;
 
 my ($sample, $dir, $pop, $wxs, $g_nom, $help);
 $g_nom=0;
+$rna=1;
 GetOptions(
            "s=s"     =>      \$sample,
            "i=s"     =>      \$dir,
@@ -11,6 +12,7 @@ GetOptions(
            "r=s"     =>      \$wxs,
            "g=s"     =>      \$g_nom,
            "d=s"     =>      \$db,
+           "t=s"     =>      \$rna,
            "h"       =>      \$help
 );
 my $usage = <<USE;
@@ -24,6 +26,7 @@ usage: perl $0 [options]
         -r       <tr>    focus region "exon|whole|tgs" ("exon" is suitable for WES or RNAseq; "whole" is suitable for WGS; "tgs" is suitable for TGS )
         -g       <tr>     G-translate 1|0"
         -d       <tr>    the directory of database
+        -t       <tr>    Is RNAseq "0|1"
         -help|?           print help information
 e.g.:
         perl $0 -s samplename -i indir -p Unknown -r exon -g 1
@@ -47,12 +50,15 @@ my @hlas = (
 my $fadir=$dir;
 my $workdir = "$dir/tmp";
 `mkdir  -p $workdir`;
-
+# if is rna , subdir=HLA_CDS, else subdir=HLA
+my $subdir = "HLA";
+if($rna == 1){$subdir = "HLA_CDS"}
 
 sub tgs_blast{
         open BOUT, ">$dir/HLA.blast.summary.txt";  # new 
 	foreach my $class(@hlas){
-		my $ref = "$db/HLA/$class/$class";
+		my $ref = "$db/$subdir/$class/$class";
+              print "blast $ref\n";
 		for(my $i=1;$i<=$k;$i++){
 			my $tag = "$class"."_"."$i";
 			my $fa = "$fadir/HLA.allele.$i.$class.fasta";
