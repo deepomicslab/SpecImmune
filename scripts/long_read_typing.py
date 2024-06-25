@@ -451,9 +451,9 @@ class Fasta():
 
     def annotation(self):
         if args['seq_tech'] == "rna":
-            rna_tag='0'
-        else:
             rna_tag='1'
+        else:
+            rna_tag='0'
         if args['i'] == "HLA":
             print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]} -t {rna_tag} """)
             print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
