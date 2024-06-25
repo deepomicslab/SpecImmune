@@ -474,6 +474,16 @@ class Fasta():
             """
             # print (anno)
             os.system(anno)
+        elif args['i'] == "CYP":
+            print(f"""perl {sys.path[0]}/annoCYP.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]} -t {rna_tag} -g {args["g"]}""")
+            print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
+            anno = f"""
+            perl {sys.path[0]}/annoCYP.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]} -t {rna_tag} -g {args["g"]}
+            cat {parameter.outdir}/cyp.result.txt
+            python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]}  -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
+            """
+            # print (anno)
+            os.system(anno)
 
 
     #python3 {parameter.whole_dir}/g_group_annotation.py -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -j {args["j"]} 
