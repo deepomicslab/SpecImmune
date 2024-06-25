@@ -11,6 +11,21 @@ threads=$7
 sample=$8
 scripts_dir=$(dirname $0)
 longphase=$scripts_dir/../bin/longphase
+data_type=$9
+
+
+# seq_type dict:
+# pacbio :pacbio
+# nanopore: ont
+# traditional: pacbio
+# 2D: ont
+# Direct: ont
+# SIRV: pacbio
+seq_type="pacbio"
+if [[ "$data_type" =~ ^(nanopore|2D|Direct)$ ]]; then
+    seq_type="ont"
+fi
+
 # Sniffles 
 refined_sv=$gene_work_dir/HLA_$hla.snisv.vcf
 filtered_sv=$gene_work_dir/HLA_$hla.snisv.filtered.vcf
@@ -118,7 +133,7 @@ $longphase phase -s $snv_vcf \
     -r $hla_ref \
     --sv-file $refined_sv \
     -o $gene_work_dir/longphase \
-    --ont
+    --${seq_type}
 
 echo "filtering for $sample !"
 bcftools view -i 'GT!="0/0" && GT!="." && GT!="./." && INFO/PRECISE=1' $gene_work_dir/longphase_SV.vcf -o $filtered_sv
