@@ -60,7 +60,7 @@ def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize
     # print (all_truth_dict)
     return all_truth_dict
 
-def parse_truth_from_align(truth_file, cov_cutoff = 0.98):
+def parse_truth_from_align(truth_file, cov_cutoff = 0.95):
     # truth_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/upload/HG00096_extracted_HLA_align.txt"
     match_len_dict = defaultdict(dict)
     identity_dict = defaultdict(dict)

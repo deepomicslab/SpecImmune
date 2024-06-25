@@ -53,8 +53,8 @@ def cal_distance(gene_list, gene_dict):
 gtf_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38.ncbiRefSeq.gtf"
 
 args = {}
-args["i"] = "HLA"
-# args["i"] = "CYP"
+# args["i"] = "HLA"
+args["i"] = "KIR"
 gene_list, interval_dict =  get_focus_gene(args)
 gene_dict = extract_gene_distance(gtf_file)
 distance_matrix = cal_distance(gene_list, gene_dict)
