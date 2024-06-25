@@ -4,7 +4,7 @@ use Getopt::Long;
 
 my ($sample, $dir, $pop, $wxs, $g_nom, $help);
 $g_nom=0;
-$rna=1;
+$rna='0';
 GetOptions(
            "s=s"     =>      \$sample,
            "i=s"     =>      \$dir,
@@ -52,7 +52,7 @@ my $workdir = "$dir/tmp";
 `mkdir  -p $workdir`;
 # if is rna , subdir=HLA_CDS, else subdir=HLA
 my $subdir = "HLA";
-if($rna == 1){$subdir = "HLA_CDS"}
+if($rna == '1'){$subdir = "HLA_CDS"}
 
 sub tgs_blast{
         open BOUT, ">$dir/HLA.blast.summary.txt";  # new 

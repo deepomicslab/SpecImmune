@@ -370,8 +370,15 @@ class Fasta():
         suffix = f"_{index}" if index is not None else ""
         refine_script = f"{sys.path[0]}/refine_haplotype_pipe.sh" if index is None else f"{sys.path[0]}/refine_haplotype_2ref_pipe.sh"
         sv_cmd = f"""bash {refine_script} {bam} {hla_ref} {gene} {interval} {mask_bed} {gene_work_dir} {threads} {sample}"""
+        seq_tag=""
+        if args['seq_tech'] == "rna":
+            seq_tag=args["RNA_type"]
+        else:
+            seq_tag=args["y"]
         if index is not None:
             sv_cmd = f"{sv_cmd} {index}"
+        else:
+            sv_cmd = f"{sv_cmd} {seq_tag}"
         self.run_command(sv_cmd, f"sv for {gene}{suffix}")
 
     def process_gene(self, gene, hla_ref, interval, bam, depth_file, mask_bed, set_dp, min_cov, args, parameter, awk_script, index=None):
@@ -444,12 +451,12 @@ class Fasta():
 
     def annotation(self):
         if args['seq_tech'] == "rna":
-            rna_tag=0
+            rna_tag='0'
         else:
-            rna_tag=1
+            rna_tag='1'
         if args['i'] == "HLA":
-            print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
-            print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]}""")
+            print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]} -t {rna_tag} """)
+            print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
             anno = f"""
             perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -t {rna_tag} -d {args["db"]}
             cat {parameter.outdir}/hla.result.txt
@@ -458,7 +465,7 @@ class Fasta():
             # print (anno)
             os.system(anno)
         elif args['i'] == "KIR":
-            print(f"""perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]}""")
+            print(f"""perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]} -t {rna_tag} -g {args["g"]}""")
             print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
             anno = f"""
             perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]} -t {rna_tag} -g {args["g"]}
