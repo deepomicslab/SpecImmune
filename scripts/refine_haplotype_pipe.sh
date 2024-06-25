@@ -21,7 +21,7 @@ data_type=$9
 # 2D: ont
 # Direct: ont
 # SIRV: pacbio
-seq_type="pacbio"
+seq_type="pb"
 if [[ "$data_type" =~ ^(nanopore|2D|Direct)$ ]]; then
     seq_type="ont"
 fi
