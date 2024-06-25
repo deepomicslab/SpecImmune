@@ -129,7 +129,6 @@ def select_top_alleles(my_match_len_dict, my_identity_dict, gene):
     
     return good_identity_list
 
-
 ## given a sorted dictionary, find the top 5% alleles
 def find_top_5_percent(sorted_dict, ratio = 0.05):
     top_5_percent = []
@@ -467,8 +466,8 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
             gene_dict[gene][0] += max([fir, sec])
             gene_dict[gene][1] += 2
 
-            # if max([fir, sec]) != 2:
-            #     print (sample, gene, true_list, "<<<>>>" ,hla_la_list, max([fir, sec]))
+            if max([fir, sec]) != 2:
+                print (sample, gene, true_list, "<<<>>>" ,hla_la_list, max([fir, sec]))
 
 
             # print (true_list, hla_la_list, fir, sec)
@@ -632,6 +631,7 @@ def main_pacbio(gene_list):
     # print (new_truth_dict.keys(), new_truth_dict["HG00514.1"].keys())
     # print (all_hla_la_result.keys())
     compare_four(new_truth_dict, all_hla_la_result, gene_list, 8)
+    print ("------------------")
     compare_four_old(new_truth_dict, all_old_hlala_result, gene_list, 8)
     # count_report_allele(all_truth_dict, all_hla_la_result)
 
@@ -681,7 +681,7 @@ def cal_gene_len(db_dir):
     # print (allele_length_dict)
     return gene_mean_len, allele_length_dict
 
-def assess_gene_copy(mean_len, max_match, max_identity, min_mat=0.9, min_identi = 0.98):
+def assess_gene_copy(mean_len, max_match, max_identity, min_mat=0.8, min_identi = 0.98):
     if max_match > mean_len * min_mat and max_identity > min_identi:
         return True
     return False
