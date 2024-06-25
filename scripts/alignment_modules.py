@@ -190,7 +190,8 @@ def read_bin_map2db(args, my_db):
     minimap_para = read_type.get_minimap2_param()
 
     minimap_db = my_db.full_db
-    cds_bwa_db = my_db.full_cds_db
+    if args["seq_tech"] == 'rna':
+        cds_bwa_db = my_db.full_cds_db
     if args["minimap_index"] == 1 and args["seq_tech"] != 'rna':
         ref_index = my_db.full_db[:-5] + args["y"] + ".mmi"
         # print ("search the reference index:", ref_index)
