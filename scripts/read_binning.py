@@ -12,7 +12,7 @@ from collections import defaultdict
 
 
 from read_objects import My_read, My_locus, Read_bin
-from determine_gene import get_focus_gene
+from determine_gene import get_focus_gene, get_folder_list
 from db_objects import My_db
 from alignment_modules import Read_Type, read_bin_map2db
 
@@ -80,6 +80,7 @@ class Pacbio_Binning():
 
     def __init__(self):
         self.db = my_db.full_db
+        self.cds_db = my_db.full_cds_db
         self.sam = f"""{parameter.outdir}/{parameter.sample}.db.bam"""
         
         if args["m"] != 2:
@@ -87,6 +88,49 @@ class Pacbio_Binning():
 
         self.bamfile = pysam.AlignmentFile(self.sam, 'rb')   
         self.assign_file = f"{parameter.outdir}/{parameter.sample}.assign.txt"
+
+
+    def index_db(self):
+        ref_index = self.db[:-5] + args["y"] + ".mmi"
+        # print ("search the reference index:", ref_index)
+        if not os.path.isfile(ref_index):
+            print ("start build Minimap2 index for the reference...")
+            os.system(f"minimap2 {minimap_para} -d {ref_index} {self.db} ")
+        else:
+            print (f"Detect Minimap2 index for the reference: {ref_index}")
+        self.db = ref_index
+
+    def map2db(self):
+        if args["seq_tech"] == 'rna':
+            # map raw reads to CDS database
+            alignDB_order = f"""
+            fq={parameter.raw_fq}
+            ref={self.cds_db}
+            outdir={parameter.outdir}
+            bin={sys.path[0]}/../bin
+            sample={parameter.sample}
+            bwa mem {bwa_para} -t {parameter.threads} $ref $fq |samtools view -bS -o {self.sam}
+            echo alignment done.
+            """
+            # print (alignDB_order)
+            os.system(alignDB_order)
+        else:
+            if args["minimap_index"] == 1:
+                self.index_db()
+            # map raw reads to database
+            alignDB_order = f"""
+            fq={parameter.raw_fq}
+            ref={self.db}
+            outdir={parameter.outdir}
+            bin={sys.path[0]}/../bin
+            sample={parameter.sample}
+            # minimap2 -t {parameter.threads} {minimap_para} -a $ref $fq |samtools view -bS -o {self.sam}
+            bwa mem -t {parameter.threads} $ref $fq |samtools view -bS -o {self.sam}
+            echo alignment done.
+            """
+            # print (alignDB_order)
+            os.system(alignDB_order)
+
 
     def read_bam(self):
         # observe each read, assign it to gene based on alignment records
@@ -195,11 +239,20 @@ if __name__ == "__main__":
 
     print ("start read binning...")
 
-    gene_list, interval_dict =  get_focus_gene(args)
+    # gene_list, interval_dict =  get_focus_gene(args)
+
     my_db = My_db(args)
+
+    db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
+    gene_list = get_folder_list(db_folder)
+
     
     read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
-    minimap_para = read_type.get_minimap2_param()
+    if args["seq_tech"] == "rna":
+        bwa_para = read_type.get_bwa_param()
+    else:
+        minimap_para = read_type.get_minimap2_param()
+
 
     distance_matrix = load_gene_distance()
     ###assign reads

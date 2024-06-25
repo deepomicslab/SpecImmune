@@ -20,7 +20,7 @@ import pysam
 
 from read_objects import My_read
 from handle_allele_pair import My_allele_pair
-from determine_gene import get_focus_gene
+from determine_gene import get_focus_gene, get_folder_list
 from db_objects import My_db
 from get_allele_depth import Get_depth
 from read_binning import filter_fq
@@ -453,7 +453,7 @@ def cal_allele_match_len(record_read_allele_dict):
             allele_mismatch_dict[allele_name] += record_read_allele_dict[read_name][allele_name].mismatch_num
     return allele_match_dict, allele_mismatch_dict
 
-def main(args):
+def main():
 
     if not os.path.exists(args["o"]):
         os.system("mkdir %s"%(args["o"]))
@@ -589,9 +589,11 @@ if __name__ == "__main__":
 
 
 
-    gene_list, interval_dict =  get_focus_gene(args)
+    # gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
+    db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
+    gene_list = get_folder_list(db_folder)
     if args["test"]:
         # gene_list = ['HLA-A', 'HLA-B', 'HLA-C', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRB1']
         gene_list = ['HLA-DRB1']
-    main(args)
+    main()
