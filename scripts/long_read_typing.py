@@ -22,7 +22,8 @@ class Pacbio_Binning():
 
     def __init__(self):
         self.db = my_db.full_db
-        self.cds_db=my_db.full_cds_db
+        if args["seq_tech"] == "rna":
+            self.cds_db=my_db.full_cds_db
 
         self.sam = f"""{parameter.outdir}/{parameter.sample}.db.bam"""
 
