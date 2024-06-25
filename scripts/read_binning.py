@@ -36,14 +36,20 @@ class Score_Obj():
         self.read_loci = {}
     
     def add_read(self, read_obj):
-        # score = round(read_obj.match_rate * (1 - read_obj.mismatch_rate), 6)
+
+        if read_obj.gap_ends_flag and read_obj.match_num < 2000 and read_obj.loci_name == "HLA-DRB1":
+            return
+        if read_obj.identity < args["min_identity"]:
+            return
+
         if read_obj.primary:
             self.primary_dict[read_obj.read_name].add(read_obj.allele_name)
         # else:
         #     return 0
         # if read_obj.match_num < 100:
         #     return 0
-        score = read_obj.match_rate
+
+        
         if read_obj.read_name not in self.loci_score:
             self.loci_score[read_obj.read_name] = {}
         
@@ -90,49 +96,6 @@ class Pacbio_Binning():
         self.bamfile = pysam.AlignmentFile(self.sam, 'rb')   
         self.assign_file = f"{parameter.outdir}/{parameter.sample}.assign.txt"
 
-
-    def index_db(self):
-        ref_index = self.db[:-5] + args["y"] + ".mmi"
-        # print ("search the reference index:", ref_index)
-        if not os.path.isfile(ref_index):
-            print ("start build Minimap2 index for the reference...")
-            os.system(f"minimap2 {minimap_para} -d {ref_index} {self.db} ")
-        else:
-            print (f"Detect Minimap2 index for the reference: {ref_index}")
-        self.db = ref_index
-
-    def map2db(self):
-        if args["seq_tech"] == 'rna':
-            # map raw reads to CDS database
-            alignDB_order = f"""
-            fq={parameter.raw_fq}
-            ref={self.cds_db}
-            outdir={parameter.outdir}
-            bin={sys.path[0]}/../bin
-            sample={parameter.sample}
-            bwa mem {bwa_para} -t {parameter.threads} $ref $fq |samtools view -bS -o {self.sam}
-            echo alignment done.
-            """
-            # print (alignDB_order)
-            os.system(alignDB_order)
-        else:
-            if args["minimap_index"] == 1:
-                self.index_db()
-            # map raw reads to database
-            alignDB_order = f"""
-            fq={parameter.raw_fq}
-            ref={self.db}
-            outdir={parameter.outdir}
-            bin={sys.path[0]}/../bin
-            sample={parameter.sample}
-            # minimap2 -t {parameter.threads} {minimap_para} -a $ref $fq |samtools view -bS -o {self.sam}
-            bwa mem -t {parameter.threads} $ref $fq |samtools view -bS -o {self.sam}
-            echo alignment done.
-            """
-            # print (alignDB_order)
-            os.system(alignDB_order)
-
-
     def read_bam(self):
         # observe each read, assign it to gene based on alignment records
         scor = Score_Obj()
@@ -144,7 +107,8 @@ class Pacbio_Binning():
             read_obj = My_read()
             read_obj.load_bam(read)
             scor.add_read(read_obj)
-            # print (read_obj.read_name, read_obj.mismatch_rate, read_obj.allele_name )
+            # if read_obj.read_name == "m64076_200603_055852/5440181/ccs":
+            #     print (read_obj.read_name, read_obj.mismatch_rate, read_obj.allele_name, read_obj.gap_ends_flag, read_obj.match_num )
         read_loci = scor.assign(self.assign_file)
         for gene in gene_list:
             outfile = parameter.outdir + '/%s.%s.fq'%(gene, args["a"])

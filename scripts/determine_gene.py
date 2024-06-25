@@ -45,6 +45,7 @@ def get_folder_list(folder):
         if os.path.isdir(f"{folder}/{i}"):
             folder_list.append(i)
     print (folder_list)
+    # return ['HLA-DRB1']
     return folder_list
 
 

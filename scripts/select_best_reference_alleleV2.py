@@ -251,7 +251,7 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     # if gene  in ["HLA-DPA1"]:
     #     len_diff_cutoff = 1e-2
     if gene in ["HLA-DRB1"]:
-        len_diff_cutoff = 5e-2
+        len_diff_cutoff = 0.1 ## 5e-2
         ide_diff_cutoff = 2e-4
     # if gene  in ["HLA-C"]:
     #     len_diff_cutoff =  1e-3

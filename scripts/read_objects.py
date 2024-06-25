@@ -24,6 +24,7 @@ class My_read():
 
         self.match_rate = None
         self.mismatch_rate = None
+        self.gap_ends_flag = False
 
         # self.get_match_length(read)
 
@@ -87,6 +88,8 @@ class My_read():
         gap_num = 0
         map_len = 0
         long_gap = 0
+        
+
         for ci in read.cigar:
             if ci[0] == 0:
                 map_len += ci[1]
@@ -95,7 +98,20 @@ class My_read():
                 map_len += ci[1]
                 if ci[1] > long_cutoff:
                     long_gap += ci[1]
+        self.gap_ends(read)
         return gap_num, map_len, long_gap
+    
+    ## check if there is long gap in the two ends
+    def gap_ends(self, read, super_long_cutoff=300):
+        # if read.query_name == "m64076_200603_055852/5440181/ccs":
+        #     print (read.cigar, read.cigar[0][0], read.cigar[0][1], read.cigar[-1][0], read.cigar[-1][1])
+        ## check if there is more than three cigars
+        if len(read.cigar) >= 3 and read.cigar[0][1] > super_long_cutoff and  read.cigar[-1][1] > super_long_cutoff\
+              and read.cigar[0][0] in [4,5] and read.cigar[-1][0] in [4,5]: # 4:S 5:H
+            # print ("gap ends", read.query_name, read.cigar)
+            self.gap_ends_flag = True
+
+
 
     def load_blast(self, line): # format 7
         field = line.strip().split("\t")
