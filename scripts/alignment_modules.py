@@ -98,6 +98,33 @@ class Read_Type:
         else:
             raise ValueError("Invalid read type specified.")
 
+def cout_read_num(fastq): 
+    ## the input fastq is gziped, count the reads num in it, and return it to the variable
+    f = open(fastq, "rb")
+    count = 0
+    for line in f:
+        count += 1
+    f.close()
+    return count/4
+
+def subsample_fastq(gene, args, read_num):
+    outdir = args["o"] + "/" + args["n"]
+    fastq = outdir + "/" + gene + ".long_read.fq.gz"
+    sub_fastq = outdir + "/" + gene + ".long_read.sub.fq"
+    read_count = cout_read_num(fastq)
+    if read_count <= read_num:
+        os.system(f"zcat {fastq} > {sub_fastq}")
+    else:
+        
+        
+        os.system(f"seqtk sample {fastq} {read_num} > {sub_fastq}")
+        ## gzip the fq
+        # os.system(f"gzip -f {sub_fastq}")
+    return sub_fastq
+
+
+
+
 
 def map2db(args, gene, my_db, read_num=500):
     # map binned reads to all alleles of each locus
@@ -117,18 +144,14 @@ def map2db(args, gene, my_db, read_num=500):
     # map raw reads to database
 
     ref = my_db.get_gene_all_alleles(gene)
-    # ref="/mnt/d/HLAPro_backup/Nanopore_optimize/SpecHLA/db/HLA/whole/HLA_A.fasta"
+    sub_fastq = subsample_fastq(gene, args, read_num)
 
     if args["seq_tech"] == "rna":
         alignDB_order = f"""
-        fq={args["r"]}
         outdir={args["o"]}/{args["n"]}
         sample={args["n"]}
-        fq=$outdir/{gene}.long_read.fq.gz
-        seqtk sample $outdir/{gene}.long_read.fq.gz {read_num} >$outdir/{gene}.long_read.sub.fq
-        fq=$outdir/{gene}.long_read.sub.fq
         ref={ref}
-        bwa mem {bwa_para} -t {args["j"]} $ref $fq | samtools view -bS -F 0x800 -| samtools sort - >{bam}
+        bwa mem {bwa_para} -t {args["j"]} $ref {sub_fastq} | samtools view -bS -F 0x800 -| samtools sort - >{bam}
         samtools index {bam}
         samtools depth -aa {bam}>{depth_file}
         rm {sam}
@@ -136,16 +159,12 @@ def map2db(args, gene, my_db, read_num=500):
         """
     else:
         alignDB_order = f"""
-        fq={args["r"]}
         outdir={args["o"]}/{args["n"]}
         sample={args["n"]}
-        fq=$outdir/{gene}.long_read.fq.gz
-        seqtk sample $outdir/{gene}.long_read.fq.gz {read_num} >$outdir/{gene}.long_read.sub.fq
-        fq=$outdir/{gene}.long_read.sub.fq
         ref={ref}
-        minimap2 -t {args["j"]} {minimap_para} -E 8,4 -p 0.1 -N 100000 -a $ref $fq > {sam}
+        minimap2 -t {args["j"]} {minimap_para} -E 8,4 -p 0.1 -N 100000 -a $ref {sub_fastq} > {sam}
         # bwa index $ref
-        # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref $fq > {sam}
+        # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref {sub_fastq} > {sam}
         samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
         samtools index {bam}
         samtools depth -aa {bam}>{depth_file}
@@ -188,28 +207,31 @@ def read_bin_map2db(args, my_db):
     # map raw fastq to the database of all alleles
     read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
     minimap_para = read_type.get_minimap2_param()
-
     minimap_db = my_db.full_db
-    if args["seq_tech"] == 'rna':
-        cds_bwa_db = my_db.full_cds_db
-    if args["minimap_index"] == 1 and args["seq_tech"] != 'rna':
-        ref_index = my_db.full_db[:-5] + args["y"] + ".mmi"
-        # print ("search the reference index:", ref_index)
-        if not os.path.isfile(ref_index):
-            print ("start build Minimap2 index for the reference...")
-            os.system(f"minimap2 {minimap_para} -d {ref_index} {my_db.full_db} ")
-        else:
-            print (f"Detect Minimap2 index for the reference: {ref_index}")
-        minimap_db = ref_index
+
+    # if args["minimap_index"] == 1 and args["seq_tech"] != 'rna':
+    #     ref_index = my_db.full_db[:-5] + args["y"] + ".mmi"
+    #     # print ("search the reference index:", ref_index)
+    #     if not os.path.isfile(ref_index):
+    #         print ("start build Minimap2 index for the reference...")
+    #         os.system(f"minimap2 {minimap_para} -d {ref_index} {my_db.full_db} ")
+    #     else:
+    #         print (f"Detect Minimap2 index for the reference: {ref_index}")
+    #     minimap_db = ref_index
 
     outbam = f"""{args["o"]}/{args["n"]}/{args["n"]}.db.bam"""
     # map raw reads to database
     if args["seq_tech"] != 'rna':
+        # alignDB_order = f"""
+        # minimap2 -t {args["j"]} {minimap_para} -a {minimap_db} {args["r"]} |samtools view -bS -o {outbam}
+        # echo alignment done.
+        # """
         alignDB_order = f"""
-        minimap2 -t {args["j"]} {minimap_para} -a {minimap_db} {args["r"]} |samtools view -bS -o {outbam}
+        bwa mem -t {args["j"]} {my_db.full_db} {args["r"]} |samtools view -bS -o {outbam}
         echo alignment done.
         """
     else:
+        cds_bwa_db = my_db.full_cds_db
         alignDB_order = f"""
         bwa mem -t {args["j"]} {cds_bwa_db} {args["r"]} |samtools view -bS -o {outbam}
         echo alignment done.
