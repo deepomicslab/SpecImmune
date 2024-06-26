@@ -250,8 +250,12 @@ def parse_all_spleclong_pacbio_input(outdir="/mnt/d/HLAPro_backup/Nanopore_optim
         if os.path.exists(input_file):
             input_dict = parse_hla_hla_input(input_file)
         else:
-            print(f"File {input_file} does not exist")
-            input_dict = {}
+            input_file = os.path.join(outdir, folder, f"{outdir}/{sample}/{sample}/hlala.like.results.txt")
+            if os.path.exists(input_file):
+                input_dict = parse_hla_hla_input(input_file)
+            else:
+                print(f"File {input_file} does not exist")
+                input_dict = {}
         all_hla_la_result[sample] = input_dict
     return all_hla_la_result
 
@@ -612,16 +616,13 @@ def main():
     compare_four(truth_dict, all_hla_la_result, gene_list, 8)
     count_report_allele(truth_dict, all_hla_la_result)
 
-def main_pacbio(gene_list):
+def main_pacbio(gene_list, truth_dir, result_dir):
     ## remove HLA- prefix in gene_list
     gene_list = [x.split("-")[-1] for x in gene_list]
     # gene_list = ['B']
 
-    all_truth_dict = parse_truth_from_align_all()
-    all_hla_la_result = parse_all_spleclong_pacbio_input()
-
-    # all_truth_dict = parse_truth_from_align_all("/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/hgscv2_truth_bwa_zip/")
-    # all_hla_la_result = parse_all_spleclong_pacbio_input("/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/kir_typing_out/")
+    all_truth_dict = parse_truth_from_align_all(truth_dir)
+    all_hla_la_result = parse_all_spleclong_pacbio_input(result_dir)
 
     all_old_hlala_result = parse_hlala_pacbio()
     new_truth_dict = {}
@@ -699,8 +700,13 @@ if __name__ == "__main__":
     # assess_sim()
 
     gene_class = "HLA"
-    db_dir = f"../db/{gene_class}/"
+    truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
+    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_hla/"
 
+    truth_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/hgscv2_truth_bwa_zip/"
+    result_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/kir_typing_out/"
+
+    db_dir = f"../db/{gene_class}/"
     gene_list, interval_dict =  get_focus_gene(gene_class)
     gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
     main_pacbio(gene_list)
