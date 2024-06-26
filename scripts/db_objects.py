@@ -1,6 +1,6 @@
 import os
 import re
-import os
+import numpy as np
 
 
 
@@ -46,6 +46,9 @@ class My_db():
         self.version_info = "# version:  N/A"
         self.get_db_version(args)
 
+        self.gene_min_len = {}
+        self.cal_gene_len()
+
     def get_db_version(self, args):
         g_file = "%s/%s/release_version.txt"%(args['db'], self.subdir)
 
@@ -57,7 +60,6 @@ class My_db():
             for line in open(g_file):
                 if re.search("# version:", line):
                     self.version_info = line.strip()
-
 
     def get_gene_alleles(self, gene):
         ### record representative allele of each gene
@@ -71,7 +73,6 @@ class My_db():
     def get_gene_alleles_ref(self, gene):
         ### record representative allele of each gene
         return self.individual_ref_dir + f"/{gene}/{gene}.fasta"
-
 
     def get_gene_all_alleles(self, gene):
         ### record all alleles of each gene
@@ -102,13 +103,38 @@ class My_db():
         # print (self.allele_len_dict)
         f.close()
 
-
     def get_blast_index(self, gene):
 
         ref = f"""{self.root}/{self.subdir}/{gene}/{gene}"""
 
 
         return ref
+
+    def cal_gene_len(self):
+        gene_length_dict = {}
+        db_dir = f"{self.root}/{self.subdir}"
+        # for each dir in the db_dir
+        for gene in os.listdir(db_dir):
+            gene_dir = os.path.join(db_dir, gene)
+            if os.path.isdir(gene_dir):
+                for file in os.listdir(gene_dir):
+                    if file.endswith(".fasta"):
+                        fai_file = f"{self.full_db}.fai"
+                        if not os.path.exists(fai_file):
+                            # print (fai_file)
+                            print (fai_file, "fai file does not exist")
+                            return
+                        gene_length_dict[gene] = []
+                        f = open(fai_file, "r")
+                        for line in f:
+                            length = int(line.split("\t")[1])
+                            gene_length_dict[gene].append(length)
+                        f.close()
+        for gene in gene_length_dict:
+            # self.gene_min_len[gene] = min(gene_length_dict[gene])
+            self.gene_min_len[gene] = round(np.mean(gene_length_dict[gene]))
+        # print (self.gene_min_len["MICA"])
+
 
 
 

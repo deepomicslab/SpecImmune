@@ -37,8 +37,13 @@ class Score_Obj():
     
     def add_read(self, read_obj):
 
-        if read_obj.gap_ends_flag and read_obj.match_num < 2000 and read_obj.loci_name == "HLA-DRB1":
-            return
+        if read_obj.gap_ends_flag:  ## read with clip-match-clip, if the match is too short, this read could be noise
+            if read_obj.match_num < 2000 and read_obj.loci_name == "HLA-DRB1":
+                return
+            if read_obj.match_num < my_db.gene_min_len[read_obj.loci_name] * 0.5 and read_obj.loci_name != "HLA-U":
+                # print ("too short",read_obj.read_name, read_obj.match_num, my_db.gene_min_len[read_obj.loci_name] * 0.5, read_obj.loci_name)
+                return
+
         if read_obj.identity < args["min_identity"]:
             return
 

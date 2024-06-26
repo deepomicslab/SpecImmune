@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 my ($sample,$outdir) = @ARGV;
 my (%hash, %hashc, %hashb,%hashr, %hash1,%hash2, %hashf, %hasho);
-open IN, "/home/wangmengyao/SpecComplex/db/IG_TR/imgtrefseq.human.fasta" or die "$!\n";
+open IN, "../db/IG_TR/imgtrefseq.human.fasta" or die "$!\n";
 while(<IN>){
 	chomp;
 	s/^>//;
@@ -44,7 +44,7 @@ while(<CI>){
 close CI;
 close COUT;
 my $id;
-open FA, "/mnt/delta_WS_1/wangmengyao/Complex/ig.tr.merge.hg38.fa" or die "$!\n";
+open FA, "../db/IG_TR//ig.tr.merge.hg38.fa" or die "$!\n";
 while(<FA>){
 	chomp;
 	if(/^>/){
@@ -93,7 +93,7 @@ foreach my $cc(sort keys %hashe){
         my $len = length($ref);
         $end0 += 1;
         my $region0 = "Gene.hap:"."$end"."-"."$len";
-        my $pe = `samtools faidx ig.tr.merge.hg38.fa $region0 | grep -v ">"`;
+        my $pe = `samtools faidx ../db/IG_TR/ig.tr.merge.hg38.fa $region0 | grep -v ">"`;
         $pe =~ s/\s//g;
         $nref1{$cc} .= $pe;
         $nref2{$cc} .= $pe;
