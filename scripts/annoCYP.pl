@@ -15,7 +15,6 @@ GetOptions(
            "t=s"     =>      \$rna,
            "h"       =>      \$help
 );
-
 my $usage = <<USE;
 Usage:
 description: HLAtyping annotation of SpecHLA phased sequence
@@ -39,39 +38,32 @@ print "parameter:\tsample:$sample\tdir:$dir\tpop:$pop\twxs:$wxs\tG_nom:$g_nom\n"
 my $cutoff = 100;
 my $bin = "$Bin/../bin";
 
-my @genes = (
-    "KIR2DL1", "KIR2DL2", "KIR2DL3", "KIR2DL4", "KIR2DP1", "KIR2DS1", 
-    "KIR2DS2", "KIR2DS3", "KIR2DS4", "KIR2DS5", "KIR3DL1", "KIR3DL2", 
-    "KIR3DL3", "KIR3DP1", "KIR3DS1", "KIR2DL5A", "KIR2DL5B"
-);
+my @genes = ("CYP19A1", "CYP1A1", "CYP1B1", "CYP26A1", "CYP2A13", 
+    "CYP2A6", "CYP2B6", "CYP2C19", "CYP2C8", "CYP2C9", 
+    "CYP2D6", "CYP2F1", "CYP2J2", "CYP2R1", "CYP2S1", "CYP2W1",
+     "CYP3A4", "CYP3A43", "CYP4A22", "CYP4B1", "CYP4F2", "CYP3A5", 
+     "CYP3A7", "CYP8A1");
 
 my (%hash, %hashs, $ref);
 my $fadir = $dir;
 my $workdir = "$dir/tmp";
-open BOUT, ">$dir/KIR.blast.summary.txt";
+open BOUT, ">$dir/CYP.blast.summary.txt";
 `mkdir -p $workdir`;
 
 foreach my $class (@genes) {
-    my $ref = "$db/KIR/$class/$class";
-    $cutoff = 800 if ($class =~ /KIR3DL3/);
+    my $ref = "$db/CYP/$class/$class";
     
     for (my $i = 1; $i <= 2; $i++) {
-        my $fa = "$fadir/KIR.allele.$i.$class.fasta";
+        my $fa = "$fadir/CYP.allele.$i.$class.fasta";
         # print file path
               print "$fa\n";
         # if fa file not exist or empty, skip
         next if (!-e $fa || -z $fa);
 
         my $tag = "$class\_$i";
-        if ($class eq "KIR2DL5") {
-            `blastn -query $fa -out $workdir/$tag.blast.out1 -db $ref -outfmt 7 -num_threads 4 -max_target_seqs 10000000`;
-            # print command
-                print "blastn -query $fa -out $workdir/$tag.blast.out1 -db $ref -outfmt 7 -num_threads 4 -max_target_seqs 10000000\n";
-       #      `blastn -query $ref -out $fadir/$tag.blast.out2 -db $fa -outfmt 7 -num_threads 4 -max_target_seqs 10000000`;
-        } else {
-            `blastn -query $fa -out $workdir/$tag.blast.out1 -db $ref -outfmt 7 -num_threads 4 -max_target_seqs 10000000 -perc_identity 95 -qcov_hsp_perc 10`;
+        `blastn -query $fa -out $workdir/$tag.blast.out1 -db $ref -outfmt 7 -num_threads 4 -max_target_seqs 10000000 -perc_identity 95 -qcov_hsp_perc 10`;
        #      `blastn -query $ref -out $fadir/$tag.blast.out2 -db $fa -outfmt 7 -num_threads 4 -max_target_seqs 10000000 -perc_identity 95 -qcov_hsp_perc 10`;
-        }
+
 
         my (%hash11, %hash12, %hasha, $gene, $score);
         open IN1, "$workdir/$tag.blast.out1" or die "$!\n";

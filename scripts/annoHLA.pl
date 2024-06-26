@@ -2,7 +2,7 @@
 use FindBin qw($Bin);
 use Getopt::Long;
 
-my ($sample, $dir, $pop, $wxs, $g_nom, $help);
+my ($sample, $dir, $pop, $wxs, $g_nom, $db, $rna, $help);
 $g_nom=0;
 $rna='0';
 GetOptions(
