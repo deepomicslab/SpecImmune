@@ -62,7 +62,9 @@ foreach my $re(@regions){
 	my ($s,$e) = (split /-/,$se)[0,1];
 	my $ee = $s - 1;
 	my $pre = "$chr".":"."$ss"."-"."$ee";
-	my $pfa = `samtools faidx ig.tr.merge.hg38.fa $pre |grep -v ">" `;
+	print "$s\t$e\t$ss\t$ee\t$pre\n";
+	my $pfa = `samtools faidx ../db/IG_TR/ig.tr.merge.hg38.fa $pre |grep -v ">" `;
+	# print "samtools faidx ../db/IG_TR/ig.tr.merge.hg38.fa $pre\n";
 	chomp $pfa;
 	$pfa =~ s/\s//g;
 	my $allele1 = $hash1{$gene};
