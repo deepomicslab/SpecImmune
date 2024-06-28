@@ -95,7 +95,7 @@ def map_phased_reads_2_ref_minimap():
             # minimap
             # minimap2 -t %s %s -a $hla_ref $outdir/$hla.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
             cmd=f"""
-                minimap2 -t {threads} -a {ref} {minimap_para} {fq} | samtools view -bS -F 0x800 -| samtools sort - >{bam}
+                minimap2 -t {threads} -a {ref} {minimap_para} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
                 samtools index {bam}
                 samtools depth -d 1000000 -aa {bam} > {depth_file}
             """
@@ -110,7 +110,7 @@ def map_phased_reads_2_ref_minimap():
                 # minimap
                 # minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
                 cmd=f"""
-                    minimap2 -t {threads} -a {ref} {minimap_para} {fq} | samtools view -bS -F 0x800 -| samtools sort - >{bam}
+                    minimap2 -t {threads} -a {ref} {minimap_para} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
                     samtools index {bam} 
                     samtools depth -d 1000000 -aa {bam} > {depth_file}
                 """
@@ -133,7 +133,7 @@ def map_phased_reads_2_ref_bwa():
             # bwa
             # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t %s $hla_ref $outdir/$hla.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
             cmd=f"""
-                bwa mem {bwa_para} -t {threads} {ref} {fq} | samtools view -bS -F 0x800 -| samtools sort - >{bam}
+                bwa mem {bwa_para} -t {threads} {ref} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
                 samtools index {bam}
                 samtools depth -d 1000000 -aa {bam} > {depth_file}
             """
@@ -148,19 +148,72 @@ def map_phased_reads_2_ref_bwa():
                 # bwa
                 # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t %s $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
                 cmd=f"""
-                    bwa mem {bwa_para} -t {threads} {ref} {fq} | samtools view -bS -F 0x800 -| samtools sort - >{bam}
+                    bwa mem {bwa_para} -t {threads} {ref} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
                     samtools index {bam} 
                     samtools depth -d 1000000 -aa {bam} > {depth_file}
                 """
                 print(cmd)
                 os.system(cmd)
-            
+
+
+def build_HLA_rna_ref():
+    fa_ordered_dict=SeqIO.to_dict(SeqIO.parse(db_ref, "fasta"))
+    for gene in gene_list:
+        allele_dir=f"{db_build_dir}/{gene}"
+        if not os.path.exists(allele_dir):
+            os.makedirs(allele_dir)
+        # get first contig name for this gene, the contig name starts with gene name
+        contig_name=None
+        for contig_name in fa_ordered_dict.keys():
+            if contig_name.startswith(gene):
+                break
+        if contig_name is None:
+            print(f"Error: no contig name found for gene {gene}")
+            continue
+        # generate ref to individual ref
+        ref_raw=f"{allele_dir}/{gene}.raw.fasta"
+        ref=f"{allele_dir}/{gene}.fasta"
+        SeqIO.write(fa_ordered_dict[contig_name], ref_raw, "fasta")
+        replace_single_contig_name(f"{ref_raw}", f"{ref}", f"{gene}")
+        # index
+        index_cmd=f"""
+            samtools faidx {ref}
+            bwa index {ref}
+            makeblastdb -in {ref} -dbtype nucl -parse_seqids -out {allele_dir}/{gene}
+        """
+        os.system(index_cmd)
+
+def map_long_reads_2_ref_minimap():
+    for gene in gene_list:
+        allele_dir=f"{db_build_dir}/{gene}"
+        fq=f"{outdir}/{sample}/{gene}.long_read.fq.gz"
+        if not os.path.exists(fq):
+            print(f"Warning: {fq} is empty, skip {gene}")
+            continue
+        ref=f"{allele_dir}/{gene}.fasta"
+        bam=f"{outdir}/{sample}/{gene}.bam"
+        depth_file=f"{outdir}/{sample}/{gene}.depth"
+        # minimap
+        # minimap2 -t %s %s -a $hla_ref $outdir/$hla.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
+        cmd=f"""
+            minimap2 -t {threads} {minimap_para} {ref} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
+            samtools index {bam}
+            samtools depth -d 1000000 -aa {bam} > {depth_file}
+        """
+        os.system(cmd)
+
 
 def main():
-    read_hla_file(ref_file)
-    print(gene_ref_dict)
-    build_HLA_ref()
-    map_phased_reads_2_ref_bwa() if seq_tech == 'rna' else map_phased_reads_2_ref_minimap()
+
+    if seq_tech == 'rna':
+        build_HLA_rna_ref()
+        map_long_reads_2_ref_minimap()
+        # map_phased_reads_2_ref_bwa()
+    else:
+        read_hla_file(ref_file)
+        build_HLA_ref()
+        map_phased_reads_2_ref_minimap()
+
 
 
 if __name__ == "__main__":
@@ -180,10 +233,10 @@ if __name__ == "__main__":
     ref_file = f"{outdir}/{sample}/{sample}.{gene_class}.type.result.txt"
 
     read_type = Read_Type(seq_tech, data_type, RNA_type)
-    if seq_tech == 'rna':
-        bwa_para = read_type.get_bwa_param()
-    else:
-        minimap_para = read_type.get_minimap2_param()
+    # if seq_tech == 'rna':
+    #     bwa_para = read_type.get_bwa_param()
+    # else:
+    minimap_para = read_type.get_minimap2_param()
 
     if not os.path.exists(db_build_dir):
         os.makedirs(db_build_dir)

@@ -43,7 +43,8 @@ def main(args):
         # python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
         # python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
         # """
-        db=my_db.full_cds_db if args["seq_tech"] == "rna" else my_db.full_db
+        # db=my_db.full_cds_db if args["seq_tech"] == "rna" else my_db.full_db
+        db=my_db.full_db
         command = f"""
         ## third: build individual reference for each HLA locus, two ref version
         python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} {args["i"]} \

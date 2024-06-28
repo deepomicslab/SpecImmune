@@ -9,6 +9,7 @@ import gzip
 import argparse
 from collections import defaultdict
 import subprocess
+from Bio import SeqIO
 
 
 from downsample_bam import downsample_func
@@ -60,7 +61,7 @@ class Fasta():
         outdir=%s
         hla=%s
         hla_ref=%s
-        minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
+        minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x804 -| samtools sort - >$outdir/$hla.bam
         samtools index $outdir/$hla.bam
         samtools depth -d 1000000 -aa $outdir/$hla.bam >$outdir/$hla.depth
         """%(parameter.sample, parameter.bin, parameter.outdir, gene, my_db.get_gene_alleles(gene), parameter.threads, minimap_para, args["a"])
@@ -345,6 +346,21 @@ class Fasta():
             """
             self.run_command(order, f"sequence generation for {gene}_{index}")
 
+
+    def remove_N_characters(self, gene):
+        for idx in range(2):
+            input_file = f"{parameter.outdir}/{args['i']}.allele.{idx+1}.{gene}.fasta"
+            output_file = f"{parameter.outdir}/{args['i']}.allele.{idx+1}.{gene}.noN.fasta"
+            with open(input_file, "r") as infile, open(output_file, "w") as outfile:
+                sequences = SeqIO.parse(infile, "fasta")
+                modified_sequences = []
+
+                for seq_record in sequences:
+                    seq_record.seq = seq_record.seq.replace("N", "")
+                    modified_sequences.append(seq_record)
+                
+                SeqIO.write(modified_sequences, outfile, "fasta")
+
     def process_phase(self, gene, bam, depth_file, mask_bed, hla_ref, interval, set_dp, min_cov, args, parameter, index=None):
         sample = parameter.sample
         outdir = parameter.outdir
@@ -388,12 +404,15 @@ class Fasta():
             os.makedirs(gene_work_dir)
         self.process_sv(gene, bam, hla_ref, interval, mask_bed, gene_work_dir, parameter, index)
         self.generate_sequence(gene, index, gene_work_dir, parameter.outdir)
+        if args['seq_tech'] == "rna":
+            self.remove_N_characters(gene)
 
     def vcf2fasta2ref(self, gene):
         awk_script = '{sum+=$3} END { if (NR>0) print sum/NR; else print 0; }'
         max_depth = args["max_depth"]
         seed = args["seed"]
-        if self.is_hom(gene):
+        if self.is_hom(gene) or args['seq_tech'] == "rna":
+            print(f"Processing RNAseq {gene}", flush=True) if args['seq_tech'] == "rna" else \
             print(f"Processing homo {gene}", flush=True)
             bam = f"{parameter.outdir}/{gene}.bam"
             if not os.path.exists(bam):
@@ -405,6 +424,9 @@ class Fasta():
             output_bam = f"{parameter.outdir}/{gene}.downsample.bam"
             output_depth = f"{parameter.outdir}/{gene}.downsample.depth"
             avg_depth, downsample_ratio = self.downsample_and_process(bam, output_bam, depth_file, output_depth, max_depth, seed, downsample_func, awk_script)
+            if avg_depth < 2:
+                print(f"Reads coverage is too low for {bam}, skip it")
+                return
             print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
             set_dp = int(max(0.3 * avg_depth, 0)) if args['y'] != 'pacbio' or avg_depth >= 5 else 0
             if args['y'] == "nanopore" and set_dp==0:
@@ -426,6 +448,9 @@ class Fasta():
                 output_bam = f"{parameter.outdir}/{gene}.{index}.downsample.bam"
                 output_depth = f"{parameter.outdir}/{gene}.{index}.downsample.depth"
                 avg_depth, downsample_ratio = self.downsample_and_process(bam, output_bam, depth_file, output_depth, max_depth, seed, downsample_func, awk_script)
+                if avg_depth < 2:
+                    print(f"Reads coverage is too low for {bam}, skip it")
+                    continue
                 print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
                 set_dp = int(max(0.3 * avg_depth, 0)) if args['y'] != 'pacbio' or avg_depth >= 5 else 0
                 if args['y'] == "nanopore" and set_dp==0:
@@ -448,13 +473,29 @@ class Fasta():
             print (gene)
             self.vcf2fasta2ref(gene)
         # self.annotation()
+            
+    def splice_align_db(self):
+        for gene in gene_list:
+            hap1=f"{parameter.outdir}/{args['i']}.allele.1.{gene}.noN.fasta"
+            hap2=f"{parameter.outdir}/{args['i']}.allele.2.{gene}.noN.fasta"
+            if os.path.exists(hap1) and os.path.exists(hap2):
+                # map to gene ref 
+                cmd = f"""
+                minimap2 -t {parameter.threads} -ax splice {my_db.full_db} {hap1} | samtools view -bS -F 0x804 -| samtools sort - >{parameter.outdir}/{gene}.allele1.bam
+                samtools index {parameter.outdir}/{gene}.allele1.bam
+                minimap2 -t {parameter.threads} -ax splice {my_db.full_db} {hap2} | samtools view -bS -F 0x804 -| samtools sort - >{parameter.outdir}/{gene}.allele2.bam
+                samtools index {parameter.outdir}/{gene}.allele2.bam
+                """
+                os.system(cmd)
+                
+
 
     def annotation(self):
         if args['seq_tech'] == "rna":
             rna_tag='1'
         else:
             rna_tag='0'
-        if args['i'] == "HLA":
+        if args['i'] == "HLA" and args['seq_tech'] != 'rna':
             print(f"""perl {sys.path[0]}/annoHLA.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -g {args["g"]} -d {args["db"]} -t {rna_tag} """)
             print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
             anno = f"""
@@ -464,6 +505,9 @@ class Fasta():
             """
             # print (anno)
             os.system(anno)
+        elif args['i'] == "HLA" and args['seq_tech'] == 'rna':
+            # remove N in seq and align haplotype to the reference by splicing
+            self.splice_align_db()
         elif args['i'] == "KIR":
             print(f"""perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]} -t {rna_tag} -g {args["g"]}""")
             print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
@@ -534,7 +578,8 @@ if __name__ == "__main__":
     # gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
 
-    db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
+    # db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
+    db_folder = os.path.dirname(my_db.full_db)
     gene_list = get_folder_list(db_folder)
     interval_dict={}
     for gene in gene_list:
