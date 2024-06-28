@@ -61,17 +61,17 @@ class Read_Type:
             else:
                 raise ValueError("Invalid read type specified.")
         # for splice alignment
-        # elif self.seq_tech in ["rna"]:
-        #     if self.RNA_type == "traditional":
-        #         return " -ax splice:hq -uf "
-        #     elif self.RNA_type == "2D":
-        #         return " -ax splice "
-        #     elif self.RNA_type == "Direct":
-        #         return " -ax splice -uf -k14 "
-        #     elif self.RNA_type == "SIRV":
-        #         return " -ax splice --splice-flank=no "
-        #     else:
-        #         raise ValueError("Invalid RNA type specified.")
+        elif self.seq_tech in ["rna"]:
+            if self.RNA_type == "traditional":
+                return " -ax splice:hq -uf "
+            elif self.RNA_type == "2D":
+                return " -ax splice "
+            elif self.RNA_type == "Direct":
+                return " -ax splice -uf -k14 "
+            elif self.RNA_type == "SIRV":
+                return " -ax splice --splice-flank=no "
+            else:
+                raise ValueError("Invalid RNA type specified.")
             
     # for cds alignment
     def get_bwa_param(self):
@@ -151,7 +151,7 @@ def map2db(args, gene, my_db, read_num=500):
         outdir={args["o"]}/{args["n"]}
         sample={args["n"]}
         ref={ref}
-        bwa mem {bwa_para} -t {args["j"]} $ref {sub_fastq} | samtools view -bS -F 0x800 -| samtools sort - >{bam}
+        bwa mem {bwa_para} -t {args["j"]} $ref {sub_fastq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
         samtools index {bam}
         samtools depth -aa {bam}>{depth_file}
         echo alignment done.
@@ -164,7 +164,7 @@ def map2db(args, gene, my_db, read_num=500):
         minimap2 -t {args["j"]} {minimap_para} -E 8,4 -p 0.1 -N 100000 -a $ref {sub_fastq} > {sam}
         # bwa index $ref
         # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref {sub_fastq} > {sam}
-        samtools view -bS -F 0x800  {sam} | samtools sort - >{bam}
+        samtools view -bS -F 0x804  {sam} | samtools sort - >{bam}
         samtools index {bam}
         samtools depth -aa {bam}>{depth_file}
         rm {sam}
@@ -220,20 +220,20 @@ def read_bin_map2db(args, my_db):
 
     outbam = f"""{args["o"]}/{args["n"]}/{args["n"]}.db.bam"""
     # map raw reads to database
-    if args["seq_tech"] != 'rna':
+    # if args["seq_tech"] != 'rna':
         # alignDB_order = f"""
         # minimap2 -t {args["j"]} {minimap_para} -a {minimap_db} {args["r"]} |samtools view -bS -o {outbam}
         # echo alignment done.
         # """
-        alignDB_order = f"""
-        bwa mem -t {args["j"]} {my_db.full_db} {args["r"]} |samtools view -bS -o {outbam}
-        echo alignment done.
-        """
-    else:
-        cds_bwa_db = my_db.full_cds_db
-        alignDB_order = f"""
-        bwa mem -t {args["j"]} {cds_bwa_db} {args["r"]} |samtools view -bS -o {outbam}
-        echo alignment done.
-        """
+    alignDB_order = f"""
+    bwa mem -t {args["j"]} {my_db.full_db} {args["r"]} |samtools view -bS -o {outbam}
+    echo alignment done.
+    """
+    # else:
+    #     cds_bwa_db = my_db.full_cds_db
+    #     alignDB_order = f"""
+    #     bwa mem -t {args["j"]} {cds_bwa_db} {args["r"]} |samtools view -bS -o {outbam}
+    #     echo alignment done.
+    #     """
     # print (alignDB_order)
     os.system(alignDB_order)

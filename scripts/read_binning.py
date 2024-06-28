@@ -213,7 +213,8 @@ if __name__ == "__main__":
 
     my_db = My_db(args)
 
-    db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
+    # db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
+    db_folder = os.path.dirname(my_db.full_db)
     gene_list = get_folder_list(db_folder)
 
     
