@@ -26,8 +26,7 @@ do
     python3 ../scripts/main.py -n $sample -o $resultdir -j 15 -y pacbio -i IG_TR -r $outdir/$sample/${sample}.fastq.gz 
 
     #### evaluation
-    # python3 ../evaluation/assess_read_bin.py $outdir/$sample/${sample}.assign.txt $outdir/$sample/$sample.HLA.sep.fa $outdir/$sample/${sample}.fastq.gz 
-    # python3 ../evaluation/assess_typing.py -i IG_TR --true $outdir/$sample/$sample.HLA.hap.alleles.txt --infer $outdir/$sample/${sample}.HLA.type.result.txt 
+    # python3 ../evaluation/assess_typing.py -i IG_TR --true $outdir/$sample/$sample.IG_TR.hap.alleles.txt --infer $outdir/$sample/${sample}.HLA.type.result.txt 
     break
 
 done

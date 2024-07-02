@@ -2,7 +2,8 @@ sample=$1
 reads=$2
 outdir=$3
 db_dir=$4
-ref=$db_dir/IG_TR/merge.IG.TR.ref.fasta
+# ref=$db_dir/IG_TR/merge.IG.TR.ref.fasta
+ref=$db_dir/IG_TR/ig.tr.merge.hg38.fa
 threads=$5
 low_depth=$6
 
