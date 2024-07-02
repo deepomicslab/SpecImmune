@@ -119,6 +119,8 @@ def insert_allele_to_ref(interval_dict, allele_dict, ref_hap):
 	with open(hap2, "w") as f:
 		for genome in hap2_seq:
 			f.write(f">{genome}\n{hap2_seq[genome]}\n")
+	
+	os.system(f"cat {hap1} {hap2} > {hap}")
 
 if __name__ == "__main__":   
 	sample, outdir = sys.argv[1], sys.argv[2]
@@ -132,18 +134,22 @@ if __name__ == "__main__":
 
 	db_fasta = "../db/IG_TR/imgtrefseq.human.fasta"
 	ref_hap = "../db/IG_TR//ig.tr.merge.hg38.fa"
+	gene_file = "IG.TR.ref.hap.txt"
+
+
 	out_fa = f"{outdir}/{sample}.IG_TR.sep.fa"
 	out_allele = f"{outdir}/{sample}.IG_TR.hap.alleles.txt"
 
 	hap1 = f"{outdir}/{sample}.IG.TR.hap1.fa"
 	hap2 = f"{outdir}/{sample}.IG.TR.hap2.fa"
+	hap = f"{outdir}/{sample}.IG.TR.hap.fa"
 
 	gene_allele_dict, allele_seq_dict = load_allele(db_fasta)
 	allele_dict = choose_allele()
 	# print (allele_dict)
 	output()
 	# print (gene_list)
-	gene_file = "IG.TR.ref.hap.txt"
+	
 	interval_dict = get_gene_interval(gene_file)
 	# print (interval_dict)
 	insert_allele_to_ref(interval_dict, allele_dict, ref_hap)
