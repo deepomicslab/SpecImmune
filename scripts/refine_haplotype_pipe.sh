@@ -245,13 +245,13 @@ if [[ "$data_type" =~ ^(traditional|2D|Direct|SIRV)$ ]]; then
     avg_depth=$(samtools depth  $gene_work_dir/h0.bam | awk '{sum+=$3} END {print sum/NR}')
     echo "average depth: $avg_depth for $gene_work_dir/h0.bam"
     # assign int value of 0.5*avg_depth to set_dp
-    set_dp=$(awk -v avg=$avg_depth 'BEGIN {print int(0.1*avg)}')
+    set_dp=$(awk -v avg=$avg_depth 'BEGIN {print int(0.8*avg)}')
     python $mask_low_script -f False -c $gene_work_dir/h0.depth -o $gene_work_dir -w 1 -d $set_dp
     mv $gene_work_dir/low_depth.bed $gene_work_dir/h0.low_depth.bed
 
     avg_depth=$(samtools depth  $gene_work_dir/h1.bam | awk '{sum+=$3} END {print sum/NR}')
     echo "average depth: $avg_depth for $gene_work_dir/h1.bam"
-    set_dp=$(awk -v avg=$avg_depth 'BEGIN {print int(0.1*avg)}')
+    set_dp=$(awk -v avg=$avg_depth 'BEGIN {print int(0.8*avg)}')
     python $mask_low_script -f False -c $gene_work_dir/h1.depth -o $gene_work_dir -w 1 -d $set_dp
     mv $gene_work_dir/low_depth.bed $gene_work_dir/h1.low_depth.bed
     
