@@ -63,13 +63,13 @@ class Read_Type:
         # for splice alignment
         elif self.seq_tech in ["rna"]:
             if self.RNA_type == "traditional":
-                return " -ax splice:hq -uf "
+                return " -x splice:hq -uf "
             elif self.RNA_type == "2D":
-                return " -ax splice "
+                return " -x splice "
             elif self.RNA_type == "Direct":
-                return " -ax splice -uf -k14 "
+                return " -x splice -uf -k14 "
             elif self.RNA_type == "SIRV":
-                return " -ax splice --splice-flank=no "
+                return " -x splice --splice-flank=no "
             else:
                 raise ValueError("Invalid RNA type specified.")
             

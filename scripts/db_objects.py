@@ -17,6 +17,7 @@ class My_db():
             self.full_db = f"""{args["db"]}/HLA/HLA.full.fasta"""   # 15578 alleles
             self.lite_db = f"""{args["db"]}/HLA/HLA.lite.fasta"""   # 6172 alleles
             self.full_cds_db = f"""{args["db"]}/HLA_CDS/HLA.full.fasta"""
+            self.g_group_annotation = f"""{args["db"]}/HLA/hla_nom_g.txt"""
             self.subdir = "HLA"
             # self.subdir = "HLA_CDS" if args["seq_tech"] == "rna" else "HLA"
 

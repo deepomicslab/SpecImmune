@@ -487,7 +487,72 @@ class Fasta():
                 samtools index {parameter.outdir}/{gene}.allele2.bam
                 """
                 os.system(cmd)
-                
+
+    def get_g_dict(self, g_anno_file):
+        g_anno_dict = {}
+        with open(g_anno_file, 'r') as f:
+            for line in f:
+                if line.startswith("#"):
+                    continue
+                if "/" in line:
+                    items = line.strip().split(";")
+                    alleles = items[1].split("/")
+                    allele_g = items[-1]
+                    gene_name=items[0]
+                    for allele in alleles:
+                        g_anno_dict[f"{gene_name}{allele}"] = allele_g
+        return g_anno_dict
+
+
+    def get_type_from_bam(self, bam):
+        bam=pysam.AlignmentFile(bam, "rb")
+        types = []
+        for read in bam:
+            reference_name = bam.get_reference_name(read.reference_id)
+            types.append(reference_name)
+        return types
+    
+    def get_g_group(self, types, g_anno_dict):
+        g_groups = []
+        for t in types:
+            t_fmt=t.replace("HLA-", "")
+            if t_fmt in g_anno_dict and g_anno_dict[t_fmt] not in g_groups:
+                g_groups.append(g_anno_dict[t_fmt])
+        return g_groups
+
+    def annoRNA(self):
+        g_anno_file=my_db.g_group_annotation
+        g_anno_dict=self.get_g_dict(g_anno_file)
+        allele_dict={}
+        for gene in gene_list:
+            allele1_bam=f"{parameter.outdir}/{gene}.allele1.bam"
+            allele2_bam=f"{parameter.outdir}/{gene}.allele2.bam"
+            if os.path.exists(allele1_bam) and os.path.exists(allele2_bam):
+                allele1_types=self.get_type_from_bam(allele1_bam)
+                allele2_types=self.get_type_from_bam(allele2_bam)
+                allele_dict[gene] = [allele1_types, allele2_types]
+        # write to file
+        with open(f"{parameter.outdir}/hlala.like.rna.results.txt", 'w') as f:
+            f.write(f"# {my_db.version_info}\n")
+            f.write("Locus\tChromosome\tAllele\n")
+            for gene in gene_list:
+                if gene in allele_dict:
+                    allele1_types, allele2_types = allele_dict[gene]
+                    f.write(f"{gene}\t{1}\t{';'.join(allele1_types)}\n")
+                    f.write(f"{gene}\t{2}\t{';'.join(allele2_types)}\n")
+        # write g group to file
+        with open(f"{parameter.outdir}/hlala.like.rna.results.g.txt", 'w') as f:
+            f.write(f"# {my_db.version_info}\n")
+            f.write("Locus\tChromosome\tAllele\n")
+
+            for gene in gene_list:
+                if gene in allele_dict:
+                    allele1_types, allele2_types = allele_dict[gene]
+                    g_groups_1=self.get_g_group(allele1_types, g_anno_dict)
+                    g_groups_2=self.get_g_group(allele2_types, g_anno_dict)
+                    f.write(f"{gene}\t{1}\t{';'.join(g_groups_1)}\n")
+                    f.write(f"{gene}\t{2}\t{';'.join(g_groups_2)}\n")   
+
 
 
     def annotation(self):
@@ -508,6 +573,8 @@ class Fasta():
         elif args['i'] == "HLA" and args['seq_tech'] == 'rna':
             # remove N in seq and align haplotype to the reference by splicing
             self.splice_align_db()
+            self.annoRNA()
+
         elif args['i'] == "KIR":
             print(f"""perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {parameter.outdir} -p {parameter.population} -r tgs -d {args["db"]} -t {rna_tag} -g {args["g"]}""")
             print(f"""python3 {sys.path[0]}/refine_typing.py -n {parameter.sample} -o {parameter.outdir}  --db {args["db"]} -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}""")
