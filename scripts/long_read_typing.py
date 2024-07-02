@@ -364,11 +364,15 @@ class Fasta():
     def process_phase(self, gene, bam, depth_file, mask_bed, hla_ref, interval, set_dp, min_cov, args, parameter, index=None):
         sample = parameter.sample
         outdir = parameter.outdir
+        set_window = 10
+        if args['seq_tech'] == "rna":
+            set_window = 1
+
 
         suffix = f".{index}" if index is not None else ""
         call_phase_cmd = f"""
         samtools index {bam}
-        python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {outdir} -w 20 -d {int(set_dp)}
+        python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -o {outdir} -w {set_window} -d {int(set_dp)}
         cp {mask_bed} {outdir}/{gene}{suffix}.low_depth.bed
         longshot -F -c {min_cov} -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval} --bam {bam} --ref {hla_ref} --out {outdir}/{sample}.{gene}{suffix}.longshot.vcf
         bgzip -f {outdir}/{sample}.{gene}{suffix}.longshot.vcf
@@ -428,10 +432,19 @@ class Fasta():
                 print(f"Reads coverage is too low for {bam}, skip it")
                 return
             print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
-            set_dp = int(max(0.3 * avg_depth, 0)) if args['y'] != 'pacbio' or avg_depth >= 5 else 0
+            if args['y'] == "pacbio-hifi":
+                set_dp == 1
+            elif args['y'] != "pacbio-hifi":
+                set_dp = int(max(0.3 * avg_depth, 0)) if avg_depth >= 5 else 0
+            elif args['seq_tech'] == "rna" and args['RNA_type'] == "traditional":
+                set_dp = 1
+
+
+
+            # set_dp = int(max(0.3 * avg_depth, 0)) if args['y'] != 'pacbio-hifi' and avg_depth >= 5 else 0
             if args['y'] == "nanopore" and set_dp==0:
                 set_dp=1
-            min_cov = 2 if args['y'] == 'pacbio' else set_dp
+            min_cov = 2 if args['y'] == 'pacbio-hifi' else set_dp
             interval = f"{interval_dict[gene]}"
             self.process_gene(gene, hla_ref, interval, bam, depth_file, mask_bed, set_dp, min_cov, args, parameter, awk_script)
         else:
@@ -452,7 +465,15 @@ class Fasta():
                     print(f"Reads coverage is too low for {bam}, skip it")
                     continue
                 print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
-                set_dp = int(max(0.3 * avg_depth, 0)) if args['y'] != 'pacbio' or avg_depth >= 5 else 0
+                if args['y'] == "pacbio-hifi":
+                    set_dp == 1
+                elif args['y'] != "pacbio-hifi":
+                    set_dp = int(max(0.3 * avg_depth, 0)) if avg_depth >= 5 else 0
+                elif args['seq_tech'] == "rna" and args['RNA_type'] == "traditional":
+                    set_dp = 1
+                # set_dp = int(max(0.3 * avg_depth, 0)) if args['y'] != 'pacbio' or avg_depth >= 5 else 0
+                    
+                    
                 if args['y'] == "nanopore" and set_dp==0:
                     set_dp=1
                 min_cov = 2 if args['y'] == 'pacbio' else set_dp
