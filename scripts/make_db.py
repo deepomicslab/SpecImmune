@@ -237,6 +237,7 @@ def make_HLA_db():
     # URL to download the FASTA file
     HLA_fasta_url = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/hla_gen.fasta"
     release_version = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/release_version.txt"
+    g_group_annotation = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/wmda/hla_nom_g.txt"
 
     # Path to save the downloaded FASTA file within the output directory
     HLA_dir = os.path.join(args.outdir, "HLA")
@@ -247,10 +248,14 @@ def make_HLA_db():
     if not args.HLA_fa:
         local_fasta_filename = os.path.join(HLA_dir, "hla_gen.fasta")
         local_release_version = os.path.join(HLA_dir, "release_version.txt")
+        local_g_group_annotation = os.path.join(HLA_dir, "hla_nom_g.txt")
         download_file(HLA_fasta_url, local_fasta_filename)
         download_file(release_version, local_release_version)
+        download_file(g_group_annotation, local_g_group_annotation)
     else:
         local_fasta_filename = args.HLA_fa
+        download_file(release_version, local_release_version)
+        download_file(g_group_annotation, local_g_group_annotation)
     gene_list = []
     no_hla_tag=['MICA', 'MICB', 'TAP1', 'TAP2', 'HFE']
     for record in SeqIO.parse(local_fasta_filename, "fasta"):
@@ -273,6 +278,7 @@ def make_HLA_exon_db():
     # URL to download the FASTA file
     HLA_exon_fasta_url = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/hla_nuc.fasta"
     release_version = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/release_version.txt"
+    g_group_annotation = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/wmda/hla_nom_g.txt"
 
     # Path to save the downloaded FASTA file within the output directory
     HLA_exon_dir = os.path.join(args.outdir, "HLA_CDS")
@@ -283,10 +289,14 @@ def make_HLA_exon_db():
     if not args.HLA_exon_fa:
         local_fasta_filename = os.path.join(HLA_exon_dir, "hla_nuc.fasta")
         local_release_version = os.path.join(HLA_exon_dir, "release_version.txt")
+        local_g_group_annotation = os.path.join(HLA_exon_dir, "hla_nom_g.txt")
         download_file(HLA_exon_fasta_url, local_fasta_filename)
         download_file(release_version, local_release_version)
+        download_file(g_group_annotation, local_g_group_annotation)
     else:
         local_fasta_filename = args.HLA_exon_fa
+        download_file(release_version, local_release_version)
+        download_file(g_group_annotation, local_g_group_annotation)
     # remove duplicate contigs
     unique_fasta_filename = os.path.join(HLA_exon_dir, "hla_nuc_unique.fasta")
     remove_duplicate_contigs(local_fasta_filename, unique_fasta_filename)
