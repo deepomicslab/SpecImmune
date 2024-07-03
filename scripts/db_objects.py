@@ -9,9 +9,11 @@ class My_db():
     def __init__(self, args):
 
         self.gene_class = args["i"]
-        self.individual_ref_dir = f"""{args["o"]}/{args["n"]}/individual_ref"""
-        if not os.path.exists(self.individual_ref_dir):
-            os.makedirs(self.individual_ref_dir)
+        
+        if "o" in args and "n" in args:
+            self.individual_ref_dir = f"""{args["o"]}/{args["n"]}/individual_ref"""
+            if not os.path.exists(self.individual_ref_dir):
+                os.makedirs(self.individual_ref_dir)
 
         if self.gene_class == "HLA":
             self.full_db = f"""{args["db"]}/HLA/HLA.full.fasta"""   # 15578 alleles
@@ -36,6 +38,8 @@ class My_db():
             self.full_db = f"""{args["db"]}/IG_TR/IG.TR.merge.allele.fasta"""
             self.lite_db = self.full_db
             self.subdir = "IG_TR"
+            self.gene_region = f"""{args["db"]}/IG_TR/IG.TR.ref.hap.txt"""
+            self.gene_interval_dict = self.get_IG_TR_gene_interval()
         else:
             print ("wrong gene_class")
 
@@ -137,7 +141,22 @@ class My_db():
             self.gene_min_len[gene] = round(np.mean(gene_length_dict[gene]))
         # print (self.gene_min_len["MICA"])
 
+    def get_IG_TR_gene_interval(self):
+        gene_list = []
+        interval_dict = {}
+        with open(self.gene_region, "r") as f:
+            for line in f:
+                line = line.strip().split("\t")
+                gene_list.append(line[0])
+                if line[1] not in interval_dict:
+                    interval_dict[line[1]] = {}
+                interval_dict[line[1]][line[0]] = (int(line[2]), int(line[3]))
+        # print ("intervali_dict",interval_dict)
+        for genome in interval_dict:
+            # sort the gene on it by their start position
+            interval_dict[genome] = dict(sorted(interval_dict[genome].items(), key=lambda item: item[1][0]))
 
+        return interval_dict
 
 
 """
