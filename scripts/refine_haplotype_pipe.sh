@@ -13,6 +13,9 @@ scripts_dir=$(dirname $0)
 longphase=$scripts_dir/../bin/longphase
 data_type=$9
 
+# mask_low_script=$scripts_dir/mask_low_depth_region.py
+get_intron_script=$scripts_dir/get_intron.py
+
 
 # seq_type dict:
 # pacbio :pacbio
@@ -104,7 +107,7 @@ samtools index $fixed_bam
 
 
 
-echo "whatshap haplotag --ignore-read-groups -o $gene_work_dir/haplotagged.$hla.bam --reference $hla_ref $snv_vcf $fixed_bam --output-haplotag-list $gene_work_dir/hap.tsv"
+echo """whatshap haplotag --ignore-read-groups -o $gene_work_dir/haplotagged.$hla.bam --reference $hla_ref $snv_vcf $fixed_bam --output-haplotag-list $gene_work_dir/hap.tsv"""
 whatshap haplotag \
     --ignore-read-groups  \
     -o $gene_work_dir/haplotagged.$hla.bam \
@@ -113,8 +116,12 @@ whatshap haplotag \
     $fixed_bam \
     --output-haplotag-list $gene_work_dir/hap.tsv
 
-
-# whatshap split --output-h1 $outdir/h0.bam --output-h2 $gene_work_dir/h1.bam $gene_work_dir/haplotagged.bam $gene_work_dir/hap.tsv --output-untagged $gene_work_dir/untag.bam
+samtools index $gene_work_dir/haplotagged.$hla.bam
+whatshap split --output-h1 $gene_work_dir/h0.bam --output-h2 $gene_work_dir/h1.bam $gene_work_dir/haplotagged.$hla.bam $gene_work_dir/hap.tsv
+samtools index $gene_work_dir/h0.bam
+samtools index $gene_work_dir/h1.bam
+samtools depth -aa $gene_work_dir/h0.bam > $gene_work_dir/h0.depth
+samtools depth -aa $gene_work_dir/h1.bam > $gene_work_dir/h1.depth
 # whatshap split --output-h1 $outdir/h0_untag.bam --output-h2 $gene_work_dir/h1_untag.bam $gene_work_dir/haplotagged.bam $gene_work_dir/hap.untag.tsv --add-untagged
 
 # samtools index $gene_work_dir/h0.bam
@@ -233,7 +240,42 @@ fi
 #         1 
 # fi
 
-echo "gene : $hla"
-echo "file : $sorted_snv_sv_merged"
-samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
-samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
+# if seq_type == traditional or 2D or Direct or SIRV, generate low depth file for hap0 and hap1
+if [[ "$data_type" =~ ^(traditional|2D|Direct|SIRV)$ ]]; then
+
+    # assemble hap0 and hap1
+    stringtie $gene_work_dir/h0.bam -o $gene_work_dir/h0.gtf -c 10
+    stringtie $gene_work_dir/h1.bam -o $gene_work_dir/h1.gtf -c 10
+
+    python $get_intron_script $gene_work_dir/h0.gtf $hla_ref $gene_work_dir/h0.intron.bed
+    python $get_intron_script $gene_work_dir/h1.gtf $hla_ref $gene_work_dir/h1.intron.bed
+
+    # echo "masking low depth region for $sample !"
+    # avg_depth=$(samtools depth  $gene_work_dir/h0.bam | awk '{sum+=$3} END {print sum/NR}')
+    # echo "average depth: $avg_depth for $gene_work_dir/h0.bam"
+    # # assign int value of 0.5*avg_depth to set_dp
+    # set_dp=$(awk -v avg=$avg_depth 'BEGIN {print int(0.8*avg)}')
+    # python $mask_low_script -f False -c $gene_work_dir/h0.depth -o $gene_work_dir -w 1 -d $set_dp
+    # mv $gene_work_dir/low_depth.bed $gene_work_dir/h0.low_depth.bed
+
+    # avg_depth=$(samtools depth  $gene_work_dir/h1.bam | awk '{sum+=$3} END {print sum/NR}')
+    # echo "average depth: $avg_depth for $gene_work_dir/h1.bam"
+    # set_dp=$(awk -v avg=$avg_depth 'BEGIN {print int(0.8*avg)}')
+    # python $mask_low_script -f False -c $gene_work_dir/h1.depth -o $gene_work_dir -w 1 -d $set_dp
+    # mv $gene_work_dir/low_depth.bed $gene_work_dir/h1.low_depth.bed
+    
+
+    # samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $gene_work_dir/h0.low_depth.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
+    # samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $gene_work_dir/h1.low_depth.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
+
+    samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $gene_work_dir/h0.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
+    samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $gene_work_dir/h1.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
+else
+    echo "gene : $hla"
+    echo "file : $sorted_snv_sv_merged"
+    samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
+    samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
+fi
+
+
+
