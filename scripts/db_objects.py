@@ -39,7 +39,7 @@ class My_db():
             self.lite_db = self.full_db
             self.subdir = "IG_TR"
             self.gene_region = f"""{args["db"]}/IG_TR/IG.TR.ref.hap.txt"""
-            self.gene_interval_dict = self.get_IG_TR_gene_interval()
+            self.gene_interval_dict, self.order_gene_list = self.get_IG_TR_gene_interval()
         else:
             print ("wrong gene_class")
 
@@ -152,11 +152,14 @@ class My_db():
                     interval_dict[line[1]] = {}
                 interval_dict[line[1]][line[0]] = (int(line[2]), int(line[3]))
         # print ("intervali_dict",interval_dict)
+        order_gene_list = []
         for genome in interval_dict:
             # sort the gene on it by their start position
             interval_dict[genome] = dict(sorted(interval_dict[genome].items(), key=lambda item: item[1][0]))
+            for gene in interval_dict[genome]:
+                order_gene_list.append(gene)
 
-        return interval_dict
+        return interval_dict, order_gene_list
 
 
 """

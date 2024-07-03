@@ -42,7 +42,7 @@ def load_allele(db_fasta):
 	for record in SeqIO.parse(db_fasta, "fasta"):
 		gene = record.id.split("*")[0]
 		allele = record.id
-		sequence = str(record.seq)
+		sequence = str(record.seq).upper()
 		gene_allele_dict[gene].append(allele)
 		allele_seq_dict[allele] = sequence
 	return gene_allele_dict, allele_seq_dict
@@ -51,9 +51,10 @@ def load_allele(db_fasta):
 # for each gene in gene_list, randomly select two alleles from gene_allele_dict, and save them in a new dict
 def choose_allele():
 	allele_dict = {}
-	for gene in gene_list:
+	# for gene in gene_list:
+	for gene in gene_allele_dict:
 		alleles = gene_allele_dict[gene]
-		print (gene, alleles)
+		# print (gene, alleles)
 		if len(alleles) == 0:
 			allele_dict[gene] = []
 		elif len(alleles) == 1:
@@ -87,23 +88,37 @@ def insert_allele_to_ref(interval_dict, allele_dict, ref_hap):
 	ref_seq = {}
 	with open(ref_hap, "r") as f:
 		for record in SeqIO.parse(f, "fasta"):
-			ref_seq[record.id] = str(record.seq)
+			ref_seq[record.id] = str(record.seq).upper()
 
 	hap1_seq = {}
 	hap2_seq = {}
 		
-
+	f = open(out_allele, "w")
+	f.write("Gene\tHap1\tHap2\n")
 	for genome in interval_dict:
+		if genome != "chr14_igh":
+			continue
 		gap_start = 0
 		hap1_seq[genome] = ''
 		hap2_seq[genome] = ''
 		for gene in interval_dict[genome]:
-			start, end = interval_dict[genome][gene]
 			if gene not in allele_dict:
 				print (f"{gene} has no alleles")
+				# break
 				continue
+			# if gene != "IGHV5-51":
+			# 	continue
+			continue
+			start, end = interval_dict[genome][gene]
+
 			allele1, allele2 = allele_dict[gene]
-			
+			if len(allele_seq_dict[allele1]) == 0 or len(allele_seq_dict[allele2]) == 0:
+				print (f"{allele1} or {allele2} has no base")
+				# break
+				continue
+			f.write(f"{gene}\t{allele1}\t{allele2}\n")
+			print (allele_seq_dict[allele1])
+
 			hap1_seq[genome] += ref_seq[genome][gap_start:start] + allele_seq_dict[allele1]
 			hap2_seq[genome] += ref_seq[genome][gap_start:start] + allele_seq_dict[allele2]
 
@@ -111,7 +126,7 @@ def insert_allele_to_ref(interval_dict, allele_dict, ref_hap):
 
 		hap1_seq[genome] += ref_seq[genome][gap_start:]
 		hap2_seq[genome] += ref_seq[genome][gap_start:]
-
+	f.close()
 	# output hap1_seq and hap2_seq to hap1 and hap2
 	with open(hap1, "w") as f:
 		for genome in hap1_seq:
@@ -147,7 +162,7 @@ if __name__ == "__main__":
 	gene_allele_dict, allele_seq_dict = load_allele(db_fasta)
 	allele_dict = choose_allele()
 	# print (allele_dict)
-	output()
+	# output()
 	# print (gene_list)
 	
 	interval_dict = get_gene_interval(gene_file)

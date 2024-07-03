@@ -15,7 +15,8 @@ def extract_gene_distance(gtf_file):
             if line.startswith("#"):
                 continue
             line = line.strip().split("\t")
-            if line[2] == "transcript":
+            # if line[2] == "transcript":
+            if line[2] == "gene":
                 chr = line[0]
                 start = int(line[3])
                 end = int(line[4])
@@ -33,8 +34,12 @@ def cal_distance(gene_list, gene_dict):
             gene1 = gene_list[i]
             gene2 = gene_list[j]
 
-            if gene1 not in gene_dict or gene2 not in gene_dict:
-                print (gene1, gene2, "not in the gene dict")
+            if gene1 not in gene_dict:
+                
+                print (gene1, "not in the gene dict")
+                distance = float("inf")
+            elif gene2 not in gene_dict:
+                print (gene2, "not in the gene dict")
                 distance = float("inf")
             else:
                 chr1, start1, end1 = gene_dict[gene1]
@@ -50,10 +55,14 @@ def cal_distance(gene_list, gene_dict):
 
 
 #### https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.ncbiRefSeq.gtf.gz
-gtf_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38.ncbiRefSeq.gtf"
+# gtf_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38.ncbiRefSeq.gtf"
+
+### https://www.gencodegenes.org/human/
+gtf_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/gencode.v46.annotation.gtf"
 
 args = {}
 # args["i"] = "HLA"
+# args["i"] = "CYP"
 args["i"] = "KIR"
 gene_list, interval_dict =  get_focus_gene(args)
 gene_dict = extract_gene_distance(gtf_file)
@@ -62,4 +71,11 @@ distance_matrix = cal_distance(gene_list, gene_dict)
 
 with open("../gene_dist/" + args["i"] + '.distance_matrix.pkl', 'wb') as f:
     pickle.dump(distance_matrix, f)
-print (distance_matrix)
+# print (distance_matrix)
+with open("../gene_dist/" + args["i"] + '.gene.bed', 'w') as f:
+    for gene in gene_list:
+        if gene in gene_dict:
+            chr, start, end = gene_dict[gene]
+            print(gene, chr, start, end, file = f)
+        else:
+            print(gene, "-", "-", "-", file=f)

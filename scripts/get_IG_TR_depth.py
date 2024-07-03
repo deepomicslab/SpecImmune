@@ -11,6 +11,7 @@ import sys
 from collections import defaultdict
 
 from db_objects import My_db
+from determine_gene import get_focus_gene
 
 def cal_gene_depth(depth_file, gene_interval_dict):
     gene_depth_dict = {}
@@ -78,7 +79,7 @@ def assign_phase_block(phase_blocks, gene_interval_dict):
     # print (gene_phase_dict)
     return gene_phase_dict
 
-def load_raw_result(raw_result, gene_mean_depth_dict, gene_phase_dict, new_result):
+def load_raw_result(raw_result, gene_mean_depth_dict, gene_phase_dict, new_result, min_depth,focus_gene_list):
     """
     raw result is like:
     sample  gene    allele  score   len     start   end     chr     hap
@@ -105,7 +106,10 @@ def load_raw_result(raw_result, gene_mean_depth_dict, gene_phase_dict, new_resul
         header = ["sample", "gene", "depth", "phase_set", "allele_1", "score_1", "length_1", "hap_1", "chrom_1", "start_1", "end_1",\
                     "allele_2", "score_2", "length_2", "hap_2", "chrom_2", "start_2", "end_2"]
         print (*header, sep="\t", file=f)
-        for gene in store_raw:
+        # for gene in store_raw:
+        for gene in my_db.order_gene_list:
+            if gene not in focus_gene_list:
+                continue
 
             if gene in gene_mean_depth_dict:
                 depth = gene_mean_depth_dict[gene]
@@ -124,6 +128,10 @@ def load_raw_result(raw_result, gene_mean_depth_dict, gene_phase_dict, new_resul
             else:
                 allele_2, score_2, length_2, start_2, end_2, chrom_2, hap_2 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
             
+            if depth == "NA" or depth < min_depth:
+                allele_1, score_1, length_1, hap_1, chrom_1, start_1, end_1 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
+                allele_2, score_2, length_2, hap_2, chrom_2, start_2, end_2 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
+
             print (sample, gene, depth, phase, allele_1, score_1, length_1, hap_1, chrom_1, start_1, end_1,\
                     allele_2, score_2, length_2, hap_2, chrom_2, start_2, end_2, sep="\t", file=f)
 
@@ -145,6 +153,7 @@ if __name__ == "__main__":
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
     required.add_argument("-i", type=str, help="IG_TR",metavar="\b", default="IG_TR")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
+    optional.add_argument("-k", type=int, help="The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking", metavar="\b", default=5)
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
 
@@ -153,6 +162,12 @@ if __name__ == "__main__":
         sys.exit(0)
     
     my_db = My_db(args)
+    focus_gene_list, xx =  get_focus_gene("IG_TR")
+
+    for chrom in my_db.gene_interval_dict:
+        for gene in my_db.gene_interval_dict[chrom]:
+            print (gene, chrom, my_db.gene_interval_dict[chrom][gene])
+
     depth_file = args["o"] + "/" + args["n"] + "/" + args["n"] + ".depth.txt"
     phased_vcf = args["o"] + "/" + args["n"] + "/" + args["n"] + ".phase.norm.vcf.gz"
     raw_result = args["o"] + "/" + args["n"] + "/" + args["n"] + ".IG.TR.allele.txt"
@@ -161,9 +176,10 @@ if __name__ == "__main__":
     gene_mean_depth_dict, gene_pos_dict = cal_gene_depth(depth_file, my_db.gene_interval_dict)
     # get_phased_block(args["phased_vcf"])
 
+
     phase_blocks = parse_phase_blocks(phased_vcf)
     
     # for phase_set, interval in phase_blocks.items():
     #     print(f"Phase Set {phase_set}: Chromosome {interval['chrom']}, Start {interval['start']}, End {interval['end']}")
     gene_phase_dict = assign_phase_block(phase_blocks, gene_pos_dict)
-    load_raw_result(raw_result, gene_mean_depth_dict, gene_phase_dict, new_result)
+    load_raw_result(raw_result, gene_mean_depth_dict, gene_phase_dict, new_result, args["k"], focus_gene_list)

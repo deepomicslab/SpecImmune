@@ -82,6 +82,7 @@ def main(args):
         command = f"""
         mkdir {args["o"]}/{args["n"]}/tmp
         bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {args["db"]} {args["j"]} {args["k"]}
+        python {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]}
         """
         os.system(command)
 

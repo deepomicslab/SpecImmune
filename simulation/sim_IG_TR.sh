@@ -1,4 +1,4 @@
-set -e 
+# set -e 
 ## use pbsim2
 
 
@@ -6,7 +6,7 @@ outdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads/
 resultdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results/
 
 
-for i in {2..5}
+for i in {4..5}
 do
     sample=IG_TR_dp50_acc98_$i
 
@@ -14,7 +14,8 @@ do
     # python simu.data.haplotype.VDJ.py $sample $outdir/$sample
 
     # pbsim --prefix $outdir/$sample/$sample --depth 50 --hmm_model pbsim_model/P4C2.model --accuracy-mean 0.99 $outdir/$sample/$sample.IG.TR.hap.fa
-    
+    # pbsim --prefix $outdir/$sample/$sample --depth 20 --hmm_model pbsim_model/P4C2.model --accuracy-mean 0.99 /mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads/IG_TR_dp50_acc98_2/chr14_igh.fa
+
     # cat $outdir/$sample/${sample}_*fastq>$outdir/$sample/${sample}.fastq
     # rm $outdir/$sample/${sample}_*fastq
     # rm $outdir/$sample/${sample}_*.ref
