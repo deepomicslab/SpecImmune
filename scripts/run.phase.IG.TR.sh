@@ -40,4 +40,4 @@ tabix -f $outdir/$sample.phase.norm.vcf.gz
 bcftools consensus  -f $ref -H 1 $outdir/$sample.phase.norm.vcf.gz >$outdir/$sample.hap1.raw.fasta
 bcftools consensus  -f $ref -H 2 $outdir/$sample.phase.norm.vcf.gz >$outdir/$sample.hap2.raw.fasta
 
-perl $dir/anno.IG.TR.pl $sample $outdir/$sample.hap1.raw.fasta $outdir/$sample.hap2.raw.fasta $outdir $db
+perl $dir/anno.IG.TR.py $sample $outdir/$sample.hap1.raw.fasta $outdir/$sample.hap2.raw.fasta $outdir $db $threads
