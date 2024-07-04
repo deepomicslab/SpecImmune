@@ -1,7 +1,8 @@
 
 use FindBin qw($Bin);
 my ($snpfile,$svfile,$outfile) = @ARGV;
-my @chrs = ("chr7_trb","chr9_trb","chr14_tra","chr7_trg","chr7_alt_trb","chr14_igh","chr15_igh","chr16_igh","chr2_igk","chr22_igl");
+# my @chrs = ("chr7_trb","chr9_trb","chr14_tra","chr7_trg","chr7_alt_trb","chr14_igh","chr15_igh","chr16_igh","chr2_igk","chr22_igl");
+my @chrs = ("chr1","chr2","chr7","chr14","chr22");
 my (%hash,%hash2);
 open SV, "$svfile" or die "$!\n";
 while(<SV>){

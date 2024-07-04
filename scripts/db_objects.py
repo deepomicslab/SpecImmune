@@ -1,6 +1,7 @@
 import os
 import re
 import numpy as np
+import sys
 
 
 
@@ -38,8 +39,23 @@ class My_db():
             self.full_db = f"""{args["db"]}/IG_TR/IG.TR.merge.allele.fasta"""
             self.lite_db = self.full_db
             self.subdir = "IG_TR"
-            self.gene_region = f"""{args["db"]}/IG_TR/IG.TR.ref.hap.txt"""
+            # self.gene_region = f"""{args["db"]}/IG_TR/IG.TR.ref.hap.txt"""
+            self.gene_region = f"""{sys.path[0]}/../gene_dist/IG_TR.gene.bed"""
             self.gene_interval_dict, self.order_gene_list = self.get_IG_TR_gene_interval()
+            if "hg38" in args:
+                self.hg38 = args["hg38"]
+                # check if hg38 exists, else exit
+                if not os.path.exists(self.hg38):
+                    print (f"{self.hg38} does not exist")
+                    sys.exit(1)
+                # check if hg38 is index by samtools and bwa, else index it
+                if not os.path.exists(f"{self.hg38}.fai"):
+                    os.system(f"samtools faidx {self.hg38}")
+                if not os.path.exists(f"{self.hg38}.bwt"):
+                    os.system(f"bwa index {self.hg38}")
+            else:
+                print ("hg38 not provided")
+                sys.exit(1)
         else:
             print ("wrong gene_class")
 
@@ -146,7 +162,7 @@ class My_db():
         interval_dict = {}
         with open(self.gene_region, "r") as f:
             for line in f:
-                line = line.strip().split("\t")
+                line = line.strip().split()
                 gene_list.append(line[0])
                 if line[1] not in interval_dict:
                     interval_dict[line[1]] = {}

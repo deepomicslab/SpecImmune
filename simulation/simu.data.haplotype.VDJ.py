@@ -20,8 +20,9 @@ def get_gene_interval(gene_file):
 	interval_dict = {}
 	with open(gene_file, "r") as f:
 		for line in f:
-			line = line.strip().split("\t")
+			line = line.strip().split()
 			gene_list.append(line[0])
+			# print (line)
 			if line[1] not in interval_dict:
 				interval_dict[line[1]] = {}
 			interval_dict[line[1]][line[0]] = (int(line[2]), int(line[3]))
@@ -89,14 +90,14 @@ def insert_allele_to_ref(interval_dict, allele_dict, ref_hap):
 	with open(ref_hap, "r") as f:
 		for record in SeqIO.parse(f, "fasta"):
 			ref_seq[record.id] = str(record.seq).upper()
-
+	# focus_chr_segments = {"chr14":[21621838, 106875071]}
 	hap1_seq = {}
 	hap2_seq = {}
 		
 	f = open(out_allele, "w")
 	f.write("Gene\tHap1\tHap2\n")
 	for genome in interval_dict:
-		if genome != "chr14_igh":
+		if genome != "chr14":
 			continue
 		gap_start = 0
 		hap1_seq[genome] = ''
@@ -106,9 +107,9 @@ def insert_allele_to_ref(interval_dict, allele_dict, ref_hap):
 				print (f"{gene} has no alleles")
 				# break
 				continue
-			# if gene != "IGHV5-51":
+			# if gene != "TRDC":
 			# 	continue
-			continue
+			# continue
 			start, end = interval_dict[genome][gene]
 
 			allele1, allele2 = allele_dict[gene]
@@ -117,7 +118,7 @@ def insert_allele_to_ref(interval_dict, allele_dict, ref_hap):
 				# break
 				continue
 			f.write(f"{gene}\t{allele1}\t{allele2}\n")
-			print (allele_seq_dict[allele1])
+			print (gene, genome, start, end, len(allele_seq_dict[allele1]), len(allele_seq_dict[allele2]), gap_start, start, allele1)
 
 			hap1_seq[genome] += ref_seq[genome][gap_start:start] + allele_seq_dict[allele1]
 			hap2_seq[genome] += ref_seq[genome][gap_start:start] + allele_seq_dict[allele2]
@@ -127,6 +128,10 @@ def insert_allele_to_ref(interval_dict, allele_dict, ref_hap):
 		hap1_seq[genome] += ref_seq[genome][gap_start:]
 		hap2_seq[genome] += ref_seq[genome][gap_start:]
 	f.close()
+	# hap1_seq["chr14"] = hap1_seq["chr14"][22450000:22480000]
+	# hap2_seq["chr14"] = hap2_seq["chr14"][22450000:22480000]
+	hap1_seq["chr14"] = hap1_seq["chr14"][21621838:22480000]
+	hap2_seq["chr14"] = hap2_seq["chr14"][21621838:22480000]
 	# output hap1_seq and hap2_seq to hap1 and hap2
 	with open(hap1, "w") as f:
 		for genome in hap1_seq:
@@ -148,8 +153,9 @@ if __name__ == "__main__":
 	gene_list, xx =  get_focus_gene("IG_TR")
 
 	db_fasta = "../db/IG_TR/imgtrefseq.human.fasta"
-	ref_hap = "../db/IG_TR//ig.tr.merge.hg38.fa"
-	gene_file = "IG.TR.ref.hap.txt"
+	# ref_hap = "../db/IG_TR//ig.tr.merge.hg38.fa"
+	ref_hap = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/chr14.fa"
+	gene_file = "../gene_dist/IG_TR.gene.bed"
 
 
 	out_fa = f"{outdir}/{sample}.IG_TR.sep.fa"

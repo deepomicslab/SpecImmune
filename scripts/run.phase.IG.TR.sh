@@ -1,16 +1,19 @@
 sample=$1
 reads=$2
 outdir=$3
-db_dir=$4
+db=$4
 # ref=$db_dir/IG_TR/merge.IG.TR.ref.fasta
-ref=$db_dir/IG_TR/ig.tr.merge.hg38.fa
+# ref=$db_dir/IG_TR/ig.tr.merge.hg38.fa
+# ref=/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/chr14.fa
 threads=$5
 low_depth=$6
+ref=$7
+
 
 
 dir=$(cd `dirname $0`; pwd)
 
-# minimap2 -t $threads -R "@RG\tID:$sample\tSM:$sample" -k 19 -w 19 -g 10k -A 1 -B 4 -O 6,26 -E 2,1 -s 200 -a $ref $reads  | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
+###### minimap2 -t $threads -R "@RG\tID:$sample\tSM:$sample" -k 19 -w 19 -g 10k -A 1 -B 4 -O 6,26 -E 2,1 -s 200 -a $ref $reads  | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
 bwa mem -t $threads -R "@RG\tID:$sample\tSM:$sample" $ref $reads | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
 
 samtools index $outdir/$sample.bam
@@ -37,4 +40,4 @@ tabix -f $outdir/$sample.phase.norm.vcf.gz
 bcftools consensus  -f $ref -H 1 $outdir/$sample.phase.norm.vcf.gz >$outdir/$sample.hap1.raw.fasta
 bcftools consensus  -f $ref -H 2 $outdir/$sample.phase.norm.vcf.gz >$outdir/$sample.hap2.raw.fasta
 
-perl $dir/anno.IG.TR.pl $sample $outdir/$sample.hap1.raw.fasta $outdir/$sample.hap2.raw.fasta $outdir $db_dir
+perl $dir/anno.IG.TR.pl $sample $outdir/$sample.hap1.raw.fasta $outdir/$sample.hap2.raw.fasta $outdir $db

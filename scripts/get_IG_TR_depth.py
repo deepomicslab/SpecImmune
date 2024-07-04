@@ -35,7 +35,30 @@ def cal_gene_depth(depth_file, gene_interval_dict):
     gene_mean_depth_dict = {}
     for gene in gene_depth_dict:
         gene_mean_depth_dict[gene] = round(np.mean(gene_depth_dict[gene]),1)
-        print (gene, gene_mean_depth_dict[gene], gene_pos_dict[gene])
+        # print (gene, gene_mean_depth_dict[gene], gene_pos_dict[gene])
+
+    return gene_mean_depth_dict, gene_pos_dict
+
+def fast_cal_gene_depth(depth_file, gene_interval_dict):
+    gene_pos_dict = {}
+    store_all_depth = defaultdict(list)
+    with open(depth_file, "r") as f:
+        for line in f:
+            line = line.strip().split("\t")
+            chrom = line[0]
+            pos = int(line[1])
+            depth = int(line[2])
+            store_all_depth[chrom].append(depth)
+
+    gene_mean_depth_dict = {}
+    for chrom in store_all_depth:
+        for gene in gene_interval_dict[chrom]:
+            start = gene_interval_dict[chrom][gene][0]
+            end = gene_interval_dict[chrom][gene][1]
+            gene_pos_dict[gene] = [chrom] + list(gene_interval_dict[chrom][gene])
+
+            gene_mean_depth_dict[gene] = round(np.mean(store_all_depth[chrom][start-1:end]),1)
+
 
     return gene_mean_depth_dict, gene_pos_dict
 
@@ -110,7 +133,7 @@ def load_raw_result(raw_result, gene_mean_depth_dict, gene_phase_dict, new_resul
         for gene in my_db.order_gene_list:
             if gene not in focus_gene_list:
                 continue
-
+            raw_has_content = True
             if gene in gene_mean_depth_dict:
                 depth = gene_mean_depth_dict[gene]
             else:
@@ -122,18 +145,20 @@ def load_raw_result(raw_result, gene_mean_depth_dict, gene_phase_dict, new_resul
             if "hap1" in store_raw[gene]:
                 sample, gene, allele_1, score_1, length_1, start_1, end_1, chrom_1, hap_1 = store_raw[gene]["hap1"]
             else:
+                raw_has_content = False
                 allele_1, score_1, length_1, start_1, end_1, chrom_1, hap_1 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
             if "hap2" in store_raw[gene]:
                 sample, gene, allele_2, score_2, length_2, start_2, end_2, chrom_2, hap_2 = store_raw[gene]["hap2"]
             else:
+                raw_has_content = False
                 allele_2, score_2, length_2, start_2, end_2, chrom_2, hap_2 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
             
             if depth == "NA" or depth < min_depth:
                 allele_1, score_1, length_1, hap_1, chrom_1, start_1, end_1 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
                 allele_2, score_2, length_2, hap_2, chrom_2, start_2, end_2 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
-
-            print (sample, gene, depth, phase, allele_1, score_1, length_1, hap_1, chrom_1, start_1, end_1,\
-                    allele_2, score_2, length_2, hap_2, chrom_2, start_2, end_2, sep="\t", file=f)
+            if raw_has_content:
+                print (sample, gene, depth, phase, allele_1, score_1, length_1, hap_1, chrom_1, start_1, end_1,\
+                        allele_2, score_2, length_2, hap_2, chrom_2, start_2, end_2, sep="\t", file=f)
 
             # print (sample, gene, depth, phase, allele_1, score_1, length_1, hap_1, chrom_1, start_1, end_1,\
             #         allele_2, score_2, length_2, hap_2, chrom_2, start_2, end_2, sep="\t")
@@ -153,6 +178,7 @@ if __name__ == "__main__":
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
     required.add_argument("-i", type=str, help="IG_TR",metavar="\b", default="IG_TR")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
+    optional.add_argument("--hg38", type=str, help="hg38 fasta file, used by IG_TR typing.", metavar="\b")
     optional.add_argument("-k", type=int, help="The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking", metavar="\b", default=5)
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
@@ -164,16 +190,16 @@ if __name__ == "__main__":
     my_db = My_db(args)
     focus_gene_list, xx =  get_focus_gene("IG_TR")
 
-    for chrom in my_db.gene_interval_dict:
-        for gene in my_db.gene_interval_dict[chrom]:
-            print (gene, chrom, my_db.gene_interval_dict[chrom][gene])
+    # for chrom in my_db.gene_interval_dict:
+    #     for gene in my_db.gene_interval_dict[chrom]:
+    #         print (gene, chrom, my_db.gene_interval_dict[chrom][gene])
 
     depth_file = args["o"] + "/" + args["n"] + "/" + args["n"] + ".depth.txt"
     phased_vcf = args["o"] + "/" + args["n"] + "/" + args["n"] + ".phase.norm.vcf.gz"
     raw_result = args["o"] + "/" + args["n"] + "/" + args["n"] + ".IG.TR.allele.txt"
     new_result = args["o"] + "/" + args["n"] + "/" + args["n"] + ".IG_TR_typing_result.txt"
     # print (my_db.gene_interval_dict)
-    gene_mean_depth_dict, gene_pos_dict = cal_gene_depth(depth_file, my_db.gene_interval_dict)
+    gene_mean_depth_dict, gene_pos_dict = fast_cal_gene_depth(depth_file, my_db.gene_interval_dict)
     # get_phased_block(args["phased_vcf"])
 
 

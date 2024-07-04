@@ -1,9 +1,12 @@
 #!/usr/bin/perl -w
-my ($sample,$hap1,$hap2,$outdir,$db_dir) = @ARGV;
-my $db ="$db_dir/IG_TR/IG.TR.merge.allele.fasta";
+my ($sample,$hap1,$hap2,$outdir,$db) = @ARGV;
+# my $db ="$db_dir/IG_TR/IG.TR.merge.allele.fasta";
 print $db;
-my @chrs = ("chr14_igh", "chr15_igh", "chr16_igh", "chr2_igk", "chr22_igl",  "chr7_alt_trb", "chr7_trb", "chr9_trb", "chr14_tra", "chr7_trg");
-my @chr7_alt_trbs = ("TRBV5-3", "TRBV5-7", "TRBV5-8", "TRBV6-4", "TRBV6-8", "TRBV6-9", "TRBV7-3", "TRBV7-7", "TRBV7-8", "TRBV7-9", "TRBV9");
+# my @chrs = ("chr14_igh", "chr15_igh", "chr16_igh", "chr2_igk", "chr22_igl",  "chr7_alt_trb", "chr7_trb", "chr9_trb", "chr14_tra", "chr7_trg");
+# my @chr7_alt_trbs = ("TRBV5-3", "TRBV5-7", "TRBV5-8", "TRBV6-4", "TRBV6-8", "TRBV6-9", "TRBV7-3", "TRBV7-7", "TRBV7-8", "TRBV7-9", "TRBV9");
+# my @chrs = ("chr14");
+my @chrs = ("chr1","chr2","chr7","chr14","chr22");
+my @chr7_alt_trbs = ();
 my %hasht;
 foreach my $gg(@chr7_alt_trbs){
      $hasht{$gg} = $gg;
