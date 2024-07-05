@@ -36,7 +36,8 @@ class My_db():
             self.subdir = "CYP"
         
         elif self.gene_class == "IG_TR":
-            self.full_db = f"""{args["db"]}/IG_TR/IG.TR.merge.allele.fasta"""
+            self.full_db = f"""{args["db"]}/IG_TR/IG_TR.fasta"""
+            # self.full_db = f"""{args["db"]}/IG_TR/IG.TR.merge.allele.fasta"""
             self.lite_db = self.full_db
             self.subdir = "IG_TR"
             # self.gene_region = f"""{args["db"]}/IG_TR/IG.TR.ref.hap.txt"""

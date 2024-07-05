@@ -382,17 +382,79 @@ def make_CYP_db():
     # Parse the FASTA file and save sequences by gene
     create_CYP_directories_and_save_sequences(local_fasta_filename, CYP_dir, gene_list)
 
+def make_IG_TR_db():
+    IG_TR_dir = os.path.join(args.outdir, "IG_TR")
+    local_all_fasta_filename = os.path.join(IG_TR_dir, f"IG_TR.fasta")
+    gen_IG_TR_dir = os.path.join(IG_TR_dir, "Genes")
+    print(IG_TR_dir)
+    if not os.path.exists(IG_TR_dir):
+        os.makedirs(IG_TR_dir)
+    if not os.path.exists(gen_IG_TR_dir):
+        os.makedirs(gen_IG_TR_dir)
+
+    IG_Genes = ["IGHD", "IGHJ", "IGHV", "IGKJ", "IGKV", "IGLJ", "IGLV"]
+    for gene in IG_Genes:
+        url = f"https://www.imgt.org/download/V-QUEST/IMGT_V-QUEST_reference_directory/Homo_sapiens/IG/{gene}.fasta"
+        local_fasta_filename = os.path.join(gen_IG_TR_dir, f"{gene}.fasta")
+        download_file(url, local_fasta_filename)
+
+    TR_genes = ["TRAJ", "TRAV", "TRBD","TRBJ","TRBV","TRDD","TRDJ","TRDV","TRGJ","TRGV"]
+    for gene in TR_genes:
+        url = f"https://www.imgt.org/download/V-QUEST/IMGT_V-QUEST_reference_directory/Homo_sapiens/TR/{gene}.fasta"
+        local_fasta_filename = os.path.join(gen_IG_TR_dir, f"{gene}.fasta")
+        download_file(url, local_fasta_filename)
+    
+    # ## cat all genes to a single fasta
+    os.system(f"cat {gen_IG_TR_dir}/*fasta >{local_all_fasta_filename}")
+
+
+    remove_duplicate_contigs(local_all_fasta_filename, local_all_fasta_filename)
+    my_dict = SeqIO.to_dict(SeqIO.parse(local_all_fasta_filename, "fasta"))
+    # Rename each record
+    for record in my_dict.values():
+        new_name = "new_name_for_" + record.id  # Modify this line to generate the new name as needed
+        record.description = record.id
+        record.id = str(record.id).split("|")[1]
+        # Remove the symbol '.' in the sequence
+
+        record.seq = record.seq.replace('.', '')
+
+        
+    with open(local_all_fasta_filename, 'w') as f:
+        SeqIO.write(my_dict.values(), f, "fasta")
+
+    # Build the index for the merged FASTA file
+    cmd = f"""
+    samtools faidx "{local_all_fasta_filename}"
+    makeblastdb -in "{local_all_fasta_filename}" -dbtype nucl -parse_seqids -out "{local_all_fasta_filename}"
+    """
+    # print(cmd, flush=True)
+    os.system(cmd)
+
+
+
 
 def main():
-    # make_HLA_db()
-    make_HLA_exon_db()
-    # make_KIR_db()
+    if args.i == "HLA":
+        make_HLA_db()
+        make_HLA_exon_db()
+    elif args.i == "KIR":
+        make_KIR_db()
+    elif args.i == "CYP":
+        if args.CYP_fa:
+            make_CYP_db()
+        else:
+            print("Please provide the CYP fasta file")
+    elif args.i == "IG_TR":
+        make_IG_TR_db()
+    else:
+        print("Please provide the gene class by -i")
+
     # if args.HLA_fa:
     #     make_HLA_db()
     # if args.KIR_fa:
     #     make_KIR_db()
-    if args.CYP_fa:
-        make_CYP_db()
+
 
 if __name__ == "__main__":
     # Parse command line arguments
@@ -402,6 +464,7 @@ if __name__ == "__main__":
     
     required.add_argument("-o","--outdir", help="Directory to save the gene-specific sequences")
     # add default hla_gene.fa
+    required.add_argument("-i", type=str, help="HLA,KIR,CYP,IG_TR",metavar="\b", default="HLA")
     optional.add_argument("--HLA_fa", help="hla_gene")
     optional.add_argument("--HLA_exon_fa", help="hla_exon_gene")
     optional.add_argument("--KIR_fa", help="kir_gene")

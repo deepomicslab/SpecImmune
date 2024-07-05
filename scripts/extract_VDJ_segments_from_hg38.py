@@ -1,25 +1,11 @@
 """
-for a file like
-CD1D chr1 158178030 158186427
-CD8A chr2 86784610 86808396
-IGKC chr2 88857161 88857683
-IGKJ5 chr2 88860568 88860605
-IGKJ4 chr2 88860886 88860922
-IGKJ3 chr2 88861221 88861258
-IGKJ2 chr2 88861525 88861563
-IGKJ1 chr2 88861886 88861923
-IGKV4-1 chr2 88885397 88886153
-IGKV5-2 chr2 88897232 88897784
-IGKV7-3 chr2 88915081 88915378
-IGKV2-4 chr2 88931666 88932380
-IGKV1-5 chr2 88947301 88947957
-
-Extract the regions that contain genes
+cmd: python extract_VDJ_segments_from_hg38.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38.p14.genome.fa --lite_ref /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/IG_TR.segment.fa
 """
 
 import sys
 from collections import defaultdict
 import os
+import argparse
 
 def merge_intervals(intervals):
     intervals.sort()
@@ -68,17 +54,37 @@ def rename_contig(segment):
         with open(segment, "w") as f:
             for line in lines:
                 if line[0] == ">":
-                    line = line.replace(":", "-")
+                    line = line.replace(":", "_")
+                    line = line.replace("-", "_")
                     f.write(line)
                 else:
                     f.write(line)
 
 if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description="get small ref for VDJ from hg38.", add_help=False, \
+    usage="python3 %(prog)s -h", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    required = parser.add_argument_group("Required arguments")
+    optional = parser.add_argument_group("Optional arguments")
+    
+    required.add_argument("--hg38", type=str, help="hg38 fasta file, used by IG_TR typing.", metavar="\b")
+    optional.add_argument("--lite_ref", type=str, help="lite_ref.", metavar="\b", default=sys.path[0] + "/../db/IG_TR/IG_TR.segment.fa")
+
+    optional.add_argument("-h", "--help", action="help")
+    args = vars(parser.parse_args()) 
+
+    if len(sys.argv) < 2:
+        parser.print_help()
+        sys.exit(0)
+
     gene_file =  f"{sys.path[0]}/../gene_dist//IG_TR.gene.bed"   #sys.argv[1]
     segment_bed = f"{sys.path[0]}/../gene_dist/IG_TR.segment.bed"
 
-    hg38 = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38.p14.genome.fa"
-    segment = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/IG_TR.segment.fa"
+    # hg38 = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38.p14.genome.fa"
+    # segment = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/IG_TR.segment.fa"
+
+    hg38 = args["hg38"]
+    segment = args["lite_ref"]
 
     interval_dict = get_gene_interval(gene_file)
     output_bed(interval_dict, segment_bed)

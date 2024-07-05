@@ -36,16 +36,16 @@ def get_phased_assemblies_hprc():
     # print (record_truth_file_dict)
     return  record_truth_file_dict
 
-# inpath = "/mnt/d/my_HLA/assembly/"
-# outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
-# db = "../db/"  
-# record_truth_file_dict = get_phased_assemblies()
-
-
-inpath = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/HPRC_assembly/"
-outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hprc_truth_bwa/"
+inpath = "/mnt/d/my_HLA/assembly/"
+outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
 db = "../db/"  
-record_truth_file_dict = get_phased_assemblies_hprc()
+record_truth_file_dict = get_phased_assemblies()
+
+
+# inpath = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/HPRC_assembly/"
+# outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hprc_truth_bwa/"
+# db = "../db/"  
+# record_truth_file_dict = get_phased_assemblies_hprc()
 
 for sample in record_truth_file_dict:
     # if sample == "HG00514":
@@ -70,7 +70,7 @@ for sample in record_truth_file_dict:
     #     os.system(cmd)
 
     cmd = f"""
-    python3 ../scripts/anno.IG.TR.py {sample} {record_truth_file_dict[sample][0]} {record_truth_file_dict[sample][1]}  {outdir} ../db/IG_TR/IG.TR.merge.allele.fasta 15
+    python3 ../scripts/anno.IG.TR.py {sample} {record_truth_file_dict[sample][0]} {record_truth_file_dict[sample][1]}  {outdir} ../db/IG_TR/IG_TR.fasta 15
     """
     print (cmd)
     os.system(cmd)

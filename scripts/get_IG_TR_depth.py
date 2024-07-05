@@ -63,7 +63,7 @@ def fast_cal_gene_depth(depth_file, gene_interval_dict):
             # segment_start = int(field[1].split("-")[0])
             # segment_end = int(field[1].split("-")[1])
 
-            field = chrom.split("-")
+            field = chrom.split("_")
             pure_chrom = field[0]
             segment_start = int(field[1])
             segment_end = int(field[2])
