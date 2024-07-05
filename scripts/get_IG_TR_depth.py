@@ -51,13 +51,43 @@ def fast_cal_gene_depth(depth_file, gene_interval_dict):
             store_all_depth[chrom].append(depth)
 
     gene_mean_depth_dict = {}
-    for chrom in store_all_depth:
-        for gene in gene_interval_dict[chrom]:
-            start = gene_interval_dict[chrom][gene][0]
-            end = gene_interval_dict[chrom][gene][1]
-            gene_pos_dict[gene] = [chrom] + list(gene_interval_dict[chrom][gene])
 
+    for chrom in store_all_depth:
+        segment_start = 0
+        segment_end = float("inf")
+        if chrom not in gene_interval_dict:
+
+            ## for chr:start-end
+            # field = chrom.split(":")
+            # pure_chrom = field[0]
+            # segment_start = int(field[1].split("-")[0])
+            # segment_end = int(field[1].split("-")[1])
+
+            field = chrom.split("-")
+            pure_chrom = field[0]
+            segment_start = int(field[1])
+            segment_end = int(field[2])
+
+        else:
+            pure_chrom = chrom
+
+        for gene in gene_interval_dict[pure_chrom]:
+
+
+            #### check if the gene is in the segment
+            pure_start = gene_interval_dict[pure_chrom][gene][0]
+            pure_end = gene_interval_dict[pure_chrom][gene][1]
+            if pure_end < segment_start or pure_start > segment_end:
+                continue
+
+            start = pure_start - segment_start
+            end = pure_end - segment_start
+            gene_pos_dict[gene] = [chrom, start, end] 
+            # if gene == "IGHD3-22":
+            #     print (gene, chrom, start, end, store_all_depth[chrom][start-1:end])
             gene_mean_depth_dict[gene] = round(np.mean(store_all_depth[chrom][start-1:end]),1)
+
+
 
 
     return gene_mean_depth_dict, gene_pos_dict

@@ -19,6 +19,7 @@ Extract the regions that contain genes
 
 import sys
 from collections import defaultdict
+import os
 
 def merge_intervals(intervals):
     intervals.sort()
@@ -52,11 +53,37 @@ def output_bed(interval_dict, out_file):
             for interval in interval_dict[chrom]:
                 f.write(f"{chrom}:{interval[0]}-{interval[1]}\n")
 
+def extract_segments(hg38, segment_bed, segment):
+    command = f"samtools faidx {hg38} -r {segment_bed} >{segment}"
+    os.system(command)
+    rename_contig(segment)
+    ## index the segment with samtools and bwa
+    os.system(f"samtools faidx {segment}")
+    os.system(f"bwa index {segment}")
+
+def rename_contig(segment):
+    # given a segment fasta, rename its contig name, and save it to a new file
+    with open(segment, "r") as f:
+        lines = f.readlines()
+        with open(segment, "w") as f:
+            for line in lines:
+                if line[0] == ">":
+                    line = line.replace(":", "-")
+                    f.write(line)
+                else:
+                    f.write(line)
+
 if __name__ == "__main__":
     gene_file =  f"{sys.path[0]}/../gene_dist//IG_TR.gene.bed"   #sys.argv[1]
     segment_bed = f"{sys.path[0]}/../gene_dist/IG_TR.segment.bed"
+
+    hg38 = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38.p14.genome.fa"
+    segment = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/IG_TR.segment.fa"
+
     interval_dict = get_gene_interval(gene_file)
     output_bed(interval_dict, segment_bed)
+
+    extract_segments(hg38, segment_bed, segment)
 
 
 
