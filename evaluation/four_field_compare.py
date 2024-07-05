@@ -410,6 +410,9 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
             if gene not in all_hla_la_result[sample]:
                 # print ("all_hla_la_result not in ", sample, gene, all_hla_la_result[sample])
                 continue
+            if len(true_list) != 2:
+                print ("copy != 2 for truth", sample, gene, true_list)
+                continue
 
             if true_list[0] == [] or true_list[1] == []:
                 print ("copy != 2 for ", sample, gene, true_list)
@@ -435,6 +438,11 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
                 if type(true_list[i]) is not list:
                     true_list[i] = true_list[i].split("/")
                 # print (hla_la_list, hla_la_list[i])
+                
+                ### if hla_la_list[i] is a list, use join
+                if type(hla_la_list[i]) is list:
+                    hla_la_list[i] = ";".join(hla_la_list[i])
+
                 if re.search(";", hla_la_list[i]):
                     hla_la_list[i] = hla_la_list[i].split(";")
                 elif re.search(",", hla_la_list[i]):

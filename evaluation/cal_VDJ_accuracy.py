@@ -36,11 +36,15 @@ def load_anno_result(raw_result):
             hap = line[-1]
             if sample not in store_alleles_dict:
                 store_alleles_dict[sample] = {}
-            store_alleles_dict[sample] = {}
             if gene not in store_alleles_dict[sample]:
                 store_alleles_dict[sample][gene] = []
-            store_alleles_dict[sample][gene].append(allele)
+            store_alleles_dict[sample][gene].append([allele])
     return store_alleles_dict
 
 
 gene_list, xx =  get_focus_gene("IG_TR")
+
+test = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results/IG_TR_dp50_acc98_6/IG_TR_dp50_acc98_6.IG.TR.allele.txt"
+store_alleles_dict = load_anno_result(test)
+# print (store_alleles_dict)
+compare_four(store_alleles_dict, store_alleles_dict, gene_list)

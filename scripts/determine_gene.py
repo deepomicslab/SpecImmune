@@ -2,12 +2,12 @@ import sys
 import os
 
 def get_focus_gene(input):
-    print(input)
+    # print(input)
 
     ### test if input is a string or a dict
     if isinstance(input, str):
         gene_class = input
-        print(gene_class)
+        # print(gene_class)
     elif isinstance(input, dict):
         gene_class = input["i"]
     else:
