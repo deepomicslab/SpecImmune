@@ -40,7 +40,7 @@ python $dir/mask_low_depth_region.py -c $outdir/$sample.depth.txt -o $outdir -w 
 bcftools norm -f $ref -O z -o $outdir/$sample.phase.norm.vcf.gz $outdir/$sample.phase.vcf.gz
 tabix -f $outdir/$sample.phase.norm.vcf.gz
 
-bcftools consensus -e 'ALT~"<.*>"' -f $ref -H 1 $outdir/$sample.phase.norm.vcf.gz >$outdir/$sample.hap1.raw.fasta
-bcftools consensus -e 'ALT~"<.*>"' -f $ref -H 2 $outdir/$sample.phase.norm.vcf.gz >$outdir/$sample.hap2.raw.fasta
+# bcftools consensus -e 'ALT~"<.*>"' -f $ref -H 1 $outdir/$sample.phase.norm.vcf.gz >$outdir/$sample.hap1.raw.fasta
+# bcftools consensus -e 'ALT~"<.*>"' -f $ref -H 2 $outdir/$sample.phase.norm.vcf.gz >$outdir/$sample.hap2.raw.fasta
 
-python3 $dir/anno.IG.TR.py $sample $outdir/$sample.hap1.raw.fasta $outdir/$sample.hap2.raw.fasta $outdir $db $threads
+# python3 $dir/anno.IG.TR.py $sample $outdir/$sample.hap1.raw.fasta $outdir/$sample.hap2.raw.fasta $outdir $db $threads

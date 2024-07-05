@@ -7,6 +7,8 @@ from collections import defaultdict
 import os
 import argparse
 
+from bed_objects import Bed_db
+
 def merge_intervals(intervals):
     intervals.sort()
     merged = []
@@ -102,12 +104,11 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(0)
 
-    gene_file =  f"{sys.path[0]}/../gene_dist//IG_TR.gene.bed"   #sys.argv[1]
-    segment_bed = f"{sys.path[0]}/../gene_dist/IG_TR.segment.bed"
-    lite_gene_file =  f"{sys.path[0]}/../gene_dist//IG_TR.gene.lite.bed" 
+    bed_db = Bed_db()
+    gene_file =  bed_db.gene_file
+    segment_bed = bed_db.segment_bed
+    lite_gene_file =  bed_db.lite_gene_file
 
-    # hg38 = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38.p14.genome.fa"
-    # segment = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/IG_TR.segment.fa"
 
     hg38 = args["hg38"]
     segment = args["lite_ref"]
