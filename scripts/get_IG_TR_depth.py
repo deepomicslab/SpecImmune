@@ -119,6 +119,32 @@ def parse_phase_blocks(vcf_path):
 
     return phase_blocks
 
+def parse_gene_phase_blocks(vcf_path):
+    # Open the VCF file
+    vcf_file = pysam.VariantFile(vcf_path)
+
+    blocks = set()
+    variant_num = 0
+    
+    for record in vcf_file.fetch():
+        variant_num += 1
+        for sample in record.samples:
+            sample_data = record.samples[sample]
+            if 'PS' in sample_data:
+                phase_set = sample_data['PS']
+                chrom = record.chrom
+                pos = record.pos
+                # print (phase_set, chrom, pos, sample_data)
+                if phase_set:
+                    blocks.add(str(phase_set))
+    blocks = list(blocks)
+    # print (blocks, variant_num)
+    if len(blocks) > 0:
+        my_block = ";".join(blocks)
+    else:
+        my_block = "NA"
+    return my_block, variant_num
+
 ## given phase_blocks, estimate the phase set of each gene
 def assign_phase_block(phase_blocks, gene_interval_dict):
     gene_phase_dict = {}
@@ -249,6 +275,8 @@ def get_consensus(phased_vcf, focus_gene_list, tmp_dir, args, depth_bed_file, sh
     
     interval_dict = bed_db.get_gene_interval(bed_db.lite_gene_file)
     all_result_dict = {}
+    gene_phase_dict = {}
+    variant_num_dict = {}
     for gene in focus_gene_list:
         # if gene != "IGHD5-5":
         #     continue
@@ -268,18 +296,24 @@ def get_consensus(phased_vcf, focus_gene_list, tmp_dir, args, depth_bed_file, sh
             os.system(cmd)
             blast_db = my_db.get_blast_index(gene)
             cmd = f"blastn {para} -query {tmp_dir}/{gene}.{hap}.fasta -db {blast_db} -outfmt 7 -max_target_seqs 3000 -num_threads {args['j']} > {tmp_dir}/{gene}.{hap}.blast.txt"
-            print (cmd)
+            # print (cmd)
             os.system(cmd)
             result = read_blast_result(f"{tmp_dir}/{gene}.{hap}.blast.txt")
             all_result_dict[gene][f"hap{hap}"] = result
+        cmd = f"""bcftools view {phased_vcf} -r {interval_dict[gene]} -Oz -o {tmp_dir}/{gene}.phase.vcf.gz
+                    tabix -f {tmp_dir}/{gene}.phase.vcf.gz"""
+        os.system(cmd)
+        my_block, variant_num = parse_gene_phase_blocks(f"{tmp_dir}/{gene}.phase.vcf.gz")
+        gene_phase_dict[gene] = my_block
+        variant_num_dict[gene] = variant_num
         # break
-    return all_result_dict
+    return all_result_dict, gene_phase_dict, variant_num_dict
 
-def generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict, new_result, min_depth, focus_gene_list):
+def generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict, new_result, min_depth, focus_gene_list, variant_num_dict):
     
     with open(new_result, "w") as f:
         header = ["sample", "gene", "depth", "phase_set", "allele_1", "score_1", "length_1", \
-                  "hap_1", "allele_2", "score_2", "length_2", "hap_2","hg38_chrom", "hg38_len"]
+                  "hap_1", "allele_2", "score_2", "length_2", "hap_2","hg38_chrom", "hg38_len", "variant_num"]
         print (*header, sep="\t", file=f)
         # for gene in store_raw:
         for gene in my_db.order_gene_list:
@@ -314,7 +348,7 @@ def generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict,
                 allele_2, score_2, length_2, hap_2, chrom_2, start_2, end_2 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
             if raw_has_content:
                 print (gene, depth, phase, allele_1, score_1, length_1, "hap1", allele_2, score_2, length_2, "hap2", \
-                       hg38_gene_info[gene][0], hg38_gene_info[gene][3], sep="\t", file=f)
+                       hg38_gene_info[gene][0], hg38_gene_info[gene][3], variant_num_dict[gene], sep="\t", file=f)
 
 
 if __name__ == "__main__":
@@ -353,7 +387,7 @@ if __name__ == "__main__":
     phased_vcf = args["o"] + "/" + args["n"] + "/" + args["n"] + ".phase.norm.vcf.gz"
     raw_result = args["o"] + "/" + args["n"] + "/" + args["n"] + ".IG.TR.allele.txt"
     new_result = args["o"] + "/" + args["n"] + "/" + args["n"] + ".IG_TR_typing_result.txt"
-    tmp_dir = args["o"] + "/" + args["n"] + "/tmp/"
+    tmp_dir = args["o"] + "/" + args["n"] + "/genes/"
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir) 
     # print (my_db.gene_interval_dict)
@@ -361,12 +395,12 @@ if __name__ == "__main__":
     # get_phased_block(args["phased_vcf"])
 
 
-    phase_blocks = parse_phase_blocks(phased_vcf)
+    # phase_blocks = parse_phase_blocks(phased_vcf)
     
     # for phase_set, interval in phase_blocks.items():
     #     print(f"Phase Set {phase_set}: Chromosome {interval['chrom']}, Start {interval['start']}, End {interval['end']}")
-    gene_phase_dict = assign_phase_block(phase_blocks, gene_pos_dict)
-    all_result_dict = get_consensus(phased_vcf, focus_gene_list, tmp_dir, args, depth_bed_file)
+    # gene_phase_dict = assign_phase_block(phase_blocks, gene_pos_dict)
+    all_result_dict, gene_phase_dict, variant_num_dict = get_consensus(phased_vcf, focus_gene_list, tmp_dir, args, depth_bed_file)
 
-    generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict, new_result, args["k"], focus_gene_list)
+    generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict, new_result, args["k"], focus_gene_list, variant_num_dict)
     # load_raw_result(raw_result, gene_mean_depth_dict, gene_phase_dict, new_result, args["k"], focus_gene_list)
