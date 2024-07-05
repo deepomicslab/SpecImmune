@@ -125,6 +125,7 @@ def parse_gene_phase_blocks(vcf_path):
 
     blocks = set()
     variant_num = 0
+    hete_variant_num = 0
     
     for record in vcf_file.fetch():
         variant_num += 1
@@ -137,13 +138,17 @@ def parse_gene_phase_blocks(vcf_path):
                 # print (phase_set, chrom, pos, sample_data)
                 if phase_set:
                     blocks.add(str(phase_set))
+            if 'UG' in sample_data:
+                unphased_genotype = sample_data['UG']
+                if unphased_genotype == "0/1" or unphased_genotype == "1/2":
+                    hete_variant_num += 1
     blocks = list(blocks)
     # print (blocks, variant_num)
     if len(blocks) > 0:
         my_block = ";".join(blocks)
     else:
         my_block = "NA"
-    return my_block, variant_num
+    return my_block, [variant_num,hete_variant_num]
 
 ## given phase_blocks, estimate the phase set of each gene
 def assign_phase_block(phase_blocks, gene_interval_dict):
@@ -313,7 +318,7 @@ def generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict,
     
     with open(new_result, "w") as f:
         header = ["sample", "gene", "depth", "phase_set", "allele_1", "score_1", "length_1", \
-                  "hap_1", "allele_2", "score_2", "length_2", "hap_2","hg38_chrom", "hg38_len", "variant_num"]
+                  "hap_1", "allele_2", "score_2", "length_2", "hap_2","hg38_chrom", "hg38_len", "variant_num","hete_variant_num"]
         print (*header, sep="\t", file=f)
         # for gene in store_raw:
         for gene in my_db.order_gene_list:
@@ -334,21 +339,19 @@ def generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict,
             if "hap1" in all_result_dict[gene]:
                 allele_1, score_1, length_1 = all_result_dict[gene]["hap1"]
             else:
-                raw_has_content = False
                 allele_1, score_1, length_1 = "NA", "NA", "NA"
 
             if "hap2" in all_result_dict[gene]:
                 allele_2, score_2, length_2 = all_result_dict[gene]["hap2"]
             else:
-                raw_has_content = False
                 allele_2, score_2, length_2 = "NA", "NA", "NA"
             
             if depth == "NA" or depth < min_depth:
                 allele_1, score_1, length_1, hap_1, chrom_1, start_1, end_1 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
                 allele_2, score_2, length_2, hap_2, chrom_2, start_2, end_2 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
-            if raw_has_content:
-                print (gene, depth, phase, allele_1, score_1, length_1, "hap1", allele_2, score_2, length_2, "hap2", \
-                       hg38_gene_info[gene][0], hg38_gene_info[gene][3], variant_num_dict[gene], sep="\t", file=f)
+
+            print (gene, depth, phase, allele_1, score_1, length_1, "hap1", allele_2, score_2, length_2, "hap2", \
+                    hg38_gene_info[gene][0], hg38_gene_info[gene][3], variant_num_dict[gene][0], variant_num_dict[gene][1], sep="\t", file=f)
 
 
 if __name__ == "__main__":
@@ -404,3 +407,4 @@ if __name__ == "__main__":
 
     generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict, new_result, args["k"], focus_gene_list, variant_num_dict)
     # load_raw_result(raw_result, gene_mean_depth_dict, gene_phase_dict, new_result, args["k"], focus_gene_list)
+    print (f"result is in {new_result}")
