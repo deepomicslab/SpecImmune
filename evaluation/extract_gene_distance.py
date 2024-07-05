@@ -55,7 +55,7 @@ def cal_distance(gene_list, gene_dict):
     return distance_matrix
 
 def get_VDJ_names():
-    fai = "/home/wangshuai/softwares/SpecLong/db/IG_TR/imgtrefseq.human.fasta.fai"
+    fai = "../db/IG_TR/IG_TR.fasta.fai"
     VDJ_gene_list = []
     with open(fai, 'r') as f:
         for line in f:
@@ -83,6 +83,7 @@ def get_VDJ_bed():
         chr, start, end = gene_dict[gene]
         print(gene, chr, start, end, file = f)  
         gene_list.append(gene)
+    print (len(gene_list))
     print (gene_list)
 
 def sort_gene(interval_dict):
