@@ -3,6 +3,8 @@ import argparse
 import subprocess
 from Bio import SeqIO
 
+from determine_gene import get_focus_gene
+
 def download_file(url, output_path):
     """
     Download a FASTA file from a given URL and save it to a specified path using wget.
@@ -233,6 +235,48 @@ def create_CYP_directories_and_save_sequences(fasta_path, output_base_dir, gene_
     print(f"All sequences have been categorized by gene and saved in {output_base_dir}")
     print(f"Merged FASTA file created and indexed at {merged_fasta_filename}")
 
+def create_VDJ_directories_and_save_sequences(fasta_path, output_base_dir, gene_list):
+    """
+    Parse a FASTA file, create directories based on gene names, 
+    and save corresponding sequences to these directories.
+
+    :param fasta_path: Path to the input FASTA file
+    :param output_base_dir: Base directory to save gene-specific directories and sequences
+    """
+    sequences = SeqIO.parse(fasta_path, "fasta")
+    gene_sequences = {}
+
+    for seq_record in sequences:
+        gene_name = seq_record.id.split('*')[0]
+        if gene_name not in gene_list:
+            continue
+        
+        if gene_name not in gene_sequences:
+            gene_sequences[gene_name] = []
+        gene_sequences[gene_name].append(seq_record)
+
+    # Create directories and save gene-specific sequences
+    all_sequences = []
+    for gene_name, seq_records in gene_sequences.items():
+        gene_dir = os.path.join(output_base_dir, gene_name)
+        # if gene_name.startswith("KIR2DL5"):
+        #     gene_dir = os.path.join(output_base_dir, "KIR2DL5")
+
+        os.makedirs(gene_dir, exist_ok=True)
+        gene_fasta_filename = os.path.join(gene_dir, f"{gene_name}.fasta")
+        with open(gene_fasta_filename, "w") as gene_fasta_file:
+            SeqIO.write(seq_records, gene_fasta_file, "fasta")
+        all_sequences.extend(seq_records)
+        
+        # Build the index for the gene-specific FASTA file
+        cmd = f"""
+        samtools faidx "{gene_fasta_filename}"
+        bwa index "{gene_fasta_filename}"
+        makeblastdb -in "{gene_dir}"/{gene_name}.fasta -dbtype nucl -parse_seqids -out "{gene_dir}"/{gene_name}
+        """
+        print(cmd, flush=True)
+        os.system(cmd)
+
 def make_HLA_db():
     # URL to download the FASTA file
     HLA_fasta_url = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/hla_gen.fasta"
@@ -384,7 +428,9 @@ def make_CYP_db():
 
 def make_IG_TR_db():
     IG_TR_dir = os.path.join(args.outdir, "IG_TR")
+    
     local_all_fasta_filename = os.path.join(IG_TR_dir, f"IG_TR.fasta")
+
     gen_IG_TR_dir = os.path.join(IG_TR_dir, "Genes")
     print(IG_TR_dir)
     if not os.path.exists(IG_TR_dir):
@@ -429,6 +475,9 @@ def make_IG_TR_db():
     makeblastdb -in "{local_all_fasta_filename}" -dbtype nucl -parse_seqids -out "{local_all_fasta_filename}"
     """
     # print(cmd, flush=True)
+    
+    gene_list, interval_dict = get_focus_gene("IG_TR")
+    create_VDJ_directories_and_save_sequences(local_all_fasta_filename, IG_TR_dir, gene_list)
     os.system(cmd)
 
 
@@ -462,7 +511,7 @@ if __name__ == "__main__":
     required = parser.add_argument_group("Required arguments")
     optional = parser.add_argument_group("Optional arguments")
     
-    required.add_argument("-o","--outdir", help="Directory to save the gene-specific sequences")
+    required.add_argument("-o","--outdir", help="Directory to save the gene-specific sequences", default="../db/")
     # add default hla_gene.fa
     required.add_argument("-i", type=str, help="HLA,KIR,CYP,IG_TR",metavar="\b", default="HLA")
     optional.add_argument("--HLA_fa", help="hla_gene")
