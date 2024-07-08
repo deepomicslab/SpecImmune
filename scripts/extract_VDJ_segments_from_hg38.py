@@ -23,6 +23,7 @@ def get_gene_interval(gene_file):
     gap = 1500000
     store_pure_gene_region = defaultdict(dict)
     interval_dict = defaultdict(list)
+    strand_dict = {}
     with open(gene_file, "r") as f:
         for line in f:
             line = line.strip().split()
@@ -30,6 +31,7 @@ def get_gene_interval(gene_file):
             chrom = line[1]
             start = int(line[2])
             end = int(line[3])
+            strand_dict[gene] = line[4]
             interval_dict[chrom].append(list((start-gap, end+gap)))
 
             store_pure_gene_region[chrom][gene] = [start, end]
@@ -39,7 +41,7 @@ def get_gene_interval(gene_file):
         interval_dict[chrom] = merge_intervals(interval_dict[chrom])
     
     lite_gene_interval = find_gene_in_lite_ref(interval_dict, store_pure_gene_region)
-    return interval_dict, lite_gene_interval
+    return interval_dict, lite_gene_interval, strand_dict
 
 def find_gene_in_lite_ref(interval_dict, store_pure_gene_region):
     lite_gene_interval = defaultdict(list)
@@ -59,11 +61,11 @@ def output_bed(interval_dict, out_file):
             for interval in interval_dict[chrom]:
                 f.write(f"{chrom}:{interval[0]}-{interval[1]}\n")
 
-def output_new_gene_file(lite_gene_interval, lite_gene_file):
+def output_new_gene_file(lite_gene_interval, lite_gene_file, strand_dict):
     with open(lite_gene_file, "w") as f:
         for gene in lite_gene_interval:
 
-            f.write(f"{gene}\t{lite_gene_interval[gene][0]}\t{lite_gene_interval[gene][1]}\t{lite_gene_interval[gene][2]}\n")
+            f.write(f"{gene}\t{lite_gene_interval[gene][0]}\t{lite_gene_interval[gene][1]}\t{lite_gene_interval[gene][2]}\t{strand_dict[gene]}\n")
 
 def extract_segments(hg38, segment_bed, segment):
     command = f"samtools faidx {hg38} -r {segment_bed} >{segment}"
@@ -113,9 +115,9 @@ if __name__ == "__main__":
     hg38 = args["hg38"]
     segment = args["lite_ref"]
 
-    interval_dict, lite_gene_interval = get_gene_interval(gene_file)
+    interval_dict, lite_gene_interval, strand_dict = get_gene_interval(gene_file)
     output_bed(interval_dict, segment_bed)
-    output_new_gene_file(lite_gene_interval, lite_gene_file)
+    output_new_gene_file(lite_gene_interval, lite_gene_file, strand_dict)
     extract_segments(hg38, segment_bed, segment)
 
 

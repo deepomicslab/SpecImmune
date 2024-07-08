@@ -12,6 +12,7 @@ dir=$(cd `dirname $0`; pwd)
 
 ###### minimap2 -t $threads -R "@RG\tID:$sample\tSM:$sample" -k 19 -w 19 -g 10k -A 1 -B 4 -O 6,26 -E 2,1 -s 200 -a $ref $reads  | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
 bwa mem -t $threads -R "@RG\tID:$sample\tSM:$sample" $ref $reads | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
+# minimap2 -t $threads -R "@RG\tID:$sample\tSM:$sample" -a $ref $reads  | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
 
 samtools index $outdir/$sample.bam
 longshot -F -S --sample_id $sample  --bam $outdir/$sample.bam --ref $ref --out $outdir/$sample.longshot.vcf
@@ -35,7 +36,7 @@ tabix -f $outdir/$sample.phase.vcf.gz
 
 samtools depth -a $outdir/$sample.bam > $outdir/$sample.depth.txt
 
-python $dir/mask_low_depth_region.py -c $outdir/$sample.depth.txt -o $outdir -w 100 -d $low_depth 
+python $dir/mask_low_depth_region.py -c $outdir/$sample.depth.txt -o $outdir  -d $low_depth -w 3  #-w 100
 
 bcftools norm -f $ref -O z -o $outdir/$sample.phase.norm.vcf.gz $outdir/$sample.phase.vcf.gz
 tabix -f $outdir/$sample.phase.norm.vcf.gz

@@ -6,7 +6,7 @@ outdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads/
 resultdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results/
 
 
-for i in {8..10}
+for i in {1..10}
 do
     sample=IG_TR_dp50_acc98_$i
 
@@ -25,10 +25,10 @@ do
 
     #### run
     python3 ../scripts/main.py -n $sample -o $resultdir -j 15 -y pacbio -i IG_TR\
-     -r $outdir/$sample/${sample}.fastq.gz --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/chr14.fa
+     -r $outdir/$sample/${sample}.fastq.gz 
 
     #### evaluation
-    # python3 ../evaluation/assess_typing.py -i IG_TR --true $outdir/$sample/$sample.IG_TR.hap.alleles.txt --infer $outdir/$sample/${sample}.HLA.type.result.txt 
+    python3 ../evaluation/assess_typing.py -i IG_TR --true $outdir/$sample/$sample.IG_TR.hap.alleles.txt --infer $resultdir/$sample/${sample}.IG_TR_typing_result.txt
     # break
 
 done

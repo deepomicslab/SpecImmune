@@ -238,34 +238,6 @@ def read_blast_result(blast_file, len_cutoff = 0.9):
             allele, identity, length, mis, gap, start, end, score = values[1], float(values[2]), int(values[3]), int(values[4]), int(values[5]), int(values[6]), int(values[7]), float(values[11])
 
             gene = allele.split("*")[0]
-            
-            if mis >= 5:
-                continue
-            
-            if identity < 97 and "TRB" in gene:
-                continue
-            
-            if identity < 98 and "TRA" in gene:
-                continue
-            
-            if identity < 97 and "IGK" in gene:
-                continue
-            
-            if identity < 97 and "IGL" in gene:
-                continue
-            
-            if identity < 98 and "IGH" in gene and gene != "IGHV1-2":
-                continue
-            
-            if "IGKV1-NL1" in allele:
-                continue
-            
-            if "IGHV" in allele and length < 150:
-                continue
-            
-            if "TRAV" in allele or "TRBV" in allele or "TRDV" in allele or "TRGV" in allele:
-                if length < 100:
-                    continue
               
             if result[0] == "NA":
                 result = [allele, identity, length]
@@ -273,10 +245,12 @@ def read_blast_result(blast_file, len_cutoff = 0.9):
                 # if length >= result[2] - 5 and identity > result[1]:
                 if length/result[2] > len_cutoff and identity > result[1]:
                     result = [allele, identity, length]
+                if gene == "IGHV4-34" and identity > result[1]:
+                    result = [allele, identity, length]
 
     return result
 
-def get_consensus(phased_vcf, focus_gene_list, tmp_dir, args, depth_bed_file, short_cutoff = 50):
+def get_consensus(phased_vcf, focus_gene_list, tmp_dir, args, depth_bed_file, gene_mean_depth_dict, short_cutoff = 50):
     
     interval_dict = bed_db.get_gene_interval(bed_db.lite_gene_file)
     all_result_dict = {}
@@ -287,6 +261,9 @@ def get_consensus(phased_vcf, focus_gene_list, tmp_dir, args, depth_bed_file, sh
         #     continue
         if gene not in interval_dict:
             print (f"{gene} not in the gene interval dict")
+            continue
+        if gene not in gene_mean_depth_dict or gene_mean_depth_dict[gene] <= 0:
+            # print (f"{gene} not in the gene depth dict")
             continue
         gene_hg38_len = hg38_gene_info[gene][3]
 
@@ -317,7 +294,7 @@ def get_consensus(phased_vcf, focus_gene_list, tmp_dir, args, depth_bed_file, sh
 def generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict, new_result, min_depth, focus_gene_list, variant_num_dict):
     
     with open(new_result, "w") as f:
-        header = ["sample", "gene", "depth", "phase_set", "allele_1", "score_1", "length_1", \
+        header = ["gene", "depth", "phase_set", "allele_1", "score_1", "length_1", \
                   "hap_1", "allele_2", "score_2", "length_2", "hap_2","hg38_chrom", "hg38_len", "variant_num","hete_variant_num"]
         print (*header, sep="\t", file=f)
         # for gene in store_raw:
@@ -326,6 +303,8 @@ def generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict,
                 continue
             if gene not in hg38_gene_info:
                 print (f"{gene} not in the hg38_gene_info")
+                continue
+            if gene not in all_result_dict:
                 continue
             raw_has_content = True
             if gene in gene_mean_depth_dict:
@@ -346,12 +325,12 @@ def generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict,
             else:
                 allele_2, score_2, length_2 = "NA", "NA", "NA"
             
-            if depth == "NA" or depth < min_depth:
+            if depth == "NA" or depth <= 0:
                 allele_1, score_1, length_1, hap_1, chrom_1, start_1, end_1 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
                 allele_2, score_2, length_2, hap_2, chrom_2, start_2, end_2 = "NA", "NA", "NA", "NA", "NA", "NA", "NA"
-
-            print (gene, depth, phase, allele_1, score_1, length_1, "hap1", allele_2, score_2, length_2, "hap2", \
-                    hg38_gene_info[gene][0], hg38_gene_info[gene][3], variant_num_dict[gene][0], variant_num_dict[gene][1], sep="\t", file=f)
+            else:
+                print (gene, depth, phase, allele_1, score_1, length_1, "hap1", allele_2, score_2, length_2, "hap2", \
+                        hg38_gene_info[gene][0], hg38_gene_info[gene][3], variant_num_dict[gene][0], variant_num_dict[gene][1], sep="\t", file=f)
 
 
 if __name__ == "__main__":
@@ -403,7 +382,7 @@ if __name__ == "__main__":
     # for phase_set, interval in phase_blocks.items():
     #     print(f"Phase Set {phase_set}: Chromosome {interval['chrom']}, Start {interval['start']}, End {interval['end']}")
     # gene_phase_dict = assign_phase_block(phase_blocks, gene_pos_dict)
-    all_result_dict, gene_phase_dict, variant_num_dict = get_consensus(phased_vcf, focus_gene_list, tmp_dir, args, depth_bed_file)
+    all_result_dict, gene_phase_dict, variant_num_dict = get_consensus(phased_vcf, focus_gene_list, tmp_dir, args, depth_bed_file,gene_mean_depth_dict)
 
     generate_output_file(all_result_dict, gene_mean_depth_dict, gene_phase_dict, new_result, args["k"], focus_gene_list, variant_num_dict)
     # load_raw_result(raw_result, gene_mean_depth_dict, gene_phase_dict, new_result, args["k"], focus_gene_list)

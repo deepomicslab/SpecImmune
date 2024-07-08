@@ -399,14 +399,17 @@ def align_digit_2_truth(truth, mylist):  # not using
 def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
     gene_dict = {}
     for sample in truth_dict:
+        print (sample)
         # if sample != "FH14":
         #     continue
         # for gene in truth_dict[sample]:
         for gene in gene_list:
+            # print (gene)
             if gene not in truth_dict[sample]:
-                # print ("truth_dict not in ", sample, gene, truth_dict[sample].keys())
+                print ("truth_dict not in ", sample, gene, truth_dict[sample].keys())
                 continue
             true_list = truth_dict[sample][gene]
+            # print (all_hla_la_result[sample])
             if gene not in all_hla_la_result[sample]:
                 # print ("all_hla_la_result not in ", sample, gene, all_hla_la_result[sample])
                 continue
@@ -419,6 +422,7 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
                 continue
             
             hla_la_list = all_hla_la_result[sample][gene]
+            print (hla_la_list)
             if hla_la_list[1] == '' and hla_la_list[0] == '':
                 print ("inferred empty", sample, gene, hla_la_list)
                 continue
@@ -575,9 +579,41 @@ def count_report_allele(truth_dict, all_hla_la_result):
     for gene in count_gene_array:
         print (gene, np.mean(count_gene_array[gene]), np.median(count_gene_array[gene]), min(count_gene_array[gene]), max(count_gene_array[gene]))
 
-def assess_sim_module(truth, infer, gene_list):
+def load_vdj_result(raw_result):
+    """
+    raw result is like:
+    sample  gene    depth   phase_set       allele_1        score_1 length_1        hap_1   allele_2        score_2 length_2        hap_2   hg38_chrom      hg38_len        variant_num     hete_variant_num
+    TRAV1-1 18.3    1500604 TRAV1-1*01      100.0   274     hap1    TRAV1-1*02      100.0   269     hap2    chr14   729     2       1
+    TRAV1-2 20.0    1521603;1500604 TRAV1-2*03      100.0   266     hap1    TRAV1-2*02      100.0   176     hap2    chr14   689     4       2
+    TRAV2   25.7    1590846 TRAV2*01        100.0   262     hap1    TRAV2*02        100.0   259     hap2    chr14   522     3       2
+    TRAV3   25.1    1590846 TRAV3*01        100.0   285     hap1    TRAV3*01        100.0   285     hap2    chr14   608     1       0
+    TRAV4   18.4    1590846 TRAV4*01        100.0   276     hap1    TRAV4*01        100.0   276     hap2    chr14   830     1       0
+
+    """  
+    store_alleles_dict = defaultdict(dict)
+    sample = 'test'
+    with open(raw_result, "r") as f:
+        # skip the header
+        header = f.readline()
+        for line in f:
+            line = line.strip().split("\t")
+            gene = line[0]
+            allele1 = line[3]
+            allele2 = line[7]
+            if sample not in store_alleles_dict:
+                store_alleles_dict[sample] = {}
+            if gene not in store_alleles_dict[sample]:
+                store_alleles_dict[sample][gene] = []
+            store_alleles_dict[sample][gene] = [allele1, allele2]
+    print (store_alleles_dict[sample])
+    return store_alleles_dict[sample]
+
+def assess_sim_module(truth, infer, gene_list, gene_class="HLA"):
     sample_truth_dict = parse_simu_true(truth)
-    sample_infer_dict = parse_hla_hla_input(infer)
+    if gene_class != "IG_TR":
+        sample_infer_dict = parse_hla_hla_input(infer)
+    else:
+        sample_infer_dict = load_vdj_result(infer)
     # print (sample_truth_dict)
     truth_dict, infer_dict = {}, {}
     truth_dict["test"] = sample_truth_dict

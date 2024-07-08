@@ -18,11 +18,13 @@ extract the gene name and the gene interval, and save them in a dict
 def get_gene_interval(gene_file):
 	gene_list = []
 	interval_dict = {}
+	strand_dict = {}
 	with open(gene_file, "r") as f:
 		for line in f:
 			line = line.strip().split()
 			gene_list.append(line[0])
 			# print (line)
+			strand_dict[line[0]] = line[4]
 			if line[1] not in interval_dict:
 				interval_dict[line[1]] = {}
 			interval_dict[line[1]][line[0]] = (int(line[2]), int(line[3]))
@@ -31,9 +33,13 @@ def get_gene_interval(gene_file):
 		# sort the gene on it by their start position
 		interval_dict[genome] = dict(sorted(interval_dict[genome].items(), key=lambda item: item[1][0]))
 
-	return interval_dict
+	return interval_dict, strand_dict
 
-
+def DNA_complement2(sequence):
+    sequence = sequence[::-1]
+    trantab = str.maketrans('ACGTacgtRYMKrymkVBHDvbhd', 'TGCAtgcaYRKMyrkmBVDHbvdh')
+    string = sequence.translate(trantab)
+    return string
 
 
 ## use biopython load the allele sequence from db_fasta, save to gene:allele_list, and use a dict to save allele:sequence, use the Seq IO
@@ -82,7 +88,7 @@ def output():
 				continue
 			f.write(f"{gene}\t{allele_dict[gene][0]}\t{allele_dict[gene][1]}\n")
 
-def insert_allele_to_ref(interval_dict, allele_dict, ref_hap):
+def insert_allele_to_ref(interval_dict, allele_dict, ref_hap,strand_dict):
 	# for each genome in interval_dict, in ref_hap, replace the gene sequence using the allele sequence, use biopython to do this
 
 	# Load the reference haplotype sequence for each chr, and store them in a dict
@@ -97,8 +103,8 @@ def insert_allele_to_ref(interval_dict, allele_dict, ref_hap):
 	f = open(out_allele, "w")
 	f.write("Gene\tHap1\tHap2\n")
 	for genome in interval_dict:
-		if genome != "chr14":
-			continue
+		# if genome != "chr14_104363198_108375071":
+		# 	continue
 		gap_start = 0
 		hap1_seq[genome] = ''
 		hap2_seq[genome] = ''
@@ -119,9 +125,12 @@ def insert_allele_to_ref(interval_dict, allele_dict, ref_hap):
 				continue
 			f.write(f"{gene}\t{allele1}\t{allele2}\n")
 			print (gene, genome, start, end, len(allele_seq_dict[allele1]), len(allele_seq_dict[allele2]), gap_start, start, allele1)
-
-			hap1_seq[genome] += ref_seq[genome][gap_start:start] + allele_seq_dict[allele1]
-			hap2_seq[genome] += ref_seq[genome][gap_start:start] + allele_seq_dict[allele2]
+			if strand_dict[gene] == "+":
+				hap1_seq[genome] += ref_seq[genome][gap_start:start] + allele_seq_dict[allele1]
+				hap2_seq[genome] += ref_seq[genome][gap_start:start] + allele_seq_dict[allele2]
+			else:
+				hap1_seq[genome] += ref_seq[genome][gap_start:start] + DNA_complement2(allele_seq_dict[allele1])
+				hap2_seq[genome] += ref_seq[genome][gap_start:start] + DNA_complement2(allele_seq_dict[allele2])
 
 			gap_start = end
 
@@ -130,8 +139,8 @@ def insert_allele_to_ref(interval_dict, allele_dict, ref_hap):
 	f.close()
 	# hap1_seq["chr14"] = hap1_seq["chr14"][22450000:22480000]
 	# hap2_seq["chr14"] = hap2_seq["chr14"][22450000:22480000]
-	hap1_seq["chr14"] = hap1_seq["chr14"][21621838:22480000]
-	hap2_seq["chr14"] = hap2_seq["chr14"][21621838:22480000]
+	# hap1_seq["chr14"] = hap1_seq["chr14"][21621838:22480000]
+	# hap2_seq["chr14"] = hap2_seq["chr14"][21621838:22480000]
 	# output hap1_seq and hap2_seq to hap1 and hap2
 	with open(hap1, "w") as f:
 		for genome in hap1_seq:
@@ -152,10 +161,9 @@ if __name__ == "__main__":
 	print ("hi", outdir)
 	gene_list, xx =  get_focus_gene("IG_TR")
 
-	db_fasta = "../db/IG_TR/imgtrefseq.human.fasta"
-	# ref_hap = "../db/IG_TR//ig.tr.merge.hg38.fa"
-	ref_hap = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/chr14.fa"
-	gene_file = "../gene_dist/IG_TR.gene.bed"
+	db_fasta = "../db/IG_TR/IG_TR.fasta"
+	ref_hap = "../VDJ_ref/IG_TR.segment.fa"
+	gene_file = "../gene_dist/IG_TR.gene.lite.bed"
 
 
 	out_fa = f"{outdir}/{sample}.IG_TR.sep.fa"
@@ -171,9 +179,9 @@ if __name__ == "__main__":
 	# output()
 	# print (gene_list)
 	
-	interval_dict = get_gene_interval(gene_file)
+	interval_dict, strand_dict = get_gene_interval(gene_file)
 	# print (interval_dict)
-	insert_allele_to_ref(interval_dict, allele_dict, ref_hap)
+	insert_allele_to_ref(interval_dict, allele_dict, ref_hap, strand_dict)
 
 	# f.write("Gene\tHap1\tHap2\n")
 

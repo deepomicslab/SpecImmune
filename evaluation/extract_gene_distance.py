@@ -21,10 +21,11 @@ def extract_gene_distance(gtf_file):
                 chr = line[0]
                 start = int(line[3])
                 end = int(line[4])
+                strand = str(line[6])
                 # print (line[-1].split(";"))
                 gene_name = re.search('gene_name "(.*?)"', line[-1]).group(1)
                 # print (gene_name, chr, start, end)
-                gene_dict[gene_name] = (chr, start, end)
+                gene_dict[gene_name] = (chr, start, end, strand)
     return gene_dict
 
 ## given a gene list, return the distance matrix of these genes
@@ -43,8 +44,8 @@ def cal_distance(gene_list, gene_dict):
                 print (gene2, "not in the gene dict")
                 distance = float("inf")
             else:
-                chr1, start1, end1 = gene_dict[gene1]
-                chr2, start2, end2 = gene_dict[gene2]
+                chr1, start1, end1, strand1 = gene_dict[gene1]
+                chr2, start2, end2, strand2 = gene_dict[gene2]
                 if chr1 != chr2:
                     distance = float("inf")
                 else:
@@ -74,14 +75,14 @@ def get_VDJ_bed():
     interval_dict = defaultdict(dict)
     for gene in VDJ_gene_list:
         if gene in gene_dict:
-            chr, start, end = gene_dict[gene]
+            chr, start, end , strand= gene_dict[gene]
             interval_dict[chr][gene] = (start, end)
         # else:
             # print(gene, "-", "-", "-") 
     order_gene_list = sort_gene(interval_dict) 
     for gene in order_gene_list:
-        chr, start, end = gene_dict[gene]
-        print(gene, chr, start, end, file = f)  
+        chr, start, end, strand = gene_dict[gene]
+        print(gene, chr, start, end, strand, file = f)  
         gene_list.append(gene)
     print (len(gene_list))
     print (gene_list)
@@ -102,24 +103,25 @@ if __name__ == "__main__":
     ### https://www.gencodegenes.org/human/
     gtf_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/gencode.v46.annotation.gtf"
 
-    # args = {}
-    # # args["i"] = "HLA"
-    # # args["i"] = "CYP"
-    # args["i"] = "KIR"
-    # gene_list, interval_dict =  get_focus_gene(args)
-    # gene_dict = extract_gene_distance(gtf_file)
-    # distance_matrix = cal_distance(gene_list, gene_dict)
-    # # store the distance matrix with pickle
+    for gene_class in ["HLA", "CYP", "KIR"]:
+        args = {}
+        # args["i"] = "HLA"
+        # args["i"] = "CYP"
+        args["i"] = gene_class
+        gene_list, interval_dict =  get_focus_gene(args)
+        gene_dict = extract_gene_distance(gtf_file)
+        distance_matrix = cal_distance(gene_list, gene_dict)
+        # store the distance matrix with pickle
 
-    # with open("../gene_dist/" + args["i"] + '.distance_matrix.pkl', 'wb') as f:
-    #     pickle.dump(distance_matrix, f)
-    # # print (distance_matrix)
-    # with open("../gene_dist/" + args["i"] + '.gene.bed', 'w') as f:
-    #     for gene in gene_list:
-    #         if gene in gene_dict:
-    #             chr, start, end = gene_dict[gene]
-    #             print(gene, chr, start, end, file = f)
-    #         else:
-    #             print(gene, "-", "-", "-", file=f)
+        with open("../gene_dist/" + args["i"] + '.distance_matrix.pkl', 'wb') as f:
+            pickle.dump(distance_matrix, f)
+        # print (distance_matrix)
+        with open("../gene_dist/" + args["i"] + '.gene.bed', 'w') as f:
+            for gene in gene_list:
+                if gene in gene_dict:
+                    chr, start, end, strand = gene_dict[gene]
+                    print(gene, chr, start, end, strand, file = f)
+                else:
+                    print(gene, "-", "-", "-", "-", file=f)
 
-    get_VDJ_bed()
+    # get_VDJ_bed()

@@ -44,7 +44,7 @@ def load_anno_result(raw_result):
 
 gene_list, xx =  get_focus_gene("IG_TR")
 
-test = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results/IG_TR_dp50_acc98_6/IG_TR_dp50_acc98_6.IG.TR.allele.txt"
+test = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results/IG_TR_dp50_acc98_9/IG_TR_dp50_acc98_9.IG.TR.allele.txt"
 store_alleles_dict = load_anno_result(test)
 # print (store_alleles_dict)
 compare_four(store_alleles_dict, store_alleles_dict, gene_list)
