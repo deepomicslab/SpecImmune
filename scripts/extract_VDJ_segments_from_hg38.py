@@ -71,7 +71,7 @@ def extract_segments(hg38, segment_bed, segment):
     command = f"samtools faidx {hg38} -r {segment_bed} >{segment}"
     os.system(command)
     rename_contig(segment)
-    add_alt_refs(hg38, segment)
+    # add_alt_refs(hg38, segment)  ## can harm performance
     ## index the segment with samtools and bwa
     os.system(f"samtools faidx {segment}")
     os.system(f"bwa index {segment}")

@@ -396,45 +396,55 @@ def align_digit_2_truth(truth, mylist):  # not using
     # print (mylist, truth)
     return mylist
 
+def fill_empty(true_list):
+    if true_list[1] == '':
+        true_list[1] = true_list[0]
+    if true_list[0] == '':
+        true_list[0] = true_list[1]
+    return true_list
+
+def check_TCR_Mutation(truth_list):
+    for i in range(2):
+        allele = truth_list[i][0]
+        field = allele.split("_")
+        if len(field) == 2:
+            if field[0] == "M" or field[0] == "N":
+                return True
+    return False
+
 def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
     gene_dict = {}
     for sample in truth_dict:
         print (sample)
-        # if sample != "FH14":
-        #     continue
-        # for gene in truth_dict[sample]:
         for gene in gene_list:
-            # print (gene)
+
             if gene not in truth_dict[sample]:
-                print ("truth_dict not in ", sample, gene, truth_dict[sample].keys())
+                print ("gene not in truth_dict", sample, gene, truth_dict[sample].keys())
                 continue
-            true_list = truth_dict[sample][gene]
-            # print (all_hla_la_result[sample])
             if gene not in all_hla_la_result[sample]:
-                # print ("all_hla_la_result not in ", sample, gene, all_hla_la_result[sample])
+                print ("gene not in infer_dict ", sample, gene, all_hla_la_result[sample])
                 continue
+
+            true_list = truth_dict[sample][gene]
+            hla_la_list = all_hla_la_result[sample][gene]
+
             if len(true_list) != 2:
                 print ("copy != 2 for truth", sample, gene, true_list)
                 continue
-
             if true_list[0] == [] or true_list[1] == []:
                 print ("copy != 2 for ", sample, gene, true_list)
                 continue
+            if check_TCR_Mutation(true_list):
+                continue
+
             
-            hla_la_list = all_hla_la_result[sample][gene]
-            print (hla_la_list)
+            
             if hla_la_list[1] == '' and hla_la_list[0] == '':
                 print ("inferred empty", sample, gene, hla_la_list)
                 continue
 
-            if true_list[1] == '':
-                true_list[1] = true_list[0]
-            if true_list[0] == '':
-                true_list[0] = true_list[1]
-            if hla_la_list[1] == '':
-                hla_la_list[1] = hla_la_list[0]
-            if hla_la_list[0] == '':
-                hla_la_list[0] = hla_la_list[1]
+            true_list = fill_empty(true_list)
+            hla_la_list = fill_empty(hla_la_list)
 
             for i in range(2):
                 # print (sample, gene, true_list[i], truth_dict[sample][gene])
@@ -453,11 +463,10 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
                     hla_la_list[i] = hla_la_list[i].split(",")
                 else:
                     hla_la_list[i] = [hla_la_list[i]]
-                # print ("xx", hla_la_list, hla_la_list[i])
+
                 hla_la_list[i] = [del_prefix(x) for x in hla_la_list[i]]
                 true_list[i] = [del_prefix(x) for x in true_list[i]]
 
-                # print ("yy", true_list[i] , hla_la_list[i])
                 true_list[i] = convert_field(true_list[i], digit)
                 hla_la_list[i] = convert_field(hla_la_list[i], digit)
 
@@ -479,14 +488,20 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
             gene_dict[gene][1] += 2
 
             if max([fir, sec]) != 2:
-                print (sample, gene, true_list, "<<<>>>" ,hla_la_list, max([fir, sec]))
+                print (sample, gene, true_list, "<<<wrong>>>" ,hla_la_list, max([fir, sec]))
+            else:
+                print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
+    cal_accuracy(gene_dict)
 
 
-            # print (true_list, hla_la_list, fir, sec)
-        # break
+def cal_accuracy(gene_dict):
+    total_correct, total = 0, 0
     for gene, items in gene_dict.items():
         # print (gene, items)
+        total_correct += items[0]
+        total += items[1]
         print (gene, items[0], items[1], round(items[0]/items[1],2))
+    print ("total", total_correct, total, round(total_correct/total,2))
 
 def compare_four_old(truth_dict, all_hla_la_result_old, gene_list, digit=8):
     gene_dict = {}
@@ -732,6 +747,59 @@ def assess_gene_copy(mean_len, max_match, max_identity, min_mat=0.8, min_identi 
         return True
     return False
 
+def main_TCR():
+    truth_dict = load_TCR_truth()
+    new_truth_dict = {}
+    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/"
+
+    sample_list = []
+    infer_dict = {}
+    for sample in truth_dict:
+        print (sample)
+        infer = os.path.join(result_dir, f"{sample}/{sample}.IG_TR_typing_result.txt")
+        if os.path.exists(infer):
+            sample_infer_dict = load_vdj_result(infer)
+            infer_dict[sample] = sample_infer_dict
+            new_truth_dict[sample] = truth_dict[sample]
+            sample_list.append(sample)
+
+            gene_list = list(set(truth_dict[sample].keys()) & set(sample_infer_dict.keys()))
+    
+    compare_four(new_truth_dict, infer_dict, gene_list)
+    print ("gene number", len(gene_list), "sample number", len(sample_list))
+
+def load_TCR_truth():
+    tcr_trut_file = "tcr_truth.csv"
+    ### save the truth to a dictionary, save each sample's truth to a dictionary
+    """
+    ,,,gene,NA18506,NA18508,NA18507,HG02059,HG02060,HG02061,NA18956,NA18517,NA10831,HG01361,HG01175
+    chr7,142301134,142301432,TRBV2,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01
+    chr7,142308753,142309048,TRBV3-1,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01
+    chr7,142313371,142313666,TRBV4-1,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01,01/01
+    """
+    truth_dict = {}
+    with open(tcr_trut_file, 'r') as f:
+        for idx, line in enumerate(f):
+            field = line.strip().split(",")
+            if idx == 0:
+                sample_list = field
+                continue
+            if field[0] == "chr7_142346196_21653":
+                continue
+            gene = field[3]
+            for i in range(4, len(field)):
+                sample = sample_list[i]
+                if sample not in truth_dict:
+                    truth_dict[sample] = {}
+                allele = field[i].split("/")
+                if len(allele) == 1:
+                    # allele.append(allele[0])
+                    allele = ['NA', 'NA']
+                # print (allele)
+                truth_dict[sample][gene] = [[allele[0]], [allele[1]]]
+    return truth_dict
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='compare results')
@@ -750,9 +818,12 @@ if __name__ == "__main__":
     # truth_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/hgscv2_truth_bwa_zip/"
     # result_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/kir_typing_out/"
 
-    db_dir = f"../db/{gene_class}/"
-    gene_list, interval_dict =  get_focus_gene(gene_class)
-    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
-    main_pacbio(gene_list, truth_dir, result_dir)
+    # db_dir = f"../db/{gene_class}/"
+    # gene_list, interval_dict =  get_focus_gene(gene_class)
+    # gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
+    # main_pacbio(gene_list, truth_dir, result_dir)
+
+
+    main_TCR()
     
     
