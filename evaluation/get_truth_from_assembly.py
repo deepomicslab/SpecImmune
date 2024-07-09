@@ -36,16 +36,16 @@ def get_phased_assemblies_hprc():
     # print (record_truth_file_dict)
     return  record_truth_file_dict
 
-inpath = "/mnt/d/my_HLA/assembly/"
-outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
-db = "../db/"  
-record_truth_file_dict = get_phased_assemblies()
-
-
-# inpath = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/HPRC_assembly/"
-# outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hprc_truth_bwa/"
+# inpath = "/mnt/d/my_HLA/assembly/"
+# outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
 # db = "../db/"  
-# record_truth_file_dict = get_phased_assemblies_hprc()
+# record_truth_file_dict = get_phased_assemblies()
+
+
+inpath = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/HPRC_assembly/"
+outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hprc_truth_bwa/"
+db = "../db/"  
+record_truth_file_dict = get_phased_assemblies_hprc()
 
 for sample in record_truth_file_dict:
     # if sample == "HG00514":

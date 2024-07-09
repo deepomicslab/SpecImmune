@@ -71,6 +71,7 @@ def extract_segments(hg38, segment_bed, segment):
     command = f"samtools faidx {hg38} -r {segment_bed} >{segment}"
     os.system(command)
     rename_contig(segment)
+    add_alt_refs(hg38, segment)
     ## index the segment with samtools and bwa
     os.system(f"samtools faidx {segment}")
     os.system(f"bwa index {segment}")
@@ -87,6 +88,17 @@ def rename_contig(segment):
                     f.write(line)
                 else:
                     f.write(line)
+
+def add_alt_refs(hg38, segment):
+    alt_ref_file = f"{sys.path[0]}/../VDJ_ref/alt_ref.list"
+    alt_ref_list = []
+    with open(alt_ref_file, "r") as f:
+        for line in f:
+            field = line[1:].strip().split()
+            alt_ref_list.append(field[0])
+    cmd = f"samtools faidx {hg38} {' '.join(alt_ref_list)} >> {segment}"
+    os.system(cmd)
+
 
 if __name__ == "__main__":
 
