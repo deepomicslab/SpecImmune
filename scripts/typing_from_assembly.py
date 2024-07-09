@@ -107,9 +107,11 @@ def ana_sam(input_sam, gene, sample):
             continue
         if not line.startswith(f"{gene}*"):
             continue
+        ## skip if the cigar is *
+        if line.split("\t")[5] == "*":
+            continue
         
         allele_name = line.split("\t")[0]
-        exon_allele_name = "HLA-" + allele_name
         
         align_info = read_sam_line(line)
         align_list.append(align_info)
@@ -225,7 +227,7 @@ def read_sam_line(line):
         num_mismatches = int(nm_tag[0].split(":")[2])
     else:
         num_mismatches = 0
-
+    # print (cigar, f"{allele_name} {Target_sequence_name} Match length: {match_length}", num_mismatches, block_length)
     # Calculate the match identity
     match_identity = round(float(match_length-num_mismatches)/block_length, 6)
     target_end = target_start + block_length
@@ -435,7 +437,7 @@ if __name__ == "__main__":
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
     required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
-    optional.add_argument("--map_tool", type=str, help="bwa or minimap2.", metavar="\b", default="minimap2")
+    optional.add_argument("--map_tool", type=str, help="bwa or minimap2.", metavar="\b", default="bwa")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=10)
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
@@ -476,6 +478,7 @@ if __name__ == "__main__":
             if args['map_tool'] == "minimap2":
                 minimap(sample, hap_index, input_sam)
             elif args['map_tool'] == "bwa":
+                # pass
                 bwa(sample, hap_index, input_sam)
             else:
                 print ("Please choose minimap2 or bwa as map tool.")

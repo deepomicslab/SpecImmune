@@ -55,8 +55,8 @@ class My_db():
                 if not os.path.exists(f"{self.hg38}.bwt"):
                     os.system(f"bwa index {self.hg38}")
             else:
-                print ("hg38 not provided")
-                sys.exit(1)
+                print ("WARNING: hg38 not provided, cannot type IG_TR genes")
+                # sys.exit(1)
         else:
             print ("wrong gene_class")
 
