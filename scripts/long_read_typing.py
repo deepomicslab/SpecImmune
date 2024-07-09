@@ -428,7 +428,10 @@ class Fasta():
             output_bam = f"{parameter.outdir}/{gene}.downsample.bam"
             output_depth = f"{parameter.outdir}/{gene}.downsample.depth"
             avg_depth, downsample_ratio = self.downsample_and_process(bam, output_bam, depth_file, output_depth, max_depth, seed, downsample_func, awk_script)
-            if avg_depth < 2:
+            if avg_depth < 2 and args['y']=="nanopore":
+                print(f"Reads coverage is too low for {bam}, skip it")
+                return
+            elif avg_depth<1:
                 print(f"Reads coverage is too low for {bam}, skip it")
                 return
             print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
@@ -461,9 +464,12 @@ class Fasta():
                 output_bam = f"{parameter.outdir}/{gene}.{index}.downsample.bam"
                 output_depth = f"{parameter.outdir}/{gene}.{index}.downsample.depth"
                 avg_depth, downsample_ratio = self.downsample_and_process(bam, output_bam, depth_file, output_depth, max_depth, seed, downsample_func, awk_script)
-                if avg_depth < 2:
+                if avg_depth < 2 and args['y']=="nanopore":
                     print(f"Reads coverage is too low for {bam}, skip it")
-                    continue
+                    return
+                elif avg_depth<1:
+                    print(f"Reads coverage is too low for {bam}, skip it")
+                    return
                 print(f"downsample ratio is {downsample_ratio} for {gene}", flush=True)
                 if args['y'] == "pacbio-hifi":
                     set_dp == 1

@@ -235,7 +235,7 @@ def create_CYP_directories_and_save_sequences(fasta_path, output_base_dir, gene_
 
 def make_HLA_db():
     # URL to download the FASTA file
-    HLA_fasta_url = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/hla_gen.fasta"
+    HLA_fasta_url = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/hla_gen.fasta.zip"
     release_version = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/release_version.txt"
     g_group_annotation = "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/wmda/hla_nom_g.txt"
 
@@ -250,6 +250,9 @@ def make_HLA_db():
         local_release_version = os.path.join(HLA_dir, "release_version.txt")
         local_g_group_annotation = os.path.join(HLA_dir, "hla_nom_g.txt")
         download_file(HLA_fasta_url, local_fasta_filename)
+        # unzip the file
+        cmd = f"unzip {local_fasta_filename} -d {HLA_dir}"
+        os.system(cmd)
         download_file(release_version, local_release_version)
         download_file(g_group_annotation, local_g_group_annotation)
     else:
