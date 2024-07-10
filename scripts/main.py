@@ -5,6 +5,7 @@ import pysam
 import gzip
 import argparse
 from db_objects import My_db
+from folder_objects import My_folder
 
 __version__ = '1.0.0'
 
@@ -15,11 +16,8 @@ def main(args):
         print(f'Version: {__version__}')
         sys.exit(0)
 
-    if not os.path.exists(args["o"]):
-        os.system("mkdir %s"%(args["o"]))
-    outdir = args["o"] + "/" + args["n"]
-    if not os.path.exists(outdir):
-        os.system("mkdir %s"%(outdir))
+    my_folder = My_folder(args)
+    my_folder.make_dir()
 
     if args['i'] != "IG_TR":
 

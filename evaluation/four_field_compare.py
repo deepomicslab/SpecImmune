@@ -50,17 +50,17 @@ def parse_truth(truth_file):
     # print (truth_dict)
     return truth_dict
 
-def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"):
+def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/",gene_class = "HLA", len_cutoff = 0):
     all_truth_dict = {}
     for file in os.listdir(align_dir):
-        if file.endswith("_extracted_HLA_align.txt"):
+        if file.endswith(f"_extracted_{gene_class}_align.txt"):
             truth_file = os.path.join(align_dir, file)
-            sample_truth_dict, sample_name = parse_truth_from_align(truth_file)
+            sample_truth_dict, sample_name = parse_truth_from_align(truth_file, gene_class, len_cutoff)
             all_truth_dict[sample_name] = sample_truth_dict
     # print (all_truth_dict)
     return all_truth_dict
 
-def parse_truth_from_align(truth_file, cov_cutoff = 0.95, ide_cutoff = 0.99):
+def parse_truth_from_align(truth_file, gene_class = "HLA", len_cutoff = 0, cov_cutoff = 0.95, ide_cutoff = 0.99):
     # truth_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/upload/HG00096_extracted_HLA_align.txt"
     match_len_dict = defaultdict(dict)
     identity_dict = defaultdict(dict)
@@ -69,18 +69,23 @@ def parse_truth_from_align(truth_file, cov_cutoff = 0.95, ide_cutoff = 0.99):
         for idx, line in enumerate(f):
             field = line.strip().split()
             sample_name = field[0]
-            gene = field[1].split("-")[-1]
-            # if gene == "C":
-            #     print (field)
+            if gene_class == "HLA":
+                gene = field[1].split("-")[-1]
+            else:
+                gene = field[1]
+            # if sample_name == "HG00096" and gene == "TRAV4":
+            #     print (truth_file, field)
             hap = field[2]
             allele_name = field[3]
             match_len = int(field[4])
             identity = float(field[5])  
-            if  identity < ide_cutoff:
+            if identity < ide_cutoff:
                 continue
 
             true_allele_len = allele_length_dict[allele_name]
             if match_len/true_allele_len < cov_cutoff:
+                continue
+            if true_allele_len < len_cutoff:
                 continue
 
             if hap not in match_len_dict[gene]:
@@ -238,24 +243,36 @@ def parse_all_hla_hla_input(truth_dict):
         all_hla_la_result[sample] = input_dict
     return all_hla_la_result
 
-def parse_all_spleclong_pacbio_input(outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/out_pac1/"):
+def parse_all_spleclong_pacbio_input(gene_class, outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/out_pac1/"):
     all_hla_la_result = {}
     ## for all folder in outdir
     for folder in os.listdir(outdir):
         sample = folder
-        # input_file = os.path.join(outdir, folder, f"{sample}.HLA.type.result.txt")
-        input_file = os.path.join(outdir, folder, f"hlala.like.results.txt")
-        print (input_file)
-        ## check if input file exists use os
-        if os.path.exists(input_file):
-            input_dict = parse_hla_hla_input(input_file)
-        else:
-            input_file = f"{outdir}/{sample}/{sample}/hlala.like.results.txt"
+
+        if gene_class != "IG_TR":
+            # input_file = os.path.join(outdir, folder, f"{sample}.HLA.type.result.txt")
+            input_file = os.path.join(outdir, folder, f"hlala.like.results.txt")
+            print (input_file)
+            ## check if input file exists use os
             if os.path.exists(input_file):
                 input_dict = parse_hla_hla_input(input_file)
             else:
-                print(f"File {input_file} does not exist")
-                input_dict = {}
+                input_file = f"{outdir}/{sample}/{sample}/hlala.like.results.txt"
+                if os.path.exists(input_file):
+                    input_dict = parse_hla_hla_input(input_file)
+                else:
+                    print(f"File {input_file} does not exist")
+                    input_dict = {}
+        else:
+            infer = os.path.join(result_dir, f"{sample}/{sample}.IG_TR_typing_result.txt")
+            # infer = os.path.join(result_dir, f"{sample}/NA18506_new/NA18506_new.IG_TR_typing_result.txt")
+            if os.path.exists(infer):
+                print (infer)
+                input_dict = load_vdj_result(infer)
+            else:
+                print(f"File {infer} does not exist")
+                sys.exit(1)
+
         all_hla_la_result[sample] = input_dict
     return all_hla_la_result
 
@@ -419,10 +436,10 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
         for gene in gene_list:
 
             if gene not in truth_dict[sample]:
-                print ("gene not in truth_dict", sample, gene, truth_dict[sample].keys())
+                print ("gene not in truth_dict", sample, gene)
                 continue
             if gene not in all_hla_la_result[sample]:
-                print ("gene not in infer_dict ", sample, gene, all_hla_la_result[sample])
+                print ("gene not in infer_dict ", sample, gene)
                 continue
 
             true_list = truth_dict[sample][gene]
@@ -675,15 +692,38 @@ def main():
     compare_four(truth_dict, all_hla_la_result, gene_list, 8)
     count_report_allele(truth_dict, all_hla_la_result)
 
-def main_pacbio(gene_list, truth_dir, result_dir):
+def split_IG_TR(gene_list):
+    IG_list = []
+    TR_list = []
+    for gene in gene_list:
+        if gene.startswith("IG"):
+            IG_list.append(gene)
+        elif gene.startswith("TR"):
+            TR_list.append(gene)
+        else:
+            print (gene)
+            sys.exit(1)
+    return IG_list, TR_list
+
+def main_pacbio(gene_list, truth_dir, result_dir, gene_class="HLA"):
     ## remove HLA- prefix in gene_list
-    gene_list = [x.split("-")[-1] for x in gene_list]
+    if gene_class == "HLA":
+        gene_list = [x.split("-")[-1] for x in gene_list]
     # gene_list = ['B']
+    if gene_class != "IG_TR":
+        all_truth_dict = parse_truth_from_align_all(truth_dir, gene_class)
+        
+    else:
+        len_cutoff = 200
+        all_truth_dict = parse_truth_from_align_all(truth_dir, gene_class, len_cutoff)
+        IG_list, TR_list = split_IG_TR(gene_list)
 
-    all_truth_dict = parse_truth_from_align_all(truth_dir)
-    all_hla_la_result = parse_all_spleclong_pacbio_input(result_dir)
-
-    all_old_hlala_result = parse_hlala_pacbio()
+    # print (all_truth_dict['NA12878'])
+    # return
+    all_hla_la_result = parse_all_spleclong_pacbio_input(gene_class, result_dir, )
+    # print (all_hla_la_result)
+    # return
+    # all_old_hlala_result = parse_hlala_pacbio()
     new_truth_dict = {}
     for sample in all_hla_la_result:
         pure_sample = sample.split(".")[0]
@@ -693,7 +733,12 @@ def main_pacbio(gene_list, truth_dir, result_dir):
     # print (all_hla_la_result.keys())
     compare_four(new_truth_dict, all_hla_la_result, gene_list, 8)
     print ("------------------")
-    compare_four_old(new_truth_dict, all_old_hlala_result, gene_list, 8)
+    if gene_class == "IG_TR":
+        compare_four(new_truth_dict, all_hla_la_result, IG_list, 8)
+        print ("------------------")
+        compare_four(new_truth_dict, all_hla_la_result, TR_list, 8)
+        print ("------------------")
+    # compare_four_old(new_truth_dict, all_old_hlala_result, gene_list, 8)
     # count_report_allele(all_truth_dict, all_hla_la_result)
 
 def parse_hlala_pacbio(file_path="HLA-LA.merge.result.txt"):
@@ -717,14 +762,14 @@ def cal_gene_len(db_dir):
     allele_length_dict = {}
     # for each dir in the db_dir
     for gene in os.listdir(db_dir):
+        # print (db_dir, gene)
         gene_dir = os.path.join(db_dir, gene)
         if os.path.isdir(gene_dir):
             for file in os.listdir(gene_dir):
                 if file.endswith(".fasta"):
                     fai_file = f"{gene_dir}/{file}.fai"
                     if not os.path.exists(fai_file):
-                        # print (fai_file)
-                        # print ("fai file does not exist")
+                        print (fai_file, "fai file does not exist")
                         return
                     gene_length_dict[gene] = []
                     f = open(fai_file, "r")
@@ -755,8 +800,8 @@ def main_TCR(result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/")
     infer_dict = {}
     for sample in truth_dict:
         print (sample)
-        # infer = os.path.join(result_dir, f"{sample}/{sample}.IG_TR_typing_result.txt")
-        infer = os.path.join(result_dir, f"{sample}/NA18506_new/NA18506_new.IG_TR_typing_result.txt")
+        infer = os.path.join(result_dir, f"{sample}/{sample}.IG_TR_typing_result.txt")
+        # infer = os.path.join(result_dir, f"{sample}/NA18506_new/NA18506_new.IG_TR_typing_result.txt")
         if os.path.exists(infer):
             print (infer)
             sample_infer_dict = load_vdj_result(infer)
@@ -812,19 +857,27 @@ if __name__ == "__main__":
     # main()
     # assess_sim()
 
-    gene_class = "HLA"
+    # gene_class = "HLA"
+    # truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
+    # result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_hla/"
+
+    #### IG_TR
+    gene_class = "IG_TR"
     truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
-    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_hla/"
+    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/"
 
     # truth_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/hgscv2_truth_bwa_zip/"
     # result_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/kir_typing_out/"
 
-    # db_dir = f"../db/{gene_class}/"
-    # gene_list, interval_dict =  get_focus_gene(gene_class)
-    # gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
-    # main_pacbio(gene_list, truth_dir, result_dir)
+    db_dir = f"../db/{gene_class}/"
+    gene_list, interval_dict =  get_focus_gene(gene_class)
+    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
+    main_pacbio(gene_list, truth_dir, result_dir, gene_class)
+
+    
 
 
-    main_TCR("./")
+
+    # main_TCR("./")
     
     

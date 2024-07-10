@@ -7,6 +7,10 @@
 #  -j 15 -y nanopore -i IG_TR \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/VDJ/SRR24993720.fastq.gz
 
-python3 ../scripts/main.py -n NA18506_new -o /mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/\
+# python3 ../scripts/main.py -n NA18506_new -o /mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/\
+#  -j 15 -y nanopore -i IG_TR \
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/VDJ/SRR19372746.fastq.gz
+
+python3 ../scripts/main.py -n NA19240 -o /mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/\
  -j 15 -y nanopore -i IG_TR \
--r /mnt/d/HLAPro_backup/Nanopore_optimize/data/VDJ/SRR19372746.fastq.gz
+-r /mnt/d/HLAPro_backup/Nanopore_optimize/data/complex_reads/NA19240.IG.TR.extract.fastq.gz
