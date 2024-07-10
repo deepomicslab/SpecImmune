@@ -4,7 +4,7 @@ import os
 # Path to your CSV file
 csv_file_path = 'SRP272207.csv'
 data_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/VDJ/sra/"
-results_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/"
+results_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/"
 
 run_dict = {}
 # Open the CSV file and read the top 10 lines (excluding the header)

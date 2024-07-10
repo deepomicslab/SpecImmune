@@ -46,8 +46,8 @@ record_truth_file_dict = get_phased_assemblies()
 # record_truth_file_dict = get_phased_assemblies_hprc()
 
 for sample in record_truth_file_dict:
-    if sample != "HG00096":
-        continue
+    # if sample != "HG00096":
+    #     continue
     # print ("xx", record_truth_file_dict[sample])
     ## check if the bwa index exsits for record_truth_file_dict[sample][0], if not. index
     # for i in range(2):
@@ -59,8 +59,8 @@ for sample in record_truth_file_dict:
     #         os.system(cmd)
     #     else:
     #         print (f"{record_truth_file_dict[sample][i]} already indexed")
-    # for gene_class in ["HLA", "CYP", "KIR"]:
-    for gene_class in ["IG_TR"]:
+    for gene_class in ["HLA", "CYP", "KIR", "IG_TR"]:
+    # for gene_class in ["IG_TR"]:
         cmd = f"""
         python3 ../scripts/typing_from_assembly.py -j 15 -1 {record_truth_file_dict[sample][0]} -2 {record_truth_file_dict[sample][1]} -n {sample} -i {gene_class} -o {outdir}  
         """

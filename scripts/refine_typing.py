@@ -13,6 +13,7 @@ import re
 import sys
 import pysam
 import argparse
+from collections import defaultdict
 
 from determine_gene import get_focus_gene, get_folder_list
 from db_objects import My_db
@@ -177,36 +178,68 @@ def select_by_alignment(align_list, gene):
 
     return full_result_list
 
-def output(record_best_match, gene_list, result_file, version_info):
+def get_read_num_from_step1(step1_result):
+    # check if the step1_result file exists
+    if not os.path.exists(step1_result):
+        print(f"{step1_result} does not exist")
+        return 0
+    read_num_dict = {}
+    with open(step1_result, "r") as f:
+        for line in f:
+            if line.startswith("Locus"):
+                continue
+            if line.startswith("#"):
+                continue
+            field = line.strip().split()
+            locus = field[0]
+            hap = field[1]
+            allele = field[2]
+            tag = f"{locus}_{hap}"
+            read_num = int(field[3])
+            read_num_dict[tag] = [read_num, allele]
+    return read_num_dict
+
+
+def output(record_best_match, gene_list, result_file, version_info, record_all_match,read_num_dict):
     f = open(result_file, 'w')
-    print ("#", version_info, file = f)
-    print ("Locus   Chromosome      Allele", file = f)
+    print (version_info, file = f)
+    print ("Locus\tChromosome\tGenotype\tMatch_info\tReads_num\tStep1_type", file = f)
     for gene in gene_list:
         for ch in [1, 2]:
+            tag = f"{gene}_{ch}"
             alleles = ''
+            alleles_info = ''
+            read_num, step1_alleles = read_num_dict[tag]
             for a in record_best_match[gene][ch]:
                 # print (a)
                 alleles += a[0] + ";"
+                info = record_all_match[tag][a[0]]
+                alleles_info += f"{a[0]}|{int(info[2])}|{round(info[3],3)};"
             out_alleles = alleles[:-1]
+            alleles_info = alleles_info[:-1]
+            if out_alleles == "":
+                out_alleles = "NA"
+                alleles_info = "NA"
             if re.search('HLA-C\*04:01:01:11', out_alleles):
                 out_alleles += ";HLA-C*04:01:01:01"
-            print (gene, ch, out_alleles, sep="\t", file = f)
+            print (gene, ch, out_alleles,alleles_info, read_num,step1_alleles, sep="\t", file = f)
     f.close()
 
-def get_blast_info(blastfile, tag):
-    print("blastfile", blastfile)
+def get_blast_info(blastfile, tag, record_all_match):
+    # print("blastfile", blastfile)
     align_list = []
     for line in open(blastfile):
         field = line.strip().split()
         if field[0] != tag:
             continue
         align_info = [field[1], int(field[3]), int(field[3])-float(field[2]), 1-float(field[2])/int(field[3]), 'x', 0, 0]
-        if field[1] in ["HLA-A*03:08:01:02", "HLA-A*03:01:01:12"]:
-            print("field", field, align_info)    
+        record_all_match[tag][field[1]] = align_info
+        # if field[1] in ["HLA-A*03:08:01:02", "HLA-A*03:01:01:12"]:
+        #     print("field", field, align_info)    
         align_list.append(align_info)
     # print("align_list_0", align_list)
     identity_sorted_list = sorted(align_list, key=get_3_element, reverse = True)
-    return identity_sorted_list
+    return identity_sorted_list, record_all_match
 
 
 
@@ -249,9 +282,11 @@ if __name__ == "__main__":
     result_path = args['o']
     sample = args['n']
     result_file = result_path + "/" + "hlala.like.results.txt"
-    all_align_result_file = result_path + "/" + "{args['i']}.map.results.txt"
+    all_align_result_file = result_path + "/" + f"{args['i']}.map.results.txt"
+    step1_result = result_path + "/" + f"{sample}.{args['i']}.type.result.txt"
     # gene_list = ["A", "B", "C", "DPA1", "DPB1", "DQA1", "DQB1", "DRB1"]
     record_best_match = {}
+    record_all_match = defaultdict(dict) ## for output
     blastfile = f"{result_path}/{args['i']}.blast.summary.txt"
     print (f"optimize typing results by balancing alignment length and identity ")
     for hap_index in range(2):
@@ -259,9 +294,10 @@ if __name__ == "__main__":
             if gene not in record_best_match:
                 record_best_match[gene] = {}
             tag = f"{gene}_{hap_index+1}"
-            align_list = get_blast_info(blastfile, tag)
+            align_list, record_all_match = get_blast_info(blastfile, tag, record_all_match)
             full_result_list = select_by_alignment(align_list, gene)
             record_best_match[gene][hap_index+1] = full_result_list   
     
-    output(record_best_match, gene_list, result_file, my_db.version_info)
+    read_num_dict = get_read_num_from_step1(step1_result)
+    output(record_best_match, gene_list, result_file, my_db.version_info, record_all_match,read_num_dict)
     print (f"The refined typing results is in {result_file}")
