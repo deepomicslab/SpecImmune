@@ -34,6 +34,6 @@ for run_name, sample_name in run_dict.items():
 
     ## run typing
     cmd = f"""
-        python3 ../scripts/main.py -n NA18506_new -o {sample_name} -j 15 -y nanopore -i IG_TR  -r {data_dir}/{sample_name}.fastq.gz
+        python3 ../scripts/main.py -n {sample_name} -o {results_dir} -j 15 -y nanopore -i IG_TR  -r {data_dir}/{sample_name}.fastq.gz
     """
     os.system(cmd)

@@ -747,17 +747,18 @@ def assess_gene_copy(mean_len, max_match, max_identity, min_mat=0.8, min_identi 
         return True
     return False
 
-def main_TCR():
+def main_TCR(result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/"):
     truth_dict = load_TCR_truth()
     new_truth_dict = {}
-    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/"
-
+    
     sample_list = []
     infer_dict = {}
     for sample in truth_dict:
         print (sample)
-        infer = os.path.join(result_dir, f"{sample}/{sample}.IG_TR_typing_result.txt")
+        # infer = os.path.join(result_dir, f"{sample}/{sample}.IG_TR_typing_result.txt")
+        infer = os.path.join(result_dir, f"{sample}/NA18506_new/NA18506_new.IG_TR_typing_result.txt")
         if os.path.exists(infer):
+            print (infer)
             sample_infer_dict = load_vdj_result(infer)
             infer_dict[sample] = sample_infer_dict
             new_truth_dict[sample] = truth_dict[sample]
@@ -824,6 +825,6 @@ if __name__ == "__main__":
     # main_pacbio(gene_list, truth_dir, result_dir)
 
 
-    main_TCR()
+    main_TCR("./")
     
     

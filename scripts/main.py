@@ -6,8 +6,15 @@ import gzip
 import argparse
 from db_objects import My_db
 
+__version__ = '1.0.0'
 
 def main(args):
+
+    # Check if the version option is provided
+    if args["version"]:
+        print(f'Version: {__version__}')
+        sys.exit(0)
+
     if not os.path.exists(args["o"]):
         os.system("mkdir %s"%(args["o"]))
     outdir = args["o"] + "/" + args["n"]
@@ -117,7 +124,7 @@ if __name__ == "__main__":
     optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")
     optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon].", metavar="\b", default="wgs")
 
-
+    optional.add_argument('-v', '--version', action='store_true', help='Display the version number')
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
 
