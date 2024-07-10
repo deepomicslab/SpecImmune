@@ -235,4 +235,7 @@ dependencies:
   - zstandard=0.19.0=py38h0a891b7_0
   - zstd=1.5.6=ha6fb4c9_0
   - stringtie=2.2.3=h43eeafb_0
+  - r-rsvg=2.6.0=r44hc7fd59d_1
+  - pip:
+      - pybigwig==0.3.22
 prefix: /home/xuedowang2/miniconda3/envs/speclong
