@@ -3,6 +3,7 @@ import re
 from collections import defaultdict
 import numpy as np
 import csv
+import pandas as pd
 
 import sys, os
 sys.path.insert(0, sys.path[0]+'/../scripts/')
@@ -429,6 +430,36 @@ def check_TCR_Mutation(truth_list):
                 return True
     return False
 
+def store_results(truth_dict, all_hla_la_result, gene_list, result_file):
+    data = []
+    for sample in truth_dict:
+
+        for gene in gene_list:
+
+            if gene not in truth_dict[sample]:
+                truth_dict[sample][gene] = [[], []]
+
+            if gene not in all_hla_la_result[sample]:
+                all_hla_la_result[sample][gene] = [[], []]
+            for i in range(2):
+                if len(truth_dict[sample][gene][i]) == 0:
+                    # print ("test", truth_dict[sample][gene][i], all_hla_la_result[sample][gene][i], "/".join(all_hla_la_result[sample][gene][i]))
+                    truth_dict[sample][gene][i] = 'NA'
+                    
+                else:
+                    truth_dict[sample][gene][i] = "/".join(truth_dict[sample][gene][i])
+                if len(all_hla_la_result[sample][gene][i]) == 0:
+                    all_hla_la_result[sample][gene][i] = 'NA'
+                else:
+                    all_hla_la_result[sample][gene][i] = "/".join(all_hla_la_result[sample][gene][i])
+            data.append([sample, gene, truth_dict[sample][gene][0], truth_dict[sample][gene][1], all_hla_la_result[sample][gene][0], all_hla_la_result[sample][gene][1]])
+    # print (data[1])
+    ## transfer data to datafram and save in a csv file
+    df = pd.DataFrame(data, columns = ['sample', 'gene', 'truth_1', 'truth_2', 'infer_1', 'infer_2'])
+    df.to_csv(result_file, index=False)
+                
+
+
 def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
     gene_dict = {}
     for sample in truth_dict:
@@ -636,8 +667,8 @@ def load_vdj_result(raw_result):
                 store_alleles_dict[sample] = {}
             if gene not in store_alleles_dict[sample]:
                 store_alleles_dict[sample][gene] = []
-            store_alleles_dict[sample][gene] = [allele1, allele2]
-    print (store_alleles_dict[sample])
+            store_alleles_dict[sample][gene] = [[allele1], [allele2]]
+    # print (store_alleles_dict[sample])
     return store_alleles_dict[sample]
 
 def assess_sim_module(truth, infer, gene_list, gene_class="HLA"):
@@ -714,7 +745,7 @@ def main_pacbio(gene_list, truth_dir, result_dir, gene_class="HLA"):
         all_truth_dict = parse_truth_from_align_all(truth_dir, gene_class)
         
     else:
-        len_cutoff = 200
+        len_cutoff = 0
         all_truth_dict = parse_truth_from_align_all(truth_dir, gene_class, len_cutoff)
         IG_list, TR_list = split_IG_TR(gene_list)
 
@@ -733,11 +764,14 @@ def main_pacbio(gene_list, truth_dir, result_dir, gene_class="HLA"):
     # print (all_hla_la_result.keys())
     compare_four(new_truth_dict, all_hla_la_result, gene_list, 8)
     print ("------------------")
-    if gene_class == "IG_TR":
-        compare_four(new_truth_dict, all_hla_la_result, IG_list, 8)
-        print ("------------------")
-        compare_four(new_truth_dict, all_hla_la_result, TR_list, 8)
-        print ("------------------")
+    # if gene_class == "IG_TR":
+    #     compare_four(new_truth_dict, all_hla_la_result, IG_list, 8)
+    #     print ("------------------")
+    #     compare_four(new_truth_dict, all_hla_la_result, TR_list, 8)
+    #     print ("------------------")
+    
+    result_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/data/eva_results/result_{gene_class}.csv"
+    store_results(new_truth_dict, all_hla_la_result, gene_list, result_file)
     # compare_four_old(new_truth_dict, all_old_hlala_result, gene_list, 8)
     # count_report_allele(all_truth_dict, all_hla_la_result)
 
