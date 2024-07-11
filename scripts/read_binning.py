@@ -15,6 +15,7 @@ from read_objects import My_read, My_locus, Read_bin
 from determine_gene import get_focus_gene, get_folder_list
 from db_objects import My_db
 from alignment_modules import Read_Type, read_bin_map2db
+from folder_objects import My_folder
 
 def load_gene_distance():
     # read the dict stored by pickle in ../gene_dist/HLA.distance_matrix.pkl, check if the file exists
@@ -87,19 +88,19 @@ class Score_Obj():
         return self.read_loci
 
 
-class Pacbio_Binning():
+class Binning():
 
     def __init__(self):
         self.db = my_db.full_db
         if args["seq_tech"] == "rna":
             self.cds_db = my_db.full_cds_db
-        self.sam = f"""{parameter.outdir}/{parameter.sample}.db.bam"""
+        self.sam = f"""{my_folder.sample_prefix}.db.bam"""
         
         if args["m"] != 2:
             read_bin_map2db(args, my_db)
 
         self.bamfile = pysam.AlignmentFile(self.sam, 'rb')   
-        self.assign_file = f"{parameter.outdir}/{parameter.sample}.assign.txt"
+        self.assign_file = f"{my_folder.sample_prefix}.read_binning.txt"
 
     def read_bam(self):
         # observe each read, assign it to gene based on alignment records
@@ -116,9 +117,9 @@ class Pacbio_Binning():
             #     print (read_obj.read_name, read_obj.mismatch_rate, read_obj.allele_name, read_obj.gap_ends_flag, read_obj.match_num )
         read_loci = scor.assign(self.assign_file)
         for gene in gene_list:
-            outfile = parameter.outdir + '/%s.%s.fq'%(gene, args["a"])
-            filter_fq(gene, read_loci, parameter.raw_fq, outfile)
-        print ("reads-binning done.\n\n\n")
+            outfile = my_folder.reads_dir + '/%s.%s.fq'%(gene, args["a"])
+            filter_fq(gene, read_loci, args["r"], outfile)
+        print ("reads-binning done.")
 
 def filter_fq(gene, dict, raw_fq, outfile):
     # output the assigned reads to the fastq file of each gene
@@ -149,23 +150,6 @@ def filter_fq(gene, dict, raw_fq, outfile):
     out.close()
     os.system('gzip -f %s'%(outfile))
 
-class Parameters():
-
-    def __init__(self):
-
-        self.sample = args["n"]
-        self.raw_fq = args["r"]
-        outdir = args["o"]
-        self.population = args["p"]
-        self.threads = args["j"]
-        self.bin = "%s/../bin/"%(sys.path[0])      
-        self.outdir = "%s/%s/"%(outdir, self.sample)
-        # self.whole_dir = "%s/whole/"%(sys.path[0])
-
-        if not os.path.exists(args["o"]):
-            os.system("mkdir %s"%(args["o"]))
-        if not os.path.exists(self.outdir):
-            os.system("mkdir %s"%(self.outdir))
 
 if __name__ == "__main__":   
 
@@ -203,7 +187,6 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(0)
 
-    parameter = Parameters()
     Min_score = 0  #the read is too long, so the score can be very low.
     Min_diff = args["d"]  #0.001
 
@@ -212,6 +195,8 @@ if __name__ == "__main__":
     # gene_list, interval_dict =  get_focus_gene(args)
 
     my_db = My_db(args)
+    my_folder = My_folder(args)
+    
 
     # db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
     db_folder = os.path.dirname(my_db.full_db)
@@ -230,7 +215,7 @@ if __name__ == "__main__":
     if args["m"] == 10086:
         print ("skip assignment, just for testing")
     else:
-        pbin = Pacbio_Binning()
+        pbin = Binning()
         pbin.read_bam()        
 
     print ("Finished.")

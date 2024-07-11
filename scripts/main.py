@@ -26,8 +26,7 @@ def main(args):
         python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} \
             --db {args["db"]} --min_identity {args["min_identity"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
         """
-        if args["mode"] >= 4:
-            os.system(command)
+        os.system(command)
 
         command = f"""
         ## second: find a pair of alleles for each HLA locus
@@ -35,7 +34,7 @@ def main(args):
             --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
             --db {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
         """
-        if args["mode"] >= 3 and args["seq_tech"] != "rna":
+        if args["seq_tech"] != "rna":
             os.system(command)
 
         # return
@@ -55,10 +54,8 @@ def main(args):
         python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} {args["i"]} \
             {args["seq_tech"]} {args["RNA_type"]}
         """
-        # if args["first_run"]:
-        if args["mode"] >= 2:
-            print (f"<<<<get_2ref_align.py\n {command}", flush=True)
-            os.system(command)
+
+        os.system(command)
 
 
         
@@ -69,8 +66,7 @@ def main(args):
                 -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
 
             """
-            if args["mode"] >= 1:
-                os.system(command)
+            os.system(command)
 
         elif args["analyze_method"] == "assembly":
             command = f"""
@@ -90,15 +86,15 @@ def main(args):
             python3 {sys.path[0]}/remap.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
             """
 
-            print(command, flush=True)
-            os.system(command)
+            # print(command, flush=True)
+            # os.system(command)
         # visualization 
         if args["mode"] >=-1:
             command = f"""
             python3 {sys.path[0]}/visualization.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
             """
-            print(command, flush=True)
-            os.system(command)
+            # print(command, flush=True)
+            # os.system(command)
 
     
     else:

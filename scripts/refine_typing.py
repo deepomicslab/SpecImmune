@@ -17,6 +17,7 @@ from collections import defaultdict
 
 from determine_gene import get_focus_gene, get_folder_list
 from db_objects import My_db
+from folder_objects import My_folder
 
 
 def get_1_element(lst):
@@ -227,6 +228,10 @@ def output(record_best_match, gene_list, result_file, version_info, record_all_m
 
 def get_blast_info(blastfile, tag, record_all_match):
     # print("blastfile", blastfile)
+    ## check if blastfile exists
+    if not os.path.exists(blastfile):
+        print(f"{blastfile} does not exist")
+        sys.exit(0)
     align_list = []
     for line in open(blastfile):
         field = line.strip().split()
@@ -270,24 +275,21 @@ if __name__ == "__main__":
         sys.exit(0)
 
     my_db = My_db(args)    
+    my_folder = My_folder(args)
     # gene_list, interval_dict =  get_focus_gene(args)
 
     # db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
     db_folder = os.path.dirname(my_db.full_db)
     gene_list = get_folder_list(db_folder)
     
-    if not os.path.exists(args["o"]):
-        os.system("mkdir %s"%(args["o"]))
-    inputdir = args['o']
-    result_path = args['o']
-    sample = args['n']
-    result_file = result_path + "/" + "hlala.like.results.txt"
-    all_align_result_file = result_path + "/" + f"{args['i']}.map.results.txt"
-    step1_result = result_path + "/" + f"{sample}.{args['i']}.type.result.txt"
-    # gene_list = ["A", "B", "C", "DPA1", "DPB1", "DQA1", "DQB1", "DRB1"]
+    # result_file = result_path + "/" + "hlala.like.results.txt"
+    result_file = f"{my_folder.sample_prefix}.{args['i']}.final.type.result.txt"
+    step1_result = f"{my_folder.sample_prefix}.{args['i']}.type.result.txt"
+
     record_best_match = {}
     record_all_match = defaultdict(dict) ## for output
-    blastfile = f"{result_path}/{args['i']}.blast.summary.txt"
+    blastfile = f"{my_folder.sequence_dir}/{args['i']}.blast.summary.txt"
+
     print (f"optimize typing results by balancing alignment length and identity ")
     for hap_index in range(2):
         for gene in gene_list:

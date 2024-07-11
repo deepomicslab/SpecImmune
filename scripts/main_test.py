@@ -5,33 +5,38 @@ import pysam
 import gzip
 import argparse
 from db_objects import My_db
+from folder_objects import My_folder
 
+__version__ = '1.0.0'
 
 def main(args):
-    if not os.path.exists(args["o"]):
-        os.system("mkdir %s"%(args["o"]))
-    outdir = args["o"] + "/" + args["n"]
-    if not os.path.exists(outdir):
-        os.system("mkdir %s"%(outdir))
+
+    # Check if the version option is provided
+    if args["version"]:
+        print(f'Version: {__version__}')
+        sys.exit(0)
+
+    my_folder = My_folder(args)
+    my_folder.make_dir()
 
     if args['i'] != "IG_TR":
 
-        command = f"""
-        ## first: read binning
-        python3 {sys.path[0]}/read_binning.py -m 2 -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} \
-            --db {args["db"]} --min_identity {args["min_identity"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
-        """
-        if args["mode"] >= 4:
-            os.system(command)
-        # return
-        command = f"""
-        ## second: find a pair of alleles for each HLA locus
-        python3 {sys.path[0]}/select_best_reference_alleleV2.py --max_read_num {args["max_read_num"]} --candidate_allele_num {args["candidate_allele_num"]} \
-            --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
-            --db {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
-        """
-        if args["mode"] >= 3:
-            os.system(command)
+        # command = f"""
+        # ## first: read binning
+        # python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} \
+        #     --db {args["db"]} --min_identity {args["min_identity"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
+        # """
+        # if args["mode"] >= 4:
+        #     os.system(command)
+
+        # command = f"""
+        # ## second: find a pair of alleles for each HLA locus
+        # python3 {sys.path[0]}/select_best_reference_alleleV2.py --max_read_num {args["max_read_num"]} --candidate_allele_num {args["candidate_allele_num"]} \
+        #     --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
+        #     --db {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
+        # """
+        # if args["mode"] >= 3 and args["seq_tech"] != "rna":
+        #     os.system(command)
 
         # return
 
@@ -44,52 +49,67 @@ def main(args):
         # python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
         # """
         # db=my_db.full_cds_db if args["seq_tech"] == "rna" else my_db.full_db
-        db=my_db.full_db
-        command = f"""
-        ## third: build individual reference for each HLA locus, two ref version
-        python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} {args["i"]} \
-            {args["seq_tech"]} {args["RNA_type"]}
-        """
-        # if args["first_run"]:
-        if args["mode"] >= 2:
-            print (f"<<<<get_2ref_align.py\n {command}", flush=True)
-            os.system(command)
+        db = my_db.full_db
+        # command = f"""
+        # ## third: build individual reference for each HLA locus, two ref version
+        # python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} {args["i"]} \
+        #     {args["seq_tech"]} {args["RNA_type"]}
+        # """
+        # # if args["first_run"]:
+        # if args["mode"] >= 2:
+        #     print (f"<<<<get_2ref_align.py\n {command}", flush=True)
+        #     os.system(command)
 
 
         
-        if args["analyze_method"] == "phase":
-            command = f"""
-            ## forth: call & phasing variant & typing
-            python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} \
-                -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
+        # if args["analyze_method"] == "phase":
+        #     command = f"""
+        #     ## forth: call & phasing variant & typing
+        #     python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} \
+        #         -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
 
-            """
-            if args["mode"] >= 1:
-                os.system(command)
+        #     """
+        #     if args["mode"] >= 1:
+        #         os.system(command)
 
-        elif args["analyze_method"] == "assembly":
+        # elif args["analyze_method"] == "assembly":
+        #     command = f"""
+        #     ## forth: assembly
+        #     python3 {sys.path[0]}/assembly.py -i {args["i"]} -o {args["o"]} -n {args["n"]} -j {args["j"]} -y {args["y"]}
+        #     """
+        #     if args["mode"] >= 1:
+        #         os.system(command)
+        # else:
+        #     print("Please choose phase or assembly as analyze method.", flush=True)
+        #     return
+        
+        # remap
+        if args["mode"] >=0:
+            # map to step 2 alleles (if it's calssified as het in step 1, use split reads to map to step 2 alleles. else, use all reads to map to step 2 alleles)
             command = f"""
-            ## forth: assembly
-            python3 {sys.path[0]}/assembly.py -i {args["i"]} -o {args["o"]} -n {args["n"]} -j {args["j"]} -y {args["y"]}
+            python3 {sys.path[0]}/remap.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
             """
-            if args["mode"] >= 1:
-                os.system(command)
-        else:
-            print("Please choose phase or assembly as analyze method.", flush=True)
-            return
+
+            print(command, flush=True)
+            os.system(command)
+        # visualization 
+        if args["mode"] >=-1:
+            command = f"""
+            python3 {sys.path[0]}/visualization.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
+            """
+            print(command, flush=True)
+            os.system(command)
+
     
     else:
+        my_db = My_db(args)
         command = f"""
-        mkdir {args["o"]}/{args["n"]}/tmp
-        bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {args["db"]} {args["j"]} {args["k"]}
+        bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
+        python {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
         """
         os.system(command)
 
         
-    
-
-
-
 
 
 if __name__ == "__main__":   
@@ -110,6 +130,7 @@ if __name__ == "__main__":
     # optional.add_argument("-a", type=str, help="Prefix of filtered fastq file.", metavar="\b", default="long_read")
     optional.add_argument("-y", type=str, help="Read type, [nanopore|pacbio|pacbio-hifi].", metavar="\b", default="pacbio")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
+    optional.add_argument("--hg38", type=str, help="referece fasta file, used by IG_TR typing, generated by extract_VDJ_segments_from_hg38.py", metavar="\b", default=sys.path[0] + "/../VDJ_ref/IG_TR.segment.fa")
     optional.add_argument("-f", "--first_run", type=bool, help="set False for rerun", metavar="\b", default=True)
     optional.add_argument("--min_identity", type=float, help="Minimum identity to assign a read.", metavar="\b", default=0.85)
     optional.add_argument("--hete_p", type=float, help="Hete pvalue.", metavar="\b", default=0.3) 
@@ -119,7 +140,7 @@ if __name__ == "__main__":
     optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")
     optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon].", metavar="\b", default="wgs")
 
-
+    optional.add_argument('-v', '--version', action='store_true', help='Display the version number')
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
 
