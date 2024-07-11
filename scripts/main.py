@@ -41,24 +41,15 @@ def main(args):
 
         # build individual ref when first run
         my_db = My_db(args)
-        # print(f"""python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}""")
-        # command = f"""
-        # ## third: build individual reference for each HLA locus
-        # python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
-        # python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
-        # """
-        # db=my_db.full_cds_db if args["seq_tech"] == "rna" else my_db.full_db
+
         db = my_db.full_db
         command = f"""
         ## third: build individual reference for each HLA locus, two ref version
         python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} {args["i"]} \
             {args["seq_tech"]} {args["RNA_type"]}
         """
-
         os.system(command)
 
-
-        
         if args["analyze_method"] == "phase":
             command = f"""
             ## forth: call & phasing variant & typing
@@ -85,9 +76,9 @@ def main(args):
             command = f"""
             python3 {sys.path[0]}/remap.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
             """
-
             # print(command, flush=True)
             # os.system(command)
+
         # visualization 
         if args["mode"] >=-1:
             command = f"""
@@ -145,3 +136,18 @@ if __name__ == "__main__":
         sys.exit(0)
     
     main(args)
+
+
+
+
+
+
+
+
+            # print(f"""python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}""")
+        # command = f"""
+        # ## third: build individual reference for each HLA locus
+        # python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
+        # python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
+        # """
+        # db=my_db.full_cds_db if args["seq_tech"] == "rna" else my_db.full_db

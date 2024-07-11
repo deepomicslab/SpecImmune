@@ -192,8 +192,8 @@ def map_long_reads_2_ref_minimap():
             print(f"Warning: {fq} is empty, skip {gene}")
             continue
         ref=f"{allele_dir}/{gene}.fasta"
-        bam=f"{outdir}/{sample}/{gene}.bam"
-        depth_file=f"{outdir}/{sample}/{gene}.depth"
+        bam=f"{my_folder.step2_genes_dir}/{gene}.bam"
+        depth_file=f"{my_folder.step2_genes_dir}/{gene}.depth"
         # minimap
         # minimap2 -t %s %s -a $hla_ref $outdir/$hla.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
         cmd=f"""

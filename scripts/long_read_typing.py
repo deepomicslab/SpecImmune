@@ -91,7 +91,7 @@ class Fasta():
         # print ("xxx", bam)
         # print ("xxx", hla_ref)
         # call snp
-        mask_bed=f"{parameter.outdir}/low_depth.bed"
+        # mask_bed=f"{parameter.outdir}/low_depth.bed"
         ovcf=f"{parameter.outdir}/{parameter.sample}.{gene}.dv.vcf"
         ogvcf=f"{parameter.outdir}/{parameter.sample}.{gene}.dv.g.vcf"
         call_phase_cmd= f"""
@@ -186,8 +186,8 @@ class Fasta():
 
     def remove_N_characters(self, gene):
         for idx in range(2):
-            input_file = f"{parameter.outdir}/{args['i']}.allele.{idx+1}.{gene}.fasta"
-            output_file = f"{parameter.outdir}/{args['i']}.allele.{idx+1}.{gene}.noN.fasta"
+            input_file = f"{my_folder.sequence_dir}/{args['i']}.allele.{idx+1}.{gene}.fasta"
+            output_file = f"{my_folder.sequence_dir}/{args['i']}.allele.{idx+1}.{gene}.noN.fasta"
             with open(input_file, "r") as infile, open(output_file, "w") as outfile:
                 sequences = SeqIO.parse(infile, "fasta")
                 modified_sequences = []
@@ -341,20 +341,27 @@ class Fasta():
             
     def splice_align_db(self):
         for gene in gene_list:
-            hap1=f"{parameter.outdir}/{args['i']}.allele.1.{gene}.noN.fasta"
-            hap2=f"{parameter.outdir}/{args['i']}.allele.2.{gene}.noN.fasta"
+            hap1=f"{my_folder.sequence_dir}/{args['i']}.allele.1.{gene}.noN.fasta"
+            hap2=f"{my_folder.sequence_dir}/{args['i']}.allele.2.{gene}.noN.fasta"
             if os.path.exists(hap1) and os.path.exists(hap2):
                 # map to gene ref 
                 cmd = f"""
-                minimap2 -t {parameter.threads} -ax splice {my_db.full_db} {hap1} | samtools view -bS -F 0x804 -| samtools sort - >{parameter.outdir}/{gene}.allele1.bam
-                samtools index {parameter.outdir}/{gene}.allele1.bam
-                minimap2 -t {parameter.threads} -ax splice {my_db.full_db} {hap2} | samtools view -bS -F 0x804 -| samtools sort - >{parameter.outdir}/{gene}.allele2.bam
-                samtools index {parameter.outdir}/{gene}.allele2.bam
+                minimap2 -t {parameter.threads} -ax splice {my_db.full_db} {hap1} | samtools view -bS -F 0x804 -| samtools sort - >{my_folder.step2_genes_dir}/{gene}.allele1.bam
+                samtools index {my_folder.step2_genes_dir}/{gene}.allele1.bam
+                minimap2 -t {parameter.threads} -ax splice {my_db.full_db} {hap2} | samtools view -bS -F 0x804 -| samtools sort - >{my_folder.step2_genes_dir}/{gene}.allele2.bam
+                samtools index {my_folder.step2_genes_dir}/{gene}.allele2.bam
                 """
                 os.system(cmd)
+            else:
+                print (f"WARNING: {hap1} or {hap2} does not exist")
+                # sys.exit(1)
 
     def get_g_dict(self, g_anno_file):
         g_anno_dict = {}
+        ## check if g_anno_file exists
+        if not os.path.exists(g_anno_file):
+            print(f"WARNING: {g_anno_file} does not exist")
+            return g_anno_dict
         with open(g_anno_file, 'r') as f:
             for line in f:
                 if line.startswith("#"):
@@ -375,6 +382,8 @@ class Fasta():
         for read in bam:
             reference_name = bam.get_reference_name(read.reference_id)
             types.append(reference_name)
+        if len(types) == 0:
+            types = ["NA"]
         return types
     
     def get_g_group(self, types, g_anno_dict):
@@ -390,14 +399,16 @@ class Fasta():
         g_anno_dict=self.get_g_dict(g_anno_file)
         allele_dict={}
         for gene in gene_list:
-            allele1_bam=f"{parameter.outdir}/{gene}.allele1.bam"
-            allele2_bam=f"{parameter.outdir}/{gene}.allele2.bam"
+            allele1_bam=f"{my_folder.step2_genes_dir}/{gene}.allele1.bam"
+            allele2_bam=f"{my_folder.step2_genes_dir}/{gene}.allele2.bam"
             if os.path.exists(allele1_bam) and os.path.exists(allele2_bam):
                 allele1_types=self.get_type_from_bam(allele1_bam)
                 allele2_types=self.get_type_from_bam(allele2_bam)
                 allele_dict[gene] = [allele1_types, allele2_types]
         # write to file
-        with open(f"{parameter.outdir}/hlala.like.rna.results.txt", 'w') as f:
+        result_file=f"{my_folder.sample_prefix}.{args['i']}.final.rna.type.result.txt"
+        g_result_file=f"{my_folder.sample_prefix}.{args['i']}.final.rna.type.result.g.txt"
+        with open(result_file, 'w') as f:
             f.write(f"# {my_db.version_info}\n")
             f.write("Locus\tChromosome\tAllele\n")
             for gene in gene_list:
@@ -406,7 +417,7 @@ class Fasta():
                     f.write(f"{gene}\t{1}\t{';'.join(allele1_types)}\n")
                     f.write(f"{gene}\t{2}\t{';'.join(allele2_types)}\n")
         # write g group to file
-        with open(f"{parameter.outdir}/hlala.like.rna.results.g.txt", 'w') as f:
+        with open(g_result_file, 'w') as f:
             f.write(f"# {my_db.version_info}\n")
             f.write("Locus\tChromosome\tAllele\n")
 
@@ -418,6 +429,7 @@ class Fasta():
                     f.write(f"{gene}\t{1}\t{';'.join(g_groups_1)}\n")
                     f.write(f"{gene}\t{2}\t{';'.join(g_groups_2)}\n")   
 
+        print ("please check the result in %s"%(result_file), flush=True)
 
 
     def annotation(self):
@@ -446,8 +458,6 @@ class Fasta():
         elif args['i'] == "CYP":
             anno = f"""
             perl {sys.path[0]}/annoCYP.pl -s {parameter.sample} -i {my_folder.sequence_dir} -p {parameter.population} -r tgs -d {args["db"]} -t {rna_tag} -g {args["g"]}
-
-            
             """
             # print (anno)
             os.system(anno)
