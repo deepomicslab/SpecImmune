@@ -12,15 +12,37 @@ from get_lite_db import convert_field_for_allele
 from determine_gene import get_focus_gene
 from db_objects import My_db
 
-gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
+
 # gene_list = ['C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
-gene_list = ['DRB1']
+# gene_list = ['DRB1']
 
 def hla_to_numeric(hla_string):
     # Remove the gene prefix (all non-digit characters up to the asterisk)
     # and all colons.
     numeric_hla = re.sub(r'^[^*]*\*', '', hla_string).replace(':', '')
     return numeric_hla
+
+def get_HLA_version_conversion(HLA_allele_history = "./Allelelist_history.txt"):
+    map_to_latest_version = {}
+    deleted_allele_num = 0
+    with open(HLA_allele_history) as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith("#") or line.startswith("HLA_ID"):
+                continue
+            arrs = line.split(",")
+            id = arrs.pop(0)
+            hla = arrs[0]
+            if hla == "NA":
+                print ("This allele was removed in the latest version", line)
+                deleted_allele_num += 1
+                # continue
+            for aa in arrs:
+                map_to_latest_version[aa] = hla
+    print ("map_to_latest_version", len(map_to_latest_version))
+    print ("deleted_allele_num", deleted_allele_num)
+    # sys.exit(1)
+    return (map_to_latest_version)
 
 def parse_truth(truth_file):
     genes=[]
@@ -228,12 +250,14 @@ def parse_spechla_clean_input(input_file):
                     input_dict[gene].append(field[i])
     return input_dict
 
-def parse_all_hla_hla_input(truth_dict):
+def parse_all_hla_hla_input(truth_dict, tool = "HLA*LA"):
     all_hla_la_result = {}
     for sample in truth_dict:
-        # input_file = f"hla_nanopore/hla_la/{sample}.txt"  # HLA*LA
-        # input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output0/fredhutch-hla-{sample}/hlala.like.results.txt"  # SpecHLA
-        input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output6/fredhutch-hla-{sample}/fredhutch-hla-{sample}.HLA.type.result.txt"  # SpecLong
+        if tool ==  "HLA*LA":
+            input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/xuedong/hla_nanopore/hla_la/{sample}.txt"  # HLA*LA
+        else:
+            input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output0/fredhutch-hla-{sample}/hlala.like.results.txt"  # SpecHLA
+        # input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output6/fredhutch-hla-{sample}/fredhutch-hla-{sample}.HLA.type.result.txt"  # SpecLong
         print (input_file)
         ## check if input file exists use os
         if os.path.exists(input_file):
@@ -408,6 +432,15 @@ def convert_field(mylist, digit=8):
         mylist[j] = convert_field_for_allele(mylist[j], digit)
     return mylist
 
+def convert_HLA_version(mylist, map_to_latest_version):
+    for j in range(len(mylist)):
+        if mylist[j] in map_to_latest_version:
+            mylist[j] = map_to_latest_version[mylist[j]]
+        else:
+            print (f"{mylist[j]} not in map_to_latest_version")
+            sys.exit(1)
+    return mylist
+
 def align_digit_2_truth(truth, mylist):  # not using
     for j in range(len(mylist)):
         mylist[j] = convert_field_for_allele(mylist[j], truth[0].split(":")*2)
@@ -458,9 +491,9 @@ def store_results(truth_dict, all_hla_la_result, gene_list, result_file):
     df = pd.DataFrame(data, columns = ['sample', 'gene', 'truth_1', 'truth_2', 'infer_1', 'infer_2'])
     df.to_csv(result_file, index=False)
                 
-
-
-def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
+def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="CYP"):
+    if gene_class == "HLA":
+        map_to_latest_version = get_HLA_version_conversion()
     gene_dict = {}
     for sample in truth_dict:
         print (sample)
@@ -482,7 +515,7 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
             if true_list[0] == [] or true_list[1] == []:
                 print ("copy != 2 for ", sample, gene, true_list)
                 continue
-            if check_TCR_Mutation(true_list):
+            if gene_class == "IG_TR" and check_TCR_Mutation(true_list):
                 continue
 
             
@@ -515,87 +548,10 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8):
                 hla_la_list[i] = [del_prefix(x) for x in hla_la_list[i]]
                 true_list[i] = [del_prefix(x) for x in true_list[i]]
 
-                true_list[i] = convert_field(true_list[i], digit)
-                hla_la_list[i] = convert_field(hla_la_list[i], digit)
-
-            fir = 0
-            if has_intersection(true_list[0], hla_la_list[0]):
-                fir += 1
-            if has_intersection(true_list[1], hla_la_list[1]):
-                fir += 1   
-
-            sec = 0
-            if has_intersection(true_list[0], hla_la_list[1]):
-                sec += 1
-            if has_intersection(true_list[1], hla_la_list[0]):
-                sec += 1  
-
-            if gene not in gene_dict:
-                gene_dict[gene] = [0, 0]
-            gene_dict[gene][0] += max([fir, sec])
-            gene_dict[gene][1] += 2
-
-            if max([fir, sec]) != 2:
-                print (sample, gene, true_list, "<<<wrong>>>" ,hla_la_list, max([fir, sec]))
-            else:
-                print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
-    cal_accuracy(gene_dict)
-
-
-def cal_accuracy(gene_dict):
-    total_correct, total = 0, 0
-    for gene, items in gene_dict.items():
-        # print (gene, items)
-        total_correct += items[0]
-        total += items[1]
-        print (gene, items[0], items[1], round(items[0]/items[1],2))
-    print ("total", total_correct, total, round(total_correct/total,2))
-
-def compare_four_old(truth_dict, all_hla_la_result_old, gene_list, digit=8):
-    gene_dict = {}
-    for sample in truth_dict:
-        # if sample != "FH14":
-        #     continue
-        # for gene in truth_dict[sample]:
-        for gene in gene_list:
-            if gene not in truth_dict[sample]:
-                # print ("truth_dict not in ", sample, gene, truth_dict[sample].keys())
-                continue
-            true_list = truth_dict[sample][gene]
-            if gene+"_1" not in all_hla_la_result_old[sample]:
-                # print ("all_hla_la_result not in ", sample, gene, all_hla_la_result[sample])
-                continue
-            if true_list[0] == [] or true_list[1] == []:
-                print ("copy != 2 for ", sample, gene, true_list)
-                continue
-            
-            hla_la_list = [all_hla_la_result_old[sample][gene+"_1"], all_hla_la_result_old[sample][gene+"_2"]] 
-            if true_list[1] == '':
-                true_list[1] = true_list[0]
-            if true_list[0] == '':
-                true_list[0] = true_list[1]
-            if hla_la_list[1] == '':
-                hla_la_list[1] = hla_la_list[0]
-            if hla_la_list[0] == '':
-                hla_la_list[0] = hla_la_list[1]
-
-            for i in range(2):
-                # print (sample, gene, true_list[i], truth_dict[sample][gene])
-                ## if true_list[i] is not a list, split it
-                if type(true_list[i]) is not list:
-                    true_list[i] = true_list[i].split("/")
-                # print (hla_la_list, hla_la_list[i])
-                if re.search(";", hla_la_list[i]):
-                    hla_la_list[i] = hla_la_list[i].split(";")
-                elif re.search(",", hla_la_list[i]):
-                    hla_la_list[i] = hla_la_list[i].split(",")
-                else:
-                    hla_la_list[i] = [hla_la_list[i]]
-                # print ("xx", hla_la_list, hla_la_list[i])
-                hla_la_list[i] = [del_prefix(x) for x in hla_la_list[i]]
-                true_list[i] = [del_prefix(x) for x in true_list[i]]
-
-                # print ("yy", true_list[i] , hla_la_list[i])
+                if gene_class == "HLA":  ## map to the latest IMGT version
+                    true_list[i] = convert_HLA_version(true_list[i], map_to_latest_version)
+                    hla_la_list[i] = convert_HLA_version(hla_la_list[i], map_to_latest_version)
+                
                 true_list[i] = convert_field(true_list[i], digit)
                 hla_la_list[i] = convert_field(hla_la_list[i], digit)
 
@@ -617,14 +573,22 @@ def compare_four_old(truth_dict, all_hla_la_result_old, gene_list, digit=8):
             gene_dict[gene][1] += 2
 
             # if max([fir, sec]) != 2:
-            #     print (sample, gene, true_list, "<<<>>>" ,hla_la_list, max([fir, sec]))
+            #     print (sample, gene, true_list, "<<<wrong>>>" ,hla_la_list, max([fir, sec]))
+            # else:
+            #     print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
+        # sys.exit(1)
+    cal_accuracy(gene_dict)
+    print ("finished")
 
 
-            # print (true_list, hla_la_list, fir, sec)
-        # break
+def cal_accuracy(gene_dict):
+    total_correct, total = 0, 0
     for gene, items in gene_dict.items():
         # print (gene, items)
-        print (gene, round(items[0]/items[1],2))
+        total_correct += items[0]
+        total += items[1]
+        print (gene, items[0], items[1], round(items[0]/items[1],2))
+    print ("total", total_correct, total, round(total_correct/total,2))
 
 def count_report_allele(truth_dict, all_hla_la_result):
     count_list = []
@@ -682,8 +646,7 @@ def assess_sim_module(truth, infer, gene_list, gene_class="HLA"):
     truth_dict["test"] = sample_truth_dict
     infer_dict["test"] = sample_infer_dict
     gene_list = [del_prefix(x) for x in gene_list]
-    compare_four(truth_dict, infer_dict, gene_list)
-
+    compare_four(truth_dict, infer_dict, gene_list, 8, gene_class)
 
 def assess_sim():
     truth = "../test/test.HLA.hap.alleles.txt"
@@ -697,9 +660,10 @@ def assess_sim():
 
     gene_list = [ 'HLA-A', 'HLA-B', 'HLA-C', 'HLA-DMA', 'HLA-DMB', 'HLA-DOA', 'HLA-DOB', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DPB2', 'HLA-DQA1', 'HLA-DQB1', 'HLA-DRA', 'HLA-DRB1', 'HLA-DRB3', 'HLA-DRB4', 'HLA-DRB5', 'HLA-E', 'HLA-F', 'HLA-G', 'HLA-H', 'HLA-J', 'HLA-K', 'HLA-L', 'HLA-P', 'HLA-V', 'HLA-DQA2', 'HLA-DPA2', 'HLA-N', 'HLA-S', 'HLA-T', 'HLA-U', 'HLA-W', 'MICA', 'MICB', 'TAP1', 'TAP2', 'HFE' ]
     gene_list = [del_prefix(x) for x in gene_list]
-    compare_four(truth_dict, infer_dict, gene_list)
+    compare_four(truth_dict, infer_dict, gene_list,8,gene_class="HLA")
 
-def main():
+def main():  # test in Nanopore amplicon data
+    gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
     nano_truth = "./4_field_truth.csv"
     # truth_dict=parse_truth("hla_nanopore/4_field_truth.csv")
     # input_dict, res_genes=parse_input(args.input)
@@ -710,18 +674,19 @@ def main():
 
     # truth_dict=parse_truth("hla_nanopore/4_field_truth.csv")
     # all_hla_la_result = parse_all_hla_hla_input(truth_dict)
-    # compare_four(truth_dict, all_hla_la_result, gene_list, 8)
+    # compare_four(truth_dict, all_hla_la_result, gene_list, 8, "HLA")
     # count_report_allele(truth_dict, all_hla_la_result)
 
     # truth_dict=parse_truth(nano_truth)
     # all_spechla_result = parse_all_spechla_input(truth_dict)
-    # compare_four(truth_dict, all_spechla_result, gene_list, 8)
+    # compare_four(truth_dict, all_spechla_result, gene_list, 8, "HLA")
     # count_report_allele(truth_dict, all_spechla_result)
 
     truth_dict=parse_truth(nano_truth)
-    all_hla_la_result = parse_all_hla_hla_input(truth_dict)
-    compare_four(truth_dict, all_hla_la_result, gene_list, 8)
-    count_report_allele(truth_dict, all_hla_la_result)
+    # all_hla_la_result = parse_all_hla_hla_input(truth_dict, "HLA*LA")
+    all_hla_la_result = parse_all_hla_hla_input(truth_dict, "SpecHLA")
+    compare_four(truth_dict, all_hla_la_result, gene_list, 8, "HLA")
+    # count_report_allele(truth_dict, all_hla_la_result)
 
 def split_IG_TR(gene_list):
     IG_list = []
@@ -762,17 +727,16 @@ def main_pacbio(gene_list, truth_dir, result_dir, gene_class="HLA"):
 
     # print (new_truth_dict.keys(), new_truth_dict["HG00514.1"].keys())
     # print (all_hla_la_result.keys())
-    compare_four(new_truth_dict, all_hla_la_result, gene_list, 8)
+    compare_four(new_truth_dict, all_hla_la_result, gene_list, 8, gene_class)
     print ("------------------")
     # if gene_class == "IG_TR":
-    #     compare_four(new_truth_dict, all_hla_la_result, IG_list, 8)
+    #     compare_four(new_truth_dict, all_hla_la_result, IG_list, 8, gene_class)
     #     print ("------------------")
-    #     compare_four(new_truth_dict, all_hla_la_result, TR_list, 8)
+    #     compare_four(new_truth_dict, all_hla_la_result, TR_list, 8, gene_class)
     #     print ("------------------")
     
     result_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/data/eva_results/result_{gene_class}.csv"
     store_results(new_truth_dict, all_hla_la_result, gene_list, result_file)
-    # compare_four_old(new_truth_dict, all_old_hlala_result, gene_list, 8)
     # count_report_allele(all_truth_dict, all_hla_la_result)
 
 def parse_hlala_pacbio(file_path="HLA-LA.merge.result.txt"):
@@ -845,7 +809,7 @@ def main_TCR(result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/")
 
             gene_list = list(set(truth_dict[sample].keys()) & set(sample_infer_dict.keys()))
     
-    compare_four(new_truth_dict, infer_dict, gene_list)
+    compare_four(new_truth_dict, infer_dict, gene_list, 8, "IG_TR")
     print ("gene number", len(gene_list), "sample number", len(sample_list))
 
 def load_TCR_truth():
@@ -888,7 +852,7 @@ if __name__ == "__main__":
     # parser.add_argument('output', help='Output VCF file path')
 
     # args = parser.parse_args()
-    # main()
+    main()
     # assess_sim()
 
     # gene_class = "HLA"
@@ -903,10 +867,10 @@ if __name__ == "__main__":
     # truth_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/hgscv2_truth_bwa_zip/"
     # result_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/kir_typing_out/"
 
-    db_dir = f"../db/{gene_class}/"
-    gene_list, interval_dict =  get_focus_gene(gene_class)
-    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
-    main_pacbio(gene_list, truth_dir, result_dir, gene_class)
+    # db_dir = f"../db/{gene_class}/"
+    # gene_list, interval_dict =  get_focus_gene(gene_class)
+    # gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
+    # main_pacbio(gene_list, truth_dir, result_dir, gene_class)
 
     
 
