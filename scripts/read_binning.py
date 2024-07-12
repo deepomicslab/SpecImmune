@@ -44,6 +44,8 @@ class Score_Obj():
             if read_obj.match_num < my_db.gene_min_len[read_obj.loci_name] * 0.5 and read_obj.loci_name != "HLA-U":
                 # print ("too short",read_obj.read_name, read_obj.match_num, my_db.gene_min_len[read_obj.loci_name] * 0.5, read_obj.loci_name)
                 return
+        # if read_obj.loci_name == "CYP2D6" and read_obj.match_num < 500:
+        #     return
 
         if read_obj.identity < args["min_identity"]:
             return

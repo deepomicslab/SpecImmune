@@ -16,7 +16,7 @@ def main(args):
         print(f'Version: {__version__}')
         sys.exit(0)
 
-    if args['i'] == "HLA" or args['i'] == "KIR" :
+    if args['i'] == "HLA" or args['i'] == "KIR" or args['i'] == "CYP":
 
         my_folder = My_folder(args)
         my_folder.make_dir()

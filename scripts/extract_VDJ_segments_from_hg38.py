@@ -4,7 +4,7 @@ cmd:
 python3 extract_VDJ_segments_from_hg38.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38.p14.genome.fa 
 
 python3 extract_VDJ_segments_from_hg38.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38.p14.genome.fa\
-      -i CYP --lite_ref ../CYP_ref/CYP.segment.fa
+      -i CYP --lite_ref ../CYP_ref/CYP.segment.fa --gap 20000
 """
 
 import sys
@@ -24,8 +24,8 @@ def merge_intervals(intervals):
             merged[-1][1] = max(merged[-1][1], interval[1])
     return merged
 
-def get_gene_interval(gene_file):
-    gap = 1500000
+def get_gene_interval(gene_file, gap = 1500000):
+    
     store_pure_gene_region = defaultdict(dict)
     interval_dict = defaultdict(list)
     strand_dict = {}
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     required.add_argument("--hg38", type=str, help="hg38 fasta file, used by IG_TR typing.", metavar="\b")
     required.add_argument("-i", type=str, help="CYP,IG_TR",metavar="\b", default="IG_TR")
     required.add_argument("--lite_ref", type=str, help="lite_ref.", metavar="\b", default=sys.path[0] + "/../VDJ_ref/IG_TR.segment.fa")
-    # optional.add_argument("--lite_bed", type=str, help="save gene region in the lite ref.", metavar="\b", default=sys.path[0] + "/../db/IG_TR/IG_TR.lite.bed")
+    optional.add_argument("--gap", type=int, help="gap len.", metavar="\b", default=1500000)
 
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
@@ -141,7 +141,7 @@ if __name__ == "__main__":
     hg38 = args["hg38"]
     segment = args["lite_ref"]
 
-    interval_dict, lite_gene_interval, strand_dict = get_gene_interval(gene_file)
+    interval_dict, lite_gene_interval, strand_dict = get_gene_interval(gene_file, args["gap"])
     output_bed(interval_dict, segment_bed)
     output_new_gene_file(lite_gene_interval, lite_gene_file, strand_dict)
     extract_segments(hg38, segment_bed, segment)
