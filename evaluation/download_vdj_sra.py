@@ -22,6 +22,8 @@ with open(csv_file_path, newline='') as csvfile:
             break
 
 for run_name, sample_name in run_dict.items():
+    if sample_name == "NA18506":
+        continue
     print(f"Run: {run_name}, Sample: {sample_name}")
     ## download the sra and convert to fastq
     # cmd = f"""

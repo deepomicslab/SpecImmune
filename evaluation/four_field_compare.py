@@ -492,6 +492,7 @@ def store_results(truth_dict, all_hla_la_result, gene_list, result_file):
     df.to_csv(result_file, index=False)
                 
 def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="CYP"):
+    ### input dict structure: {sample: {gene: [[a,b,c], [c,d,e]]}}
     if gene_class == "HLA":
         map_to_latest_version = get_HLA_version_conversion()
     gene_dict = {}
@@ -572,8 +573,8 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
             gene_dict[gene][0] += max([fir, sec])
             gene_dict[gene][1] += 2
 
-            # if max([fir, sec]) != 2:
-            #     print (sample, gene, true_list, "<<<wrong>>>" ,hla_la_list, max([fir, sec]))
+            if max([fir, sec]) != 2:
+                print (sample, gene, true_list, "<<<wrong>>>" ,hla_la_list, max([fir, sec]))
             # else:
             #     print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
         # sys.exit(1)
@@ -852,7 +853,12 @@ if __name__ == "__main__":
     # parser.add_argument('output', help='Output VCF file path')
 
     # args = parser.parse_args()
-    main()
+
+    #### HLA typing in the nanopore amplicon data, comparing with HLA*LA and SpecHLA
+    # main()
+
+
+
     # assess_sim()
 
     # gene_class = "HLA"
@@ -875,7 +881,7 @@ if __name__ == "__main__":
     
 
 
-
-    # main_TCR("./")
+    #### TCR evaluation in 11 samples with given truth
+    main_TCR("/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/")
     
     
