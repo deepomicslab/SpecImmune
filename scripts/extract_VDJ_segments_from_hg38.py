@@ -1,5 +1,10 @@
 """
-cmd: python3 extract_VDJ_segments_from_hg38.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38.p14.genome.fa 
+cmd: 
+
+python3 extract_VDJ_segments_from_hg38.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38.p14.genome.fa 
+
+python3 extract_VDJ_segments_from_hg38.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38.p14.genome.fa\
+      -i CYP --lite_ref ../CYP_ref/CYP.segment.fa
 """
 
 import sys
@@ -7,7 +12,7 @@ from collections import defaultdict
 import os
 import argparse
 
-from bed_objects import Bed_db
+from bed_objects import Bed_db, Bed_db_CYP
 
 def merge_intervals(intervals):
     intervals.sort()
@@ -108,7 +113,8 @@ if __name__ == "__main__":
     optional = parser.add_argument_group("Optional arguments")
     
     required.add_argument("--hg38", type=str, help="hg38 fasta file, used by IG_TR typing.", metavar="\b")
-    optional.add_argument("--lite_ref", type=str, help="lite_ref.", metavar="\b", default=sys.path[0] + "/../VDJ_ref/IG_TR.segment.fa")
+    required.add_argument("-i", type=str, help="CYP,IG_TR",metavar="\b", default="IG_TR")
+    required.add_argument("--lite_ref", type=str, help="lite_ref.", metavar="\b", default=sys.path[0] + "/../VDJ_ref/IG_TR.segment.fa")
     # optional.add_argument("--lite_bed", type=str, help="save gene region in the lite ref.", metavar="\b", default=sys.path[0] + "/../db/IG_TR/IG_TR.lite.bed")
 
     optional.add_argument("-h", "--help", action="help")
@@ -118,7 +124,15 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(0)
 
-    bed_db = Bed_db()
+    if args['i'] == "IG_TR":
+        bed_db = Bed_db()
+
+    elif args['i'] == "CYP":
+        bed_db = Bed_db_CYP()
+    else:
+        print("Please choose IG_TR or CYP as analyze method.", flush=True)
+        sys.exit(0)
+
     gene_file =  bed_db.gene_file
     segment_bed = bed_db.segment_bed
     lite_gene_file =  bed_db.lite_gene_file

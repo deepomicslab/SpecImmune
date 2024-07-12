@@ -127,15 +127,17 @@ def parse_truth_from_align(truth_file, gene_class = "HLA", len_cutoff = 0, cov_c
         sample_truth_dict[gene] = [[], []]
         ## sort the alleles by match_len
         for hap in match_len_dict[gene]:
-            top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene)
+            top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene_class)
             hap_index = int(hap[-1]) -1
             sample_truth_dict[gene][hap_index] = top_alleles
             # print (top_5_percent, "/".join(top_5_percent))
     # print (sample_truth_dict)
     return sample_truth_dict, sample_name
 
-def select_top_alleles(my_match_len_dict, my_identity_dict, gene, len_diff_cutoff = 0.01, ide_diff_cutoff = 0.05):
+def select_top_alleles(my_match_len_dict, my_identity_dict, gene_class, len_diff_cutoff = 0.01, ide_diff_cutoff = 0.05):
     sorted_match_len = sorted(my_match_len_dict.items(), key=lambda x: x[1], reverse=True)
+    if gene_class == "CYP":
+        ide_diff_cutoff = 0.00001
     
     ## find the alleles with match len no shorter than len_diff_cutoff compared to the longest match len
     good_length_list = {}
@@ -268,8 +270,13 @@ def parse_all_hla_hla_input(truth_dict, tool = "HLA*LA"):
         all_hla_la_result[sample] = input_dict
     return all_hla_la_result
 
-def parse_all_spleclong_pacbio_input(gene_class, outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/out_pac1/"):
+def parse_all_spleclong_pacbio_input(gene_class, step = 1, outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/out_pac1/"):
     all_hla_la_result = {}
+    if step == 1:
+        suffix = ".type.result.txt"
+    else:
+        suffix = ".final.type.result.txt"
+    
     ## for all folder in outdir
     for folder in os.listdir(outdir):
         sample = folder
@@ -277,16 +284,22 @@ def parse_all_spleclong_pacbio_input(gene_class, outdir="/mnt/d/HLAPro_backup/Na
         if gene_class != "IG_TR":
             # input_file = os.path.join(outdir, folder, f"{sample}.HLA.type.result.txt")
             input_file = os.path.join(outdir, folder, f"hlala.like.results.txt")
+            new_input_file = os.path.join(outdir, folder, f"{sample}.{gene_class}{suffix}")
             print (input_file)
             ## check if input file exists use os
             if os.path.exists(input_file):
                 input_dict = parse_hla_hla_input(input_file)
+            elif os.path.exists(new_input_file):
+                input_dict = parse_hla_hla_input(new_input_file)
             else:
                 input_file = f"{outdir}/{sample}/{sample}/hlala.like.results.txt"
+                new_input_file = os.path.join(outdir, folder, f"/{sample}/{sample}.{gene_class}{suffix}")
                 if os.path.exists(input_file):
                     input_dict = parse_hla_hla_input(input_file)
+                elif os.path.exists(new_input_file):
+                    input_dict = parse_hla_hla_input(new_input_file)
                 else:
-                    print(f"File {input_file} does not exist")
+                    print(f"File {input_file} and {new_input_file} does not exist")
                     input_dict = {}
         else:
             infer = os.path.join(result_dir, f"{sample}/{sample}.IG_TR_typing_result.txt")
@@ -490,6 +503,7 @@ def store_results(truth_dict, all_hla_la_result, gene_list, result_file):
     ## transfer data to datafram and save in a csv file
     df = pd.DataFrame(data, columns = ['sample', 'gene', 'truth_1', 'truth_2', 'infer_1', 'infer_2'])
     df.to_csv(result_file, index=False)
+    print (f"Results saved in {result_file}")
                 
 def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="CYP"):
     ### input dict structure: {sample: {gene: [[a,b,c], [c,d,e]]}}
@@ -579,6 +593,11 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
             #     print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
         # sys.exit(1)
     cal_accuracy(gene_dict)
+    
+    print ("truth:")
+    count_report_allele(truth_dict, gene_list)
+    print ("result:")
+    count_report_allele(all_hla_la_result, gene_list)
     print ("finished")
 
 
@@ -589,23 +608,40 @@ def cal_accuracy(gene_dict):
         total_correct += items[0]
         total += items[1]
         print (gene, items[0], items[1], round(items[0]/items[1],2))
-    print ("total", total_correct, total, round(total_correct/total,2))
+    if total == 0:
+        print ("total accuracy", total_correct, total, 0)
+    else:
+        print ("total accuracy", total_correct, total, round(total_correct/total,2))
 
-def count_report_allele(truth_dict, all_hla_la_result):
+def count_report_allele(all_hla_la_result, gene_list):
     count_list = []
     count_gene_array = defaultdict(list)
-    for sample in truth_dict:
+    total_allele_num, total_NA_num = 0, 0
+    for sample in all_hla_la_result:
         # for gene in truth_dict[sample]:
         for gene in gene_list:
             # print (all_hla_la_result[sample][gene])
-            count_list.append(len(all_hla_la_result[sample][gene][0]))
-            count_list.append(len(all_hla_la_result[sample][gene][1]))
-            count_gene_array[gene].append(len(all_hla_la_result[sample][gene][0]))
-            count_gene_array[gene].append(len(all_hla_la_result[sample][gene][1]))
-    print ("report allele no.", np.mean(count_list), np.median(count_list), min(count_list), max(count_list))
+            for i in range(2):
+                if gene not in all_hla_la_result[sample]:
+                    result_allele_num = 0
+                else:
+                    result_list = all_hla_la_result[sample][gene][i]
+                    result_allele_num  = len(result_list)
+                if result_allele_num == 0:
+                    total_NA_num += 1
+                elif result_list[0] == "NA":
+                    total_NA_num += 1
+                # else:
+                total_allele_num += 1
 
-    for gene in count_gene_array:
-        print (gene, np.mean(count_gene_array[gene]), np.median(count_gene_array[gene]), min(count_gene_array[gene]), max(count_gene_array[gene]))
+                if result_allele_num > 0:
+                    count_list.append(result_allele_num)
+                    count_gene_array[gene].append(result_allele_num)
+
+    print (f"report allele no. Mean: {np.mean(count_list)}, median: {np.median(count_list)}, range:[{min(count_list)}-{max(count_list)}]")
+    print (f"report allele no. NA: {total_NA_num}, total allele no.: {total_allele_num}, NA ratio: {total_NA_num/(total_NA_num+total_allele_num)}")
+    # for gene in count_gene_array:
+    #     print (gene, np.mean(count_gene_array[gene]), np.median(count_gene_array[gene]), min(count_gene_array[gene]), max(count_gene_array[gene]))
 
 def load_vdj_result(raw_result):
     """
@@ -676,18 +712,18 @@ def main():  # test in Nanopore amplicon data
     # truth_dict=parse_truth("hla_nanopore/4_field_truth.csv")
     # all_hla_la_result = parse_all_hla_hla_input(truth_dict)
     # compare_four(truth_dict, all_hla_la_result, gene_list, 8, "HLA")
-    # count_report_allele(truth_dict, all_hla_la_result)
+    # count_report_allele(all_hla_la_result)
 
     # truth_dict=parse_truth(nano_truth)
     # all_spechla_result = parse_all_spechla_input(truth_dict)
     # compare_four(truth_dict, all_spechla_result, gene_list, 8, "HLA")
-    # count_report_allele(truth_dict, all_spechla_result)
+    # count_report_allele(all_spechla_result)
 
     truth_dict=parse_truth(nano_truth)
     # all_hla_la_result = parse_all_hla_hla_input(truth_dict, "HLA*LA")
     all_hla_la_result = parse_all_hla_hla_input(truth_dict, "SpecHLA")
     compare_four(truth_dict, all_hla_la_result, gene_list, 8, "HLA")
-    # count_report_allele(truth_dict, all_hla_la_result)
+    # count_report_allele(all_hla_la_result)
 
 def split_IG_TR(gene_list):
     IG_list = []
@@ -702,7 +738,7 @@ def split_IG_TR(gene_list):
             sys.exit(1)
     return IG_list, TR_list
 
-def main_pacbio(gene_list, truth_dir, result_dir, gene_class="HLA"):
+def main_pacbio(gene_list, truth_dir, result_dir, gene_class="HLA", step = 2):
     ## remove HLA- prefix in gene_list
     if gene_class == "HLA":
         gene_list = [x.split("-")[-1] for x in gene_list]
@@ -717,7 +753,7 @@ def main_pacbio(gene_list, truth_dir, result_dir, gene_class="HLA"):
 
     # print (all_truth_dict['NA12878'])
     # return
-    all_hla_la_result = parse_all_spleclong_pacbio_input(gene_class, result_dir, )
+    all_hla_la_result = parse_all_spleclong_pacbio_input(gene_class, step, result_dir, )
     # print (all_hla_la_result)
     # return
     # all_old_hlala_result = parse_hlala_pacbio()
@@ -736,9 +772,9 @@ def main_pacbio(gene_list, truth_dir, result_dir, gene_class="HLA"):
     #     compare_four(new_truth_dict, all_hla_la_result, TR_list, 8, gene_class)
     #     print ("------------------")
     
-    result_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/data/eva_results/result_{gene_class}.csv"
+    result_file = f"{benchmark_result_dir}/{gene_class}/pacbio_{gene_class}.csv"
     store_results(new_truth_dict, all_hla_la_result, gene_list, result_file)
-    # count_report_allele(all_truth_dict, all_hla_la_result)
+    # count_report_allele(all_hla_la_result)
 
 def parse_hlala_pacbio(file_path="HLA-LA.merge.result.txt"):
     # Initialize the dictionary to hold the parsed data
@@ -813,6 +849,9 @@ def main_TCR(result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/")
     compare_four(new_truth_dict, infer_dict, gene_list, 8, "IG_TR")
     print ("gene number", len(gene_list), "sample number", len(sample_list))
 
+    result_file = f"{benchmark_result_dir}/TR/11samples_truth_tcr_{gene_class}.csv"
+    store_results(new_truth_dict, infer_dict, gene_list, result_file)
+
 def load_TCR_truth():
     tcr_trut_file = "tcr_truth.csv"
     ### save the truth to a dictionary, save each sample's truth to a dictionary
@@ -853,6 +892,7 @@ if __name__ == "__main__":
     # parser.add_argument('output', help='Output VCF file path')
 
     # args = parser.parse_args()
+    benchmark_result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/benchmark/"
 
     #### HLA typing in the nanopore amplicon data, comparing with HLA*LA and SpecHLA
     # main()
@@ -861,27 +901,35 @@ if __name__ == "__main__":
 
     # assess_sim()
 
-    # gene_class = "HLA"
-    # truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
-    # result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_hla/"
 
-    #### IG_TR
+
+    #### evaluation in HGSCV2
     gene_class = "IG_TR"
     truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
     result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/"
 
+    # gene_class = "HLA"
+    # truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
+    # result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_hla/"
+
+    gene_class = "CYP"
+    truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
+    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/"
+
     # truth_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/hgscv2_truth_bwa_zip/"
     # result_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/kir_typing_out/"
 
-    # db_dir = f"../db/{gene_class}/"
-    # gene_list, interval_dict =  get_focus_gene(gene_class)
-    # gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
-    # main_pacbio(gene_list, truth_dir, result_dir, gene_class)
+
+    step = 2   ### 1 or 2, assess result in step 1 or step 2
+    db_dir = f"../db/{gene_class}/"
+    gene_list, interval_dict =  get_focus_gene(gene_class)
+    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
+    main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
 
     
 
 
     #### TCR evaluation in 11 samples with given truth
-    main_TCR("/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/")
+    # main_TCR("/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/")
     
     

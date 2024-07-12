@@ -51,6 +51,14 @@ def minimap(sample, hap_index, input_sam):
     os.system(command)
 
 def bwa(sample, hap_index, input_sam):
+    ## if the bwa index does not exist, index it
+    prefix = record_truth_file_dict[sample][hap_index]
+    # bwt = prefix + ".bwt"
+    # if not os.path.exists(bwt):
+    #     print (f"indexing {record_truth_file_dict[sample][hap_index]}, {bwt} does not exist")
+    #     cmd = f"""bwa index {record_truth_file_dict[sample][hap_index]}"""
+    #     os.system(cmd)
+
     command = f"""
     #bwa index {record_truth_file_dict[sample][hap_index]}
     bwa mem {record_truth_file_dict[sample][hap_index]} {HLA_data} -t {args['j']} -o {input_sam}
@@ -424,6 +432,18 @@ def get_IMGT_version():
             version_info = line.strip()
     return version_info
 
+def get_consensus(vcf, ref, phased_mask, outdir, sample):
+    cmd = f"""
+    bcftools consensus -e 'ALT~"<.*>"' -f {ref} -H 1 {vcf} --mask {phased_mask} >{outdir}/{sample}.hap1.fasta
+    bcftools consensus -e 'ALT~"<.*>"' -f {ref} -H 2 {vcf} --mask {phased_mask} >{outdir}/{sample}.hap2.fasta
+
+    bwa index {outdir}/{sample}.hap1.fasta
+    samtools faidx {outdir}/{sample}.hap1.fasta
+    bwa index {outdir}/{sample}.hap2.fasta
+    samtools faidx {outdir}/{sample}.hap2.fasta
+    """
+    os.system(cmd)
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="HLA Typing from diploid assemblies.", add_help=False, \
@@ -438,6 +458,9 @@ if __name__ == "__main__":
     required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
     optional.add_argument("--map_tool", type=str, help="bwa or minimap2.", metavar="\b", default="bwa")
+    optional.add_argument("--phased_vcf", type=str, help="phased_vcf.", metavar="\b")
+    optional.add_argument("--phased_ref", type=str, help="phased_ref.", metavar="\b")
+    optional.add_argument("--phased_mask", type=str, help="phased_mask.", metavar="\b")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=10)
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
@@ -454,7 +477,20 @@ if __name__ == "__main__":
     sample = args['n']
     samples_list = [sample]
     # gene_list = ["A", "B", "C", "DPA1", "DPB1", "DQA1", "DQB1", "DRB1"]
-    record_truth_file_dict = {sample : [args['1'], args['2']]}
+
+    if args['1']  and args['2'] in args:
+        print ("accept haplotype files")
+        record_truth_file_dict = {sample : [args['1'], args['2']]}
+    elif 'phased_vcf' in args and 'phased_ref' in args:
+        print ("accept phased vcf")
+        get_consensus(args["phased_vcf"], args["phased_ref"], args["phased_mask"], result_path, sample)
+        print ("consensus done")
+        record_truth_file_dict = {sample : [f"{result_path}/{sample}.hap1.fasta", f"{result_path}/{sample}.hap2.fasta"]}
+        # print (record_truth_file_dict)
+    else:
+        print ("Please provide the haplotype files or phased vcf file.")
+        sys.exit(0)
+        
 
     gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)

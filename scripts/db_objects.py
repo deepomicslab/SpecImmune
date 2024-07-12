@@ -34,6 +34,24 @@ class My_db():
             self.lite_db = f"""{args["db"]}/CYP/CYP.full.fasta"""  
             self.full_db = f"""{args["db"]}/CYP/CYP.full.fasta"""  
             self.subdir = "CYP"
+
+            self.gene_region = f"""{sys.path[0]}/../gene_dist/CYP.gene.bed"""
+            self.gene_interval_dict, self.order_gene_list = self.get_IG_TR_gene_interval()
+            if "hg38" in args:
+                self.hg38 = args["hg38"]
+                # check if hg38 exists, else exit
+                if not os.path.exists(self.hg38):
+                    print (f"{self.hg38} does not exist")
+                    sys.exit(1)
+                # check if hg38 is index by samtools and bwa, else index it
+                if not os.path.exists(f"{self.hg38}.fai"):
+                    os.system(f"samtools faidx {self.hg38}")
+                if not os.path.exists(f"{self.hg38}.bwt"):
+                    os.system(f"bwa index {self.hg38}")
+            else:
+                # print (args["hg38"])
+                print ("WARNING: hg38 not provided, cannot type CYP genes")
+                # sys.exit(1)
         
         elif self.gene_class == "IG_TR":
             self.full_db = f"""{args["db"]}/IG_TR/IG_TR.fasta"""

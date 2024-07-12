@@ -16,10 +16,10 @@ def main(args):
         print(f'Version: {__version__}')
         sys.exit(0)
 
-    my_folder = My_folder(args)
-    my_folder.make_dir()
+    if args['i'] == "HLA" or args['i'] == "KIR" :
 
-    if args['i'] != "IG_TR":
+        my_folder = My_folder(args)
+        my_folder.make_dir()
 
         command = f"""
         ## first: read binning
@@ -76,25 +76,38 @@ def main(args):
             command = f"""
             python3 {sys.path[0]}/remap.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
             """
-            # print(command, flush=True)
-            # os.system(command)
+            print(command, flush=True)
+            os.system(command)
 
         # visualization 
         if args["mode"] >=-1:
             command = f"""
             python3 {sys.path[0]}/visualization.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
             """
-            # print(command, flush=True)
-            # os.system(command)
+            print(command, flush=True)
+            os.system(command)
+
+    elif args['i'] == "CYP" :
+
+        my_db = My_db(args)
+        command = f"""
+        bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
+        python3 {sys.path[0]}/typing_from_assembly.py --phased_ref {my_db.hg38} -j {args["j"]} -n {args["n"]} -i {args["i"]} -o {args["o"]}/{args["n"]} --phased_vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.norm.vcf.gz --phased_mask {args["o"]}/{args["n"]}/low_depth.bed
+        # python3 {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
+        """
+        os.system(command)
 
     
-    else:
+    elif args['i'] == "IG_TR":
         my_db = My_db(args)
         command = f"""
         bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
         python3 {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
         """
         os.system(command)
+    else:
+        print("Please choose HLA, KIR, CYP or IG_TR as analyze method.", flush=True)
+        return
 
         
 
