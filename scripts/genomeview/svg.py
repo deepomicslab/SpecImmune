@@ -19,6 +19,7 @@ class SVG(GraphicsBackend):
     def text(self, x, y, text, size=10, anchor="middle", family="Helvetica", **kwdargs):
         defaults = {}
         assert anchor in ["start", "middle", "end"]
+        # print(f"render text: {x}, {y}, {text}, {size}, {anchor}, {family}")
         yield """<text x="{x:.2f}" y="{y:.2f}" font-size="{size}" font-family="{family}" text-anchor="{anchor}" {more}>{text}</text>""".format(
             x=x, y=y, size=size, family=family, anchor=anchor, more=_addOptions(kwdargs, defaults), text=text)
 
@@ -44,7 +45,42 @@ class SVG(GraphicsBackend):
         del kwdargs["filter"]
         yield from self.text(x, y, text, size, anchor, **kwdargs)
 
+    def text_with_background2(self, x, y, text, size=10, anchor="middle", text_color="black", bg="white", bg_opacity=0.8, bg_padding=2, **kwdargs):
+        self._filter_id += 1
 
+        # Estimate text dimensions
+        char_width = size * 0.6  # Approximate width of a character, adjust if needed
+        text_width = char_width * len(text)
+        text_height = size  # Height roughly equal to font size
+        text_ascent = size * 0.8  # Ascent is roughly 80% of the font size
+
+        # Background rectangle dimensions
+        rect_width = text_width + 2 * bg_padding+20
+        rect_height = text_height + 2 * bg_padding
+
+        # Adjust x and y based on the anchor
+        if anchor == "middle":
+            rect_x = x - rect_width / 2
+            rect_y = y - rect_height / 2
+            text_x = x
+            text_y = y + text_ascent / 2
+        elif anchor == "start":
+            rect_x = x
+            rect_y = y - rect_height / 2
+            text_x = x + bg_padding
+            text_y = y + text_ascent / 2
+        elif anchor == "end":
+            rect_x = x - rect_width
+            rect_y = y - rect_height / 2
+            text_x = x - text_width - bg_padding
+            text_y = y + text_ascent / 2
+
+        # Draw the background rectangle
+        yield from self.rect(rect_x, rect_y, rect_width, rect_height, fill=bg, opacity=bg_opacity)
+
+        # Draw the text over the background
+        kwdargs["fill"] = text_color
+        yield from self.text(text_x, text_y, text, size, anchor=anchor, **kwdargs)
 
     def rect(self, x, y, width, height, **kwdargs):
         defaults = {"fill":"white", "stroke":"black"}
@@ -153,6 +189,154 @@ class SVG(GraphicsBackend):
         
     def stop_clipped_group(self):
         yield "</g>"
+
+    # def hla_typing_results(self, x, y, sample_info):
+    #     sample = sample_info["Sample"]
+    #     locus = sample_info["Locus"]
+    #     alleles = sample_info["alleles"]
+    #     resolution = sample_info["resolution"]
+    #     pdf_width = 900
+    #     pdf_x_margin = 50
+
+    #     # Constants for layout
+    #     margin_left = 50
+    #     margin_top = 30
+    #     line_height = 40
+    #     rect_height = 30
+    #     rect_width = 200
+    #     text_margin = 10
+    #     max_alleles_per_row = 4
+    #     gap_between_alleles = 20  # Adding a gap between alleles
+
+    #     # Calculate dynamic positions
+    #     y_pos = margin_top
+
+    #     # Drawing the title
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Sample:</tspan> <tspan font-weight='bold'>{sample}</tspan>", size=20, anchor="start", family="Arial", fill="#213271")
+    #     y_pos += line_height
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Locus:</tspan> <tspan font-weight='bold'>{locus}</tspan>", size=16, anchor="start", family="Arial", fill="#E86349")
+    #     y_pos += line_height
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Resolution:</tspan> <tspan font-weight='bold'>4th field</tspan>", size=16, anchor="start", family="Arial", fill="black")
+            
+    #     y_pos += 60
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Full typing result:</tspan>", size=16, anchor="start", family="Arial", fill="black")
+    #     y_pos += line_height
+        
+    #     # Drawing the alleles horizontally
+    #     row_count = 0
+    #     x_pos = margin_left
+        
+    #     for idx, allele in enumerate(alleles):
+    #         if idx > 0 and idx % max_alleles_per_row == 0:
+    #             y_pos += line_height
+    #             x_pos = margin_left
+    #             row_count += 1
+
+    #         # Calculate text width for centering (assuming fixed-width font for simplicity)
+    #         text_width = len(allele) * 8  # Adjust 8 to match your font's character width
+
+    #         # Center text horizontally in the cell
+    #         centered_x_pos = x_pos + (rect_width - text_width) / 2
+
+    #         yield from self.rect(x_pos - text_margin, y_pos - rect_height / 2, rect_width, rect_height, fill="#DDFAFB", stroke="none")
+    #         yield from self.text(centered_x_pos, y_pos, allele, size=14, anchor="start", family="Arial", fill="black", **{"font-weight":'bold'})
+    #         x_pos += rect_width + gap_between_alleles
+        
+    #     y_pos += line_height * (row_count + 1)
+    
+    # def hla_typing_results(self, x, y, sample_info):
+    #     sample = sample_info["Sample"]
+    #     locus = sample_info["Locus"]
+    #     alleles = sample_info["alleles"]
+    #     resolution = sample_info["resolution"]
+    #     pdf_width = 900
+    #     pdf_x_margin = 50
+
+    #     margin_left = 50
+    #     margin_top = 30
+    #     line_height = 40
+    #     rect_height = 30
+    #     rect_width = 200
+    #     text_margin = 10
+    #     gap_between_alleles = 20
+
+    #     y_pos = margin_top
+
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Sample:</tspan> <tspan font-weight='bold'>{sample}</tspan>", size=20, anchor="start", family="Arial", fill="#213271")
+    #     y_pos += line_height
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Locus:</tspan> <tspan font-weight='bold'>{locus}</tspan>", size=16, anchor="start", family="Arial", fill="#E86349")
+    #     y_pos += line_height
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Resolution:</tspan> <tspan font-weight='bold'>4th field</tspan>", size=16, anchor="start", family="Arial", fill="black")
+    #     y_pos += 60
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Full typing result:</tspan>", size=16, anchor="start", family="Arial", fill="black")
+    #     y_pos += line_height
+
+    #     row_count = 0
+    #     x_pos = margin_left
+        
+    #     for idx, allele in enumerate(alleles):
+    #         text_width = len(allele) * 8  # Adjust 8 to match your font's character width
+    #         cell_width = rect_width + text_margin * 2 + text_width + gap_between_alleles
+
+    #         if x_pos + cell_width > pdf_width - pdf_x_margin:
+    #             y_pos += line_height
+    #             x_pos = margin_left
+    #             row_count += 1
+
+    #         centered_x_pos = x_pos + (rect_width - text_width) / 2
+
+    #         yield from self.rect(x_pos - text_margin, y_pos - rect_height / 2, rect_width, rect_height, fill="#DDFAFB", stroke="none")
+    #         yield from self.text(centered_x_pos, y_pos, allele, size=14, anchor="start", family="Arial", fill="black", **{"font-weight": 'bold'})
+    #         x_pos += cell_width
+        
+    #     y_pos += line_height * (row_count + 1)
+    def hla_typing_results(self, x, y, sample_info):
+        sample = sample_info["Sample"]
+        locus = sample_info["Locus"]
+        alleles = sample_info["alleles"]
+        resolution = sample_info["resolution"]
+        pdf_width = 900
+        pdf_x_margin = 50
+
+        margin_left = 50
+        margin_top = 30
+        line_height = 40
+        rect_height = 30
+        text_margin = 10
+        gap_between_alleles = 20
+        max_columns = 3  # Set the maximum number of columns to 3
+
+        y_pos = margin_top
+
+        yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Sample:</tspan> <tspan font-weight='bold'>{sample}</tspan>", size=20, anchor="start", family="Arial", fill="#213271")
+        y_pos += line_height
+        yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Locus:</tspan> <tspan font-weight='bold'>{locus}</tspan>", size=16, anchor="start", family="Arial", fill="#E86349")
+        y_pos += line_height
+        yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Resolution:</tspan> <tspan font-weight='bold'>4th field</tspan>", size=16, anchor="start", family="Arial", fill="black")
+        y_pos += 60
+        yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Full typing result:</tspan>", size=16, anchor="start", family="Arial", fill="black")
+        y_pos += line_height
+
+        x_pos = margin_left
+        column_count = 0
+        
+        for idx, allele in enumerate(alleles):
+            text_width = len(allele) * 8  # Adjust 8 to match your font's character width
+            cell_width = text_width + text_margin * 2 + gap_between_alleles
+
+            if column_count >= max_columns or x_pos + cell_width > pdf_width - pdf_x_margin:
+                y_pos += line_height
+                x_pos = margin_left
+                column_count = 0
+
+            centered_x_pos = x_pos + text_margin
+
+            yield from self.text_with_background2(centered_x_pos, y_pos, allele, size=14, anchor="start", family="Arial", fill="black", bg="#DDFAFB", bg_opacity=1, **{"font-weight": 'bold'})
+            x_pos += cell_width
+            column_count += 1
+        
+        y_pos += line_height
+
     
 
 class Renderer:
@@ -225,3 +409,7 @@ class Renderer:
         renderer = Renderer(self.backend, x, y, width, height)
 
         return renderer
+    
+    def hla_typing_results(self,x,y,sample_info):
+        yield from self.backend.hla_typing_results(x+self.x, y+self.y, sample_info)
+

@@ -61,19 +61,20 @@ class SingleEndBAMTrack(IntervalTrack):
             and returns True (yes, display the read) or False (no, don't display). If this 
             function is not specified, by default all reads are shown.
     """
-    def __init__(self, bam_path, name=None):
+    def __init__(self, bam_path, name=None, bam_type="mormal"):
         """
         Args:
             bam_path (str): path of the bam file to display
             name (str): name of the track (optional - use None if you don't want to specify a name)
 
         """
-        super().__init__([], name=name)
+        super().__init__([], name=name, bam_type=bam_type)
 
         self.bam_path = bam_path
         self.bam = pysam.AlignmentFile(bam_path)
         self.intervals = self
         self.mismatch_counts = None
+        self.bam_type = bam_type
         
         self.nuc_colors = {"A":"blue", "C":"orange", "G":"green", "T":"black", "N":"gray"}
         self.insertion_color = "purple"
@@ -105,17 +106,21 @@ class SingleEndBAMTrack(IntervalTrack):
         
         for read in self.bam.fetch(chrom, start, end):
             if not self.include_read_fn or self.include_read_fn(read):
+                # print(read)
+
                 yield read
         
     def __iter__(self):
         c = 0
         for i, read in enumerate(self.fetch()):
             c += 1
-            if read.is_unmapped: continue
-            if read.is_secondary and not self.include_secondary: continue
+            if self.bam_type == "normal":
+                if read.is_unmapped: continue
+                if read.is_secondary and not self.include_secondary: continue
             id_ = read.query_name + str(i)
             interval = Interval(id_, self.scale.chrom, read.reference_start, read.reference_end, 
                                 not read.is_reverse)
+            print(interval)
             interval.read = read
             if self.draw_read_labels:
                 interval.label = read.query_name
@@ -144,7 +149,6 @@ class SingleEndBAMTrack(IntervalTrack):
             # (or something like that, opening a fresh file handle seems to fix the issue)
             bam = pysam.AlignmentFile(self.bam_path)
             self.mismatch_counts.tally_reads(bam)
-            print(self.mismatch_counts.counts)
             print("done tallying reads")
             # for i in range(len(self.mismatch_counts.counts)):
             #     for j in range(len(self.mismatch_counts.counts[i])):
@@ -159,6 +163,7 @@ class SingleEndBAMTrack(IntervalTrack):
         Draw a read and then, if ``self.draw_mismatches`` is True, draw mismatches/indels 
         on top.
         """
+
         yield from super().draw_interval(renderer, interval)
 
         if self.draw_mismatches:
@@ -166,6 +171,7 @@ class SingleEndBAMTrack(IntervalTrack):
 
     def _draw_mismatch(self, renderer, length, genome_position, sequence_position, yoffset, alnseq):
         extras = {"stroke":"none"}
+        # print(length, genome_position, sequence_position, yoffset, alnseq)
 
         for i in range(length):
             if genome_position+i < self.scale.start: continue
@@ -179,13 +185,13 @@ class SingleEndBAMTrack(IntervalTrack):
             except AssertionError:
                 logging.warn("Unable to get reference sequence; will not draw mismatches")
                 return
+            
 
             if alt != ref:
                 curstart = self.scale.topixels(genome_position+i)
                 curend = self.scale.topixels(genome_position+i+1)
 
                 color = self.nuc_colors[alnseq[sequence_position+i]]
-                print(self.mismatch_counts.query(alt, genome_position+i))
                 # if not self.mismatch_counts or alt=="N" or self.mismatch_counts.query(alt, genome_position+i):
                 width = max(curend-curstart, self.min_cigar_line_width)
                 midpoint = (curstart+curend)/2
@@ -414,7 +420,9 @@ class PairedEndBAMTrack(SingleEndBAMTrack):
     def render(self, renderer):
         read_buffer = {}
         for read in self.fetch():
-            if read.is_unmapped: continue
+
+            if self.bam_type == "normal":
+                if read.is_unmapped: continue
             if read.query_name in read_buffer:
                 other_read = read_buffer.pop(read.query_name)
                 cur_reads = [other_read, read]
@@ -577,7 +585,6 @@ class BAMCoverageTrack(GraphTrack):
             yield from renderer.text_with_background(5, 14, self.name, anchor="start", size=18, bg_opacity=0.9)
             
     def render(self, renderer):
-        print("render cov")
         # for label, series in self.series.items():
         #     for i in range(len(series.x)-1):
         #         if any(numpy.isnan(series.x[i:i+2])) or any(numpy.isnan(series.y[i:i+2])):
@@ -598,7 +605,7 @@ class BAMCoverageTrack(GraphTrack):
             points.append((x, y))
         points.append((self.scale.topixels(self.series["series_0"].x[-1]), self.height))
         points.append((self.scale.topixels(self.series["series_0"].x[0]), self.height))
-        yield from renderer.polygon(points, fill="#87CEEB", stroke="none")
+        yield from renderer.polygon(points, fill="#E86349", stroke="none")
 
         # since the labels are drawn at the top of the ticks, let's make sure the top tick/label is 
         # more than 12 pixels from the top of the track so it doesn't get clipped
