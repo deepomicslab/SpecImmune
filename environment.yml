@@ -238,4 +238,6 @@ dependencies:
   - r-rsvg=2.6.0=r44hc7fd59d_1
   - pip:
       - pybigwig==0.3.22
+      - pypdf2==3.0.1
+      - typing-extensions==4.12.2
 prefix: /home/xuedowang2/miniconda3/envs/speclong

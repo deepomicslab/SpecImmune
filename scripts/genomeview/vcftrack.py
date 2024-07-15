@@ -63,11 +63,11 @@ class VCFTrack(IntervalTrack):
         current_row = 0
         
         for interval in self.intervals:
-            print(f"Layout interval: {interval}")
+            # print(f"Layout interval: {interval}")
             self.intervals_to_rows[interval.id] = current_row
             current_row += 1
         
-        print(f"Intervals to rows: {self.intervals_to_rows}")
+        # print(f"Intervals to rows: {self.intervals_to_rows}")
         
     def draw_interval(self, renderer, interval):
         # overriding this method isn't really necessary - we're just going to make
@@ -91,7 +91,7 @@ class VCFTrack(IntervalTrack):
         # print(f"Variant: {interval.variant.alts[0]}")
         color = self.color_fn(interval)
 
-        print(f"render rect: {start}, {top}, {end - start}, {self.row_height}, fill={color}, **{{'stroke': 'none'}}")
+        # print(f"render rect: {start}, {top}, {end - start}, {self.row_height}, fill={color}, **{{'stroke': 'none'}}")
 
         yield from renderer.rect(start, top, end - start, self.row_height, fill=color, 
                                  **{"stroke": "none"})

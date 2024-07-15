@@ -34,12 +34,12 @@ def color_by_strand(interval):
 
 
 class IntervalTrack(Track):
-    def __init__(self, intervals, name=None):
+    def __init__(self, intervals, name=None, bam_type="normal"):
         super().__init__(name)
         self.rows = []
         self.intervals_to_rows = {}
         
-        self.row_height = 8
+        self.row_height = 8 if bam_type == "normal" else 15
         self.margin_x = 15
         self.margin_y = 2
         self.label_distance = 3
@@ -49,6 +49,10 @@ class IntervalTrack(Track):
         self.color_fn = color_by_strand
 
     def layout_interval(self, interval):
+        # print(interval)
+        # print(interval.id, interval.id in self.intervals_to_rows)
+        # print(self.intervals_to_rows)
+
         row = 0
         interval_start = self.scale.topixels(interval.start)
         for row, row_end in enumerate(self.rows):
@@ -63,7 +67,7 @@ class IntervalTrack(Track):
             new_end += len(interval.label) * self.row_height * 0.75
         self.rows[row] = new_end
 
-        assert not interval.id in self.intervals_to_rows
+        # assert not interval.id in self.intervals_to_rows
         self.intervals_to_rows[interval.id] = row
         
 
@@ -79,6 +83,7 @@ class IntervalTrack(Track):
         self.height = (len(self.rows)+1) * (self.row_height+self.margin_y)
     
     def draw_interval(self, renderer, interval):
+        print(f"Drawing interval: {interval}")
         start = self.scale.topixels(interval.start)
         end = self.scale.topixels(interval.end)
         
@@ -89,6 +94,8 @@ class IntervalTrack(Track):
         temp_label = interval.label
         if interval.label is None:
             temp_label = interval.id
+
+        print(f"Drawing interval: {interval.id} at {start}-{end} on row {row} ({top}), row_height: {self.row_height}")
 
         # yield from renderer.rect(start, top, end-start, self.row_height, fill=color, 
         #     **{"stroke":"none", "id":temp_label})

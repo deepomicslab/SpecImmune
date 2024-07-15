@@ -17,3 +17,4 @@ from genomeview.export import render_to_file, save
 from genomeview.convenience import visualize_data
 from genomeview.utilities import get_one_track
 from genomeview.vcftrack import VCFTrack
+from genomeview.resultrack import ResultTrack

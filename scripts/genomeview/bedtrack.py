@@ -200,7 +200,7 @@ class BEDTrack(IntervalTrack):
                     
         # print(1)
         row = self.intervals_to_rows[interval.id]
-        top = row*(self.row_height+self.margin_y)
+        top = row*(self.row_height+self.margin_y)+20
         top_thin = top + self.row_height/2 - self.thin_width/2
         midline = top + self.row_height/2 - self.thinnest_width/2
         
