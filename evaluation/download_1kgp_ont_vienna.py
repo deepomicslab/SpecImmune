@@ -56,7 +56,15 @@ def main(file_list_path):
                 os.makedirs(sample_dir, exist_ok=True)
 
                 local_file_path = os.path.join(sample_dir, os.path.basename(file_path))
-
+                
+                ### if the file is already downloaded, and the md5 mech checksum, skip
+                if os.path.exists(local_file_path):
+                    md5 = os.popen(f"md5sum {local_file_path} | cut -d ' ' -f 1").read().strip()
+                    # print (md5, checksum)
+                    if md5 == checksum:
+                        print(f"File {local_file_path} already exists and matches the checksum. Skipping download.")
+                        continue
+                # print (checksum, local_file_path)
                 # Download the file
                 download_file(file_url, local_file_path, file_size)
 

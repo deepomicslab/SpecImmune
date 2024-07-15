@@ -6,7 +6,7 @@ outdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads/
 resultdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results/
 
 
-for i in {1..5}
+for i in {2..10}
 do
     sample=CYP_dp50_acc98_$i
 
