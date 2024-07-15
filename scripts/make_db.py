@@ -482,6 +482,8 @@ def make_IG_TR_db():
     gene_list, interval_dict = get_focus_gene("IG_TR")
     create_VDJ_directories_and_save_sequences(local_all_fasta_filename, IG_TR_dir, gene_list)
     os.system(cmd)
+    ## delete gen_IG_TR_dir
+    os.system(f"rm -rf {gen_IG_TR_dir}")
 
 
 

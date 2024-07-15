@@ -7,6 +7,19 @@
 #  -j 15 -y nanopore -i IG_TR \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/VDJ/SRR24993720.fastq.gz
 
-python3 ../scripts/main.py -n NA18506_new -o /mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/\
- -j 15 -y nanopore -i IG_TR \
--r /mnt/d/HLAPro_backup/Nanopore_optimize/data/VDJ/SRR19372746.fastq.gz
+# python3 ../scripts/main.py -n NA18506_new -o /mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/\
+#  -j 15 -y nanopore -i IG_TR \
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/VDJ/SRR19372746.fastq.gz
+
+# python3 ../scripts/main.py -n NA19240 -o /mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/\
+#  -j 15 -y nanopore -i IG_TR \
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/complex_reads/NA19240.IG.TR.extract.fastq.gz
+
+# python3 ../scripts/main.py --hg38 ../CYP_ref/CYP.segment.fa -n NA19240_new -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+#  -j 15 -y pacbio -i CYP \
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/complex_reads/NA19240.cyp.extract.fastq.gz 
+
+
+python3 ../scripts/main.py --hg38 ../CYP_ref/CYP.segment.fa -n NA19239 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+ -j 15 -y pacbio -i CYP \
+-r /mnt/d/HLAPro_backup/Nanopore_optimize/data/complex_reads/NA19239.cyp.extract.fastq.gz 

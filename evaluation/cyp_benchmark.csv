@@ -1,0 +1,97 @@
+No.	Sample	Ethnicity	Family	Relation	Orthogonal methods	PGRNseq v1.1	PGRNseq v2.0	Activity Score	Phenotype
+1	NA12801	European	1454	Father	*4/*6	*4/*6	*4/*6	0	Poor
+2	NA12802	European	1454	Mother	*2/*41	*2/*41	*2/*41	1.5	Normal
+3	NA12805	European	1454	Child	*2/*4	*2/*4	*2/*4	1	Normal
+4	NA12891	European	1463	Father	*41/*68 + *4	*41/*68 + *4	*41/*68 + *4	0.5	Intermediate
+5	NA12892	European	1463	Mother	*2/*3	*2/*3	*2/*3	1	Normal
+6	NA12878	European	1463	Child	*3/*68 + *4	*3/*68 + *4	*3/*68 + *4	0	Poor
+7	NA19834	African American	2424	Father	*2/*2	*2/*2	*2/*2	2	Normal
+8	NA19835	African American	2424	Mother	*1/*2	-	*1/*2	2	Normal
+9	NA19836	African American	2424	Child	*1/*2	*1/*2	*1/*2	2	Normal
+10	NA19239	Yoruban	Y117	Father	*15/*17	*15/*17	*15/*17	0.5	Intermediate
+11	NA19238	Yoruban	Y117	Mother	*1/*17	*1/*17	*1/*17	1.5	Normal
+12	NA19240	Yoruban	Y117	Child	*15/*17	*15/*17	*15/*17	0.5	Intermediate
+13	NA12750	European	1444	Father	*2/*2	*2/*2	*2/*2	2	Normal
+14	NA12751	European	1444	Mother	*1/*2	*1/*2	*1/*2	2	Normal
+15	NA12740	European	1444	Child	*1/*2	*1/*2	*1/*2	2	Normal
+16	NA19685	Mexican American	M011	Father	*1/*2x2	*1/*2x2	*1/*2x2	3	Ultrarapid
+17	NA19684	Mexican American	M011	Mother	*1/*4	*1/*4	*1/*4	1	Normal
+18	NA19686	Mexican American	M011	Child	*1/*1	*1/*1	-	2	Normal
+19	HG00421	Han Chinese	SH007	Father	*2/*10x2	*2/*10x2	*2/*10x2	2	Normal
+20	HG00422	Han Chinese	SH007	Mother	*2/*10	*2/*10	*2/*10	1.5	Normal
+21	HG00423	Han Chinese	SH007	Child	*10/*10x2	*10/*10x2	*10/*10x2	1.5	Normal
+22	HG01979	Peruvian	PEL027	Father	*2/*68 + *4	*2/*68 + *4	*2/*68 + *4	1	Normal
+23	HG01980	Peruvian	PEL027	Mother	*1/*2	*1/*2	*1/*2	2	Normal
+24	HG01981	Peruvian	PEL027	Child	*1/*2	*1/*2	*1/*2	2	Normal
+25	NA12003	European	1420	Father	*4/*35	*4/*35	*4/*35	1	Normal
+26	NA12004	European	1420	Mother	*2/*41	*2/*41	*2/*41	1.5	Normal
+27	NA10838	European	1420	Child	*2/*4	*2/*4	*2/*4	1	Normal
+28	NA12155	European	1408	Father	*1/*5	*1/*5	*1/*5	1	Normal
+29	NA12156	European	1408	Mother	*1/*4	*1/*4	*1/*4	1	Normal
+30	NA10831	European	1408	Child	*4/*5	*4/*5	*4/*5	0	Poor
+31	NA19128	Yoruban	Y077	Father	*17/*17	*17/*17	*17/*17	1	Normal
+32	NA19127	Yoruban	Y077	Mother	*2/*17	*2/*17	*2/*17	1.5	Normal
+33	NA19129	Yoruban	Y077	Child	*17/*17	*17/*17	*17/*17	1	Normal
+34	NA19700	African American	2367	Father	*4/*29	*4/*29	*4/*29	0.5	Intermediate
+35	NA19701	African American	2367	Mother	*1/*17	*1/*17	*1/*17	1.5	Normal
+36	NA19702	African American	2367	Child	*4/*17	*4/*17	*4/*17	0.5	Intermediate
+37	NA19771	Mexican American	M031	Father	*2/*4	*2/*4	*2/*4	1	Normal
+38	NA19770	Mexican American	M031	Mother	*1/*2	*1/*2	*1/*2	2	Normal
+39	NA19772	Mexican American	M031	Child	*2/*4	*2/*4	*2/*4	1	Normal
+40	HG01060	Puerto Rican	PR14	Father	*1/*41	*1/*41	*1/*41	1.5	Normal
+41	HG01061	Puerto Rican	PR14	Mother	*1/*4	*1/*4	*1/*4	1	Normal
+42	HG01062	Puerto Rican	PR14	Child	*1/*4	*1/*4	*1/*4	1	Normal
+43	NA10860	European	1362	Father	*1/*4 N + 4	*1/*4 N + 4	*1/*4 N + 4	1	Normal
+44	NA10861	European	1362	Mother	*4/*35	*4/*35	*4/*35	1	Normal
+45	NA11984	European	1362	Child	*1/*35	*1/*35	*1/*35	2	Normal
+46	HG02259	Peruvian	PEL042	Father	*1/*2	*1/*2	*1/*2	2	Normal
+47	HG02260	Peruvian	PEL042	Mother	*1/*1	*1/*1	*1/*1	2	Normal
+48	HG02261	Peruvian	PEL042	Child	*1/*2	*1/*2	*1/*2	2	Normal
+49	NA07357	European	1345	Father	*1/*6	*1/*6	*1/*6	1	Normal
+50	NA07345	European	1345	Mother	*1/*1	*1/*1	*1/*1	2	Normal
+51	NA07348	European	1345	Child	*1/*6	*1/*6	*1/*6	1	Normal
+52	NA06984	European	1328	Father	*4/*68 + *4	*4/*68 + *4	*4/*68 + *4	0	Poor
+53	NA06989	European	1328	Mother	*9/*9	*9/*9	*9/*9	1	Normal
+54	NA12331	European	1328	Child	*4/*9	*4/*9	*4/*9	0.5	Intermediate
+55	NA18507	Yoruban	Y009	Father	*2/*4x2	*2/*4x2	*2/*4x2	1	Normal
+56	NA18508	Yoruban	Y009	Mother	*2/*5	*2/*5	*2/*5	1	Normal
+57	NA18506	Yoruban	Y009	Child	*2/*5	*2/*5	*2/*5	1	Normal
+58	NA19900	African American	2425	Father	*3/*29	*3/*29	*3/*29	0.5	Intermediate
+59	NA19901	African American	2425	Mother	*1/*1	*1/*1	*1/*1	2	Normal
+60	NA19902	African American	2425	Child	*1/*29	*1/*29	*1/*29	1.5	Normal
+61	NA19789	Mexican American	M037	Father	*1/*1	*1/*1	*1/*1	2	Normal
+62	NA19788	Mexican American	M037	Mother	*2/*78 + *2	*2/*78 + *2	*2/*78 + *2	2	Normal
+63	NA19790	Mexican American	M037	Child	*1/*78 + *2	*1/*78 + *2	*1/*78 + *2	2	Normal
+64	HG00463	Han Chinese	SH021	Father	*36+*10/*36 + *10	*36+*10/*36 + *10	*36+*10/*36 + *10	1	Normal
+65	HG00464	Han Chinese	SH021	Mother	*1/*36 + *10	*1/*36 + *10	*1/*36 + *10	1.5	Normal
+66	HG00465	Han Chinese	SH021	Child	*36+*10/*36 + *10	*36+*10/*36 + *10	*36+*10/*36 + *10	1	Normal
+67	HG00592	Han Chinese	SH057	Father	*1/*10	*1/*10	*1/*10	1.5	Normal
+68	HG00593	Han Chinese	SH057	Mother	*2/*36 + *10	*2/*36 + *10	*2/*36 + *10	1.5	Normal
+69	HG00594	Han Chinese	SH057	Child	*1/*2	*1/*2	*1/*2	2	Normal
+70	HG01190	Puerto Rican	PR40	Father	*5/*68 + *4	*5/*68 + *4	*5/*68 + *4	0	Poor
+71	HG01191	Puerto Rican	PR40	Mother	*2/*41	*2/*41	*2/*41	1.5	Normal
+72	HG01192	Puerto Rican	PR40	Child	*5/*41	*5/*41	*5/*41	0.5	Intermediate
+73	NA12342	European	1330	Father	*4/*41	*4/*41	*4/*41	0.5	Intermediate
+74	NA12343	European	1330	Mother	*1/*5	*1/*5	*1/*5	1	Normal
+75	NA12336	European	1330	Child	*5/*41	*5/*41	*5/*41	0.5	Intermediate
+76	NA10853	European	1349	Father	*2/*41	*2/*41	*2/*41	1.5	Normal
+77	NA10854	European	1349	Mother	*1/*4	*1/*4	*1/*4	1	Normal
+78	NA11834	European	1349	Child	*2/*4	*2/*4	-	1	Normal
+79	NA19200	Yoruban	Y045	Father	*5/(*76 + *1)	(*1)/*5	(*1)/*5	1	Normal
+80	NA19201	Yoruban	Y045	Mother	*1/*17	*1/*17	*1/*17	1.5	Normal
+81	NA19202	Yoruban	Y045	Child	*1/(*76+*1)	(*1)/*1	(*1)/*1	2	Normal
+82	NA18516	Yoruban	Y013	Father	*1/*17	*1/*17	*1/*17	1.5	Normal
+83	NA18517	Yoruban	Y013	Mother	*5/*10	*5/*10	*5/*10	0.5	Intermediate
+84	NA18515	Yoruban	Y013	Child	*1/*10	*1/*10	*1/*10	1.5	Normal
+85	NA19818	African American	2418	Father	*1/*17	*1/*17	*1/*17	1.5	Normal
+86	NA19819	African American	2418	Mother	*2/*4x2	*2/*4x2	*2/*4x2	1	Normal
+87	NA19828	African American	2418	Child	*2/*17	*2/*17	*2/*17	1.5	Normal
+88	NA12399	European	1354	Father	*1/*1	*1/*1	*1/*1	2	Normal
+89	NA12400	European	1354	Mother	*1/*68 + *4	*1/*68 + *4	*1/*68 + *4	1	Normal
+90	NA12386	European	1354	Child	*1/*1	*1/*1	*1/*1	2	Normal
+91	NA11891	European	1377	Father	*1/*1	*1/*1	*1/*1	2	Normal
+92	NA11892	European	1377	Mother	*6/*41	*6/*41	*6/*41	0.5	Intermediate
+93	NA10865	European	1377	Child	*1/*41	*1/*41	*1/*41	1.5	Normal
+94	NA12272	European	1418	Father	*1/*1	*1/*1	*1/*1	2	Normal
+95	NA12273	European	1418	Mother	*1/*1	*1/*1	*1/*1	2	Normal
+96	NA10837	European	1418	Child	*1/*1	*1/*1	*1/*1	2	Normal

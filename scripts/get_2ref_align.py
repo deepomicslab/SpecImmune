@@ -4,23 +4,24 @@ import os
 from Bio import SeqIO
 from determine_gene import get_focus_gene, get_folder_list
 from alignment_modules import Read_Type
+from folder_objects import My_folder
 
 def read_hla_file(filename):
     with open(filename, 'r') as file:
         next(file)
         next(file)
         for idx, row in enumerate(file):
-            print(row.strip())
+            # print(row.strip())
             items=row.strip().split("\t")
             alleles_str=items[2].split(";")
-            print("alleles_str", alleles_str)
+            # print("alleles_str", alleles_str)
             for iti, it in enumerate(alleles_str):
                 if iti>0:
                     continue
                 allele=it.split(",")[0]
                 # gene_tag=allele.split("*")[0]
                 gene_tag = items[0]
-                print("result :", gene_tag, allele) 
+                # print("result :", gene_tag, allele) 
                 gene_ref_dict[gene_tag].append(allele)
 
             
@@ -88,10 +89,10 @@ def map_phased_reads_2_ref_minimap():
         print (f"processing alignment for {gene}")
         # for hom
         if alleles[0] == alleles[1]:
-            fq=f"{outdir}/{sample}/{gene}.long_read.fq.gz"
+            fq=f"{my_folder.reads_dir}/{gene}.long_read.fq.gz"
             ref=f"{db_build_dir}/{gene}/{gene}.fasta"
-            bam=f"{outdir}/{sample}/{gene}.bam"
-            depth_file=f"{outdir}/{sample}/{gene}.depth"
+            bam=f"{my_folder.step2_genes_dir}/{gene}.bam"
+            depth_file=f"{my_folder.step2_genes_dir}/{gene}.depth"
             # minimap
             # minimap2 -t %s %s -a $hla_ref $outdir/$hla.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
             cmd=f"""
@@ -103,10 +104,10 @@ def map_phased_reads_2_ref_minimap():
         else:
             # for het
             for allele_idx, allele in enumerate(alleles):
-                fq=f"{outdir}/{sample}/{allele}.fq.gz"
+                fq=f"{my_folder.reads_dir}/{allele}.fq.gz"
                 ref=f"{db_build_dir}/{gene}/{gene}.{allele_idx+1}.fasta"
-                bam=f"{outdir}/{sample}/{gene}.{allele_idx}.bam"
-                depth_file=f"{outdir}/{sample}/{gene}.{allele_idx}.depth"
+                bam=f"{my_folder.step2_genes_dir}/{gene}.{allele_idx}.bam"
+                depth_file=f"{my_folder.step2_genes_dir}/{gene}.{allele_idx}.depth"
                 # minimap
                 # minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
                 cmd=f"""
@@ -126,10 +127,10 @@ def map_phased_reads_2_ref_bwa():
         print (f"processing alignment for {gene}")
         # for hom
         if alleles[0] == alleles[1]:
-            fq=f"{outdir}/{sample}/{gene}.long_read.fq.gz"
+            fq=f"{my_folder.reads_dir}/{gene}.long_read.fq.gz"
             ref=f"{db_build_dir}/{gene}/{gene}.fasta"
-            bam=f"{outdir}/{sample}/{gene}.bam"
-            depth_file=f"{outdir}/{sample}/{gene}.depth"
+            bam=f"{my_folder.step2_genes_dir}/{gene}.bam"
+            depth_file=f"{my_folder.step2_genes_dir}/{gene}.depth"
             # bwa
             # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t %s $hla_ref $outdir/$hla.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
             cmd=f"""
@@ -141,10 +142,10 @@ def map_phased_reads_2_ref_bwa():
         else:
             # for het
             for allele_idx, allele in enumerate(alleles):
-                fq=f"{outdir}/{sample}/{allele}.fq.gz"
+                fq=f"{my_folder.reads_dir}/{allele}.fq.gz"
                 ref=f"{db_build_dir}/{gene}/{gene}.{allele_idx+1}.fasta"
-                bam=f"{outdir}/{sample}/{gene}.{allele_idx}.bam"
-                depth_file=f"{outdir}/{sample}/{gene}.{allele_idx}.depth"
+                bam=f"{my_folder.step2_genes_dir}/{gene}.{allele_idx}.bam"
+                depth_file=f"{my_folder.step2_genes_dir}/{gene}.{allele_idx}.depth"
                 # bwa
                 # bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t %s $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
                 cmd=f"""
@@ -152,7 +153,7 @@ def map_phased_reads_2_ref_bwa():
                     samtools index {bam} 
                     samtools depth -d 1000000 -aa {bam} > {depth_file}
                 """
-                print(cmd)
+                # print(cmd)
                 os.system(cmd)
 
 
@@ -186,13 +187,13 @@ def build_HLA_rna_ref():
 def map_long_reads_2_ref_minimap():
     for gene in gene_list:
         allele_dir=f"{db_build_dir}/{gene}"
-        fq=f"{outdir}/{sample}/{gene}.long_read.fq.gz"
+        fq=f"{my_folder.reads_dir}/{gene}.long_read.fq.gz"
         if not os.path.exists(fq):
             print(f"Warning: {fq} is empty, skip {gene}")
             continue
         ref=f"{allele_dir}/{gene}.fasta"
-        bam=f"{outdir}/{sample}/{gene}.bam"
-        depth_file=f"{outdir}/{sample}/{gene}.depth"
+        bam=f"{my_folder.step2_genes_dir}/{gene}.bam"
+        depth_file=f"{my_folder.step2_genes_dir}/{gene}.depth"
         # minimap
         # minimap2 -t %s %s -a $hla_ref $outdir/$hla.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
         cmd=f"""
@@ -230,9 +231,13 @@ if __name__ == "__main__":
     gene_class = sys.argv[7]
     seq_tech = sys.argv[8]
     RNA_type = sys.argv[9]
-    ref_file = f"{outdir}/{sample}/{sample}.{gene_class}.type.result.txt"
+    
 
     read_type = Read_Type(seq_tech, data_type, RNA_type)
+    my_folder = My_folder({"o": outdir, "n":sample})
+    ref_file = f"{my_folder.sample_prefix}.{gene_class}.type.result.txt"
+
+
     # if seq_tech == 'rna':
     #     bwa_para = read_type.get_bwa_param()
     # else:

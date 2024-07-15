@@ -5,24 +5,28 @@ import pysam
 import gzip
 import argparse
 from db_objects import My_db
+from folder_objects import My_folder
 
+__version__ = '1.0.0'
 
 def main(args):
-    if not os.path.exists(args["o"]):
-        os.system("mkdir %s"%(args["o"]))
-    outdir = args["o"] + "/" + args["n"]
-    if not os.path.exists(outdir):
-        os.system("mkdir %s"%(outdir))
 
-    if args['i'] != "IG_TR":
+    # Check if the version option is provided
+    if args["version"]:
+        print(f'Version: {__version__}')
+        sys.exit(0)
+
+    if args['i'] == "HLA" or args['i'] == "KIR" or args['i'] == "CYP":
+
+        my_folder = My_folder(args)
+        my_folder.make_dir()
 
         command = f"""
         ## first: read binning
         python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} \
             --db {args["db"]} --min_identity {args["min_identity"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
         """
-        if args["mode"] >= 4:
-            os.system(command)
+        os.system(command)
 
         command = f"""
         ## second: find a pair of alleles for each HLA locus
@@ -30,33 +34,22 @@ def main(args):
             --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
             --db {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
         """
-        if args["mode"] >= 3 and args["seq_tech"] != "rna":
+        if args["seq_tech"] != "rna":
             os.system(command)
 
         # return
 
         # build individual ref when first run
         my_db = My_db(args)
-        # print(f"""python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}""")
-        # command = f"""
-        # ## third: build individual reference for each HLA locus
-        # python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
-        # python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
-        # """
-        # db=my_db.full_cds_db if args["seq_tech"] == "rna" else my_db.full_db
+
         db = my_db.full_db
         command = f"""
         ## third: build individual reference for each HLA locus, two ref version
         python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} {args["i"]} \
             {args["seq_tech"]} {args["RNA_type"]}
         """
-        # if args["first_run"]:
-        if args["mode"] >= 2:
-            print (f"<<<<get_2ref_align.py\n {command}", flush=True)
-            os.system(command)
+        os.system(command)
 
-
-        
         if args["analyze_method"] == "phase":
             command = f"""
             ## forth: call & phasing variant & typing
@@ -64,8 +57,7 @@ def main(args):
                 -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
 
             """
-            if args["mode"] >= 1:
-                os.system(command)
+            os.system(command)
 
         elif args["analyze_method"] == "assembly":
             command = f"""
@@ -84,9 +76,9 @@ def main(args):
             command = f"""
             python3 {sys.path[0]}/remap.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
             """
-
             print(command, flush=True)
             os.system(command)
+            
         # remap allele for viz
         if args["mode"] >=-1:
             command = f"""
@@ -102,14 +94,27 @@ def main(args):
             print(command, flush=True)
             os.system(command)
 
-    
-    else:
+    elif args['i'] == "CYP" :
+
         my_db = My_db(args)
         command = f"""
         bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
-        python {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
+        python3 {sys.path[0]}/typing_from_assembly.py --phased_ref {my_db.hg38} -j {args["j"]} -n {args["n"]} -i {args["i"]} -o {args["o"]}/{args["n"]} --phased_vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.norm.vcf.gz --phased_mask {args["o"]}/{args["n"]}/low_depth.bed
+        # python3 {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
         """
         os.system(command)
+
+    
+    elif args['i'] == "IG_TR":
+        my_db = My_db(args)
+        command = f"""
+        bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
+        python3 {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
+        """
+        os.system(command)
+    else:
+        print("Please choose HLA, KIR, CYP or IG_TR as analyze method.", flush=True)
+        return
 
         
 
@@ -142,7 +147,7 @@ if __name__ == "__main__":
     optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")
     optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon].", metavar="\b", default="wgs")
 
-
+    optional.add_argument('-v', '--version', action='store_true', help='Display the version number')
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
 
@@ -151,3 +156,18 @@ if __name__ == "__main__":
         sys.exit(0)
     
     main(args)
+
+
+
+
+
+
+
+
+            # print(f"""python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}""")
+        # command = f"""
+        # ## third: build individual reference for each HLA locus
+        # python3 {sys.path[0]}/get_ref.py -n {args["n"]} -o {args["o"]} -j {args["j"]}    
+        # python3 {sys.path[0]}/build_ref.py {args["o"]}/{args["n"]}/{args["n"]}.map.txt {my_db.full_db} {my_db.individual_ref_dir}
+        # """
+        # db=my_db.full_cds_db if args["seq_tech"] == "rna" else my_db.full_db

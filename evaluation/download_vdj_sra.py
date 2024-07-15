@@ -4,7 +4,7 @@ import os
 # Path to your CSV file
 csv_file_path = 'SRP272207.csv'
 data_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/VDJ/sra/"
-results_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/"
+results_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/"
 
 run_dict = {}
 # Open the CSV file and read the top 10 lines (excluding the header)
@@ -22,6 +22,8 @@ with open(csv_file_path, newline='') as csvfile:
             break
 
 for run_name, sample_name in run_dict.items():
+    if sample_name == "NA18506":
+        continue
     print(f"Run: {run_name}, Sample: {sample_name}")
     ## download the sra and convert to fastq
     # cmd = f"""
@@ -34,6 +36,6 @@ for run_name, sample_name in run_dict.items():
 
     ## run typing
     cmd = f"""
-        python3 ../scripts/main.py -n NA18506_new -o {sample_name} -j 15 -y nanopore -i IG_TR  -r {data_dir}/{sample_name}.fastq.gz
+        python3 ../scripts/main.py -n {sample_name} -o {results_dir} -j 15 -y nanopore -i IG_TR  -r {data_dir}/{sample_name}.fastq.gz
     """
     os.system(cmd)

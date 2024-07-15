@@ -66,11 +66,23 @@ def compare(true_read_names, infer_read_names):
             true_reads = true_read_names[gene]
             infer_reads = infer_read_names[gene]
 
-            recall, accuracy = calculate_recall_and_accuracy(true_reads, infer_reads)
+            recall, accuracy = calculate_recall_and_accuracy(true_reads, infer_reads, gene)
+            get_false_reads(true_reads, infer_reads, gene)
         print (gene, recall, accuracy)
 
+def get_false_reads(true_list, inferred_list, gene):
+    # Calculate the number of true positives
+    if gene == "CYP2D6":
+        true_list = set(true_list)
+        inferred_list = set(inferred_list)
+        union_set = true_list.union(inferred_list)
+        difference_set1 = true_list.difference(inferred_list)
+        print ("recall error", difference_set1)
 
-def calculate_recall_and_accuracy(true_list, inferred_list):
+        difference_set2 = inferred_list.difference(true_list)
+        print ("accuracy error", difference_set2)
+
+def calculate_recall_and_accuracy(true_list, inferred_list, gene):
     # Calculate the number of true positives
     true_positives = len(set(true_list) & set(inferred_list))
 

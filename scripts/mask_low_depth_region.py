@@ -138,6 +138,7 @@ if __name__ == "__main__":
     optional.add_argument("-w", type=int, help="Windows size while using sliding the ref", metavar="\b", default=20)
     optional.add_argument("-d", type=int, help="Minimum mean depth in a window.", metavar="\b", default=5)
     optional.add_argument("-f", type=str, help="Whether only mask exons.", metavar="\b", default="False")
+    optional.add_argument("-b", type=str, help="output bed", metavar="\b")
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
 
@@ -147,7 +148,11 @@ if __name__ == "__main__":
     # depth_file = "/mnt/d/HLAPro_backup/test_RNA/AMALA_20x/AMALA.realign.sort.depth"
     
     depth_file = args["c"]
-    outdir = args["o"]
-    mask_bed = "%s/low_depth.bed"%(outdir)
+    
+    if not args["b"]:
+        outdir = args["o"]
+        mask_bed = "%s/low_depth.bed"%(outdir)
+    else:
+        mask_bed = args["b"]
     mas = Mask_low(depth_file)
     mas.main()

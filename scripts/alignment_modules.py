@@ -107,10 +107,9 @@ def cout_read_num(fastq):
     f.close()
     return count/4
 
-def subsample_fastq(gene, args, read_num):
-    outdir = args["o"] + "/" + args["n"]
-    fastq = outdir + "/" + gene + ".long_read.fq.gz"
-    sub_fastq = outdir + "/" + gene + ".long_read.sub.fq"
+def subsample_fastq(gene, read_num, my_folder):
+    fastq = my_folder.reads_dir + "/" + gene + ".long_read.fq.gz"
+    sub_fastq = my_folder.reads_dir + "/" + gene + ".long_read.sub.fq"
     read_count = cout_read_num(fastq)
     if read_count <= read_num:
         os.system(f"zcat {fastq} > {sub_fastq}")
@@ -126,7 +125,7 @@ def subsample_fastq(gene, args, read_num):
 
 
 
-def map2db(args, gene, my_db, read_num=500):
+def map2db(args, gene, my_db, my_folder, read_num=500):
     # map binned reads to all alleles of each locus
     read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
     if args["seq_tech"] == "rna":
@@ -135,20 +134,18 @@ def map2db(args, gene, my_db, read_num=500):
         minimap_para = read_type.get_minimap2_param()
     # minimap_para = read_type.get_minimap2_param()
 
-    outdir = args["o"] + "/" + args["n"]
-    sam = outdir + "/" + args["n"] + "." + gene + ".db.sam"
-    bam = outdir + "/" + args["n"] + "." + gene + ".db.bam"
-    depth_file = outdir + "/" + args["n"] + "." + gene + ".db.depth"
-    sort_depth_file = outdir + "/" + args["n"] + "." + gene + ".db.sort.depth.txt"
+    sam = my_folder.genes_dir + gene + ".db.sam"
+    bam = my_folder.genes_dir +  gene + ".db.bam"
+    depth_file = my_folder.genes_dir +  gene + ".db.depth"
+    sort_depth_file = my_folder.genes_dir +  gene + ".db.sort.depth.txt"
     # ref={args["f"] }
     # map raw reads to database
 
     ref = my_db.get_gene_all_alleles(gene)
-    sub_fastq = subsample_fastq(gene, args, read_num)
+    sub_fastq = subsample_fastq(gene, read_num, my_folder)
 
     if args["seq_tech"] == "rna":
         alignDB_order = f"""
-        outdir={args["o"]}/{args["n"]}
         sample={args["n"]}
         ref={ref}
         bwa mem {bwa_para} -t {args["j"]} $ref {sub_fastq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
@@ -158,7 +155,6 @@ def map2db(args, gene, my_db, read_num=500):
         """
     else:
         alignDB_order = f"""
-        outdir={args["o"]}/{args["n"]}
         sample={args["n"]}
         ref={ref}
         minimap2 -t {args["j"]} {minimap_para} -E 8,4 -p 0.1 -N 100000 -a $ref {sub_fastq} > {sam}

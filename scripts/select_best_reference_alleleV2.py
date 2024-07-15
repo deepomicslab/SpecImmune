@@ -27,6 +27,7 @@ from read_binning import filter_fq
 from alignment_modules import Read_Type, map2db_blast, map2db
 from check_if_homo import if_homo, if_homo2
 from downsample_bam import downsample_func
+from folder_objects import My_folder
 
 # gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
   
@@ -105,7 +106,7 @@ def construct_matrix_blast(args, gene, blast_file):
 def print_read_matrix(args, gene, record_read_allele_dict, allele_name_dict):
     allele_name_list = list(allele_name_dict.keys())
     outdir = args["o"] + "/" + args["n"]
-    out = open(f"""{outdir}/{args["n"]}.{gene}.read.matrix.csv""", 'w')
+    out = open(f"""{my_folder.genes_dir}/{gene}.read.matrix.csv""", 'w')
     first_line = "allele,"
     for allele in allele_name_list:
         first_line += allele + ","
@@ -184,17 +185,17 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
 
     return highest_score, type_allele_result, first_pair, record_allele_pair_sep_match
 
-def split_assign_reads(gene, first_pair, record_read_allele_dict, outdir, raw_fq):
+def split_assign_reads(gene, first_pair, record_read_allele_dict, raw_fq):
     allele_name_list = first_pair.split("&")
     # print (allele_name_list)
     allele_pair_obj = My_allele_pair(allele_name_list[0], allele_name_list[1])
     read_assign_dict = allele_pair_obj.assign_reads(record_read_allele_dict)
     # print (read_assign_dict)
-    outfile = outdir + '/%s.fq'%(allele_name_list[0])
+    outfile = my_folder.reads_dir + '/%s.fq'%(allele_name_list[0])
 
     filter_fq(allele_name_list[0], read_assign_dict, raw_fq, outfile)
 
-    outfile = outdir + '/%s.fq'%(allele_name_list[1])
+    outfile = my_folder.reads_dir + '/%s.fq'%(allele_name_list[1])
 
     filter_fq(allele_name_list[1], read_assign_dict, raw_fq, outfile)
 
@@ -208,7 +209,7 @@ def determine_largest(a, b):
 
 def print_match_results(sorted_record_allele_pair_match_len, record_allele_pair_sep_match, gene, record_allele_pair_identity):
     outdir = args["o"] + "/" + args["n"]
-    out = open(f"""{outdir}/{args["n"]}.{gene}.allele.match.csv""", 'w')
+    out = open(f"""{my_folder.genes_dir}/{gene}.allele.match.csv""", 'w')
     print ("index,total_match","total_identity,allele_1,allele_1_identity,allele_1_depth,allele_1_coverage,allele_2,allele_2_identity,allele_2_depth,allele_2_coverage", file = out)
 
     for i in range(len(sorted_record_allele_pair_match_len)):
@@ -454,14 +455,6 @@ def cal_allele_match_len(record_read_allele_dict):
     return allele_match_dict, allele_mismatch_dict
 
 def main():
-
-    if not os.path.exists(args["o"]):
-        os.system("mkdir %s"%(args["o"]))
-    outdir = args["o"] + "/" + args["n"]
-    if not os.path.exists(outdir):
-        os.system("mkdir %s"%(outdir))
-    # outdir = args["o"]
-
     result_dict = {}
     reads_num_dict = {}
     homo_p_value_dict = {}
@@ -470,13 +463,13 @@ def main():
     for gene in gene_list:
         print (f"start type {gene} for {args['n']}...\n")
 
-        gene_fq=f"{outdir}/{gene}.long_read.fq.gz"
+        gene_fq=f"{my_folder.reads_dir}/{gene}.long_read.fq.gz"
         my_db.get_allele_length(gene)
         record_allele_length = my_db.allele_len_dict
 
 
         #  load alignment from bam
-        bam, depth_file, sort_depth_file = map2db(args, gene, my_db, args["max_read_num"])
+        bam, depth_file, sort_depth_file = map2db(args, gene, my_db, my_folder, args["max_read_num"])
         get_depth = Get_depth(depth_file)
         get_depth.record_depth()
         record_candidate_alleles, record_allele_length_no_use = get_depth.select(sort_depth_file, gene_list, args["candidate_allele_num"])
@@ -511,7 +504,7 @@ def main():
         print (gene, "read num:", len(record_read_allele_dict), "mapped allele num:", len(allele_name_dict))
         if len(record_read_allele_dict) >= args["min_read_num"] and len(allele_name_dict) > 1:
             objective_value, type_allele_result, first_pair, record_allele_pair_sep_match = model3( gene, record_read_allele_dict, allele_name_dict, record_allele_length)
-            split_assign_reads(gene, first_pair, record_read_allele_dict, outdir, gene_fq)  # output assigned reads to fastq
+            split_assign_reads(gene, first_pair, record_read_allele_dict, gene_fq)  # output assigned reads to fastq
 
             print (gene, type_allele_result, "\n\n")
             homo_p_value = if_homo2(record_allele_pair_sep_match, first_pair)
@@ -591,6 +584,7 @@ if __name__ == "__main__":
 
     # gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
+    my_folder = My_folder(args)
     # db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
     db_folder = os.path.dirname(my_db.full_db)
     gene_list = get_folder_list(db_folder)

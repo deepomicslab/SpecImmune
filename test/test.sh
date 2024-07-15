@@ -1,8 +1,9 @@
 db=../db/
 
-python ../scripts/main.py -r test.fastq.gz -j 15 -i HLA -n test_HLA -o test --db $db
+# python ../scripts/main_test.py -r test.fastq.gz -j 15 -i HLA -n test_HLA -o test --db $db
+python ../scripts/main.py -r HLA/test_HLA_lite.fastq.gz -j 15 -i HLA -n test_HLA2 -o test 
 
 
-python3 ../evaluation/assess_typing.py -i HLA --true test.HLA.hap.alleles.txt --infer test/test_HLA/test_HLA.HLA.type.result.txt 
+# python3 ../evaluation/assess_typing.py -i HLA --true test.HLA.hap.alleles.txt --infer test/test_HLA/test_HLA.HLA.type.result.txt 
 
-python3 ../evaluation/assess_typing.py -i HLA --true test.HLA.hap.alleles.txt --infer test/test_HLA//hlala.like.results.txt
+# python3 ../evaluation/assess_typing.py -i HLA --true test.HLA.hap.alleles.txt --infer test/test_HLA//hlala.like.results.txt

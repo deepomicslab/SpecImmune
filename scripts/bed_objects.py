@@ -34,3 +34,13 @@ class Bed_db():
 
                 hg38_gene_info[gene] = [chrom, start, end, end - start]
         return hg38_gene_info
+
+
+##### write a new class Bed_db_CYP based on Bed_db
+class Bed_db_CYP(Bed_db):
+
+    def __init__(self):
+        super().__init__()  # Call the parent class constructor
+        self.gene_file = f"{sys.path[0]}/../gene_dist/CYP.gene.bed"
+        self.segment_bed = f"{sys.path[0]}/../gene_dist/CYP.segment.bed"
+        self.lite_gene_file = f"{sys.path[0]}/../gene_dist/CYP.gene.lite.bed"
