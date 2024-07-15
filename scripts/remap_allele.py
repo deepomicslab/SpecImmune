@@ -11,6 +11,7 @@ import os
 from Bio import SeqIO
 from determine_gene import get_folder_list
 from alignment_modules import Read_Type
+from folder_objects import My_folder
 
 def remove_characters(s):
     """
@@ -81,13 +82,15 @@ def extract_allele_fasta(alleles, gene_dir, allele_idx):
     for allele in alleles:
         fmt_allele=remove_characters(allele)
         allele_seq = db_ref_dict[fmt_allele]
-        with open(f"{gene_dir}/{fmt_allele}.{allele_idx}.fasta", "w") as f:
+        fa=f"{gene_dir}/{fmt_allele}.{allele_idx}.fasta"
+        with open(fa, "w") as f:
             f.write(f">{fmt_allele}\n{allele_seq}\n")
     
 def bwa_map_all_allele(alleles, gene_dir, ref, allele_idx):
     for allele in alleles:
         fmt_allele=remove_characters(allele)
         fq=f"{gene_dir}/{fmt_allele}.{allele_idx}.fasta"
+
         bam=f"{gene_dir}/{fmt_allele}.{allele_idx}.bam"
         # index ref
         cmd=f"bwa index {ref}"
@@ -123,7 +126,8 @@ def allele_remap():
                 if "-" == step2_res_dict[gene][0]:
                     continue
             if step2_res_dict[gene][0] == step2_res_dict[gene][1]:
-                ref=f"{outdir}/{sample}/{gene_class}.allele.1.{gene}.fasta"
+                ref=f"{my_folder.sequence_dir}/{gene_class}.allele.1.{gene}.fasta"
+                # ref=f"{outdir}/{sample}/{gene_class}.allele.1.{gene}.fasta"
                 alleles=full_allele_dict[gene][0]
                 # extract allele fasta to single file
                 if os.path.exists(ref):
@@ -131,8 +135,10 @@ def allele_remap():
                     bwa_map_all_allele(alleles, gene_dir, ref, 0)               
             else:
                 # for step2 het
-                ref1=f"{outdir}/{sample}/{gene_class}.allele.1.{gene}.fasta"
-                ref2=f"{outdir}/{sample}/{gene_class}.allele.2.{gene}.fasta"
+                ref1=f"{my_folder.sequence_dir}/{gene_class}.allele.1.{gene}.fasta"
+                ref2=f"{my_folder.sequence_dir}/{gene_class}.allele.2.{gene}.fasta"
+                # ref1=f"{outdir}/{sample}/{gene_class}.allele.1.{gene}.fasta"
+                # ref2=f"{outdir}/{sample}/{gene_class}.allele.2.{gene}.fasta"
                 if os.path.exists(ref1):
                     alleles=full_allele_dict[gene][0]
                     extract_allele_fasta(alleles, gene_dir, 0)
@@ -145,7 +151,6 @@ def allele_remap():
         else:
             # for step1 het
             for allele_idx, allele in enumerate(alleles):
-                fq=f"{outdir}/{sample}/{allele}.fq.gz"
                 # for step2 hom
                 if len(step2_res_dict[gene]) == 0:
                     continue
@@ -153,15 +158,18 @@ def allele_remap():
                     if "-" == step2_res_dict[gene][0]:
                         continue
                 if step2_res_dict[gene][0] == step2_res_dict[gene][1]:
-                    ref=f"{outdir}/{sample}/{gene_class}.allele.1.{gene}.fasta"
+                    ref=f"{my_folder.sequence_dir}/{gene_class}.allele.1.{gene}.fasta"
+                    # ref=f"{outdir}/{sample}/{gene_class}.allele.1.{gene}.fasta"
                     if os.path.exists(ref):
                         alleles=full_allele_dict[gene][allele_idx]
                         extract_allele_fasta(alleles, gene_dir, allele_idx)
                         bwa_map_all_allele(alleles, gene_dir, ref, allele_idx)
                 else:
                     # for step2 het
-                    ref1=f"{outdir}/{sample}/{gene_class}.allele.1.{gene}.fasta"
-                    ref2=f"{outdir}/{sample}/{gene_class}.allele.2.{gene}.fasta"
+                    ref1=f"{my_folder.sequence_dir}/{gene_class}.allele.1.{gene}.fasta"
+                    ref2=f"{my_folder.sequence_dir}/{gene_class}.allele.2.{gene}.fasta"
+                    # ref1=f"{outdir}/{sample}/{gene_class}.allele.1.{gene}.fasta"
+                    # ref2=f"{outdir}/{sample}/{gene_class}.allele.2.{gene}.fasta"
                     if os.path.exists(ref1):
                         alleles=full_allele_dict[gene][0]
                         extract_allele_fasta(alleles, gene_dir, 0)
@@ -194,10 +202,13 @@ if __name__ == "__main__":
     RNA_type = sys.argv[6]
     threads = sys.argv[7]
     db_ref = sys.argv[8]
-    step1_result = f"{outdir}/{sample}/{sample}.{gene_class}.type.result.txt"
-    step2_result = f"{outdir}/{sample}/hlala.like.results.txt"
-
+    my_folder = My_folder({"o": outdir, "n":sample})
     read_type = Read_Type(seq_tech, data_type, RNA_type)
+
+    step1_result = f"{my_folder.sample_prefix}.{gene_class}.type.result.txt"
+    step2_result = f"{my_folder.outdir}/hlala.like.results.txt"
+
+    
     minimap_para = read_type.get_minimap2_param()
     step1_res_dict = {}
     step2_res_dict = {}
@@ -208,7 +219,7 @@ if __name__ == "__main__":
         step1_res_dict[gene] = []
         step2_res_dict[gene] = []
         full_allele_dict[gene] = [[],[]]
-    remap_allele_dir=outdir + "/" + sample + "/remap_allele"
+    remap_allele_dir=my_folder.for_viz_dir + "/remap_allele"
     if not os.path.exists(remap_allele_dir):
         os.mkdir(remap_allele_dir)
     # open db ref here
