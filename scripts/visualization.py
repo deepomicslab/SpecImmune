@@ -290,7 +290,8 @@ def main():
     # concatenate all the pdfs to one pdf
     # find *pdf files in the outdir
     pdf_files = [f"{my_folder.visualization_dir}/{f}" for f in os.listdir(f"{my_folder.visualization_dir}") if f.endswith(".pdf")]
-
+    # sort the pdf files by the gene name
+    pdf_files.sort(key=lambda x: x.split("/")[-1].split(".")[0])
     merge_pdfs(pdf_files, f"{outdir}/{sample}/{sample}.pdf")
 
 
@@ -312,7 +313,8 @@ if __name__ == "__main__":
     my_folder = My_folder({"o": outdir, "n":sample})
 
     step1_result = f"{my_folder.sample_prefix}.{gene_class}.type.result.txt"
-    step2_result = f"{my_folder.sample_prefix}.{gene_class}.final.type.result.txt"   #f"{my_folder.outdir}/hlala.like.results.txt"
+    step2_result = f"{my_folder.sample_prefix}.{gene_class}.final.type.result.txt"
+
 
     remap_allele_dir=my_folder.for_viz_dir + "/remap_allele"
 
