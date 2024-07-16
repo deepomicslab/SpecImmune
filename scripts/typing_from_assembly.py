@@ -432,10 +432,23 @@ def get_IMGT_version():
             version_info = line.strip()
     return version_info
 
+### get the unique contig names in the phased_mask file
+def get_contig_name_in_bed(phased_mask):
+    contig_name_list = []
+    with open(phased_mask, "r") as f:
+        for line in f:
+            contig_name = line.strip().split()[0]
+            if contig_name not in contig_name_list:
+                contig_name_list.append(contig_name)
+    print (contig_name_list, " ".join(contig_name_list))
+    # sys.exit(0)
+    return " ".join(contig_name_list)
+
 def get_consensus(vcf, ref, phased_mask, outdir, sample):
+    consider_segment_str = get_contig_name_in_bed(phased_mask)
     cmd = f"""
-    bcftools consensus -e 'ALT~"<.*>"' -f {ref} -H 1 {vcf} --mask {phased_mask} >{outdir}/{sample}.hap1.fasta
-    bcftools consensus -e 'ALT~"<.*>"' -f {ref} -H 2 {vcf} --mask {phased_mask} >{outdir}/{sample}.hap2.fasta
+    samtools faidx {ref} {consider_segment_str}| bcftools consensus -e 'ALT~"<.*>"'  -H 1 {vcf} --mask {phased_mask} >{outdir}/{sample}.hap1.fasta
+    samtools faidx {ref} {consider_segment_str}| bcftools consensus -e 'ALT~"<.*>"'  -H 2 {vcf} --mask {phased_mask} >{outdir}/{sample}.hap2.fasta
 
     bwa index {outdir}/{sample}.hap1.fasta
     samtools faidx {outdir}/{sample}.hap1.fasta

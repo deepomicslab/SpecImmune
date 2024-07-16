@@ -315,6 +315,7 @@ if __name__ == "__main__":
     step1_result = f"{my_folder.sample_prefix}.{gene_class}.type.result.txt"
     step2_result = f"{my_folder.sample_prefix}.{gene_class}.final.type.result.txt"
 
+
     remap_allele_dir=my_folder.for_viz_dir + "/remap_allele"
 
     minimap_para = read_type.get_minimap2_param()
