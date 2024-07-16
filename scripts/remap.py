@@ -121,6 +121,8 @@ def remap():
                         call_variants(bam, ref, vcf)
                 else:
                     # for step2 het
+                    fq1=f"{my_folder.reads_dir}/{alleles[0]}.fq.gz"
+                    fq2=f"{my_folder.reads_dir}/{alleles[1]}.fq.gz"
                     ref1=f"{my_folder.sequence_dir}/{gene_class}.allele.1.{gene}.fasta"
                     ref2=f"{my_folder.sequence_dir}/{gene_class}.allele.2.{gene}.fasta"
                     bam1=f"{my_folder.for_viz_dir}/{gene}.remap2res1.bam"
@@ -129,11 +131,11 @@ def remap():
                     vcf2=f"{my_folder.for_viz_dir}/{gene}.remap2res2.vcf"
 
                     cmd1=f"""
-                        minimap2 -t {threads} -a {ref1} {minimap_para} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam1}
+                        minimap2 -t {threads} -a {ref1} {minimap_para} {fq1} | samtools view -bS -F 0x804 -| samtools sort - >{bam1}
                         samtools index {bam1}
                     """
                     cmd2=f"""
-                        minimap2 -t {threads} -a {ref2} {minimap_para} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam2}
+                        minimap2 -t {threads} -a {ref2} {minimap_para} {fq2} | samtools view -bS -F 0x804 -| samtools sort - >{bam2}
                         samtools index {bam2}
                     """
                     # check ref1 exists
