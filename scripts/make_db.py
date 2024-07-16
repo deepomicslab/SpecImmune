@@ -2,6 +2,7 @@ import os
 import argparse
 import subprocess
 from Bio import SeqIO
+import sys
 
 from determine_gene import get_focus_gene
 
@@ -225,6 +226,7 @@ def create_CYP_directories_and_save_sequences(fasta_path, output_base_dir, gene_
 
     # Build the index for the merged FASTA file
     cmd = f"""
+    cat {sys.path[0]}/../gene_dist/CYP2D7.fasta >> {merged_fasta_filename}
     samtools faidx "{merged_fasta_filename}"
     bwa index "{merged_fasta_filename}"
     makeblastdb -in "{merged_fasta_filename}" -dbtype nucl -parse_seqids -out "{os.path.join(output_base_dir, 'CYP.full')}"

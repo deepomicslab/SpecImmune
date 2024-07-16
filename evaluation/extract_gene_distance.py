@@ -98,10 +98,10 @@ def sort_gene(interval_dict):
 
 if __name__ == "__main__":
     #### https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.ncbiRefSeq.gtf.gz
-    # gtf_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38.ncbiRefSeq.gtf"
+    # gtf_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38.ncbiRefSeq.gtf"
 
     ### https://www.gencodegenes.org/human/
-    gtf_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/gencode.v46.annotation.gtf"
+    gtf_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/gencode.v46.annotation.gtf"
 
     for gene_class in ["HLA", "CYP", "KIR"]:
         args = {}

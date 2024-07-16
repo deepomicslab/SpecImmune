@@ -309,6 +309,8 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
                         # continue
                 else:  # cannot find the distance in the matrix
                     confict_flag = True
+                # if best_locus in ['CYP2D6', 'CYP2D7'] and loci_name in ['CYP2D6', 'CYP2D7']:
+                #     confict_flag = False
 
                 if local_distance <= 0:
                     # print ("#overlap", store_intervalue, my_interval, assigned_locus, loci_name, highest_identity, self.loci_object_dict[loci_name].represent_identity)

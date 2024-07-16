@@ -21,7 +21,7 @@ def get_focus_gene(input):
         # gene_list = [ 'CYP19A1', 'CYP1A1', 'CYP1B1', 'CYP26A1', 'CYP2A13', 'CYP2A6', 'CYP2B6', 'CYP2C19', 'CYP2C8', 'CYP2C9', 'CYP2D6', 'CYP2F1', 'CYP2J2', 'CYP2R1', 'CYP2S1', 'CYP2W1', 'CYP3A4', 'CYP3A43', 'CYP4A22', 'CYP4B1', 'CYP4F2', 'CYP8A1', 'CYP3A5', 'CYP3A7' ]
     
         gene_list = ['CYP2A13', 'CYP2A6', 'CYP2B6', 'CYP2C19', 'CYP2C8', 'CYP2C9', 'CYP2D6', 'CYP3A4', 'CYP3A5', 'CYP4F2', 'NAT2', 'NUDT15', 'SLCO1B1']
-        # gene_list = ['CYP2D6']
+        gene_list = ['CYP2D6']
     elif gene_class == "KIR":
         gene_list = ['KIR2DL1', 'KIR2DL2', 'KIR2DL3', 'KIR2DL4', 'KIR2DL5A', 'KIR2DL5B', 'KIR2DP1', 'KIR2DS1', 'KIR2DS2', 'KIR2DS3', 'KIR2DS4', 'KIR2DS5', 'KIR3DL1', 'KIR3DL2', 'KIR3DL3', 'KIR3DP1', 'KIR3DS1']
 
@@ -45,7 +45,9 @@ def get_folder_list(folder):
     for i in os.listdir(folder):
         if os.path.isdir(f"{folder}/{i}"):
             folder_list.append(i)
-    print (folder_list)
+    # print (folder_list)
+    if 'CYP2D6' in folder_list:
+        return ['CYP2D6']
     # return ['MICA']
     return folder_list
 
