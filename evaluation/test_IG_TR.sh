@@ -20,6 +20,10 @@
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/complex_reads/NA19240.cyp.extract.fastq.gz 
 
 
-python3 ../scripts/main.py --hg38 ../CYP_ref/CYP.segment.fa -n NA19239 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+# python3 ../scripts/main.py --hg38 ../CYP_ref/CYP.segment.fa -n NA19239 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+#  -j 15 -y pacbio -i CYP \
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/complex_reads/NA19239.cyp.extract.fastq.gz 
+
+python3 ../scripts/main.py --hg38 ../CYP_ref/CYP.segment.fa -n SRR15476229 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
  -j 15 -y pacbio -i CYP \
--r /mnt/d/HLAPro_backup/Nanopore_optimize/data/complex_reads/NA19239.cyp.extract.fastq.gz 
+-r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/SRR15476229.fastq.gz

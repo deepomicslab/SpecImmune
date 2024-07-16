@@ -206,7 +206,8 @@ if __name__ == "__main__":
     read_type = Read_Type(seq_tech, data_type, RNA_type)
 
     step1_result = f"{my_folder.sample_prefix}.{gene_class}.type.result.txt"
-    step2_result = f"{my_folder.outdir}/hlala.like.results.txt"
+    step2_result = f"{my_folder.sample_prefix}.{gene_class}.final.type.result.txt"
+    # step2_result = f"{my_folder.outdir}/hlala.like.results.txt"
 
     
     minimap_para = read_type.get_minimap2_param()
