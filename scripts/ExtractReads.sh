@@ -94,6 +94,6 @@ fi
 
 # Convert BAM to FASTQ
 $samtools fastq -0 "$out_fq" "$extract_bam"
-gzip "$out_fq"
+gzip -f "$out_fq"
 
 echo "Extracted reads are in ${out_fq}.gz"

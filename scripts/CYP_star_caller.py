@@ -132,7 +132,7 @@ def get_snp_list(target_gene, snp_table, genome_build):
     return snp_alleles
 
 
-def get_star_dict(target_gene, snp_list, program_dir, genome_build, star_table):
+def get_star_dict(target_gene, snp_list, program_dir, genome_build, star_table, if_filter_snp=True):
     #df = pd.read_table(f"{program_dir}/star_table.tsv")
     df = pd.read_table(star_table)
     df = df[df["gene"] == target_gene]
@@ -162,7 +162,7 @@ def get_star_dict(target_gene, snp_list, program_dir, genome_build, star_table):
     star_dict = {}
 
     for star_allele in star_alleles:
-        print (star_allele.name, star_allele.core, star_allele.tag, star_allele.sv)
+        # print (star_allele.name, star_allele.core, star_allele.tag, star_allele.sv)
         star_dict[star_allele.name] = star_allele
 
 
@@ -404,7 +404,7 @@ def vcf2samples(vcf):
         for fields in vcf.data:
             
             pos, rs, ref, alt, inf, fmt = int(fields[1]), fields[2], fields[3], fields[4].split(','), fields[7].split(';'), fields[8]
-            print (pos, rs, ref, alt, inf, fmt)
+            # print (pos, rs, ref, alt, inf, fmt)
 
             # if not any(['PS=D' in x for x in inf]):
             #     continue
@@ -417,7 +417,7 @@ def vcf2samples(vcf):
                 gt = [1, 1]
             else:
                 gt = [int(y) if y != "." else y for y in gt]
-            print (gt)
+            # print (gt)
 
             al = [ref] + alt
             # vi_list = ['no_change'] + [x for x in inf if 'VI=' in x][0].replace('VI=', '').split(',')
@@ -529,92 +529,97 @@ def read_sv_table(fn):
 
     return result
 
-# Import the data files.
-snp_table_file = sys.path[0] + "/../CYP_data/snp_table.tsv"  #"/mnt/d/HLAPro_backup/Nanopore_optimize/stargazer-grc38-v.2.0.2/stargazer/snp_table.tsv"
-star_table_file = sys.path[0] + "/../CYP_data/star_table.tsv"
-sv_table = read_sv_table(sys.path[0] + "/../CYP_data/sv_table.tsv")
-
-# gene = "cyp2d6"
-# phased_vcf = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/dp_vcf/NA19239.dv.small.phased.vcf.gz"
-# region = 'chr22:42126499-42130865'
-
-gene = sys.argv[1]
-phased_vcf = sys.argv[2]
-region = sys.argv[3]
 
 
-ref= 'grc38'
-
-gene = gene.lower()
+if __name__ == "__main__":  
 
 
-snp_list = get_snp_list(gene, snp_table_file, ref)
-# print (snp_list)
-star_dict = get_star_dict(gene, snp_list,
-    '', ref, star_table_file)
-# print (star_dict)
+    # gene = "cyp2d6"
+    # phased_vcf = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/dp_vcf/NA19239.dv.small.phased.vcf.gz"
+    # region = 'chr22:42126499-42130865'
 
-sv_dict = sv_table[gene]
+    gene = sys.argv[1]
+    phased_vcf = sys.argv[2]
+    region = sys.argv[3]
 
-input_vcf = read_vcf_region(phased_vcf, region)
-# print (input_vcf)
-persons = vcf2samples(input_vcf)
-for sample in persons:
-    sample.sv = ['no_sv', 'no_sv']
-    sample.ssr = '.'
+    # Import the data files.
+    snp_table_file = sys.path[0] + "/../CYP_data/snp_table.tsv"  #"/mnt/d/HLAPro_backup/Nanopore_optimize/stargazer-grc38-v.2.0.2/stargazer/snp_table.tsv"
+    star_table_file = sys.path[0] + "/../CYP_data/star_table.tsv"
+    sv_table = read_sv_table(sys.path[0] + "/../CYP_data/sv_table.tsv")
 
-    # print (sample.name, sample.hap[0].obs, sample.hap[1].obs)
-    # f = lambda x: sorted([v for k, v in star_dict.items() if set(v.core).issubset(x) and not (v.sv and v.sv not in sample.sv)], key = lambda x: x.rank)
 
-    def f(x):
-        filtered_stars = []
-        for k, v in star_dict.items():
-            if set(v.core).issubset(x) and (not v.sv or v.sv in sample.sv):
-            # if len(set(v.core) & set(x)) >= round(len(v.core) * 1)  and (not v.sv or v.sv in sample.sv):
-                # for y in x:
-                #     print (len(x), y.pos, y.wt, y.var)
-                print (v.name, v.rank)
-                filtered_stars.append(v)
-        return sorted(filtered_stars, key=lambda star: star.rank)
+    ref= 'grc38'
 
-    hap1_snp = [x for x in sample.hap[0].obs if x.wt != x.var]
-    hap2_snp = [x for x in sample.hap[1].obs if x.wt != x.var]
-    sample.hap[0].cand = f(hap1_snp)
-    sample.hap[1].cand = f(hap2_snp)
-    sample.dip_cand = f(list(set(hap1_snp + hap2_snp)))
+    gene = gene.lower()
 
-    # Remove extra *1 alleles.
-    def f(l,target_locus):
-        if target_locus=="cyp2c19":
-            wt_star="*38"
-        else:
-            wt_star="*1"
-        if len(l) == 1:
-            return
-        for i in reversed(range(len(l))):
-            if l[i].name == wt_star:
-                del l[i]
 
+    snp_list = get_snp_list(gene, snp_table_file, ref)
+    # print (snp_list)
+    star_dict = get_star_dict(gene, snp_list,
+        '', ref, star_table_file)
+    # print (star_dict)
+
+    sv_dict = sv_table[gene]
+
+    input_vcf = read_vcf_region(phased_vcf, region)
+    # print (input_vcf)
+    persons = vcf2samples(input_vcf)
     for sample in persons:
-        f(sample.hap[0].cand,gene)
-        f(sample.hap[1].cand,gene)
-        f(sample.dip_cand,gene)
+        sample.sv = ['no_sv', 'no_sv']
+        sample.ssr = '.'
 
-    # Order the haplotypes.
-    for sample in persons:
-        if not sample.gt:
-            continue
-        if sort_star_names([sample.hap[0].cand[0].name, sample.hap[1].cand[0].name])[0] == sample.hap[1].cand[0].name:
-            sample.hap[0], sample.hap[1] = sample.hap[1], sample.hap[0]
+        # print (sample.name, sample.hap[0].obs, sample.hap[1].obs)
+        # f = lambda x: sorted([v for k, v in star_dict.items() if set(v.core).issubset(x) and not (v.sv and v.sv not in sample.sv)], key = lambda x: x.rank)
 
-    # Predict the phenotype.
-    for person in persons:
-        print(person.hap[0].cand[0].name,person.hap[1].cand[0].name,person.pt)
+        def f(x):
+            filtered_stars = []
+            for k, v in star_dict.items():
+                if set(v.core).issubset(x) and (not v.sv or v.sv in sample.sv):
+                # if len(set(v.core) & set(x)) >= round(len(v.core) * 1)  and (not v.sv or v.sv in sample.sv):
+                    # for y in x:
+                    #     print (len(x), y.pos, y.wt, y.var)
+                    # print (v.name, v.rank)
+                    filtered_stars.append(v)
+            return sorted(filtered_stars, key=lambda star: star.rank)
+
+        hap1_snp = [x for x in sample.hap[0].obs if x.wt != x.var]
+        hap2_snp = [x for x in sample.hap[1].obs if x.wt != x.var]
+        sample.hap[0].cand = f(hap1_snp)
+        sample.hap[1].cand = f(hap2_snp)
+        sample.dip_cand = f(list(set(hap1_snp + hap2_snp)))
+
+        # Remove extra *1 alleles.
+        def f(l,target_locus):
+            if target_locus=="cyp2c19":
+                wt_star="*38"
+            else:
+                wt_star="*1"
+            if len(l) == 1:
+                return
+            for i in reversed(range(len(l))):
+                if l[i].name == wt_star:
+                    del l[i]
+
+        for sample in persons:
+            f(sample.hap[0].cand,gene)
+            f(sample.hap[1].cand,gene)
+            f(sample.dip_cand,gene)
+
+        # Order the haplotypes.
+        for sample in persons:
+            if not sample.gt:
+                continue
+            if sort_star_names([sample.hap[0].cand[0].name, sample.hap[1].cand[0].name])[0] == sample.hap[1].cand[0].name:
+                sample.hap[0], sample.hap[1] = sample.hap[1], sample.hap[0]
+
+        # Predict the phenotype.
+        for person in persons:
+            print(person.hap[0].cand[0].name,person.hap[1].cand[0].name,person.pt)
 
 
-    # for k, v in star_dict.items():
-    #     for y in v.core:
-    #         print (v.name, y.pos, y.wt, y.var)
+        # for k, v in star_dict.items():
+        #     for y in v.core:
+        #         print (v.name, y.pos, y.wt, y.var)
 
 
         
