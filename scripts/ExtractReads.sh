@@ -61,6 +61,10 @@ fi
 
 # Tools
 samtools=samtools
+# if output_directory does not exist, create it
+if [ ! -d "$output_directory" ]; then
+  mkdir -p "$output_directory"
+fi
 
 # Output files
 extract_bam="${output_directory}/${sample_id}.${gene_class}.bam"
