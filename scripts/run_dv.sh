@@ -35,9 +35,6 @@ ref: $ref
 
 """
 
-
-
-
 singularity run -B /usr/lib/locale/:/usr/lib/locale/ \
   -B "$bam_dir":"/bam_dir" \
   -B "$out_dir":"/out_dir" \
@@ -54,5 +51,3 @@ singularity run -B /usr/lib/locale/:/usr/lib/locale/ \
   --num_shards=$threads \
   --sample_name='SAMPLE'
 
-
-# whatshap phase -o $out_phased_vcf --reference=$ref $out_vcf $bam --ignore-read-group
