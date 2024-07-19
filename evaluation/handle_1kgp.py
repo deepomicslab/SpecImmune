@@ -34,9 +34,36 @@ def get_sample_name(file_path):
     sample_name = filename.split('.')[0]
     return sample_name
 
+def load_GeT_RM(given_sample_list):
+    GeT_RM_sample_list = []
+    with open('CYP_GeT-RM_truth.csv') as f:
+        for line in f:
+            line = line.strip().split(',')
+            sample = line[0]
+            # truth = line[1]
+            # print (sample, truth)
+            if sample in given_sample_list:
+                GeT_RM_sample_list.append(sample)
+    print (len(GeT_RM_sample_list))
+    print (GeT_RM_sample_list)
+
+def load_GeT_RM2(given_sample_list):
+    GeT_RM_sample_list = []
+    with open('cyp_benchmark.csv') as f:
+        for line in f:
+            line = line.strip().split()
+            sample = line[1]
+            # truth = line[1]
+            # print (sample, truth)
+            if sample in given_sample_list:
+                GeT_RM_sample_list.append(sample)
+    print (len(GeT_RM_sample_list))
+    print (GeT_RM_sample_list)
+
 # Main function to process the file list and download files
 def main(file_list_path):
     # Read the file list
+    ont_sample_list = []
     with open(file_list_path, 'r') as file:
         for line in file:
             # Each line in the text file is expected to have the format: path size checksum
@@ -51,12 +78,16 @@ def main(file_list_path):
             if 'hg38' in file_path:
                 file_url = base_url + file_path
                 sample_name = get_sample_name(file_path)
+                ont_sample_list.append(sample_name)
                 # print(f"Downloading {file_path} for sample {sample_name}")
-                for gene_class in ['HLA', 'KIR', 'CYP', 'IG_TR']:
-                    cmd = f"""
-                        bash {sys.path[0]}/../scripts/ExtractReads.sh -s {sample_name} -i /mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/{sample_name}/{sample_name}.hg38.cram -g {gene_class} -o /mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/{sample_name} -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38_full_analysis_set_plus_decoy_hla.fa
-                    """
-                    os.system(cmd)
+                # for gene_class in ['HLA', 'KIR', 'CYP', 'IG_TR']:
+                #     cmd = f"""
+                #         bash {sys.path[0]}/../scripts/ExtractReads.sh -s {sample_name} -i /mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/{sample_name}/{sample_name}.hg38.cram -g {gene_class} -o /mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/{sample_name} -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38_full_analysis_set_plus_decoy_hla.fa
+                #     """
+                #     if not os.path.exists(f"/mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/{sample_name}/{sample_name}.{gene_class}.fastq.gz"):
+                #         # print (cmd)
+                #         os.system(cmd)
+    load_GeT_RM(ont_sample_list)
 
 
 if __name__ == '__main__':

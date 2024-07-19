@@ -404,14 +404,22 @@ def vcf2samples(vcf):
         for fields in vcf.data:
             
             pos, rs, ref, alt, inf, fmt = int(fields[1]), fields[2], fields[3], fields[4].split(','), fields[7].split(';'), fields[8]
+            # 
             # print (pos, rs, ref, alt, inf, fmt)
-
+            # if pos == 42131791:
+            #     print (pos, rs, ref, alt, inf, fmt)
             # if not any(['PS=D' in x for x in inf]):
             #     continue
 
             #gt = [int(x) for x in fields[i].split(":")[0].split("|")]
             gt = [x for x in fields[i].split(':')[0].split('|')]
             if gt[0] == '0/0':
+                continue
+            elif gt[0] == '0/1':
+                ### add warning
+                print (f"Warning: {gt} is unphased at {pos}")
+                continue
+            elif gt[0] == './.':
                 continue
             if gt[0] == '1/1':
                 gt = [1, 1]
@@ -541,6 +549,7 @@ if __name__ == "__main__":
     gene = sys.argv[1]
     phased_vcf = sys.argv[2]
     region = sys.argv[3]
+    outfile = sys.argv[4]
 
     # Import the data files.
     snp_table_file = sys.path[0] + "/../CYP_data/snp_table.tsv"  #"/mnt/d/HLAPro_backup/Nanopore_optimize/stargazer-grc38-v.2.0.2/stargazer/snp_table.tsv"
@@ -574,7 +583,16 @@ if __name__ == "__main__":
         def f(x):
             filtered_stars = []
             for k, v in star_dict.items():
+                # if v.name == '*68':
+                #     print (v.name, v.core, v.sv, set(v.core).issubset(x), len(set(v.core) & set(x)))
+                #     for s in v.core:
+                #         if s not in x:
+                #             print ("not shared", s.pos, s.wt, s.var)
+                #         else:
+                #             print ("shared", s.pos, s.wt, s.var)
+
                 if set(v.core).issubset(x) and (not v.sv or v.sv in sample.sv):
+                # if set(v.core).issubset(x):
                 # if len(set(v.core) & set(x)) >= round(len(v.core) * 1)  and (not v.sv or v.sv in sample.sv):
                     # for y in x:
                     #     print (len(x), y.pos, y.wt, y.var)
@@ -612,9 +630,18 @@ if __name__ == "__main__":
             if sort_star_names([sample.hap[0].cand[0].name, sample.hap[1].cand[0].name])[0] == sample.hap[1].cand[0].name:
                 sample.hap[0], sample.hap[1] = sample.hap[1], sample.hap[0]
 
+        f = open(outfile, 'w')
+        print ("gene\thap\tallele\tall_candidates", file = f)
         # Predict the phenotype.
         for person in persons:
-            print(person.hap[0].cand[0].name,person.hap[1].cand[0].name,person.pt)
+            print(person.hap[0].cand[0].name,person.hap[1].cand[0].name)
+            for i in range(2):
+                all_candidate = ''
+                for j in range(len(person.hap[i].cand)):
+                    all_candidate += person.hap[i].cand[j].name + ';'
+                print(gene, f"hap{i+1}", person.hap[i].cand[0].name, all_candidate, sep = '\t', file = f)
+
+        f.close()                
 
 
         # for k, v in star_dict.items():
