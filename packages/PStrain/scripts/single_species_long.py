@@ -70,8 +70,8 @@ def read_vcf(mapdir,removed_gene,snp_dp,qual,vcffile):
     to_sort=[]
     flag=False
     for record in myvcf.fetch():
-        if record.info['DP'] <1:
-            continue
+        # if record.info['DP'] <1:
+        #     continue
         geno=record.samples[sample]['GT']        
         depth=record.samples[sample]['AD']
         dp=depth[0]+depth[1]   
