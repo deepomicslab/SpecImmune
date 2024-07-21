@@ -106,6 +106,8 @@ def reads_support(samfile,first):
     save_reads=[[],[]]
     # for read in samfile.fetch('AHZD01000001', first, first+1):  #6,7 means locus 7 in bam file.
     for read in samfile.fetch(first[0],int(first[1])-1,int(first[1])):
+        # get map quality
+        mapq=read.mapping_quality
         num+=1
         # print (read)
         # if int(first[1])-1 not in read.get_reference_positions(full_length=True):
@@ -114,6 +116,8 @@ def reads_support(samfile,first):
             # print (int(first[1])-1 )
             # print ('_______________')
             reads_index=read.get_reference_positions(full_length=True).index(int(first[1])-1)
+            if read.query_sequence == None:
+                continue
             if read.query_sequence[reads_index] == first[2]:
                 save_reads[0].append(read.query_name)
             elif read.query_sequence[reads_index] == first[3]:
