@@ -1,7 +1,7 @@
 def calculate_total_read_length(cigar_string):
     """
     Calculate the total length of a read based on a CIGAR string,
-    skipping deletion lengths.
+    skipping deletion and hard clipping lengths.
 
     Parameters:
     - cigar_string: A string representing the CIGAR operations.
@@ -22,8 +22,8 @@ def calculate_total_read_length(cigar_string):
                 if char in ["S", "M", "I"]:  # Count for soft clip, match, and insertion
                     total_length += length
                     count += 1  # Increment count for valid operations
-                elif char == "D":
-                    # Skip deletion; do not increment total_length or count
+                elif char in ["D", "H"]:
+                    # Skip deletion and hard clipping; do not increment total_length or count
                     pass
                 else:
                     raise ValueError(f"Invalid CIGAR operation: {char}")
@@ -33,12 +33,7 @@ def calculate_total_read_length(cigar_string):
     print("Count of valid operations:", count)
     return total_length
 
-# # Example usage
-# cigar_string = "70M10I5D15S"
-# total_length = calculate_total_read_length(cigar_string)
-# print("Total read length:", total_length)
-
 # Example usage
-cigar_string = "23481S340M1D100M3D60M1I25M2D106M1D62M3D8M1D13M2I2M1D148M1D2M1D225M1D85M2I55M2D204M1D26M2D3M2D201M2I35M1D121M1I10M1D9M1I39M1D26M1I4M1I38M1D8M6D2M1D31M1I407M2D13M1D65M1D260M"
+cigar_string = "9827H319M3I368M1D23M1D34M1I50M1I190M1I19M1I13M2I7M1I288M3D158M1D4M1D4M1D13M1I224M1D28M1I25M1D67M1D9M1D3M1D112M2D11M1D24M1I167M1I155M1I112M1I6M6D8M1D93M1D13M1D12M2I162M2D22M"
 total_length = calculate_total_read_length(cigar_string)
 print("Total read length:", total_length)

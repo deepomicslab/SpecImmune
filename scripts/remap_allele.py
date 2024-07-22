@@ -50,7 +50,7 @@ def read_hla_file(filename, some_dict):
                 allele=it.split(",")[0]
                 # gene_tag=allele.split("*")[0]
                 gene_tag = items[0]
-                print("result :", gene_tag, allele) 
+                # print("result :", gene_tag, allele) 
                 some_dict[gene_tag].append(allele)
 
 def parse_full_allele(filename, full_allele_dict):
@@ -68,7 +68,7 @@ def parse_full_allele(filename, full_allele_dict):
                 continue
         
             alleles_str=items[2].split(";")
-            print("alleles_str", alleles_str)
+            # print("alleles_str", alleles_str)
             for iti, it in enumerate(alleles_str):
                 allele=it.split(",")[0]
                 # gene_tag=allele.split("*")[0]
