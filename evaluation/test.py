@@ -1,32 +1,44 @@
-import requests
-from bs4 import BeautifulSoup
+def calculate_total_read_length(cigar_string):
+    """
+    Calculate the total length of a read based on a CIGAR string,
+    skipping deletion lengths.
 
-# URL of the PharmVar download page
-url = 'https://www.pharmvar.org/download'
+    Parameters:
+    - cigar_string: A string representing the CIGAR operations.
 
-# Step 1: Send a GET request to the download page
-response = requests.get(url)
-response.raise_for_status()  # Check that the request was successful
+    Returns:
+    - Total length of the read.
+    """
+    total_length = 0
+    current_number = ''
+    count = 0  # To count valid operations
 
-# Step 2: Parse the HTML content using BeautifulSoup
-soup = BeautifulSoup(response.text, 'html.parser')
+    for char in cigar_string:
+        if char.isdigit():
+            current_number += char  # Build the number
+        else:
+            if current_number:
+                length = int(current_number)
+                if char in ["S", "M", "I"]:  # Count for soft clip, match, and insertion
+                    total_length += length
+                    count += 1  # Increment count for valid operations
+                elif char == "D":
+                    # Skip deletion; do not increment total_length or count
+                    pass
+                else:
+                    raise ValueError(f"Invalid CIGAR operation: {char}")
+                
+                current_number = ''  # Reset for the next number
 
-# Step 3: Find the download link (assuming it's in an <a> tag with a specific class)
-download_link = soup.find('a', class_='action-button-download-complete')
+    print("Count of valid operations:", count)
+    return total_length
 
-if download_link and 'href' in download_link.attrs:
-    file_url = download_link['href']
-    if not file_url.startswith('http'):
-        file_url = 'https://www.pharmvar.org' + file_url
+# # Example usage
+# cigar_string = "70M10I5D15S"
+# total_length = calculate_total_read_length(cigar_string)
+# print("Total read length:", total_length)
 
-    # Step 4: Download the file
-    file_response = requests.get(file_url)
-    file_response.raise_for_status()  # Check that the request was successful
-
-    # Step 5: Save the file locally
-    with open('complete_database.zip', 'wb') as file:
-        file.write(file_response.content)
-    
-    print('Download complete.')
-else:
-    print('Download link not found.')
+# Example usage
+cigar_string = "23481S340M1D100M3D60M1I25M2D106M1D62M3D8M1D13M2I2M1D148M1D2M1D225M1D85M2I55M2D204M1D26M2D3M2D201M2I35M1D121M1I10M1D9M1I39M1D26M1I4M1I38M1D8M6D2M1D31M1I407M2D13M1D65M1D260M"
+total_length = calculate_total_read_length(cigar_string)
+print("Total read length:", total_length)
