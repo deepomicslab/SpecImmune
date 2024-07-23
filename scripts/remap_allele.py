@@ -43,7 +43,7 @@ def read_hla_file(filename, some_dict):
             elif items[2] == "":
                 continue
             alleles_str=items[2].split(";")
-            print("alleles_str", alleles_str)
+            # print("alleles_str", alleles_str)
             for iti, it in enumerate(alleles_str):
                 if iti>0:
                     continue
@@ -58,7 +58,7 @@ def parse_full_allele(filename, full_allele_dict):
         next(file)
         next(file)
         for idx, row in enumerate(file):
-            print(row.strip())
+            # print(row.strip())
             items=row.strip().split("\t")
             if len(items)<3:
                 # remove gene_tag from some_dict
@@ -74,7 +74,7 @@ def parse_full_allele(filename, full_allele_dict):
                 # gene_tag=allele.split("*")[0]
                 gene_tag = items[0]
                 gene_idx=int(items[1])-1
-                print("result :", gene_tag, allele) 
+                # print("result :", gene_tag, allele) 
                 full_allele_dict[gene_tag][gene_idx].append(allele)
 
 def extract_allele_fasta(alleles, gene_dir, allele_idx):
@@ -129,6 +129,8 @@ def allele_remap():
                 ref=f"{my_folder.sequence_dir}/{gene_class}.allele.1.{gene}.fasta"
                 # ref=f"{outdir}/{sample}/{gene_class}.allele.1.{gene}.fasta"
                 alleles=full_allele_dict[gene][0]
+                if 'NA' in alleles:
+                    continue
                 # extract allele fasta to single file
                 if os.path.exists(ref):
                     extract_allele_fasta(alleles, gene_dir, 0)
@@ -141,10 +143,14 @@ def allele_remap():
                 # ref2=f"{outdir}/{sample}/{gene_class}.allele.2.{gene}.fasta"
                 if os.path.exists(ref1):
                     alleles=full_allele_dict[gene][0]
+                    if 'NA' in alleles:
+                        continue
                     extract_allele_fasta(alleles, gene_dir, 0)
                     bwa_map_all_allele(alleles, gene_dir, ref1, 0)
                 if os.path.exists(ref2):
                     alleles=full_allele_dict[gene][1]
+                    if 'NA' in alleles:
+                        continue
                     extract_allele_fasta(alleles, gene_dir, 1)
                     bwa_map_all_allele(alleles, gene_dir, ref2, 1)
 
@@ -162,6 +168,8 @@ def allele_remap():
                     # ref=f"{outdir}/{sample}/{gene_class}.allele.1.{gene}.fasta"
                     if os.path.exists(ref):
                         alleles=full_allele_dict[gene][allele_idx]
+                        if 'NA' in alleles:
+                            continue
                         extract_allele_fasta(alleles, gene_dir, allele_idx)
                         bwa_map_all_allele(alleles, gene_dir, ref, allele_idx)
                 else:
@@ -172,10 +180,14 @@ def allele_remap():
                     # ref2=f"{outdir}/{sample}/{gene_class}.allele.2.{gene}.fasta"
                     if os.path.exists(ref1):
                         alleles=full_allele_dict[gene][0]
+                        if 'NA' in alleles:
+                            continue
                         extract_allele_fasta(alleles, gene_dir, 0)
                         bwa_map_all_allele(alleles, gene_dir, ref1, 0)
                     if os.path.exists(ref2):
                         alleles=full_allele_dict[gene][1]
+                        if 'NA' in alleles:
+                            continue
                         extract_allele_fasta(alleles, gene_dir, 1)
                         bwa_map_all_allele(alleles, gene_dir, ref2, 1)
                     break

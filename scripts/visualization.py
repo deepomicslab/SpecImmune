@@ -196,7 +196,13 @@ def generate_pdf():
                 bam=f"{my_folder.for_viz_dir}/{gene}.remap2res.bam"
                 vcf=f"{my_folder.for_viz_dir}/{gene}.remap2res.vcf"
                 out_pdf=f"{my_folder.visualization_dir}/{gene}.remap2res.pdf"
-                allele_remap_bams=[f"{gene_dir}/{remove_characters(allele)}.{allele_idx}.bam" for allele in full_allele_dict[gene][0]]
+                allele_remap_bams = [
+                    f"{gene_dir}/{remove_characters(allele)}.0.bam"
+                    for allele in full_allele_dict[gene][0]
+                    if allele != "NA"
+                ]
+                if len(allele_remap_bams) == 0:
+                    continue
                 if os.path.exists(ref):
                     files_to_pdf(bam, vcf, ref, gene, out_pdf, full_allele_dict[gene][0], allele_remap_bams, "hom", 0)
                 
@@ -219,10 +225,24 @@ def generate_pdf():
                 # out_pdf1=f"{outdir}/{sample}/{gene}.remap2res1.pdf"
                 # out_pdf2=f"{outdir}/{sample}/{gene}.remap2res2.pdf"
                 if os.path.exists(ref1):
-                    allele_remap_bams1=[f"{gene_dir}/{remove_characters(allele)}.{0}.bam" for allele in full_allele_dict[gene][0]]
+                    allele_remap_bams1=[
+                        f"{gene_dir}/{remove_characters(allele)}.{0}.bam"
+                        for allele in full_allele_dict[gene][0]
+                        if allele != "NA"
+                    ]
+                    if len(allele_remap_bams1) == 0:
+                        continue
+                    # allele_remap_bams1=[f"{gene_dir}/{remove_characters(allele)}.{0}.bam" for allele in full_allele_dict[gene][0]]
                     files_to_pdf(bam1, vcf1, ref1, gene, out_pdf1, full_allele_dict[gene][0], allele_remap_bams1, "het", 0)
                 if os.path.exists(ref2):
                     allele_remap_bams2=[f"{gene_dir}/{remove_characters(allele)}.{1}.bam" for allele in full_allele_dict[gene][1]]
+                    allele_remap_bams2=[
+                        f"{gene_dir}/{remove_characters(allele)}.{1}.bam"
+                        for allele in full_allele_dict[gene][1]
+                        if allele != "NA"
+                    ]
+                    if len(allele_remap_bams2) == 0:
+                        continue
                     files_to_pdf(bam2, vcf2, ref2, gene, out_pdf2, full_allele_dict[gene][1], allele_remap_bams2, "het", 1)
 
         else:
@@ -241,7 +261,14 @@ def generate_pdf():
                     out_pdf=f"{my_folder.visualization_dir}/{gene}.remap2res{allele_idx+1}.pdf"
 
                     if os.path.exists(ref):
-                        allele_remap_bams=[f"{gene_dir}/{remove_characters(allele)}.{allele_idx}.bam" for allele in full_allele_dict[gene][allele_idx]]
+                        allele_remap_bams=[
+                            f"{gene_dir}/{remove_characters(allele)}.{allele_idx}.bam"
+                            for allele in full_allele_dict[gene][allele_idx]
+                            if allele != "NA"
+                        ]
+                        if len(allele_remap_bams) == 0:
+                            continue
+                        # allele_remap_bams=[f"{gene_dir}/{remove_characters(allele)}.{allele_idx}.bam" for allele in full_allele_dict[gene][allele_idx]]
                         files_to_pdf(bam, vcf, ref, gene, out_pdf, full_allele_dict[gene][allele_idx], allele_remap_bams, "hom", allele_idx)
                 else:
                     # for step2 het
@@ -255,11 +282,25 @@ def generate_pdf():
                     out_pdf2=f"{my_folder.visualization_dir}/{gene}.remap2res2.pdf"
                 
                     if os.path.exists(ref1):
-                        allele_remap_bams1=[f"{gene_dir}/{remove_characters(allele)}.{0}.bam" for allele in full_allele_dict[gene][0]]
+                        allele_remap_bams1=[
+                            f"{gene_dir}/{remove_characters(allele)}.{0}.bam"
+                            for allele in full_allele_dict[gene][0]
+                            if allele != "NA"
+                        ]
+                        if len(allele_remap_bams1) == 0:
+                            continue
+                        # allele_remap_bams1=[f"{gene_dir}/{remove_characters(allele)}.{0}.bam" for allele in full_allele_dict[gene][0]]
                         print("allele_remap_bams1", allele_remap_bams1)
                         files_to_pdf(bam1, vcf1, ref1, gene, out_pdf1, full_allele_dict[gene][0], allele_remap_bams1, "het", 0)
                     if os.path.exists(ref2):
-                        allele_remap_bams2=[f"{gene_dir}/{remove_characters(allele)}.{1}.bam" for allele in full_allele_dict[gene][1]]
+                        allele_remap_bams2=[
+                            f"{gene_dir}/{remove_characters(allele)}.{1}.bam"
+                            for allele in full_allele_dict[gene][1]
+                            if allele != "NA"
+                        ]
+                        if len(allele_remap_bams2) == 0:
+                            continue
+                        # allele_remap_bams2=[f"{gene_dir}/{remove_characters(allele)}.{1}.bam" for allele in full_allele_dict[gene][1]]
                         print("allele_remap_bams2", allele_remap_bams2)
                         files_to_pdf(bam2, vcf2, ref2, gene, out_pdf2, full_allele_dict[gene][1], allele_remap_bams2, "het", 1)
                     break
