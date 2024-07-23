@@ -1,0 +1,168 @@
+#data files
+data_files:
+    reference: GRCh38_chr22.fa.gz
+    diff_sites: diff_sites_CYP2D6.csv
+    homopolymers: hp_3.bed
+    coreVariants: corevar.5.1.10.csv.gz
+    coreMetaData: coremeta.5.1.10.csv.gz
+
+# loci
+region: 'chr22:42118571-42146092'
+ # positions encompassing all core variants, incl upstream promoters (pharmvar)
+coreRegion: [ 42126305, 42132395 ]
+phaseWindows:
+    noSV:      [ 42120485, 42136630 ]
+    duplicate: [ 42123443, 42135040 ]
+    #duplicate: [ 42123443, 42135246 ]
+    deletion:  [ 42120485, 42136630 ]
+    hybrid:    [ -1, -1 ] # not used
+
+loci:
+    CYP2D6: 1
+    CYP2D7: 2
+
+abbreviation:
+    1: 2D6
+    2: 2D7
+
+genes:
+    CYP2D6: [ 42126530, 42130801 ]
+    CYP2D7: [ 42140233, 42144498 ]
+
+# read meta config
+ # minimum clip size for re-alignment
+minClip: 150
+ # max sequence to extract for clip re-alignment
+maxClip: 15000
+
+# Known SV
+deletions:
+    del_3p: 
+        rstart: [ '~', 42135346 ]
+        rstop_clip: [ '~', 42123191 ]
+    del_3p_noclip:
+        rstop: [ '<', 42135346 ]
+        maxInsertion: [ '~', 1562 ]
+    del_5p:
+        rstop: [ '~', 42125951 ]
+        rstart_clip: [ '~', 42138117 ]
+        maxInsertion: [ '<', 100 ]
+        maxDeletion: [ '<', 100 ]
+    del_3p_bigdel:
+        rstop: [ '>', 42123000 ]
+        maxDeletion: [ '~', 2847 ]
+
+duplicates:
+    dup_downstream:
+        rstop: [ '~', 42138112 ]
+        rstart_clip: [ '~', 42125965 ]
+    dup_noclip_downstream: 
+        maxDeletion: [ '~', 1562 ]
+    dup_upstream:
+        rstart: [ '~', 42123200 ]
+        rstop_clip: [ '~', 42135343 ]
+        maxInsertion: [ '<', 100 ]
+        maxDeletion: [ '<', 100 ]
+
+# hybrids
+hybrids:
+    minChain: 3
+    exonOrder: -1  # exon number decr with incr ref position
+
+# export colors
+color:
+    noSV:
+        base: [0,155,161] #PB teal
+        step: [40,40,40]
+    deletion: 
+        base: [111,13,74] #PB burgundy
+        step: [60,60,60]
+    duplicate:  
+        base: [94,35,158] #PB purple
+        step: [45,45,45]
+    hybrid: 
+        base: [225,105,44]  #PB burnt orange
+        step: [-30,-30,-30]
+    "-1": # default color gray
+        base: [192,192,192] #not phased, gray
+        step: [0,0,0]
+grayscale:
+    noSV:
+        base: [210,210,210] #green
+        step: [-60,-53,-60]
+    deletion: 
+        base: [160,160,160] #red
+        step: [-53,-60,-60]
+    duplicate:  
+        base: [110,110,110] #turqouis
+        step: [-60,-53,-53]
+    hybrid: 
+        base: [70,70,70]  # yellowish
+        step: [73,73,60]
+    "-1": # default color gray
+        base: [240,240,240] #not phased, gray
+        step: [0,0,0]
+
+# General
+tolerance: 20
+phaseTag: HP
+minCov:  # min reads to consider a variant
+    wgs: 3
+    capture: 3
+    amplicon: 10
+    consensus: 1 
+minFreq:  # min frequency reads to consider a variant
+    wgs: 0
+    capture: 0.1
+    amplicon: 0.1
+    consensus: 0 
+lowCoverageWarning: 
+    wgs: 10
+    capture: 10
+    amplicon: 10
+    consensus: 1
+
+# Star allele mappings of SV calls
+starAlleles:
+    deletion: '*5'
+    hybrid:
+        2D6_2D7_exon2:   [ '*68' ]
+        2D6_2D7_intron7: [ '*61' ]
+        2D6_2D7_exon8:   [ '*63' ]
+        2D6_2D7_exon9:   [ '*4.013', '*36', '*83' ]
+        2D6_2D7_downstream_exon9: [ '*10', '*17' ]
+
+        2D7_2D6_intron1: [ '*13' ] 
+        2D7_2D6_exon2:   [ '*79' ] 
+        2D7_2D6_intron2: [ '*80' ] 
+        2D7_2D6_exon3:   [ '*80' ] 
+        2D7_2D6_intron4: [ '*78' ] 
+        2D7_2D6_exon5:   [ '*67' ] 
+        2D7_2D6_exon7:   [ '*66' ] 
+        2D7_2D6_exon9:   [ '*76' ] 
+    hybrid_parent:
+        '*4.013' : [ '*4' ]        
+        '*36'    : [ '*10' ]
+        '*83'    : [ '*1' ]
+        '*68'    : [ '*2', '*4' ]
+        '*61'    : [ '' ]
+        '*63'    : [ '' ]
+        '*10'    : [ '*10' ]
+
+d6_d7_homologous_pos:
+        42128944 : 42142639 # *4.013
+        42130691 : 42144364 # *36/*10
+        42127940 : 42141632 # *17
+        42129769 : 42143441 # *17
+    
+# Core loader config
+impactScores:
+    'No function'        : 2
+    'Unknown function'   : 0
+    'Uncertain function' : 0
+    'Normal function'    : 0
+    'Decreased function' : 1
+#impactAdjustments:
+#    4 : 3   # increase *4 (no function) impact to 3 so we select *4 over *36 for *4.013
+            # this may have no function if we are not calling exon9 vars in 36, but it doesnt hurt
+
