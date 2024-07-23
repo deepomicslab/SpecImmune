@@ -36,20 +36,29 @@ def get_sample_name(file_path):
 
 def load_GeT_RM(given_sample_list):
     GeT_RM_sample_list = []
-    with open('CYP_GeT-RM_truth.csv') as f:
+    sampl_truth = {}
+    with open('cyp/CYP_GeT-RM_truth.csv') as f:
         for line in f:
             line = line.strip().split(',')
             sample = line[0]
-            # truth = line[1]
+            if len(line) < 4:
+                continue
+            truth = line[3]
+            sampl_truth[sample] = truth
             # print (sample, truth)
             if sample in given_sample_list:
                 GeT_RM_sample_list.append(sample)
-    print (len(GeT_RM_sample_list))
-    print (GeT_RM_sample_list)
+    # print (len(GeT_RM_sample_list))
+    # print (GeT_RM_sample_list)
+    file = open('cyp/ont_truth.csv', 'w')
+    for sample in GeT_RM_sample_list:
+        file.write(f"{sample}\t{sampl_truth[sample]}\n")
+    file.close()
+
 
 def load_GeT_RM2(given_sample_list):
     GeT_RM_sample_list = []
-    with open('cyp_benchmark.csv') as f:
+    with open('cyp/cyp_benchmark.csv') as f:
         for line in f:
             line = line.strip().split()
             sample = line[1]

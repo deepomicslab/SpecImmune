@@ -18,6 +18,7 @@ class SvTyper:
         self.diff_sites      = self._loadDiffs( config[ 'diff_sites' ] )
         self._hybridPatterns = list( self._makeHybPatterns() )
         self._call_functions = [ self.call_del_and_dup, self.call_hybrid ]
+        # self._call_functions = [ self.call_del_and_dup ]
 
     def call_sv( self, sampleVars, readMeta ):
         # clear values
@@ -160,7 +161,7 @@ class SvTyper:
                 # print ("lbl", lbl, "patt", patt, h)
                 m = patt.search( h )
                 if m: 
-                    print ("lbl", lbl, "patt", patt, h)
+                    # print ("lbl", lbl, "patt", patt, h)
                     bp = m.start() + len( m.group() ) // 2 - 1 + start
                     # make sure its actually a hyb breakpoint and not an island
                     left, right = Counter( hap[ :bp+1 ].strip( 'x' ) ), Counter( hap[ bp+1: ].strip( 'x' ) )

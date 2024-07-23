@@ -54,6 +54,7 @@ class StarTyper:
         except BamViewer_Error as e:
             self.log.error( e.args[0] )
             return None
+        # print ("xxxx")
         # check for common parameter mistake -- if no reads match ccs naming convention, might be consensus
         if not self.readMeta.index.get_level_values('hifi_read').str.match(r'^.*/\d+/ccs$').any() \
            and self.callMode != "consensus":

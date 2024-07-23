@@ -23,9 +23,9 @@
 #  -j 15 -y pacbio -i CYP \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/reads_cyp_hpc/NA19239.CYP.fastq.gz 
 
-python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA19238_5 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA19239_5 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
  -j 15 -y pacbio -i CYP \
--r /mnt/d/HLAPro_backup/Nanopore_optimize/data/reads_cyp_hpc/NA19238.CYP.fastq.gz 
+-r /mnt/d/HLAPro_backup/Nanopore_optimize/data/reads_cyp_hpc/NA19239.CYP.fastq.gz 
 
 
 # python3 ../scripts/main.py --hg38 ../CYP_ref/CYP.segment.fa -n NA19239 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\

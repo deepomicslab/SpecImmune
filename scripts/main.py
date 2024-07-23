@@ -109,9 +109,9 @@ def main(args):
         # python3 {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
         minimap2 -t {args["j"]} {args["hg38"]} {args["r"]} -a | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
         samtools index {args["o"]}/{args["n"]}/{args["n"]}.bam
-        python3 {sys.path[0]}/../packages/pangu/__main__.py -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
+        python3 {sys.path[0]}/../packages/pangu/__main__.py -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
         """
-        print (command)
+        # print (command)
         os.system(command)
 
 

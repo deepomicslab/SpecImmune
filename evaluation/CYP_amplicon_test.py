@@ -34,17 +34,18 @@ def read_sra(sra_file):
                 print(f"{sra_id} {sample_id} {reported_alleles_dict[sample_id]}")
             # else:
             #     print(f"{sra_id} {sample_id} NA"
-                # cmd = f"""
-                # ID={sra_id}
-                # sample={sample_id}
+                cmd = f"""
+                ID={sra_id}
+                sample={sample_id}
                 # prefetch -O {fq_dir} $ID
                 # fastq-dump -O {fq_dir} --split-3 {fq_dir}/$ID/$ID.sra  --gzip
                 # rm -r {fq_dir}/$ID
 
-                # # python3 ../scripts/main.py --hg38 ../CYP_ref/CYP.segment.fa -n $sample -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
-                # # -j 15 -y pacbio -i CYP \
-                # # -r {fq_dir}/$ID.fastq.gz
-                # """
+                python3 ../scripts/main.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n $sample -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon\
+                -j 15 -y pacbio -i CYP \
+                -r {fq_dir}/$ID.fastq.gz --seq_tech amplicon
+                """
+                os.system(cmd)
 
                 cmd = f"""
                     sample={sample_id}
@@ -68,8 +69,8 @@ def read_sra(sra_file):
 
                 """
                 # print (cmd)
-                os.system(cmd)
-                # break
+                # os.system(cmd)
+                break
 
 
 sra_file = "./cyp/PRJNA754842.csv"

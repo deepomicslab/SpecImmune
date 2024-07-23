@@ -80,7 +80,7 @@ def loadConfig( configYaml ):
     for key,fname in config[ 'data_files' ].items():
         # config[ key ] = str( data_files.joinpath( fname ) )
         config[ key ] = str( data_files) + "/" + fname
-        print (data_files, config[ key ])
+        # print (data_files, config[ key ])
     # replace sv rule operator labels with op functions
     # and include "isclose" operator with config tolerance
     ops = { **OPS, **{ '~' : isclose( atol=config['tolerance'] ) } }
@@ -126,6 +126,7 @@ class BamRegionViewer:
         #load bam pileup  and remove strand info from sample variants
         # load non-primary alignments separately so overlapping alignments don't blend
         #self.log.info( f'Loading {sampleBam}' )
+        # print ("loadSample")
         self._reset()
         self.sampleBam = sampleBam
         sampledf = pd.concat( [ self._makeDf( sampleBam, self.reference, self.region, varsOnly=False, qryCol='hifi_read', **kws )\
@@ -137,6 +138,7 @@ class BamRegionViewer:
         sampledf.VAR = sampledf.VAR.str.replace( '.', ',', regex=False )
         # get some read metadata, incl secondary/supp alignments
         readMeta     = self._getReadMeta( sampleBam ) 
+        
         # flag coverage fractions
         for gene, ( gstart, gstop ) in self.genes.items():
             genesize = gstop - gstart
