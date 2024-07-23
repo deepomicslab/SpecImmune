@@ -16,7 +16,7 @@ def main(args):
         print(f'Version: {__version__}')
         sys.exit(0)
 
-    if args['i'] == "HLA" or args['i'] == "KIR" or args['i'] == "CYP":
+    if args['i'] == "HLA" or args['i'] == "KIR":# or args['i'] == "CYP":
 
         my_folder = My_folder(args)
         my_folder.make_dir()
@@ -103,12 +103,17 @@ def main(args):
 
         my_db = My_db(args)
         command = f"""
-        bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
-        python3 {sys.path[0]}/typing_from_assembly.py --phased_ref {my_db.hg38} -j {args["j"]} -n {args["n"]} -i {args["i"]} -o {args["o"]}/{args["n"]}\
-              --phased_vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.norm.vcf.gz --phased_mask {args["o"]}/{args["n"]}/low_depth.bed
+        # bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
+        # python3 {sys.path[0]}/typing_from_assembly.py --phased_ref {my_db.hg38} -j {args["j"]} -n {args["n"]} -i {args["i"]} -o {args["o"]}/{args["n"]}\
+        #       --phased_vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.norm.vcf.gz --phased_mask {args["o"]}/{args["n"]}/low_depth.bed
         # python3 {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
+        minimap2 -t {args["j"]} {args["hg38"]} {args["r"]} -a | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
+        samtools index {args["o"]}/{args["n"]}/{args["n"]}.bam
+        python3 {sys.path[0]}/../packages/pangu/__main__.py -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
         """
+        print (command)
         os.system(command)
+
 
     
     elif args['i'] == "IG_TR":
