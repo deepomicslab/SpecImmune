@@ -31,14 +31,38 @@ def get_read_meta(meta_file):
             #     sv_type_list.add(SV)
     return read_type_dict, sv_type_list
 
+def get_read_bam(labeled_bam):
+    read_type_dict = {}
+    sv_type_list = set()
+    ## read bam with pysam
+    import pysam
+    bamfile = pysam.AlignmentFile(labeled_bam, "rb")
+    for read in bamfile:
+        read_name = read.query_name
+        ## check if the read has the HP tag
+        if not read.has_tag('HP'):
+            HP = 'noHap'
+        HP = read.get_tag('HP')
+        ## replace space and * to _
+        HP = HP.replace(' ', '_')
+        HP = HP.replace('*', '')
+        HP = HP.replace(':', '')
+
+        read_type_dict[read_name] = HP
+        sv_type_list.add(HP)
+
+    return read_type_dict, sv_type_list
+
 if __name__ == "__main__":   
     prefix = sys.argv[1]
     raw_fq = sys.argv[2]
 
     meta_file = f"{prefix}.readMeta.csv"
+    labeled_bam = f"{prefix}_labeledReads.bam"
     # raw_fq = '/mnt/d/HLAPro_backup/Nanopore_optimize/data/reads_cyp_hpc/HG00733.CYP.fastq.gz'
 
-    read_type_dict, sv_type_list = get_read_meta(meta_file)
+    # read_type_dict, sv_type_list = get_read_meta(meta_file)
+    read_type_dict, sv_type_list = get_read_bam(labeled_bam)
     print (sv_type_list)
 
     for sv_label in sv_type_list:
