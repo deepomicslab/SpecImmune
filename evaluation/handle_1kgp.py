@@ -48,12 +48,12 @@ def load_GeT_RM(given_sample_list):
             # print (sample, truth)
             if sample in given_sample_list:
                 GeT_RM_sample_list.append(sample)
-    # print (len(GeT_RM_sample_list))
-    # print (GeT_RM_sample_list)
-    file = open('cyp/ont_truth.csv', 'w')
-    for sample in GeT_RM_sample_list:
-        file.write(f"{sample}\t{sampl_truth[sample]}\n")
-    file.close()
+    print (len(GeT_RM_sample_list))
+    print (GeT_RM_sample_list)
+    # file = open('cyp/ont_truth.csv', 'w')
+    # for sample in GeT_RM_sample_list:
+    #     file.write(f"{sample}\t{sampl_truth[sample]}\n")
+    # file.close()
 
 def load_GeT_RM3(given_sample_list):
     GeT_RM_sample_list = []

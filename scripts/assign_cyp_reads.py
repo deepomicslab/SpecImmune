@@ -13,17 +13,22 @@ def get_read_meta(meta_file):
             read_name = row["hifi_read"]
             SV = row["SV"]
             SV_label = row["SVlabel"]
+            HP = row["HP"]
+            if HP == '-1':
+                HP='noHap'
+            read_type_dict[read_name] = HP
+            sv_type_list.add(HP)
             # skip if SV_label is empty
             # print (f"{read_name} {SV_label} {SV}")
-            if pd.isna(SV_label):
-                read_type_dict[read_name] = ['noSV']
-                sv_type_list.add('noSV')
-            else:
-                # print (f"{read_name} {SV_label}", row["SV"])
-                # pure_sv_lable = SV_label.split("_")[0]
-                # print(f"{read_name} {pure_sv_lable}")
-                read_type_dict[read_name] = [SV]
-                sv_type_list.add(SV)
+            # if pd.isna(SV_label):
+            #     read_type_dict[read_name] = ['noSV']
+            #     sv_type_list.add('noSV')
+            # else:
+            #     # print (f"{read_name} {SV_label}", row["SV"])
+            #     # pure_sv_lable = SV_label.split("_")[0]
+            #     # print(f"{read_name} {pure_sv_lable}")
+            #     read_type_dict[read_name] = [SV]
+            #     sv_type_list.add(SV)
     return read_type_dict, sv_type_list
 
 if __name__ == "__main__":   
