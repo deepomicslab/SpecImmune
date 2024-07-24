@@ -111,14 +111,14 @@ def main(file_list_path):
                 sample_name = get_sample_name(file_path)
                 ont_sample_list.append(sample_name)
                 # print(f"Downloading {file_path} for sample {sample_name}")
-                # for gene_class in ['HLA', 'KIR', 'CYP', 'IG_TR']:
-                #     cmd = f"""
-                #         bash {sys.path[0]}/../scripts/ExtractReads.sh -s {sample_name} -i /mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/{sample_name}/{sample_name}.hg38.cram -g {gene_class} -o /mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/{sample_name} -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/GRCh38_full_analysis_set_plus_decoy_hla.fa
-                #     """
-                #     if not os.path.exists(f"/mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/{sample_name}/{sample_name}.{gene_class}.fastq.gz"):
-                #         # print (cmd)
-                #         os.system(cmd)
-    load_GeT_RM(ont_sample_list)
+                for gene_class in ['HLA', 'KIR', 'CYP', 'IG_TR']:
+                    cmd = f"""
+                        bash {sys.path[0]}/../scripts/ExtractReads.sh -s {sample_name} -i /mnt/e/1000G_ONT/1000G_ont/downloads/{sample_name}/{sample_name}.hg38.cram -g {gene_class} -o /mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/{sample_name} -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/1KG_ONT_VIENNA_hg38.fa
+                    """
+                    if not os.path.exists(f"/mnt/e/1000G_ONT/1000G_ont/downloads/{sample_name}/{sample_name}.{gene_class}.fastq.gz"):
+                        # print (cmd)
+                        os.system(cmd)
+    # load_GeT_RM(ont_sample_list)
 
 
 if __name__ == '__main__':
