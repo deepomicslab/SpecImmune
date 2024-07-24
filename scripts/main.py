@@ -110,6 +110,7 @@ def main(args):
         minimap2 -t {args["j"]} {args["hg38"]} {args["r"]} -a | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
         samtools index {args["o"]}/{args["n"]}/{args["n"]}.bam
         python3 {sys.path[0]}/../packages/pangu/__main__.py -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
+        python3 {sys.path[0]}/assign_cyp_reads.py {args["o"]}/{args["n"]}/{args["n"]} {args["r"]}
         """
         # print (command)
         os.system(command)

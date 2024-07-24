@@ -67,6 +67,7 @@ class StarTyper:
         # call the star alleles
         for lbl in ['noSV'] + list( self.readMeta.SV.dropna().unique() ): #do noSV first
             self.log.debug( f'Calling {lbl}' )
+            self.log.info( f'Calling {lbl}' )
             calls = self.call_group( lbl, self.callers[ lbl ] )
             if calls not in [ None, {} ]:
                 self.diplotype.calls[ lbl ] = calls
@@ -83,7 +84,8 @@ class StarTyper:
         return self.diplotype.diplotype
     
     def return_read_meta(self):
-        return self.svtyper.readMeta
+        # return self.svtyper.readMeta
+        return self.readMeta
 
     def _loadCoreMeta( self, metaFile ):
         evalStr = ( lambda v: pd.Series( eval( v ) ) )
