@@ -76,6 +76,10 @@ def main( parser ):
     with open( prefix( 'report.json' ), 'w' ) as report:
         report.write( json.dumps( typer.report, indent=4 ) )
 
+    readMeta = typer.return_read_meta()
+    csv_file = f"{args.prefix}.readMeta.csv"
+    readMeta.to_csv(csv_file)
+
     return typer
 
 class CYP2D6_typer_Error( Exception ):

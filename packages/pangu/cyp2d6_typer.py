@@ -81,6 +81,9 @@ class StarTyper:
         self.log.info( f'Diplotype called: {self.diplotype}' )
         self.report.append( self.makeReport() )
         return self.diplotype.diplotype
+    
+    def return_read_meta(self):
+        return self.svtyper.readMeta
 
     def _loadCoreMeta( self, metaFile ):
         evalStr = ( lambda v: pd.Series( eval( v ) ) )
