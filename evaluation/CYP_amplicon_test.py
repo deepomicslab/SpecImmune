@@ -25,8 +25,8 @@ def read_sra(sra_file):
             line = line.strip().split(',')
             sra_id = line[0]
             sample_id = line[-4]
-            if sample_id != 'NA17280':
-                continue
+            # if sample_id != 'NA17280':
+            #     continue
             # if sra_id != 'SRR15476227':
             #     # print(f"{sra_id} {sample_id}")
             #     continue
