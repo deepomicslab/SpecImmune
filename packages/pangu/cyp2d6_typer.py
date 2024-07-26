@@ -63,18 +63,23 @@ class StarTyper:
         # print ("self.sampleVars", self.sampleVars)
         self.log.info( 'Identifying SV signatures' )
         self.svtyper.call_sv( self.sampleVars, self.readMeta )
+        
+        # print ("self.diplotype.calls", self.diplotype.calls)
         self.log.info( 'Phasing and Calling Alleles' )
         # call the star alleles
         for lbl in ['noSV'] + list( self.readMeta.SV.dropna().unique() ): #do noSV first
             self.log.debug( f'Calling {lbl}' )
             self.log.info( f'Calling {lbl}' )
+            # print (">>>1", self.diplotype.calls)
             calls = self.call_group( lbl, self.callers[ lbl ] )
+            # print (">>>2", self.diplotype.calls)
             if calls not in [ None, {} ]:
                 self.diplotype.calls[ lbl ] = calls
+            # print ("<<<",lbl, calls, self.diplotype.calls)
         if len( self.diplotype.calls ) == 0:
             self.log.error( 'No Calls found!' )
             return None
-
+        # print ("self.diplotype.calls", self.diplotype.calls)
         self.log.debug( f'Alleles Identified: {dict( self.diplotype.calls )}' )
         # make diplotypeG
         self.log.info( 'Calling Diplotype' )
@@ -110,6 +115,9 @@ class StarTyper:
                 self.log.debug( f'Attempting to phase {label} reads' )
                 clusters = self.bamRegion.updateHaplotypes( grpIdxs, label=label, 
                                                             window=self.config[ 'phaseWindows' ][ label ] )
+            else:
+                self.log.info( f'Not enough reads to phase {label} reads' )
+            # print ("clusters", clusters)
             # if no phasing, set HP to {label}_0
             if clusters is None:
                 self.readMeta.loc[ grpIdxs, 'HP' ] = f'{label}_0'                
@@ -136,16 +144,20 @@ class StarTyper:
             return round1_dups.to_dict()
         # after round one, we merge same allele dup/nosv and re-sort reads into first/last cyp2d6
         dupLabels = round1_dups.groupby( round1_dups ).apply( lambda d: list( d.index ) ).to_dict()
+        # print ("dupLabels", dupLabels)
         noSV = self.diplotype.calls[ 'noSV' ]     
         for lbl,alleles in noSV.items():
+            # print ("lbl, alleles", lbl, alleles)
             if alleles in dupLabels:
                 dupLabels[ alleles ].append( lbl )
+        # print ("dupLabels2", dupLabels)
         uclipLoc = self.config['duplicates']['dup_upstream']['rstart'][1]
         dclipLoc = self.config['duplicates']['dup_downstream']['rstop'][1]
         window   = self.config[ 'phaseWindows' ][ 'duplicate' ]
-
+        # self.readMeta.to_csv("/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/NA19207/readMeta4.csv")
         dupcalls = {}        
         for call,labels in dupLabels.items():
+            # print ("call, labels", call, labels)
             creads = self.readMeta.query( 'HP in @labels' )
             #supplemetary reads labeled as "dup_upstream" relabeld to downstream (other alignment)
             sidx = self.readMeta.loc[ creads.index ].query( 'SVlabel == "dup_upstream" and is_primary == False' ).index
@@ -165,6 +177,7 @@ class StarTyper:
             #for capture data, we restict possible splits to variants on reads with dup SV sigs
             for position, atype in [ ( 'upstream', 'noSV' ),
                                      ( 'downstream', 'duplicate') ]:
+                # print ("position, atype", position, atype)
                 idxs     = self.readMeta[ self.readMeta.SVlabel.fillna('').str.endswith( position ) 
                                          & self.readMeta.HP.isin( labels ) ].index
                 candIdx = self.readMeta.loc[ idxs ].query( 'SV.notnull()' ).index \
@@ -172,11 +185,13 @@ class StarTyper:
                              and ( position == 'upstream' ) \
                              and ( len( set( noSV.values() ) ) >= 2 ) \
                           else None #none = all
-                    
+                # print (candIdx, idxs)
                 prevCall = self.diplotype.calls.get( atype, {} ) if atype == 'noSV' else { **dupcalls, **round1_dups.to_dict() }
+                # print("prevCall", prevCall)
                 offset   = max( [int( hp.split('_')[-1] ) for hp in prevCall.keys() ], default=-1 )  + 1
                 clusters = self.bamRegion.updateHaplotypes( idxs, label=atype, window=window, 
                                                             offset=offset, round=2, candidateSubset=candIdx )
+                # print ("new clusters", clusters)
                 #remove old noSV labels
                 if atype == 'noSV':
                     for hp in labels:
@@ -186,13 +201,17 @@ class StarTyper:
                 vals = [offset] if clusters is None else clusters.unique()
                 for n in vals:
                     lbl = f'{atype}_{n}'
+                    # print ("lbl", lbl, call)
                     if atype == 'noSV':
                         self.diplotype.calls[ atype ][ lbl ] = call
                     else:
                         dupcalls[ lbl ] = call
+
+                    # print (lbl, clusters, idxs)        
                 if clusters is None:
                     self.readMeta.loc[ idxs, 'HP' ] = lbl
-
+        # self.readMeta.to_csv("/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/NA19207/readMeta3.csv")
+        # print ("dupcalls", dupcalls)
         return dupcalls
 
     def _get_hyb_calls( self, reads ):
@@ -301,18 +320,34 @@ class StarTyper:
                     copynumber=count,
                     haplotypes=[],
                     warnings=warnings )
+        ## output the self.readMeta to a file
+        # self.readMeta.to_csv("/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/NA19207/readMeta.csv")
+        # print (self.diplotype.haplotypes)
         for i, (hap, hpTags) in enumerate( self.diplotype.haplotypes ):
+            # print (hap, hpTags)
             hapData = dict( call=hap, alleles=[] )
             for j, tag in enumerate( hpTags ):
                 allele = self.diplotype.callMap[ tag ].split()[-1]
-                alleleData = dict(
-                    call=      allele,
-                    num_reads= self.readMeta.query('HP==@tag').index.get_level_values('hifi_read').nunique(),
-                    meanCover= round( stats.loc[ tag ]["mean"], 2 ),
-                    maxCover=  int( stats.loc[ tag ]["max"] ),
-                    minCover=  int( stats.loc[ tag ]["min"] ),
-                    rsIDs   =  self.diplotype.rsIDs[ hap ].get( allele, [] )
-                )
+                # check if tag is in stats
+                if tag not in stats.index:
+                    self.log.warning("No reads assigned to the label %s for %s" % (tag,allele))
+                    alleleData = dict(
+                        call=      allele,
+                        num_reads= 0,
+                        meanCover= 0,
+                        maxCover=  0,
+                        minCover=  0,
+                        rsIDs   =  []
+                    )
+                else:
+                    alleleData = dict(
+                        call=      allele,
+                        num_reads= self.readMeta.query('HP==@tag').index.get_level_values('hifi_read').nunique(),
+                        meanCover= round( stats.loc[ tag ]["mean"], 2 ),
+                        maxCover=  int( stats.loc[ tag ]["max"] ),
+                        minCover=  int( stats.loc[ tag ]["min"] ),
+                        rsIDs   =  self.diplotype.rsIDs[ hap ].get( allele, [] )
+                    )
                 hapData[ 'alleles' ].append( alleleData )
             res[ 'haplotypes' ].append( hapData )
         return res
@@ -485,7 +520,9 @@ class Diplotype:
                returns  tuple( list(pair), list(rest) )   
             '''
             lbls = sorted( labels )
+            # print ("getDupHap, lbls", lbls, lbls[:ndups] + lbls[-1:], lbls[ndups:-1])
             return lbls[:ndups] + lbls[-1:], lbls[ndups:-1]
+        # print ("self.calls",self.calls)
         # haplotype counters
         hybs             = Counter( self.calls.get( 'hybrid', {} ).values() )
         nosv, dups, dels = [ Counter( [ calls[0] for calls in self.calls.get( atype, {} ).values() ] )
@@ -493,6 +530,7 @@ class Diplotype:
         #collect labels for each call
         calls = defaultdict(list)
         for _,subset in self.calls.items():
+            # print ("subset", subset)
             for hp,call in subset.items():
                 a = call[0] if len( call ) else 'unknown'
                 calls[ a ].append( hp )

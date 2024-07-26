@@ -6,6 +6,7 @@ import gzip
 import argparse
 from db_objects import My_db
 from folder_objects import My_folder
+import subprocess
 
 __version__ = '1.0.0'
 
@@ -103,17 +104,43 @@ def main(args):
 
         my_db = My_db(args)
         command = f"""
+        #!/bin/bash
         # bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
         # python3 {sys.path[0]}/typing_from_assembly.py --phased_ref {my_db.hg38} -j {args["j"]} -n {args["n"]} -i {args["i"]} -o {args["o"]}/{args["n"]}\
         #       --phased_vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.norm.vcf.gz --phased_mask {args["o"]}/{args["n"]}/low_depth.bed
         # python3 {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
-        minimap2 -t {args["j"]} {args["hg38"]} {args["r"]} -a | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
+        
+        # --secondary=no
+        minimap2  -R "@RG\\tID:{args["n"]}\\tSM:{args["n"]}" -t {args["j"]} {args["hg38"]} {args["r"]} -a | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
+        # bwa mem -R "@RG\\tID:{args["n"]}\\tSM:{args["n"]}" -t {args["j"]} {args["hg38"]} {args["r"]} | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
         samtools index {args["o"]}/{args["n"]}/{args["n"]}.bam
-        python3 {sys.path[0]}/../packages/pangu/__main__.py -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
+
+        # gatk3 -T HaplotypeCaller -R {args["hg38"]} -I {args["o"]}/{args["n"]}/{args["n"]}.bam -o {args["o"]}/{args["n"]}/{args["n"]}.vcf -L chr22:42126499-42130865
+        # whatshap phase -o {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz -r {args["hg38"]} --indels {args["o"]}/{args["n"]}/{args["n"]}.vcf {args["o"]}/{args["n"]}/{args["n"]}.bam
+        # tabix -f {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz
+        # python3 {sys.path[0]}/../packages/pangu/__main__.py --vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
+        """
+        os.system(command)
+        
+        if args["seq_tech"] == "amplicon":
+            command = f"""
+            python3 {sys.path[0]}/refine_cyp_bam.py {args["o"]}/{args["n"]}/{args["n"]}.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam
+            samtools sort -o {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam
+            samtools index {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam
+            python3 {sys.path[0]}/../packages/pangu/__main__.py -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam -x 
+            """
+            os.system(command)
+        else:
+            command = f"""
+            python3 {sys.path[0]}/../packages/pangu/__main__.py -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x 
+            """
+            os.system(command)
+
+        command = f"""
         python3 {sys.path[0]}/assign_cyp_reads.py {args["o"]}/{args["n"]}/{args["n"]} {args["r"]}
         """
-        # print (command)
         os.system(command)
+
 
 
     
