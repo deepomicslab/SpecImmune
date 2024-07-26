@@ -120,8 +120,11 @@ def main(args):
         # tabix -f {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz
         # python3 {sys.path[0]}/../packages/pangu/__main__.py --vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
         """
-        os.system(command)
-        
+        if not os.path.exists(f"{args['o']}/{args['n']}/{args['n']}.bam"):
+            os.system(command)
+        else:
+            print(f"{args['o']}/{args['n']}/{args['n']}.bam exists, skip the alignment step.", flush=True)
+
         if args["seq_tech"] == "amplicon":
             command = f"""
             python3 {sys.path[0]}/refine_cyp_bam.py {args["o"]}/{args["n"]}/{args["n"]}.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam

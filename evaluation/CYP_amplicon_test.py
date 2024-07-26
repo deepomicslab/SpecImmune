@@ -25,8 +25,8 @@ def read_sra(sra_file):
             line = line.strip().split(',')
             sra_id = line[0]
             sample_id = line[-4]
-            # if sample_id != 'NA17280':
-            #     continue
+            if sample_id != 'NA17280':
+                continue
             # if sra_id != 'SRR15476227':
             #     # print(f"{sra_id} {sample_id}")
             #     continue
@@ -41,7 +41,8 @@ def read_sra(sra_file):
                 # fastq-dump -O {fq_dir} --split-3 {fq_dir}/$ID/$ID.sra  --gzip
                 # rm -r {fq_dir}/$ID
 
-                python3 ../scripts/main.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n $sample -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon\
+                python3 ../scripts/main.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n $sample \
+                -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon\
                 -j 15 -y pacbio -i CYP \
                 -r {fq_dir}/$ID.fastq.gz --seq_tech amplicon
                 """
@@ -70,7 +71,7 @@ def read_sra(sra_file):
                 """
                 # print (cmd)
                 # os.system(cmd)
-                break
+                # break
 
 
 sra_file = "./cyp/PRJNA754842.csv"
