@@ -135,7 +135,7 @@ def main(args):
             os.system(command)
         else:
             command = f"""
-            python3 {sys.path[0]}/../packages/pangu/__main__.py -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x 
+            python3 {sys.path[0]}/../packages/pangu/__main__.py --logLevel DEBUG -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x 
             """
             os.system(command)
 
