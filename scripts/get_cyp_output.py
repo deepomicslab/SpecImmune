@@ -62,7 +62,7 @@ def merge_result(pangu_result, pangu_alleles, spec_result, read_cutoff=10):
             if int(spec_result[i][4]) < read_cutoff and copynumber == 2: # use step 1 result
                 spec_alleles.append(spec_result[i][5])
             else:
-                if spec_result[i] != 'NA':
+                if spec_result[i][2] != 'NA':
                     spec_alleles.append(spec_result[i][2].split(';')[0])
         spec_alleles, star_alleles = refine_spec_alleles(spec_alleles)
             
@@ -88,7 +88,9 @@ def refine_spec_alleles(spec_alleles):
     if len(spec_alleles) == 1:
         spec_alleles = spec_alleles + spec_alleles
     star_alleles  =  []
+    print (spec_alleles)
     for i in range(len(spec_alleles)):
+
         spec_alleles[i] = "*" + spec_alleles[i].split("*")[1]
         star_alleles.append("*" + spec_alleles[i].split("*")[1].split('.')[0])
     return spec_alleles, star_alleles
