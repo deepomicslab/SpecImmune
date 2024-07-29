@@ -123,6 +123,9 @@ def main(args):
         #       --phased_vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.norm.vcf.gz --phased_mask {args["o"]}/{args["n"]}/low_depth.bed
         # python3 {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
         
+        # zcat {args["o"]}/{args["n"]}/Reads/CYP2D6.long_read.fq.gz {args["o"]}/{args["n"]}/Reads/CYP2D7.long_read.fq.gz >{args["o"]}/{args["n"]}/Reads/my.fastq
+        # minimap2  -R "@RG\\tID:{args["n"]}\\tSM:{args["n"]}" -t {args["j"]} {args["hg38"]} {args["o"]}/{args["n"]}/Reads/my.fastq -a | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
+
         # --secondary=no
         minimap2  -R "@RG\\tID:{args["n"]}\\tSM:{args["n"]}" -t {args["j"]} {args["hg38"]} {args["r"]} -a | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
         # bwa mem -R "@RG\\tID:{args["n"]}\\tSM:{args["n"]}" -t {args["j"]} {args["hg38"]} {args["r"]} | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
@@ -138,7 +141,7 @@ def main(args):
         else:
             print(f"{args['o']}/{args['n']}/{args['n']}.bam exists, skip the alignment step.", flush=True)
 
-        if args["seq_tech"] == "amplicon":
+        if args["seq_tech"] == "amplicon" or args["seq_tech"] == "wgs":
             command = f"""
             python3 {sys.path[0]}/refine_cyp_bam.py {args["o"]}/{args["n"]}/{args["n"]}.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam
             samtools sort -o {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam

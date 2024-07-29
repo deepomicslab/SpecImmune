@@ -121,6 +121,7 @@ class Binning():
             # if read_obj.read_name == "m64076_200603_055852/5440181/ccs":
             #     print (read_obj.read_name, read_obj.mismatch_rate, read_obj.allele_name, read_obj.gap_ends_flag, read_obj.match_num )
         read_loci = scor.assign(self.assign_file)
+
         for gene in gene_list:
             outfile = my_folder.reads_dir + '/%s.%s.fq'%(gene, args["a"])
             filter_fq(gene, read_loci, args["r"], outfile)
@@ -207,6 +208,10 @@ if __name__ == "__main__":
     # db_folder=os.path.dirname(my_db.full_cds_db) if args["seq_tech"] == "rna" else os.path.dirname(my_db.full_db)
     db_folder = os.path.dirname(my_db.full_db)
     gene_list = get_folder_list(db_folder)
+
+
+    if args['i'] == "CYP":
+        gene_list.append("CYP2D7")
 
     
     read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
