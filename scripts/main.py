@@ -136,7 +136,8 @@ def main(args):
         # tabix -f {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz
         # python3 {sys.path[0]}/../packages/pangu/__main__.py --vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
         """
-        if not os.path.exists(f"{args['o']}/{args['n']}/{args['n']}.bam"):
+        # bam not exists or bam size is zero
+        if not os.path.exists(f"{args['o']}/{args['n']}/{args['n']}.bam") or os.path.getsize(f"{args['o']}/{args['n']}/{args['n']}.bam") == 0:
             os.system(command)
         else:
             print(f"{args['o']}/{args['n']}/{args['n']}.bam exists, skip the alignment step.", flush=True)
