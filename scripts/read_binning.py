@@ -102,7 +102,7 @@ class Binning():
         self.sam = f"""{my_folder.sample_prefix}.db.bam"""
         
         if args["m"] != 2:
-            read_bin_map2db(args, my_db)
+            read_bin_map2db(args, my_db, args['align_method'] )
 
         self.bamfile = pysam.AlignmentFile(self.sam, 'rb')   
         self.assign_file = f"{my_folder.sample_prefix}.read_binning.txt"
@@ -181,6 +181,7 @@ if __name__ == "__main__":
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
     optional.add_argument("--strand_bias_pvalue_cutoff", type=float, help="Remove a variant if the allele observations are biased toward one strand (forward or reverse). Recommand setting 0 to high-depth data.", metavar="\b", default=0.01)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
+    optional.add_argument("--align_method", type=str, help="bwa or minimap2", metavar="\b", default='bwa')
     optional.add_argument("--seed", type=int, help="seed to generate random numbers", metavar="\b", default=8)
     optional.add_argument("--max_depth", type=int, help="maximum depth for each HLA locus. Downsample if exceed this value.", metavar="\b", default=2000)
     optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")

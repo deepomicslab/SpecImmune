@@ -39,9 +39,23 @@
 #  -j 15 -y pacbio -i CYP \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA19207.CYP.fastq.gz
 
-python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA19003 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
- -j 15 -y pacbio -i CYP \
--r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA19003.CYP.fastq.gz 
+python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n HG03882   -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+ -j 15 -y nanopore -i CYP \
+-r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/HG03882.CYP.fastq.gz --align_method_1 minimap2
+
+# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n HG00436_1 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+#  -j 15 -y nanopore -i CYP \
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/HG00436.CYP.fastq.gz --mode 1 --align_method_1 minimap2
+
+# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18540_2\
+#  -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+#  -j 15 -y nanopore -i CYP \
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/NA18540/NA18540.noHap.fastq.gz\
+#  --mode 1 --align_method_1 minimap2
+
+# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18980_2 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+#  -j 15 -y nanopore -i CYP \
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/NA18980/NA18980.haplotype_2_39.fastq.gz --mode 1 --align_method_1 minimap2
 
 # python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA17300_test -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
 #  -j 15 -y nanopore -i CYP \

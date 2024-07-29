@@ -337,6 +337,9 @@ def get_stardb():
             # print (name, score)
             allele = Allele(name, score)
             stardb[name] = allele
+
+    allele = Allele('NA', 0)
+    stardb['NA'] = allele
     return stardb
 
 if __name__ == "__main__": 
