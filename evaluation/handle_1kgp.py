@@ -208,12 +208,13 @@ if __name__ == '__main__':
     # parser.add_argument('file_list', type=str, help='Path to the file containing the list of files to download.')
     # args = parser.parse_args()
     
-    # GeT_RM_truth = load_GeT_RM4()
-    GeT_RM_truth = load_Stargazer_truth()
+    GeT_RM_truth1 = load_GeT_RM4()
+    GeT_RM_truth2 = load_Stargazer_truth()
 
+    GeT_RM_truth = {**GeT_RM_truth1, **GeT_RM_truth2}
     ont_file_list = "lkg_ont_vienna_merge.files.hg38.list"
     ont_sample_list = main(ont_file_list)
-    truth_file = 'cyp/ont_truth_Stargazer.csv'
+    truth_file = 'cyp/ont_truth_merge.csv'
     check_share_sample(GeT_RM_truth, ont_sample_list, truth_file)
 
     # hgscv_clr = "igsr_HGSVC2_PacBio_CLR.tsv"
