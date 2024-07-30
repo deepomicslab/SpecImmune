@@ -39,9 +39,22 @@
 #  -j 15 -y pacbio -i CYP \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA18565.CYP.fastq.gz
 
-python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18565   -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18632   -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+#  -j 15 -y nanopore -i CYP \
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA18632.CYP.fastq.gz --align_method_1 minimap2
+
+while IFS= read -r line; do
+
+## sample name is the first column
+sample=$(echo $line | cut -d ' ' -f 1)
+echo $sample
+
+python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n $sample\
+   -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results2/\
  -j 15 -y nanopore -i CYP \
--r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA18565.CYP.fastq.gz --align_method_1 minimap2
+-r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/$sample.CYP.fastq.gz --align_method_1 minimap2
+
+done < "cyp/ont_truth.csv"
 
 # python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18642_3   -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
 #  -j 15 -y nanopore -i CYP \

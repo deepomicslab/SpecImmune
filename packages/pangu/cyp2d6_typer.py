@@ -112,7 +112,7 @@ class StarTyper:
         if updateHaplotype:
             clusters = None
             if nrecs >= ( 2 * self.minCov ):
-                self.log.debug( f'Attempting to phase {label} reads' )
+                # self.log.debug( f'Attempting to phase {label} reads' )
                 self.log.info( f'Attempting to phase {nrecs} {label} reads' )
                 clusters = self.bamRegion.updateHaplotypes( grpIdxs, label=label, 
                                                             window=self.config[ 'phaseWindows' ][ label ] )
