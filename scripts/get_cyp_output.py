@@ -44,14 +44,20 @@ def check_cnv(pangu_alleles, cnv_alleles):
             return True
     return False
 
+def check_36_10(diplotype):
+    ## if it only has one haplotype, and it contains 36+10, then use spec result
+    if diplotype == '*36+*10' or diplotype == '*36x2+*10' or diplotype == '*36x3+*10' or diplotype == '*36x4+*10':
+        return True
+    return False
+
 def merge_result(pangu_result, pangu_alleles, spec_result, read_cutoff=10):
     output_result = spec_result.copy()
     detailed_diplotype = 'NA'
     diplotype = pangu_result[0]['diplotype'].split()[1]
-    # print (diplotype)
+    # print (diplotype, pangu_alleles)
     if len(pangu_alleles) > 2:
         print ("cnv detected, use pangu result")
-    elif check_cnv(pangu_alleles, cnv_alleles):
+    elif check_cnv(pangu_alleles, cnv_alleles) and not check_36_10(diplotype):
         print ("cnv detected, use pangu result")
         
     else:  # use spec result

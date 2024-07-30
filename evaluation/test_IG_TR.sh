@@ -35,17 +35,17 @@
 #  -j 15 -y pacbio -i CYP \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/NA19819/NA19819.CYP.fastq.gz
 
-# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA19207 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18565 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
 #  -j 15 -y pacbio -i CYP \
-# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA19207.CYP.fastq.gz
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA18565.CYP.fastq.gz
+
+python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18565   -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+ -j 15 -y nanopore -i CYP \
+-r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA18565.CYP.fastq.gz --align_method_1 minimap2
 
 # python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18642_3   -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
 #  -j 15 -y nanopore -i CYP \
-# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA18642.CYP.fastq.gz --align_method_1 minimap2
-
-python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18642_3   -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
- -j 15 -y nanopore -i CYP \
--r /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/NA18642_4/NA18642_4.noSV_1.fastq.gz --align_method_1 minimap2
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/NA18642_4/NA18642_4.noSV_1.fastq.gz --align_method_1 minimap2
 
 
 # python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18980_2 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\

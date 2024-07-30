@@ -566,19 +566,23 @@ class Diplotype:
                 self.log.error( f'No DUP parent found for tandem {allele}' )
                 self.haplotypes.append( ( f'{allele}x{dcount}', calls.pop(allele) ) )
                 dups[ allele ] -= dcount
-
+        self.log.debug( f'Hybrid calls: {hybs} self.haplotypes {self.haplotypes}' )
         # merge hybrid haps
         self._hybridSelections = {}
         for alleles,hcount in hybs.items():
             found = False
             # potential parents, when not already assigned to some other SV match
             candidateParents = [ allele for allele,count in nosv.items() if count > 0 ]
+            # print ("candidateParents", candidateParents)
             for allele in alleles:
                 expParents = self.config[ 'starAlleles' ][ 'hybrid_parent' ].get( allele.split('x')[0], [] )
                 pMask      = np.in1d( candidateParents, expParents )
+                # print ("expParents", expParents)
+                # print ("pMask", pMask)
                 if pMask.any():
                     parent = candidateParents[ np.where( pMask )[ 0 ][ 0 ] ] #first matching candidate
                     pcount = nosv[ parent ]
+                    # print ("parent, pcount", parent, pcount)
                     if hcount > pcount: #(multi-hybs are rare[?] -> warning)
                         self.log.warning( 'Multi-tandem HYBRID call -- check reads' )
                     while pcount and hcount:
@@ -610,7 +614,7 @@ class Diplotype:
                             self.log.warning( 'UNKNOWN hybrid breakpoint' )
                 else:
                             self.log.warning( f'NO HYBRID parent found for {alleles} (singleton)' )
-
+        self.log.debug( f'self.haplotypes {self.haplotypes}' )
         # add in remaining alleles to haps
         self.haplotypes.extend( ( call, [lbl] ) for call,lbls in calls.items() for lbl in lbls )
         self.haplotypes = sorted( self.haplotypes, key=lambda h: self.hapSortKey( h[0]) ) 

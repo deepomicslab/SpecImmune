@@ -147,7 +147,7 @@ def main(args):
             python3 {sys.path[0]}/refine_cyp_bam.py {args["o"]}/{args["n"]}/{args["n"]}.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam
             samtools sort -o {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam
             samtools index {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam
-            python3 {sys.path[0]}/../packages/pangu/__main__.py -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam -x 
+            python3 {sys.path[0]}/../packages/pangu/__main__.py --logLevel DEBUG -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam -x 
             """
             os.system(command)
         else:
