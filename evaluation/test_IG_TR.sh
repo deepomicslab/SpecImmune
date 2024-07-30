@@ -43,18 +43,18 @@
 #  -j 15 -y nanopore -i CYP \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA18632.CYP.fastq.gz --align_method_1 minimap2
 
-while IFS= read -r line; do
+# while IFS= read -r line; do
 
-## sample name is the first column
-sample=$(echo $line | cut -d ' ' -f 1)
-echo $sample
+# ## sample name is the first column
+# sample=$(echo $line | cut -d ' ' -f 1)
+# echo $sample
 
-python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n $sample\
-   -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results2/\
- -j 15 -y nanopore -i CYP \
--r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/$sample.CYP.fastq.gz --align_method_1 minimap2
+# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n $sample\
+#    -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results2/\
+#  -j 15 -y nanopore -i CYP \
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/$sample.CYP.fastq.gz --align_method_1 minimap2
 
-done < "cyp/ont_truth.csv"
+# done < "cyp/ont_truth.csv"
 
 # python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18642_3   -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
 #  -j 15 -y nanopore -i CYP \
@@ -64,6 +64,11 @@ done < "cyp/ont_truth.csv"
 # python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18980_2 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
 #  -j 15 -y nanopore -i CYP \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/NA18980/NA18980.haplotype_2_39.fastq.gz --align_method_1 minimap2
+
+python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA07439 \
+ -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon/\
+ -j 15 -y nanopore -i CYP \
+-r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/SRR15476234.fastq.gz  --align_method_1 minimap2
 
 # python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n HG00436_1 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
 #  -j 15 -y nanopore -i CYP \
@@ -77,9 +82,9 @@ done < "cyp/ont_truth.csv"
 
 
 
-# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA17300_test -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA07439 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
 #  -j 15 -y nanopore -i CYP \
-# -r /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon/NA17300/NA17300.haplotype_3_13.fastq.gz.gz
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon/NA17300/NA07439.haplotype_3_13.fastq.gz.gz
 
 # python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n HG00732_5 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
 #  -j 15 -y pacbio -i CYP \

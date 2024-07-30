@@ -42,9 +42,9 @@ def read_sra(sra_file):
                 # rm -r {fq_dir}/$ID
 
                 python3 ../scripts/main.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n $sample \
-                -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon\
+                -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon2\
                 -j 15 -y pacbio -i CYP \
-                -r {fq_dir}/$ID.fastq.gz --seq_tech amplicon
+                -r {fq_dir}/$ID.fastq.gz --seq_tech amplicon  --align_method_1 minimap2
                 """
                 os.system(cmd)
 

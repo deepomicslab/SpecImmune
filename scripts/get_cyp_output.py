@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+from collections import defaultdict
 
 from cyp_phenotyper import phenotyper
 
@@ -78,6 +79,12 @@ def merge_result(pangu_result, pangu_alleles, spec_result, read_cutoff=10):
         else:
             diplotype, detailed_diplotype = update_diploid(star_alleles, spec_alleles, diplotype)
     
+
+    # print(phenotype)
+    print (diplotype, detailed_diplotype)
+    return diplotype, detailed_diplotype
+
+def get_phenotype(diplotype):
     diplotype_array = diplotype.split("/") 
     if len(diplotype_array) == 2:
         phenotype = phenotyper("cyp2d6", diplotype_array[0], diplotype_array[1])
@@ -86,9 +93,7 @@ def merge_result(pangu_result, pangu_alleles, spec_result, read_cutoff=10):
     else:
         print ("WARNING: diplotype is not correct")
         phenotype = 'NA'
-    # print(phenotype)
-    print (diplotype, detailed_diplotype, phenotype)
-    return diplotype, detailed_diplotype, phenotype
+    return phenotype
 
 def refine_spec_alleles(spec_alleles):
     if len(spec_alleles) == 1:
@@ -152,7 +157,34 @@ def output(spec_result, diplotype, detailed_diplotype, phenotype, merge_result_f
 
 ### to do
 # refine amplicon output
+def refine_amplicon_output(pangu_result, pangu_alleles):
+    # print (pangu_result, pangu_alleles)
+    allele_num_reads = defaultdict(int)
 
+    for hap_dict in pangu_result[0]['haplotypes']:
+        for allele_dict in hap_dict['alleles']:
+            allele = allele_dict['call']
+            num_reads = allele_dict['num_reads']
+            allele_num_reads[allele] += num_reads
+    # print (allele_num_reads)
+    pangu_alleles = set()
+    ## sort the alleles by the number of reads
+    sorted_alleles = sorted(allele_num_reads.items(), key=lambda x: x[1], reverse=True)
+    if len(sorted_alleles) > 2:
+        if sorted_alleles[1][1]/sorted_alleles[0][1] > 0.2:  ## check if homo or hete by reads num
+            
+            for allele in sorted_alleles[:2]:
+                pangu_alleles.add(allele[0])
+        else:
+            for allele in sorted_alleles[:1]:
+                pangu_alleles.add(allele[0])
+    else:
+        for allele in sorted_alleles:
+            pangu_alleles.add(allele[0])
+    
+    diplotype = '/'.join(pangu_alleles)
+    print (diplotype, pangu_alleles)
+    return diplotype, pangu_alleles
 
 
 
@@ -163,10 +195,19 @@ if __name__ == "__main__":
 
     # prefix = "/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/HG00436_1/HG00436_1"
     prefix = sys.argv[1]
+    seq_tech = sys.argv[2]
+
     pangu_result = f"{prefix}_report.json"
     spec_result_file = f"{prefix}.CYP.final.type.result.txt"
     merge_result_file = f"{prefix}.CYP.merge.type.result.txt"
     pangu_result, pangu_alleles = read_pangu_result(pangu_result)
     spec_result = read_spec_result(spec_result_file)
-    diplotype, detailed_diplotype, phenotype = merge_result(pangu_result, pangu_alleles, spec_result)
+
+    if seq_tech == 'amplicon':
+        diplotype, pangu_alleles = refine_amplicon_output(pangu_result, pangu_alleles)
+        detailed_diplotype = 'NA'
+    else:
+        
+        diplotype, detailed_diplotype = merge_result(pangu_result, pangu_alleles, spec_result)
+    phenotype = get_phenotype(diplotype)
     output(spec_result, diplotype, detailed_diplotype, phenotype, merge_result_file)
