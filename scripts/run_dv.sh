@@ -6,7 +6,7 @@ threads=$5
 region=$6
 data_type='ONT_R104'
 BIN_VERSION="1.5.0"
-data_type='PACBIO'
+# data_type='PACBIO'
 
 
 bam_dir="$(dirname "$bam")"

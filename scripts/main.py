@@ -111,9 +111,95 @@ def main(args):
         samtools index {args["o"]}/{args["n"]}/{args["n"]}.bam
         python3 {sys.path[0]}/../packages/pangu/__main__.py -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
         python3 {sys.path[0]}/assign_cyp_reads.py {args["o"]}/{args["n"]}/{args["n"]} {args["r"]}
+
         """
-        # print (command)
+        print (command)
         os.system(command)
+        bam=f"{args['o']}/{args['n']}/{args['n']}.chr22.bam"
+        ref=my_db.hg38
+        outvcf=f"{args['o']}/{args['n']}/{args['n']}.dv.vcf"
+        outgvcf=f"{args['o']}/{args['n']}/{args['n']}.dv.gvcf"
+        cmd=f"""
+        bash {sys.path[0]}/run_dv.sh {ref} {bam} {outvcf} {outgvcf} {args["j"]} chr22
+        """
+        # print(cmd)
+        #os.system(cmd)
+        # whatshap regenotype
+        # whatshap genotype --reference $REFERENCE_GENOME -o $regeno_vcf $ori_vcf $bam --indels --ignore-read-groups
+        regeno_vcf=f"{args['o']}/{args['n']}/{args['n']}.dv.regeno.vcf"
+        cmd=f"""
+        whatshap genotype --reference {ref} -o {regeno_vcf} {outvcf} {bam} --indels --ignore-read-groups
+        """
+        # print(cmd)
+        # os.system(cmd)
+        # whatshap phase -o $phased_vcf $fixad_vcf $bam --reference $REFERENCE_GENOME --indels --ignore-read-groups
+        phased_vcf=f"{args['o']}/{args['n']}/{args['n']}.dv.phased.vcf.gz"
+        cmd=f"""
+        whatshap phase -o {phased_vcf} {regeno_vcf} {bam} --reference {ref} --indels --ignore-read-groups
+        """
+        # print(cmd)
+        # os.system(cmd)
+        # whatshap haplotag \
+        # --ignore-read-groups  \
+        # -o $gene_work_dir/haplotagged.bam \
+        # --reference $ref \
+        # $phased_snv_vcf \
+        # $bam \
+        # --output-haplotag-list $gene_work_dir/hap.tsv
+        haplotagged_bam=f"{args['o']}/{args['n']}/{args['n']}.dv.haplotagged.bam"
+        haplotag_list=f"{args['o']}/{args['n']}/{args['n']}.dv.hap.tsv"
+        cmd=f"""
+        tabix -f {phased_vcf}
+        whatshap haplotag \
+            --ignore-read-groups -o {haplotagged_bam} \
+                --reference {ref} {phased_vcf} {bam} \
+                    --output-haplotag-list {haplotag_list}
+        """
+        # print(cmd)
+        # os.system(cmd)
+        # whatshap split --output-h1 $outdir/h0.bam --output-h2 $gene_work_dir/h1.bam $gene_work_dir/haplotagged.bam $gene_work_dir/hap.tsv --output-untagged $gene_work_dir/untag.bam
+        h0_bam=f"{args['o']}/{args['n']}/{args['n']}.dv.h0.bam"
+        h1_bam=f"{args['o']}/{args['n']}/{args['n']}.dv.h1.bam"
+        untag_bam=f"{args['o']}/{args['n']}/{args['n']}.dv.untag.bam"
+        cmd=f"""
+        whatshap split \
+            --output-h1 {h0_bam} \
+            --output-h2 {h1_bam} \
+            {haplotagged_bam} \
+            {haplotag_list} \
+            --output-untagged {untag_bam}
+        """
+        # print(cmd)
+        # os.system(cmd)
+        # bam to fastq
+        h0_fq=f"{args['o']}/{args['n']}/{args['n']}.dv.h0.fq"
+        h1_fq=f"{args['o']}/{args['n']}/{args['n']}.dv.h1.fq"
+        untag_fq=f"{args['o']}/{args['n']}/{args['n']}.dv.untag.fq"
+        cmd=f"""
+        samtools fastq {h0_bam} > {h0_fq}
+        samtools fastq {h1_bam} > {h1_fq}
+        samtools fastq {untag_bam} > {untag_fq}
+        gzip -f {h0_fq}
+        gzip -f {h1_fq}
+        gzip -f {untag_fq}
+        """
+        # print(cmd)
+        # os.system(cmd)
+        # assembly
+        cmd=f"""
+        python {sys.path[0]}/assembly.py -i {args["i"]} \
+            -o {args["o"]} -n {args["n"]} -j {args["j"]} \
+            -y {args["y"]} --seq_tech {args["seq_tech"]} \
+            --RNA_type {args["RNA_type"]} --db {args["db"]}
+        """
+        # print(cmd)
+        # os.system(cmd)
+        
+    
+
+
+
+
 
 
     

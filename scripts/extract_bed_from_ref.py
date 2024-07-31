@@ -25,10 +25,10 @@ def align_contigs_to_reference(contigs_file, reference_file, output_bam, threads
     
     # Run minimap2 to align the contigs to the reference genome
     cmd = f"minimap2 -t {threads} -a {reference_file} {contigs_file} | samtools view -bS -@ {threads} - | samtools sort -@ {threads} -o {bam_file}"
-    #subprocess.run(cmd, shell=True, check=True)
+    subprocess.run(cmd, shell=True, check=True)
     
     # Index the BAM file
-    #pysam.index(bam_file)
+    pysam.index(bam_file)
     return bam_file
 
 def extract_reference_regions(bam_file, bed_file, exclude_conventional_chromosomes=False):
@@ -62,8 +62,9 @@ def extract_reference_regions(bam_file, bed_file, exclude_conventional_chromosom
             print(default_contig)
             if default_contig not in alt_contigs_in_bam:
                 if len(bed_items)==1:
-                    len_default_contig=bam.get_reference_length(default_contig)
-                    bed.write(f"{default_contig}\t0\t{len_default_contig}\n")
+                    # write the whole contig to bed
+                    bed.write(f"{default_contig}\n")
+                    # len_default_contig=bam.get_reference_length(default_contig)
                     print(f"Writing default region: {default_contig}")
                 else:
                     start,end=bed_items[1].split("-")
