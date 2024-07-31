@@ -121,8 +121,9 @@ def compare_match_len_and_identity(match_sorted_list, identity_sorted_list, trut
 
 def select_by_alignment(align_list, gene):
     if len(align_list) == 0:
-        return []
+        return [], []
     full_result_list = []
+    best_match_result = []
     # match_sorted_list = sorted(align_list, key=get_1_element, reverse = True)
     # if gene == "HLA-A":
     #     print("align:", align_list[0])
@@ -145,7 +146,8 @@ def select_by_alignment(align_list, gene):
     if len(intersection_alleles) > 0:
         for z in range(len(intersection_alleles)):
             select_allele_list = intersection_alleles[z].split(">")
-            full_result_list.append(select_allele_list)   
+            full_result_list.append(select_allele_list)  
+        best_match_result = full_result_list.copy() 
         if gene == "HLA-DPB1" or gene == "HLA-C":  
             full_result_list = []
             for i in range(len(identity_sorted_list)):
@@ -177,7 +179,7 @@ def select_by_alignment(align_list, gene):
                 if len(full_result_list) >= 15:
                     break
 
-    return full_result_list
+    return full_result_list, best_match_result
 
 def get_read_num_from_step1(step1_result):
     # check if the step1_result file exists
@@ -201,10 +203,10 @@ def get_read_num_from_step1(step1_result):
     return read_num_dict
 
 
-def output(record_best_match, gene_list, result_file, version_info, record_all_match,read_num_dict):
+def output(record_best_match, record_one_allele, gene_list, result_file, version_info, record_all_match,read_num_dict):
     f = open(result_file, 'w')
     print (version_info, file = f)
-    print ("Locus\tChromosome\tGenotype\tMatch_info\tReads_num\tStep1_type", file = f)
+    print ("Locus\tChromosome\tGenotype\tMatch_info\tReads_num\tStep1_type\tOne_guess", file = f)
     for gene in gene_list:
         for ch in [1, 2]:
             tag = f"{gene}_{ch}"
@@ -223,7 +225,7 @@ def output(record_best_match, gene_list, result_file, version_info, record_all_m
                 alleles_info = "NA"
             if re.search('HLA-C\*04:01:01:11', out_alleles):
                 out_alleles += ";HLA-C*04:01:01:01"
-            print (gene, ch, out_alleles,alleles_info, read_num,step1_alleles, sep="\t", file = f)
+            print (gene, ch, out_alleles,alleles_info, read_num,step1_alleles, record_one_allele[gene][ch], sep="\t", file = f)
     f.close()
 
 def get_blast_info(blastfile, tag, record_all_match):
@@ -246,11 +248,80 @@ def get_blast_info(blastfile, tag, record_all_match):
     identity_sorted_list = sorted(align_list, key=get_3_element, reverse = True)
     return identity_sorted_list, record_all_match
 
+def get_digit_array(allele):
+    array = allele.split("*")[1].split(":")
+    for i in range(len(array)):
+        array[i] = array[i].lstrip('0')
+        if array[i][-1] in ['N', 'L', 'S', 'C', 'A' ,'Q']:
+            array[i] = float('inf')
+        
+        array[i] = float(array[i])
+    add_num = 4 - len(array)
+    for i in range(add_num):
+        array.append(float('inf'))
+    # print (array)
+    return array
 
+def compare_num(a, b):
+    if args["i"] == "CYP":
+        num1 = float(a.split("*")[1])
+        num2 = float(b.split("*")[1])
+        if num1 <= num2:
+            return True
+        else:
+            return False
+    else:
+        array1 = get_digit_array(a)
+        array2 = get_digit_array(b)
+        for i in range(4):
+            if array1[i] < array2[i]:
+                return True
+            elif array1[i] > array2[i]:
+                return False
+            else:
+                pass
+        return True
+                
+
+def sort_allele_by_number(allele_list):
+    all_right = False
+    while not all_right:
+        all_right = True
+        for i in range(1, len(allele_list)):
+            right_order = compare_num(allele_list[i-1], allele_list[i])
+            # print (allele_list[i-1], allele_list[i], right_order)
+            all_right = all_right and right_order
+            if not right_order:
+                allele_list[i-1], allele_list[i] = allele_list[i], allele_list[i-1]
+                # break
+    # print ("sort", allele_list)
+    return allele_list
+
+def report_one_allele(full_result_list, best_match_result):
+    consider_result = []
+    if len(best_match_result) > 0:
+        for a in best_match_result:
+            consider_result.append(a[0])
+    else:
+        for a in full_result_list:
+            consider_result.append(a[0])
+
+    # print (consider_result)
+
+    if len(consider_result) == 0:
+        return "NA"
+    elif len(consider_result) == 1:
+        return consider_result[0]
+    else:
+        if args['i'].strip() == "CYP":# or args['i'].strip() == "KIR":
+            return consider_result[0]
+        else:
+            sort_consider_result = sort_allele_by_number(consider_result)
+            return sort_consider_result[0]
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="HLA Typing from diploid assemblies.", add_help=False, \
+    parser = argparse.ArgumentParser(description="Refine typing.", add_help=False, \
     usage="python3 %(prog)s -h", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     required = parser.add_argument_group("Required arguments")
     optional = parser.add_argument_group("Optional arguments")
@@ -286,7 +357,7 @@ if __name__ == "__main__":
     result_file = f"{my_folder.sample_prefix}.{args['i']}.final.type.result.txt"
     step1_result = f"{my_folder.sample_prefix}.{args['i']}.type.result.txt"
 
-    record_best_match = {}
+    record_best_match, record_one_allele = {}, {}
     record_all_match = defaultdict(dict) ## for output
     blastfile = f"{my_folder.sequence_dir}/{args['i']}.blast.summary.txt"
 
@@ -295,11 +366,15 @@ if __name__ == "__main__":
         for gene in gene_list:
             if gene not in record_best_match:
                 record_best_match[gene] = {}
+                record_one_allele[gene] = {}
             tag = f"{gene}_{hap_index+1}"
             align_list, record_all_match = get_blast_info(blastfile, tag, record_all_match)
-            full_result_list = select_by_alignment(align_list, gene)
+            full_result_list, best_match_result = select_by_alignment(align_list, gene)
             record_best_match[gene][hap_index+1] = full_result_list   
+            one_allele = report_one_allele(full_result_list, best_match_result)
+            # print ("one allele", one_allele)
+            record_one_allele[gene][hap_index+1] = one_allele
     
     read_num_dict = get_read_num_from_step1(step1_result)
-    output(record_best_match, gene_list, result_file, my_db.version_info, record_all_match,read_num_dict)
+    output(record_best_match, record_one_allele, gene_list, result_file, my_db.version_info, record_all_match,read_num_dict)
     print (f"The refined typing results is in {result_file}")

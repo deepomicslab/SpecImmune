@@ -95,7 +95,7 @@ class My_db():
 
         ## if the release_version.txt does not exist, return "N/A"
         if not os.path.exists(g_file):
-            print (f"release_version.txt does not exist in {g_file}")
+            print (f"release_version.txt does not exist in {g_file}, please contruct such a file to store database version, its first line is like # version: xx")
             pass
         else:
             for line in open(g_file):
