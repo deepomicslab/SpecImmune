@@ -51,6 +51,9 @@ deletions:
     del_3p_bigdel:
         rstop: [ '>', 42123000 ]
         maxDeletion: [ '~', 2847 ]
+    del_3p_bigdel_2:
+        rstop: [ '>', 42123000 ]
+        maxDeletion: [ '~', 12148 ]
 
 duplicates:
     dup_downstream:

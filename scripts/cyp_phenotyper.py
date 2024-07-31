@@ -96,6 +96,7 @@ def _transporter_default(stardb, hap1, hap2):
 def _hap2as(stardb, hap):
     result = 0
     for sa in hap.split("+"):
+        sa = sa.strip()
         if "x" in sa:
             n = int(sa.split("x")[1])
             name = sa.split("x")[0]
@@ -336,6 +337,9 @@ def get_stardb():
             # print (name, score)
             allele = Allele(name, score)
             stardb[name] = allele
+
+    allele = Allele('NA', 0)
+    stardb['NA'] = allele
     return stardb
 
 if __name__ == "__main__": 

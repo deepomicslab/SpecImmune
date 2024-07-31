@@ -38,11 +38,12 @@ print "parameter:\tsample:$sample\tdir:$dir\tpop:$pop\twxs:$wxs\tG_nom:$g_nom\n"
 my $cutoff = 100;
 my $bin = "$Bin/../bin";
 
-my @genes = ("CYP19A1", "CYP1A1", "CYP1B1", "CYP26A1", "CYP2A13", 
-    "CYP2A6", "CYP2B6", "CYP2C19", "CYP2C8", "CYP2C9", 
-    "CYP2D6", "CYP2F1", "CYP2J2", "CYP2R1", "CYP2S1", "CYP2W1",
-     "CYP3A4", "CYP3A43", "CYP4A22", "CYP4B1", "CYP4F2", "CYP3A5", 
-     "CYP3A7", "CYP8A1");
+# my @genes = ("CYP19A1", "CYP1A1", "CYP1B1", "CYP26A1", "CYP2A13", 
+#     "CYP2A6", "CYP2B6", "CYP2C19", "CYP2C8", "CYP2C9", 
+#     "CYP2D6", "CYP2F1", "CYP2J2", "CYP2R1", "CYP2S1", "CYP2W1",
+#      "CYP3A4", "CYP3A43", "CYP4A22", "CYP4B1", "CYP4F2", "CYP3A5", 
+#      "CYP3A7", "CYP8A1");
+my @genes = ("CYP2A13", "CYP2A6", "CYP2B6", "CYP2C19", "CYP2C8", "CYP2C9", "CYP2D6", "CYP3A4", "CYP3A5", "CYP4F2", "NAT2", "NUDT15", "SLCO1B1");
 
 my (%hash, %hashs, $ref);
 my $fadir = $dir;

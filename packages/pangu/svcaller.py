@@ -37,7 +37,7 @@ class SvTyper:
         # check for un-labeled large alignment features
         self._checkUnlabeled()
         # output the self.readMeta into a table
-        # csv_file = "//mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/pangu-main/demo_data/HG01190.readMeta.csv"
+        # csv_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/NA19207/NA19207.2.readMeta.csv"
         # self.readMeta.to_csv(csv_file)
         # for lbl, patt in self._hybridPatterns:
         #     print ("lbl", lbl, "patt", patt)
@@ -107,6 +107,9 @@ class SvTyper:
                 svReads    = candidates[ mask ].index
                 # if sv == 'deletions':
                 #     print (sv, feat, svReads)
+                # if sv == 'duplicates':
+                #     if feat == 'dup_noclip_downstream':
+                #         print (sv, feat, svReads)
                 self.readMeta.loc[ svReads, [ 'SV', 'SVlabel' ] ] = [ sv[:-1], feat ]    
             # break  
                 # print (self.readMeta)   
@@ -120,7 +123,7 @@ class SvTyper:
         minChain = self.config[ 'hybrids' ][ 'minChain' ]
         mask     = ( self.dsnpVectors.str.count( '1' ) >= minChain ) & ( self.dsnpVectors.str.count( '2' ) >= minChain )
         # print ("mask", mask)
-        print ("self.dsnpVectors", self.dsnpVectors[mask])
+        # print ("self.dsnpVectors", self.dsnpVectors[mask])
         # find breakpoints and update readmeta
 
         self.hybrids = self.dsnpVectors[ mask ]\
@@ -161,7 +164,7 @@ class SvTyper:
                 # print ("lbl", lbl, "patt", patt, h)
                 m = patt.search( h )
                 if m: 
-                    # print ("lbl", lbl, "patt", patt, h)
+                    print ("lbl", lbl, "patt", patt, h)
                     bp = m.start() + len( m.group() ) // 2 - 1 + start
                     # make sure its actually a hyb breakpoint and not an island
                     left, right = Counter( hap[ :bp+1 ].strip( 'x' ) ), Counter( hap[ bp+1: ].strip( 'x' ) )

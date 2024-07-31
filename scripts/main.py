@@ -6,6 +6,7 @@ import gzip
 import argparse
 from db_objects import My_db
 from folder_objects import My_folder
+import subprocess
 
 __version__ = '1.0.0'
 
@@ -16,21 +17,22 @@ def main(args):
         print(f'Version: {__version__}')
         sys.exit(0)
 
-    if args['i'] == "HLA" or args['i'] == "KIR":# or args['i'] == "CYP":
+    if args['i'] == "HLA" or args['i'] == "KIR" or (args['i'] == "CYP"):
 
         my_folder = My_folder(args)
         my_folder.make_dir()
 
         command = f"""
         ## first: read binning
+        echo read binning...
         python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} \
-            --db {args["db"]} --min_identity {args["min_identity"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
+            --db {args["db"]} --min_identity {args["min_identity"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]} --align_method {args["align_method_1"]}
         """
         if args["mode"] >=1:
             os.system(command)
 
         command = f"""
-        ## second: find a pair of alleles for each HLA locus
+        ## second: find a pair of alleles for each locus
         python3 {sys.path[0]}/select_best_reference_alleleV2.py --max_read_num {args["max_read_num"]} --candidate_allele_num {args["candidate_allele_num"]} \
             --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
             --db {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
@@ -98,111 +100,7 @@ def main(args):
             """
             print(command, flush=True)
             os.system(command)
-
-    elif args['i'] == "CYP" :
-
-        my_db = My_db(args)
-        command = f"""
-        # bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
-        # python3 {sys.path[0]}/typing_from_assembly.py --phased_ref {my_db.hg38} -j {args["j"]} -n {args["n"]} -i {args["i"]} -o {args["o"]}/{args["n"]}\
-        #       --phased_vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.norm.vcf.gz --phased_mask {args["o"]}/{args["n"]}/low_depth.bed
-        # python3 {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
-        minimap2 -t {args["j"]} {args["hg38"]} {args["r"]} -a | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
-        samtools index {args["o"]}/{args["n"]}/{args["n"]}.bam
-        python3 {sys.path[0]}/../packages/pangu/__main__.py -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
-        python3 {sys.path[0]}/assign_cyp_reads.py {args["o"]}/{args["n"]}/{args["n"]} {args["r"]}
-
-        """
-        print (command)
-        os.system(command)
-        bam=f"{args['o']}/{args['n']}/{args['n']}.chr22.bam"
-        ref=my_db.hg38
-        outvcf=f"{args['o']}/{args['n']}/{args['n']}.dv.vcf"
-        outgvcf=f"{args['o']}/{args['n']}/{args['n']}.dv.gvcf"
-        cmd=f"""
-        bash {sys.path[0]}/run_dv.sh {ref} {bam} {outvcf} {outgvcf} {args["j"]} chr22
-        """
-        # print(cmd)
-        #os.system(cmd)
-        # whatshap regenotype
-        # whatshap genotype --reference $REFERENCE_GENOME -o $regeno_vcf $ori_vcf $bam --indels --ignore-read-groups
-        regeno_vcf=f"{args['o']}/{args['n']}/{args['n']}.dv.regeno.vcf"
-        cmd=f"""
-        whatshap genotype --reference {ref} -o {regeno_vcf} {outvcf} {bam} --indels --ignore-read-groups
-        """
-        # print(cmd)
-        # os.system(cmd)
-        # whatshap phase -o $phased_vcf $fixad_vcf $bam --reference $REFERENCE_GENOME --indels --ignore-read-groups
-        phased_vcf=f"{args['o']}/{args['n']}/{args['n']}.dv.phased.vcf.gz"
-        cmd=f"""
-        whatshap phase -o {phased_vcf} {regeno_vcf} {bam} --reference {ref} --indels --ignore-read-groups
-        """
-        # print(cmd)
-        # os.system(cmd)
-        # whatshap haplotag \
-        # --ignore-read-groups  \
-        # -o $gene_work_dir/haplotagged.bam \
-        # --reference $ref \
-        # $phased_snv_vcf \
-        # $bam \
-        # --output-haplotag-list $gene_work_dir/hap.tsv
-        haplotagged_bam=f"{args['o']}/{args['n']}/{args['n']}.dv.haplotagged.bam"
-        haplotag_list=f"{args['o']}/{args['n']}/{args['n']}.dv.hap.tsv"
-        cmd=f"""
-        tabix -f {phased_vcf}
-        whatshap haplotag \
-            --ignore-read-groups -o {haplotagged_bam} \
-                --reference {ref} {phased_vcf} {bam} \
-                    --output-haplotag-list {haplotag_list}
-        """
-        # print(cmd)
-        # os.system(cmd)
-        # whatshap split --output-h1 $outdir/h0.bam --output-h2 $gene_work_dir/h1.bam $gene_work_dir/haplotagged.bam $gene_work_dir/hap.tsv --output-untagged $gene_work_dir/untag.bam
-        h0_bam=f"{args['o']}/{args['n']}/{args['n']}.dv.h0.bam"
-        h1_bam=f"{args['o']}/{args['n']}/{args['n']}.dv.h1.bam"
-        untag_bam=f"{args['o']}/{args['n']}/{args['n']}.dv.untag.bam"
-        cmd=f"""
-        whatshap split \
-            --output-h1 {h0_bam} \
-            --output-h2 {h1_bam} \
-            {haplotagged_bam} \
-            {haplotag_list} \
-            --output-untagged {untag_bam}
-        """
-        # print(cmd)
-        # os.system(cmd)
-        # bam to fastq
-        h0_fq=f"{args['o']}/{args['n']}/{args['n']}.dv.h0.fq"
-        h1_fq=f"{args['o']}/{args['n']}/{args['n']}.dv.h1.fq"
-        untag_fq=f"{args['o']}/{args['n']}/{args['n']}.dv.untag.fq"
-        cmd=f"""
-        samtools fastq {h0_bam} > {h0_fq}
-        samtools fastq {h1_bam} > {h1_fq}
-        samtools fastq {untag_bam} > {untag_fq}
-        gzip -f {h0_fq}
-        gzip -f {h1_fq}
-        gzip -f {untag_fq}
-        """
-        # print(cmd)
-        # os.system(cmd)
-        # assembly
-        cmd=f"""
-        python {sys.path[0]}/assembly.py -i {args["i"]} \
-            -o {args["o"]} -n {args["n"]} -j {args["j"]} \
-            -y {args["y"]} --seq_tech {args["seq_tech"]} \
-            --RNA_type {args["RNA_type"]} --db {args["db"]}
-        """
-        # print(cmd)
-        # os.system(cmd)
-        
-    
-
-
-
-
-
-
-    
+   
     elif args['i'] == "IG_TR":
         my_db = My_db(args)
         command = f"""
@@ -213,10 +111,58 @@ def main(args):
     else:
         print("Please choose HLA, KIR, CYP or IG_TR as analyze method.", flush=True)
         return
+    
+
+    if args['i'] == "CYP" :
+
+        my_db = My_db(args)
+        command = f"""
+        #!/bin/bash
+        # bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
+        # python3 {sys.path[0]}/typing_from_assembly.py --phased_ref {my_db.hg38} -j {args["j"]} -n {args["n"]} -i {args["i"]} -o {args["o"]}/{args["n"]}\
+        #       --phased_vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.norm.vcf.gz --phased_mask {args["o"]}/{args["n"]}/low_depth.bed
+        # python3 {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
+        
+        # zcat {args["o"]}/{args["n"]}/Reads/CYP2D6.long_read.fq.gz {args["o"]}/{args["n"]}/Reads/CYP2D7.long_read.fq.gz >{args["o"]}/{args["n"]}/Reads/my.fastq
+        # minimap2  -R "@RG\\tID:{args["n"]}\\tSM:{args["n"]}" -t {args["j"]} {args["hg38"]} {args["o"]}/{args["n"]}/Reads/my.fastq -a | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
+
+        # --secondary=no
+        minimap2  -R "@RG\\tID:{args["n"]}\\tSM:{args["n"]}" -t {args["j"]} {args["hg38"]} {args["r"]} -a | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
+        # bwa mem -R "@RG\\tID:{args["n"]}\\tSM:{args["n"]}" -t {args["j"]} {args["hg38"]} {args["r"]} | samtools view -bS -F 0x800 -| samtools sort - >{args["o"]}/{args["n"]}/{args["n"]}.bam
+        samtools index {args["o"]}/{args["n"]}/{args["n"]}.bam
+
+        # gatk3 -T HaplotypeCaller -R {args["hg38"]} -I {args["o"]}/{args["n"]}/{args["n"]}.bam -o {args["o"]}/{args["n"]}/{args["n"]}.vcf -L chr22:42126499-42130865
+        # whatshap phase -o {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz -r {args["hg38"]} --indels {args["o"]}/{args["n"]}/{args["n"]}.vcf {args["o"]}/{args["n"]}/{args["n"]}.bam
+        # tabix -f {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz
+        # python3 {sys.path[0]}/../packages/pangu/__main__.py --vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
+        """
+        # bam not exists or bam size is zero
+        if not os.path.exists(f"{args['o']}/{args['n']}/{args['n']}.bam") or os.path.getsize(f"{args['o']}/{args['n']}/{args['n']}.bam") == 0:
+            os.system(command)
+        else:
+            print(f"{args['o']}/{args['n']}/{args['n']}.bam exists, skip the alignment step.", flush=True)
+
+        if args["seq_tech"] == "amplicon" or args["seq_tech"] == "wgs":
+            command = f"""
+            python3 {sys.path[0]}/refine_cyp_bam.py {args["o"]}/{args["n"]}/{args["n"]}.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam
+            samtools sort -o {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam
+            samtools index {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam
+            python3 {sys.path[0]}/../packages/pangu/__main__.py --logLevel DEBUG -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam -x 
+            """
+            os.system(command)
+        else:
+            command = f"""
+            python3 {sys.path[0]}/../packages/pangu/__main__.py --logLevel DEBUG -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x 
+            """
+            os.system(command)
+
+        command = f"""
+        python3 {sys.path[0]}/assign_cyp_reads.py {args["o"]}/{args["n"]}/{args["n"]} {args["r"]}
+        python3 {sys.path[0]}/get_cyp_output.py {args["o"]}/{args["n"]}/{args["n"]} {args['seq_tech']}
+        """
+        os.system(command)
 
         
-
-
 if __name__ == "__main__":   
 
     parser = argparse.ArgumentParser(description="HLA Typing with only long-read data.", add_help=False, \
@@ -245,6 +191,8 @@ if __name__ == "__main__":
     optional.add_argument("--max_read_num", type=int, help="max support read number for each locus.", metavar="\b", default=500)
     optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")
     optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon].", metavar="\b", default="wgs")
+    optional.add_argument("--align_method_1", type=str, help="align method in read binning, bwa or minimap2", metavar="\b", default='bwa')
+    optional.add_argument("--align_method_2", type=str, help="align method in typing, bwa or minimap2", metavar="\b", default='minimap2')
 
     optional.add_argument('-v', '--version', action='store_true', help='Display the version number')
     optional.add_argument("-h", "--help", action="help")

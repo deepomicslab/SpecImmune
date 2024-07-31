@@ -177,6 +177,13 @@ class BamRegionViewer:
                       positions relate to rxc [ dropnull rows, dropnull cols ]
             Returns: dataframe reads x postion with elem = pileup vals'''
         if positions is None:
+            
+            ## remove the elements in indices that are not in the pileup
+            indices = indices[ indices.isin( self.pileup.index ) ]
+            ## check if indices are in the pileup
+            if not indices.isin( self.pileup.index ).all():
+                raise BamViewer_Error( 'Some indices not found in pileup' )
+            
             res = self.pileup.loc[ indices, slice( start, stop ) ]
         else:
             res = self.pileup.loc[ indices ].reindex( columns=positions ).dropna( axis=1, how='all' )
@@ -346,7 +353,8 @@ class BamRegionViewer:
         uncovered = ( ( covsum.loc[ :, gstart:gstop ] >= self.minCov ).sum( axis=1 ) / ( gstop - gstart ) ) < minFrac 
         if uncovered.any() and label != 'deletion':
             # reject haplotypes if both subsets don't cover minfrac of the gene
-            self.log.debug( f'Rejecting phasing because {uncovered.sum()} group(s) cover < {minFrac} of the gene at >={self.minCov} reads' )
+            self.log.info( f'Rejecting phasing because {uncovered.sum()} group(s) cover < {minFrac} of the gene at >={self.minCov} reads' )
+            # self.log.info( f'prevously Rejecting phasing because {uncovered.sum()} group(s) cover < {minFrac} of the gene at >={self.minCov} reads' )
             return False
         #coverage at variant positions used to cluser
         # if either cluster covers no positions used, then reject
