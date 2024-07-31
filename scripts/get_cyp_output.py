@@ -38,7 +38,7 @@ def read_spec_result(spec_result_file):
         i = 0
         for line in f:
             field = line.strip().split()
-            if i <= 2:
+            if i <= 1:
                 spec_result.append(field)
             if field[0] == 'CYP2D6':
                 spec_result.append(field)
@@ -58,7 +58,7 @@ def check_36_10(diplotype):
         return True
     return False
 
-def merge_result(pangu_result, pangu_alleles, spec_result, read_cutoff=10):
+def merge_result(pangu_result, pangu_alleles, spec_result, over2hap, read_cutoff=10):
     output_result = spec_result.copy()
     detailed_diplotype = 'NA'
     diplotype = pangu_result[0]['diplotype'].split()[1]
@@ -67,8 +67,10 @@ def merge_result(pangu_result, pangu_alleles, spec_result, read_cutoff=10):
         print ("cnv detected, use pangu result")
     elif check_cnv(pangu_alleles, cnv_alleles) and not check_36_10(diplotype):
         print ("cnv detected, use pangu result")
-        
+    elif over2hap:
+        print ("over 2 hap detected, use pangu result")
     else:  # use spec result
+        print ("no cnv detected, use spec result")
         spec_alleles = []
         copynumber = pangu_result[0]['copynumber']
         for i in [2, 3]:
@@ -78,6 +80,7 @@ def merge_result(pangu_result, pangu_alleles, spec_result, read_cutoff=10):
             else:
                 if spec_result[i][2] != 'NA':
                     spec_alleles.append(spec_result[i][2].split(';')[0])
+        # print (spec_alleles)
         spec_alleles, star_alleles = refine_spec_alleles(spec_alleles)
             
         if copynumber <= 2:
@@ -161,6 +164,41 @@ def output(spec_result, diplotype, detailed_diplotype, phenotype, merge_result_f
         print ('\t'.join(spec_result[i]), file = f)
     f.close()
 
+def filter_pangu_hap(pangu_result):
+    hap_num_reads = defaultdict(int)
+
+    if len(pangu_result[0]['haplotypes']) > 2:
+        over2hap = True
+    else:
+        over2hap = False
+
+    hap_index = 0
+    for hap_dict in pangu_result[0]['haplotypes']:
+        hap_reads = 0
+        for allele_dict in hap_dict['alleles']:
+            allele = allele_dict['call']
+            num_reads = allele_dict['num_reads']
+            hap_reads += num_reads
+        hap_num_reads[hap_index] = hap_reads
+        hap_index += 1
+
+    ## sort the alleles by the number of reads
+    sorted_alleles = sorted(hap_num_reads.items(), key=lambda x: x[1], reverse=True)
+    original_hap = pangu_result[0]['haplotypes'].copy()
+    pangu_result[0]['haplotypes'] = []
+    pangu_alleles = set()
+    diploid_list = []
+    for i in range(min(2, len(sorted_alleles))):
+        pangu_result[0]['haplotypes'].append(original_hap[sorted_alleles[i][0]])
+        diploid_list.append(original_hap[sorted_alleles[i][0]]['call'])
+        for j in range(len(original_hap[sorted_alleles[i][0]]['alleles'])):
+            pangu_alleles.add(original_hap[sorted_alleles[i][0]]['alleles'][j]['call'])
+    diplotype = '/'.join(diploid_list)
+    pangu_result[0]['diplotype'] = f"CYP2D6 {diplotype}"
+    print ("filtered diplotype", diplotype, pangu_alleles, pangu_result[0]['diplotype'])
+    return pangu_result, diplotype, pangu_alleles, over2hap
+
+
 # refine amplicon output
 def refine_amplicon_output(pangu_result, pangu_alleles):
     # print (pangu_result, pangu_alleles)
@@ -212,7 +250,7 @@ if __name__ == "__main__":
         diplotype, pangu_alleles = refine_amplicon_output(pangu_result, pangu_alleles)
         detailed_diplotype = 'NA'
     else:
-        
-        diplotype, detailed_diplotype = merge_result(pangu_result, pangu_alleles, spec_result)
+        pangu_result, diplotype, pangu_alleles, over2hap = filter_pangu_hap(pangu_result)
+        diplotype, detailed_diplotype = merge_result(pangu_result, pangu_alleles, spec_result, over2hap)
     phenotype = get_phenotype(diplotype)
     output(all_spec_result, diplotype, detailed_diplotype, phenotype, merge_result_file)
