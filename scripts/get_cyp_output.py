@@ -32,12 +32,19 @@ def read_spec_result(spec_result_file):
     # check if the file exists
     if not os.path.exists(spec_result_file):
         raise FileNotFoundError(f"{spec_result_file} does not exist")
+    spec_result = []
+    all_spec_result = []
     with open(spec_result_file, 'r') as f:
-        spec_result = []
+        i = 0
         for line in f:
             field = line.strip().split()
-            spec_result.append(field)
-    return spec_result
+            if i <= 2:
+                spec_result.append(field)
+            if field[0] == 'CYP2D6':
+                spec_result.append(field)
+            all_spec_result.append(field)
+            i += 1
+    return spec_result, all_spec_result
 
 def check_cnv(pangu_alleles, cnv_alleles):
     for allele in pangu_alleles:
@@ -146,16 +153,14 @@ def output(spec_result, diplotype, detailed_diplotype, phenotype, merge_result_f
     f = open(merge_result_file, 'w')
     for i in range(1):
         print ('\t'.join(spec_result[i]), file = f)
-    print ("#\tDiplotype\t"+diplotype, file = f)
-    print (f"#\tPhenotype:\t{phenotype[1]}", file = f)
-    print (f"#\tActivity_score:\t{phenotype[0]}", file = f)
-    print ("#\tDetailed_diplotype\t"+detailed_diplotype, file = f)
+    print ("#\tCYP2D6 Diplotype:\t"+diplotype, file = f)
+    print (f"#\tCYP2D6 Phenotype:\t{phenotype[1]}", file = f)
+    print (f"#\tCYP2D6 Activity_score:\t{phenotype[0]}", file = f)
+    print ("#\tCYP2D6 Detailed_diplotype\t"+detailed_diplotype, file = f)
     for i in range(1, len(spec_result)):
         print ('\t'.join(spec_result[i]), file = f)
     f.close()
 
-
-### to do
 # refine amplicon output
 def refine_amplicon_output(pangu_result, pangu_alleles):
     # print (pangu_result, pangu_alleles)
@@ -201,7 +206,7 @@ if __name__ == "__main__":
     spec_result_file = f"{prefix}.CYP.final.type.result.txt"
     merge_result_file = f"{prefix}.CYP.merge.type.result.txt"
     pangu_result, pangu_alleles = read_pangu_result(pangu_result)
-    spec_result = read_spec_result(spec_result_file)
+    spec_result, all_spec_result = read_spec_result(spec_result_file)
 
     if seq_tech == 'amplicon':
         diplotype, pangu_alleles = refine_amplicon_output(pangu_result, pangu_alleles)
@@ -210,4 +215,4 @@ if __name__ == "__main__":
         
         diplotype, detailed_diplotype = merge_result(pangu_result, pangu_alleles, spec_result)
     phenotype = get_phenotype(diplotype)
-    output(spec_result, diplotype, detailed_diplotype, phenotype, merge_result_file)
+    output(all_spec_result, diplotype, detailed_diplotype, phenotype, merge_result_file)
