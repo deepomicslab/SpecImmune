@@ -253,6 +253,8 @@ class Fasta():
         awk_script = '{sum+=$3} END { if (NR>0) print sum/NR; else print 0; }'
         max_depth = args["max_depth"]
         seed = args["seed"]
+        set_dp = args['k']
+
         if self.is_hom(gene) or args['seq_tech'] == "rna":
             print(f"Processing RNAseq {gene}", flush=True) if args['seq_tech'] == "rna" else \
             print(f"Processing homo {gene}", flush=True)
