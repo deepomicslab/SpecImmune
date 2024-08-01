@@ -15,13 +15,14 @@ def read_pangu_result(pangu_result):
     with open(pangu_result, 'r') as f:
         pangu_result = json.load(f)
 
-    diplotype = pangu_result[0]['diplotype']
+    # diplotype = pangu_result[0]['diplotype']
     # print (diplotype)
     # print (pangu_result[0]['haplotypes'])
     pangu_alleles = set()
-    for hap_dict in pangu_result[0]['haplotypes']:
-        for allele_dict in hap_dict['alleles']:
-            pangu_alleles.add(allele_dict['call'])
+    if len(pangu_result) >= 1:
+        for hap_dict in pangu_result[0]['haplotypes']:
+            for allele_dict in hap_dict['alleles']:
+                pangu_alleles.add(allele_dict['call'])
     # print (alleles)
         
     return pangu_result, pangu_alleles
@@ -61,18 +62,22 @@ def check_36_10(diplotype):
 def merge_result(pangu_result, pangu_alleles, spec_result, over2hap, read_cutoff=10):
     output_result = spec_result.copy()
     detailed_diplotype = 'NA'
-    diplotype = pangu_result[0]['diplotype'].split()[1]
+    if len(pangu_result) >= 1:
+        diplotype = pangu_result[0]['diplotype'].split()[1]
     # print (diplotype, pangu_alleles)
-    if len(pangu_alleles) > 2:
+    if len(pangu_result) >= 1 and len(pangu_alleles) > 2:
         print ("cnv detected, use pangu result")
-    elif check_cnv(pangu_alleles, cnv_alleles) and not check_36_10(diplotype):
+    elif len(pangu_result) >= 1 and  check_cnv(pangu_alleles, cnv_alleles) and not check_36_10(diplotype):
         print ("cnv detected, use pangu result")
-    elif over2hap:
+    elif len(pangu_result) >= 1 and over2hap:
         print ("over 2 hap detected, use pangu result")
     else:  # use spec result
         print ("no cnv detected, use spec result")
         spec_alleles = []
-        copynumber = pangu_result[0]['copynumber']
+        if len(pangu_result) >= 1:
+            copynumber = pangu_result[0]['copynumber']
+        else:
+            copynumber = 2
         for i in [2, 3]:
             # print (spec_result[i][4])
             if int(spec_result[i][4]) < read_cutoff and copynumber == 2: # use step 1 result
@@ -208,6 +213,9 @@ def refine_amplicon_output(pangu_result, pangu_alleles):
         for allele_dict in hap_dict['alleles']:
             allele = allele_dict['call']
             num_reads = allele_dict['num_reads']
+            meanCover = allele_dict['meanCover']
+            if meanCover == 0:
+                continue
             allele_num_reads[allele] += num_reads
     # print (allele_num_reads)
     pangu_alleles = set()
@@ -224,7 +232,8 @@ def refine_amplicon_output(pangu_result, pangu_alleles):
     else:
         for allele in sorted_alleles:
             pangu_alleles.add(allele[0])
-    
+    if len(pangu_alleles) == 1:
+        pangu_alleles = list(pangu_alleles) + list(pangu_alleles)
     diplotype = '/'.join(pangu_alleles)
     print (diplotype, pangu_alleles)
     return diplotype, pangu_alleles
@@ -246,11 +255,13 @@ if __name__ == "__main__":
     pangu_result, pangu_alleles = read_pangu_result(pangu_result)
     spec_result, all_spec_result = read_spec_result(spec_result_file)
 
-    if seq_tech == 'amplicon':
+    if seq_tech == 'amplicon' and len(pangu_result) >= 1:
         diplotype, pangu_alleles = refine_amplicon_output(pangu_result, pangu_alleles)
         detailed_diplotype = 'NA'
     else:
-        pangu_result, diplotype, pangu_alleles, over2hap = filter_pangu_hap(pangu_result)
+        over2hap = False
+        if len(pangu_result) >= 1:
+            pangu_result, diplotype, pangu_alleles, over2hap = filter_pangu_hap(pangu_result)
         diplotype, detailed_diplotype = merge_result(pangu_result, pangu_alleles, spec_result, over2hap)
     phenotype = get_phenotype(diplotype)
     output(all_spec_result, diplotype, detailed_diplotype, phenotype, merge_result_file)

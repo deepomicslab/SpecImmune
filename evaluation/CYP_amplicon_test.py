@@ -25,11 +25,13 @@ def read_sra(sra_file):
             line = line.strip().split(',')
             sra_id = line[0]
             sample_id = line[-4]
-            # if sample_id != 'NA17280':
+            # if sample_id != 'NA17252':
             #     continue
-            # if sra_id != 'SRR15476227':
-            #     # print(f"{sra_id} {sample_id}")
+            # if sample_id in ['NA10005', 'NA12244', 'NA17052','NA17058','NA17203','NA17246','NA17252','NA17280','NA17300']:
             #     continue
+            if sra_id != 'SRR15476227':
+                # print(f"{sra_id} {sample_id}")
+                continue
             if sample_id in reported_alleles_dict:
                 print(f"{sra_id} {sample_id} {reported_alleles_dict[sample_id]}")
             # else:
@@ -41,7 +43,7 @@ def read_sra(sra_file):
                 # fastq-dump -O {fq_dir} --split-3 {fq_dir}/$ID/$ID.sra  --gzip
                 # rm -r {fq_dir}/$ID
 
-                python3 ../scripts/main.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n $sample \
+                python3 ../scripts/main.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n $sample-$ID \
                 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon2\
                 -j 15 -y pacbio -i CYP \
                 -r {fq_dir}/$ID.fastq.gz --seq_tech amplicon  --align_method_1 minimap2

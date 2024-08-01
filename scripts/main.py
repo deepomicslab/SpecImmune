@@ -77,29 +77,29 @@ def main(args):
             return
         
         # remap reads for viz
-        if args["mode"] >=0:
-            # map to step 2 alleles (if it's calssified as het in step 1, use split reads to map to step 2 alleles. else, use all reads to map to step 2 alleles)
-            command = f"""
-            python3 {sys.path[0]}/remap.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
-            """
-            print(command, flush=True)
-            os.system(command)
+        # if args["mode"] >=0:
+        #     # map to step 2 alleles (if it's calssified as het in step 1, use split reads to map to step 2 alleles. else, use all reads to map to step 2 alleles)
+        #     command = f"""
+        #     python3 {sys.path[0]}/remap.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
+        #     """
+        #     print(command, flush=True)
+        #     os.system(command)
             
-        # remap allele for viz
-        if args["mode"] >=-1:
-            command = f"""
-            python3 {sys.path[0]}/remap_allele.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
-            """
-            print(command, flush=True)
-            os.system(command)
+        # # remap allele for viz
+        # if args["mode"] >=-1:
+        #     command = f"""
+        #     python3 {sys.path[0]}/remap_allele.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
+        #     """
+        #     print(command, flush=True)
+        #     os.system(command)
 
-        # visualization 
-        if args["mode"] >=-2:
-            command = f"""
-            python3 {sys.path[0]}/visualization.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
-            """
-            print(command, flush=True)
-            os.system(command)
+        # # visualization 
+        # if args["mode"] >=-2:
+        #     command = f"""
+        #     python3 {sys.path[0]}/visualization.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
+        #     """
+        #     print(command, flush=True)
+        #     os.system(command)
    
     elif args['i'] == "IG_TR":
         my_db = My_db(args)

@@ -15,7 +15,9 @@ def refine_cyp_bam(bam_file, new_bam):
     read_record = {}
     tolerance = 3000
     for read in bam:
-
+        ## skip if the read is unmapped
+        if read.is_unmapped:
+            continue
         my_read = My_read()
         my_read.load_bam(read)
         if my_read.identity < min_identity:

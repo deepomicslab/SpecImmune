@@ -60,8 +60,10 @@ class My_read():
                 self.mismatch_num = ta[1]  
         
         if self.alignment_len == 0:
-            print ("unmapped read", read.query_name, read.cigar)
-            sys.exit(0)
+            # print ("exit as the read is unmapped", read.query_name, read.cigar)
+            # sys.exit(0)
+            raise ValueError("unmapped read")
+            
         
         self.match_num = self.alignment_len - self.mismatch_num 
         self.identity = self.match_num/(self.alignment_len - long_gap)
