@@ -29,9 +29,9 @@ def read_sra(sra_file):
             #     continue
             # if sample_id in ['NA10005', 'NA12244', 'NA17052','NA17058','NA17203','NA17246','NA17252','NA17280','NA17300']:
             #     continue
-            if sra_id != 'SRR15476227':
-                # print(f"{sra_id} {sample_id}")
-                continue
+            # if sra_id != 'SRR15476227':
+            #     # print(f"{sra_id} {sample_id}")
+            #     continue
             if sample_id in reported_alleles_dict:
                 print(f"{sra_id} {sample_id} {reported_alleles_dict[sample_id]}")
             # else:

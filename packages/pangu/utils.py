@@ -11,10 +11,10 @@ from scipy.stats import entropy
 from scipy.linalg import svd, diagsvd
 from sklearn.cluster import KMeans
 
-if sys.version_info >= (3, 9):
-    import importlib.resources as resources
-else:
-    import importlib_resources as resources
+# if sys.version_info >= (3, 9):
+#     import importlib.resources as resources
+# else:
+#     import importlib_resources as resources
 
 
 

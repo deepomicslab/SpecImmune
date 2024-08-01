@@ -46,8 +46,11 @@ def get_folder_list(folder):
     for i in os.listdir(folder):
         if os.path.isdir(f"{folder}/{i}"):
             folder_list.append(i)
-    print (folder_list)
-    # if 'CYP2D6' in folder_list:
+    # print (folder_list)
+    ## if CYP2D6 is in the folder, put it in the first place
+    if 'CYP2D6' in folder_list:
+        folder_list.remove('CYP2D6')
+        folder_list.insert(0, 'CYP2D6')
     #     return ['CYP2D6']
     # return ['MICA']
 
