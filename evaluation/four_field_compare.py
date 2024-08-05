@@ -452,7 +452,8 @@ def convert_HLA_version(mylist, map_to_latest_version):
             mylist[j] = map_to_latest_version[mylist[j]]
         else:
             print (f"{mylist[j]} not in map_to_latest_version")
-            sys.exit(1)
+            mylist[j]="NA"
+            #sys.exit(1)
     return mylist
 
 def align_digit_2_truth(truth, mylist):  # not using
