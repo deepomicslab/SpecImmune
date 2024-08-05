@@ -592,8 +592,8 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
 
             if max([fir, sec]) != 2:
                 print (sample, gene, true_list, "<<<wrong>>>" ,hla_la_list, max([fir, sec]))
-            else:
-                print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
+            # else:
+            #     print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
         # sys.exit(1)
     cal_accuracy(gene_dict)
     
@@ -1005,6 +1005,10 @@ def validate_star_allele(a, b): ## for CYP2D6
     elif c.replace("xN", "x3") == b:
         return True
     elif c.replace("xN", "x4") == b:
+        return True
+    elif a.replace("*36+*36", "*36x2") == b:
+        return True
+    elif a.replace("*68+*68", "*68x2") == b:
         return True
     return False
 
