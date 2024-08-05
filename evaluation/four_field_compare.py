@@ -962,7 +962,8 @@ def read_spec_result(spec_result):
             if field[0] != "#" and field[0] != "Locus":
                 gene = field[0]
                 allele = field[6]  #suballele
-                allele = allele.split(".")[0]
+                allele = allele.split(".")[0] # star allele
+                allele = "*" + allele.split('*')[1]
 
                 if gene not in spec_result_dict:
                     spec_result_dict[gene] = []
