@@ -12,6 +12,7 @@ def read_pangu_result(pangu_result):
     # check if the file exists
     if not os.path.exists(pangu_result):
         print (f"WARNING: {pangu_result} does not exist")
+        return {}, set()
     with open(pangu_result, 'r') as f:
         pangu_result = json.load(f)
 
