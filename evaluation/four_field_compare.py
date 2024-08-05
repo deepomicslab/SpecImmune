@@ -938,7 +938,7 @@ def read_pangu_result(pangu_result):
     pure_diplotype = diplotype.split()[1]
     diplotype_list = pure_diplotype.split("/")
     # print (pure_diplotype)
-    return {'DYP2D6':[[diplotype_list[0]], [diplotype_list[1]]]}
+    return {'CYP2D6':[[diplotype_list[0]], [diplotype_list[1]]]}
 
 def read_spec_result(spec_result):
     # check if the file exists
@@ -1015,6 +1015,12 @@ def main_cyp_hprc():
             pangu_result = os.path.join(pangu_dir, file)
             pangu_diplotype = read_pangu_result(pangu_result)
             pangu_result_dict[sample] = pangu_diplotype
+    
+    #### remove the elements in the truth_dict that are not in the pangu_result_dict
+    for sample in truth_dict:
+        if sample not in pangu_result_dict:
+            truth_dict.pop(sample)
+    print ("pangu", len(pangu_result_dict), "truth", len(truth_dict))
     
     ## for each folder in the spec_dir, the sample name is the folder name
     # for folder in os.listdir(spec_dir):
