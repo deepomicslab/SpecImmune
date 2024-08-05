@@ -170,7 +170,12 @@ def main(args):
         tabix -f {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz
         python3 {sys.path[0]}/CYP_star_caller.py  cyp2d6 {args['o']}/{args['n']}/{args['n']}.phase.vcf.gz chr22:42126499-42130865  {args['o']}/{args['n']}/{args['n']}.Stargazer.type.txt
         """
-        os.system(star_call)
+        # os.system(star_call)
+
+        command = f"""
+        python3 {sys.path[0]}/get_cyp_output.py {args["o"]}/{args["n"]}/{args["n"]} {args['seq_tech']}
+        """
+        os.system(command)
         
 if __name__ == "__main__":   
 
