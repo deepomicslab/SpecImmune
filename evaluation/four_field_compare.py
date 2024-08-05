@@ -592,8 +592,8 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
 
             if max([fir, sec]) != 2:
                 print (sample, gene, true_list, "<<<wrong>>>" ,hla_la_list, max([fir, sec]))
-            # else:
-            #     print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
+            else:
+                print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
         # sys.exit(1)
     cal_accuracy(gene_dict)
     
@@ -928,7 +928,7 @@ def read_pangu_result(pangu_result):
         pangu_result = json.load(f)
 
     diplotype = pangu_result[0]['diplotype']
-    print (diplotype)
+    # print (diplotype)
     # print (pangu_result[0]['haplotypes'])
     # pangu_hap_calls = []
     # pangu_alleles = set()
@@ -964,7 +964,7 @@ def read_spec_result(spec_result):
                 if gene not in spec_result_dict:
                     spec_result_dict[gene] = []
                 spec_result_dict[gene].append([allele])
-    print ("#", pure_diplotype, spec_result_dict)
+    # print ("#", pure_diplotype, spec_result_dict)
     return pure_diplotype, spec_result_dict
 
 def load_HPRC_CYP_truth():
