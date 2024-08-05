@@ -911,6 +911,12 @@ def load_TCR_truth():
                 truth_dict[sample][gene] = [[allele[0]], [allele[1]]]
     return truth_dict
 
+def get_shared_sample(truth_dict, infer_dict):
+    new_truth_dict = {}
+    for sample in infer_dict:
+        pure_sample = sample.split(".")[0]
+        new_truth_dict[sample] = infer_dict[pure_sample]
+    return new_truth_dict
 
 ###### for cyp
 ## read a jason file into a dictionary
@@ -1017,9 +1023,7 @@ def main_cyp_hprc():
             pangu_result_dict[sample] = pangu_diplotype
     
     #### remove the elements in the truth_dict that are not in the pangu_result_dict
-    for sample in truth_dict:
-        if sample not in pangu_result_dict:
-            truth_dict.pop(sample)
+    truth_dict = get_shared_sample(truth_dict, pangu_result_dict)
     print ("pangu", len(pangu_result_dict), "truth", len(truth_dict))
     
     ## for each folder in the spec_dir, the sample name is the folder name
