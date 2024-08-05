@@ -919,7 +919,7 @@ def get_shared_sample(truth_dict, infer_dict):
     return new_truth_dict
 
 ###### for cyp
-## read a jason file into a dictionary
+## read a json file into a dictionary
 def read_pangu_result(pangu_result):
     # check if the file exists
     if not os.path.exists(pangu_result):
@@ -1039,6 +1039,104 @@ def main_cyp_hprc():
     compare_four(truth_dict, pangu_result_dict, ['CYP2D6'], 8, "CYP")
     # compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
 
+# def parse_1000g_truth(file):
+#     # Region	Population	Sample ID	HLA-A 1	HLA-A 2	HLA-B 1	HLA-B 2	HLA-C 1	HLA-C 2	HLA-DQB1 1	HLA-DQB1 2	HLA-DRB1 1	HLA-DRB1 2
+#     # AFR	ACB	HG01879	23:01	68:02	13:02	42:01	08:04	17:01	02:02	04:02	03:02	09:01
+#     # AFR	ACB	HG01880	33:03	68:02	40:06	42:01	12:02	17:01	02:01	03:04	03:01	11:06
+#     truth_dict = defaultdict(dict)
+#     # parse filr use dataframe, but some alleles is format as 03:01/04/09/19, so need to split it to 03:01, 03:04, 03:09, 03:19
+#     df = pd.read_csv(file, sep="\t")
+#     for index, row in df.iterrows():
+#         sample = row['Sample ID']
+#         for gene in ['HLA-A', 'HLA-B', 'HLA-C', 'HLA-DQB1', 'HLA-DRB1']:
+#             alleles = row[gene].split("/")
+#             if len(alleles) == 1:
+#                 alleles.append(alleles[0])
+#             truth_dict[sample][gene] = [alleles]
+    
+def parse_1000g_truth(file):
+    # Initialize the dictionary to store the results
+    truth_dict = defaultdict(dict)
+    
+    # Read the file into a DataFrame
+    df = pd.read_csv(file, sep="\t")
+    
+    # Process each row in the DataFrame
+    for index, row in df.iterrows():
+        sample = row['Sample ID']
+        
+        # Process each gene to extract alleles
+        for gene in ['HLA-A 1', 'HLA-A 2', 'HLA-B 1', 'HLA-B 2', 'HLA-C 1', 'HLA-C 2', 'HLA-DQB1 1', 'HLA-DQB1 2', 'HLA-DRB1 1', 'HLA-DRB1 2']:
+            gene_idx = int(gene.split(" ")[1]) - 1
+            gene_name = gene.split(" ")[0].split("-")[-1]
+            
+            if gene_name not in truth_dict[sample]:
+                truth_dict[sample][gene_name] = [[], []]
+            if pd.notna(row[gene]):
+                row[gene]=row[gene].strip("*")
+                if "/" in row[gene]:
+                    alleles = row[gene].split("/")
+                    first_field = alleles[0].split(":")[0]
+                    for allele in alleles:
+                        if first_field in allele:
+                            truth_dict[sample][gene_name][gene_idx].append(allele)
+                        else:
+                            allele_truth = first_field + ":" + allele
+                            truth_dict[sample][gene_name][gene_idx].append(allele_truth)
+                else:
+                    truth_dict[sample][gene_name][gene_idx].append(row[gene])
+            else:
+                truth_dict[sample][gene_name][gene_idx].append(None)
+    
+    return truth_dict
+
+
+
+def main_1kg_ont_HLA(gene_list, truth_dict, result_dir, gene_class="HLA", step = 2, samples = []):
+    ## remove HLA- prefix in gene_list
+    if gene_class == "HLA":
+        gene_list = [x.split("-")[-1] for x in gene_list]
+   
+    speclong_result_dict = parse_all_spleclong_1kg_ont_input(gene_class, step, result_dir, samples)
+    # print (all_hla_la_result)
+    # return
+    # all_old_hlala_result = parse_hlala_pacbio()
+
+    # print (new_truth_dict.keys(), new_truth_dict["HG00514.1"].keys())
+    # print (all_hla_la_result.keys())
+    compare_four(truth_dict, speclong_result_dict, gene_list, 8, gene_class)
+    print ("------------------")
+    # if gene_class == "IG_TR":
+    #     compare_four(new_truth_dict, all_hla_la_result, IG_list, 8, gene_class)
+    #     print ("------------------")
+    #     compare_four(new_truth_dict, all_hla_la_result, TR_list, 8, gene_class)
+    #     print ("------------------")
+    
+    # result_file = f"{benchmark_result_dir}/{gene_class}/pacbio_{gene_class}.csv"
+    # store_results(new_truth_dict, all_hla_la_result, gene_list, result_file)
+    # count_report_allele(all_hla_la_result)
+
+def parse_all_spleclong_1kg_ont_input(gene_class, step, outdir, samples):
+    all_speclong_result = {}
+    if step == 1:
+        suffix = ".type.result.txt"
+    else:
+        suffix = ".final.type.result.txt"
+    for sample in samples:
+        sample_result = os.path.join(outdir, f"{sample}/{sample}/{sample}.{gene_class}{suffix}")
+        if not os.path.exists(sample_result):
+            print (sample_result, "does not exist")
+            continue
+        input_dict = parse_hla_hla_input(sample_result)
+        all_speclong_result[sample] = input_dict
+
+def read_samples(sample_file):
+    samples = []
+    with open(sample_file, 'r') as f:
+        for line in f:
+            samples.append(line.strip())
+    return samples
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='compare results')
@@ -1059,20 +1157,23 @@ if __name__ == "__main__":
 
 
     #### evaluation in HGSCV2
-    gene_class = "IG_TR"
-    truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
-    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/"
-
-    # gene_class = "HLA"
+    # gene_class = "IG_TR"
     # truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
-    # result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_hla/"
+    # result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/"
 
-    gene_class = "CYP"
+    gene_class = "HLA"
     truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
-    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/"
+    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_hla/"
+
+    # gene_class = "CYP"
+    # truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
+    # result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/"
 
     # truth_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/hgscv2_truth_bwa_zip/"
     # result_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/kir_typing_out/"
+
+    truth_dict_1000g=parse_1000g_truth("20181129_HLA_types_full_1000_Genomes_Project_panel.txt")
+    print(truth_dict_1000g)
 
 
     # step = 2   ### 1 or 2, assess result in step 1 or step 2
@@ -1081,12 +1182,22 @@ if __name__ == "__main__":
     # gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
     # main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
 
+    # 1KGP ont HLA
+    samples=read_samples("sample.txt")
+    step = 2   ### 1 or 2, assess result in step 1 or step 2
+    # db_dir = f"../db/{gene_class}/"
+    db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
+    gene_list, interval_dict =  get_focus_gene(gene_class)
+    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
+    main_1kg_ont_HLA(gene_list, truth_dict_1000g, result_dir, gene_class, step, samples)
+    # main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
+
     ##### CYP
     # read_pangu_result("/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon2/NA17246-SRR15476220/NA17246-SRR15476220_report.json")
     # read_spec_result("/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon2/NA17246-SRR15476220/NA17246-SRR15476220.CYP.merge.type.result.txt")
     # load_HPRC_CYP_truth()
     # print (validate_star_allele('*41x2', '*41x3'))
-    main_cyp_hprc()
+    # main_cyp_hprc()
 
     #### TCR evaluation in 11 samples with given truth
     # main_TCR("/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/")
