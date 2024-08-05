@@ -961,7 +961,9 @@ def read_spec_result(spec_result):
                 pure_diplotype = field[2]
             if field[0] != "#" and field[0] != "Locus":
                 gene = field[0]
-                allele = field[6]
+                allele = field[6]  #suballele
+                allele = allele.split(".")[0]
+
                 if gene not in spec_result_dict:
                     spec_result_dict[gene] = []
                 spec_result_dict[gene].append([allele])
@@ -986,7 +988,7 @@ def validate_star_allele(a, b): ## for CYP2D6
     # a truth
     # b result
     # get star allele from suballele
-    b = b.split('.')[0]
+    # b = b.split('.')[0]
     a = a.replace(" ", "")
     b = b.replace(" ", "")
     field = a.split("+")
