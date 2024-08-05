@@ -4,6 +4,7 @@ from collections import defaultdict
 import numpy as np
 import csv
 import pandas as pd
+import json
 
 import sys, os
 sys.path.insert(0, sys.path[0]+'/../scripts/')
@@ -570,17 +571,19 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
                 true_list[i] = convert_field(true_list[i], digit)
                 hla_la_list[i] = convert_field(hla_la_list[i], digit)
 
-            fir = 0
-            if has_intersection(true_list[0], hla_la_list[0]):
-                fir += 1
-            if has_intersection(true_list[1], hla_la_list[1]):
-                fir += 1   
+            # fir = 0
+            # if has_intersection(true_list[0], hla_la_list[0]):
+            #     fir += 1
+            # if has_intersection(true_list[1], hla_la_list[1]):
+            #     fir += 1   
 
-            sec = 0
-            if has_intersection(true_list[0], hla_la_list[1]):
-                sec += 1
-            if has_intersection(true_list[1], hla_la_list[0]):
-                sec += 1  
+            # sec = 0
+            # if has_intersection(true_list[0], hla_la_list[1]):
+            #     sec += 1
+            # if has_intersection(true_list[1], hla_la_list[0]):
+            #     sec += 1  
+            fir, sec = for_rev_compare(true_list, hla_la_list, gene_class)
+            
 
             if gene not in gene_dict:
                 gene_dict[gene] = [0, 0]
@@ -600,6 +603,31 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
     count_report_allele(all_hla_la_result, gene_list)
     print ("finished")
 
+def for_rev_compare(true_list, hla_la_list, gene_class):
+    fir = 0
+    sec = 0
+    if gene_class != "CYP":
+        if has_intersection(true_list[0], hla_la_list[0]):
+            fir += 1
+        if has_intersection(true_list[1], hla_la_list[1]):
+            fir += 1   
+
+        
+        if has_intersection(true_list[0], hla_la_list[1]):
+            sec += 1
+        if has_intersection(true_list[1], hla_la_list[0]):
+            sec += 1  
+    else:
+        if validate_star_allele(true_list[0][0], hla_la_list[0][0]):
+            fir += 1
+        if validate_star_allele(true_list[1][0], hla_la_list[1][0]):
+            fir += 1
+        if validate_star_allele(true_list[0][0], hla_la_list[1][0]):
+            sec += 1
+        if validate_star_allele(true_list[1][0], hla_la_list[0][0]):
+            sec += 1
+
+    return fir, sec
 
 def cal_accuracy(gene_dict):
     total_correct, total = 0, 0
@@ -884,6 +912,98 @@ def load_TCR_truth():
     return truth_dict
 
 
+###### for cyp
+## read a jason file into a dictionary
+def read_pangu_result(pangu_result):
+    # check if the file exists
+    if not os.path.exists(pangu_result):
+        raise FileNotFoundError(f"{pangu_result} does not exist")
+    with open(pangu_result, 'r') as f:
+        pangu_result = json.load(f)
+
+    diplotype = pangu_result[0]['diplotype']
+    print (diplotype)
+    # print (pangu_result[0]['haplotypes'])
+    # pangu_hap_calls = []
+    # pangu_alleles = set()
+    # if len(pangu_result) >= 1:
+    #     for hap_dict in pangu_result[0]['haplotypes']:
+    #         pangu_hap_calls.append(hap_dict['call'])
+    #         for allele_dict in hap_dict['alleles']:
+    #             pangu_alleles.add(allele_dict['call'])
+    # # print (alleles)
+    # print (pangu_alleles, pangu_hap_calls)
+        
+    # return pangu_result, pangu_alleles
+    pure_diplotype = diplotype.split()[1]
+    # print (pure_diplotype)
+    return pure_diplotype
+
+def read_spec_result(spec_result):
+    # check if the file exists
+    spec_result_dict = {}
+    if not os.path.exists(spec_result):
+        raise FileNotFoundError(f"{spec_result} does not exist")
+    pure_diplotype = 'NA'
+    with open(spec_result, 'r') as f:
+        for line in f:
+            field = line.strip().split("\t")
+            # print (field)
+            if field[1] == 'CYP2D6 Diplotype:':
+                pure_diplotype = field[2]
+            if field[0] != "#" and field[0] != "Locus":
+                gene = field[0]
+                allele = field[6]
+                if gene not in spec_result_dict:
+                    spec_result_dict[gene] = []
+                spec_result_dict[gene].append([allele])
+    print ("#", pure_diplotype, spec_result_dict)
+    return pure_diplotype, spec_result_dict
+
+def load_HPRC_CYP_truth():
+    cyp_hprc_truth = 'cyp/HPRC_truth.csv'
+    truth_dict = defaultdict(dict)
+    ## read the csv with pd
+    df = pd.read_csv(cyp_hprc_truth)
+    for index, row in df.iterrows():
+        sample = row['Sample']
+        ref = row['CYP2D6 Reference']
+        field = ref.split('/')
+        # print (sample, ref)
+        truth_dict[sample]['CYP2D6'] = [[field[0]], [field[1]]]
+    # print (truth_dict)
+    return truth_dict
+
+def validate_star_allele(a, b): ## for CYP2D6
+    # a truth
+    # b result
+    a = a.replace(" ", "")
+    b = b.replace(" ", "")
+    field = a.split("+")
+    if len(field) >= 2:
+        c = field[1] + "+" + field[0]
+    else:
+        c = a
+    if a == b:
+        return True
+    elif a.replace("xN", "x2") == b:
+        return True
+    elif a.replace("xN", "x3") == b:
+        return True
+    elif a.replace("xN", "x4") == b:
+        return True
+    elif c.replace("xN", "x2") == b:
+        return True
+    elif c.replace("xN", "x3") == b:
+        return True
+    elif c.replace("xN", "x4") == b:
+        return True
+    return False
+
+
+                
+        
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='compare results')
@@ -920,14 +1040,17 @@ if __name__ == "__main__":
     # result_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/kir_typing_out/"
 
 
-    step = 2   ### 1 or 2, assess result in step 1 or step 2
-    db_dir = f"../db/{gene_class}/"
-    gene_list, interval_dict =  get_focus_gene(gene_class)
-    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
-    main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
+    # step = 2   ### 1 or 2, assess result in step 1 or step 2
+    # db_dir = f"../db/{gene_class}/"
+    # gene_list, interval_dict =  get_focus_gene(gene_class)
+    # gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
+    # main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
 
-    
-
+    ##### CYP
+    # read_pangu_result("/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon2/NA17246-SRR15476220/NA17246-SRR15476220_report.json")
+    # read_spec_result("/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon2/NA17246-SRR15476220/NA17246-SRR15476220.CYP.merge.type.result.txt")
+    # load_HPRC_CYP_truth()
+    print (validate_star_allele('*41x2', '*41x3'))
 
     #### TCR evaluation in 11 samples with given truth
     # main_TCR("/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/")
