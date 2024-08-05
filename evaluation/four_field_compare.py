@@ -989,7 +989,8 @@ def load_HPRC_CYP_truth():
     df = pd.read_csv(cyp_hprc_truth)
     for index, row in df.iterrows():
         sample = row['Sample']
-        ref = row['CYP2D6 Reference']
+        # ref = row['CYP2D6 Reference']
+        ref = row['PacBio HiFi Call']
         field = ref.split('/')
         # print (sample, ref)
         truth_dict[sample]['CYP2D6'] = [[field[0]], [field[1]]]
