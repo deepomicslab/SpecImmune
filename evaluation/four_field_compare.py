@@ -1018,6 +1018,9 @@ def main_cyp_hprc():
     
     ## for each folder in the spec_dir, the sample name is the folder name
     for folder in os.listdir(spec_dir):
+        ## check if the folder is a folder
+        if not os.path.isdir(os.path.join(spec_dir, folder)):
+            continue
         sample = folder
         spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
         pure_diplotype, spec_result_dict[sample] = read_spec_result(spec_result)
