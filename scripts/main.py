@@ -28,8 +28,8 @@ def main(args):
         python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} \
             --db {args["db"]} --min_identity {args["min_identity"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]} --align_method {args["align_method_1"]}
         """
-        if args["mode"] >=1:
-            os.system(command)
+        # if args["mode"] >=1:
+        #     os.system(command)
 
         command = f"""
         ## second: find a pair of alleles for each locus
@@ -37,9 +37,9 @@ def main(args):
             --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
             --db {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
         """
-        if args["seq_tech"] != "rna":
-            if args["mode"] >=1:
-                os.system(command)
+        # if args["seq_tech"] != "rna":
+        #     if args["mode"] >=1:
+        #         os.system(command)
 
         # return
 
@@ -52,8 +52,8 @@ def main(args):
         python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} {args["i"]} \
             {args["seq_tech"]} {args["RNA_type"]}
         """
-        if args["mode"] >=1:
-            os.system(command)
+        # if args["mode"] >=1:
+        #     os.system(command)
 
         if args["analyze_method"] == "phase":
             command = f"""
@@ -62,16 +62,16 @@ def main(args):
                 -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
 
             """
-            if args["mode"] >=1:
-                os.system(command)
+            # if args["mode"] >=1:
+            #     os.system(command)
 
         elif args["analyze_method"] == "assembly":
             command = f"""
             ## forth: assembly
             python3 {sys.path[0]}/assembly.py -i {args["i"]} -o {args["o"]} -n {args["n"]} -j {args["j"]} -y {args["y"]}
             """
-            if args["mode"] >= 1:
-                os.system(command)
+            # if args["mode"] >= 1:
+            #     os.system(command)
         else:
             print("Please choose phase or assembly as analyze method.", flush=True)
             return
@@ -142,26 +142,30 @@ def main(args):
         else:
             print(f"{args['o']}/{args['n']}/{args['n']}.bam exists, skip the alignment step.", flush=True)
 
-        if args["seq_tech"] == "amplicon" or args["seq_tech"] == "wgs":
-            command = f"""
-            python3 {sys.path[0]}/refine_cyp_bam.py {args["o"]}/{args["n"]}/{args["n"]}.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam
-            samtools sort -o {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam
-            samtools index {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam
-            python3 {sys.path[0]}/../packages/pangu/__main__.py --logLevel DEBUG -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam -x 
-            """
-            os.system(command)
-        else:
-            command = f"""
-            python3 {sys.path[0]}/../packages/pangu/__main__.py --logLevel DEBUG -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x 
-            """
-            os.system(command)
+        # if args["seq_tech"] == "amplicon" or args["seq_tech"] == "wgs":
+        #     command = f"""
+        #     python3 {sys.path[0]}/refine_cyp_bam.py {args["o"]}/{args["n"]}/{args["n"]}.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam
+        #     samtools sort -o {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam {args["o"]}/{args["n"]}/{args["n"]}.refined.bam
+        #     samtools index {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam
+        #     python3 {sys.path[0]}/../packages/pangu/__main__.py --logLevel DEBUG -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.refined.sorted.bam -x 
+        #     """
+        #     os.system(command)
+        # else:
+        #     command = f"""
+        #     python3 {sys.path[0]}/../packages/pangu/__main__.py --logLevel DEBUG -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x 
+        #     """
+        #     os.system(command)
 
-        command = f"""
-        python3 {sys.path[0]}/assign_cyp_reads.py {args["o"]}/{args["n"]}/{args["n"]} {args["r"]}
-        python3 {sys.path[0]}/get_cyp_output.py {args["o"]}/{args["n"]}/{args["n"]} {args['seq_tech']}
+        # command = f"""
+        # python3 {sys.path[0]}/assign_cyp_reads.py {args["o"]}/{args["n"]}/{args["n"]} {args["r"]}
+        # python3 {sys.path[0]}/get_cyp_output.py {args["o"]}/{args["n"]}/{args["n"]} {args['seq_tech']}
+        # """
+        # os.system(command)
+        star_call = f"""
+        bash {sys.path[0]}/run_dv.sh {args['hg38']} {args['o']}/{args['n']}/{args['n']}.bam {args['o']}/{args['n']}/{args['n']}.vcf {args['o']}/{args['n']}/{args['n']}.g.vcf {args['j']} chr22:42126499-42130865 /home/wangshuai/00.hla/03.hla/deepvariant/deepvariant-1.5.0.sif
+        python3 {sys.path[0]}/CYP_star_caller.py  {args['o']}/{args['n']}/{args['n']}.vcf chr22:42126499-42130865  {args['o']}/{args['n']}/{args['n']}.test.type
         """
-        os.system(command)
-
+        os.system(star_call)
         
 if __name__ == "__main__":   
 
