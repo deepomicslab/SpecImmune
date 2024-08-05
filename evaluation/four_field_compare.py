@@ -985,6 +985,8 @@ def load_HPRC_CYP_truth():
 def validate_star_allele(a, b): ## for CYP2D6
     # a truth
     # b result
+    # get star allele from suballele
+    b = b.split('.')[0]
     a = a.replace(" ", "")
     b = b.replace(" ", "")
     field = a.split("+")
@@ -1040,8 +1042,7 @@ def main_cyp_hprc():
         sample = folder
         spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
         pure_diplotype, spec_result_dict[sample] = read_spec_result(spec_result)
-        print (pure_diplotype, spec_result_dict[sample])
-    
+        # print (pure_diplotype, spec_result_dict[sample])
     
     compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
 
