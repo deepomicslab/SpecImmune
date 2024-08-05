@@ -997,13 +997,29 @@ def load_HPRC_CYP_truth():
     # print (truth_dict)
     return truth_dict
 
+def load_1k_CYP_truth():
+    cyp_hprc_truth = 'cyp/ont_truth_merge.csv'
+    truth_dict = defaultdict(dict)
+    ## read the csv with pd
+    for line in open(cyp_hprc_truth):
+        e_field = line.strip().split()
+        sample = e_field[0]
+        field = e_field[1].split('/')
+        # print (sample, ref)
+        truth_dict[sample]['CYP2D6'] = [[field[0]], [field[1]]]
+    return truth_dict
+
 def validate_star_allele(a, b): ## for CYP2D6
     # a truth
     # b result
     # get star allele from suballele
     # b = b.split('.')[0]
     a = a.replace(" ", "")
+    a = a.replace("(", "")
+    a = a.replace(")", "")
     b = b.replace(" ", "")
+    b = b.replace("(", "")
+    b = b.replace(")", "")
     field = a.split("+")
     if len(field) >= 2:
         c = field[1] + "+" + field[0]
@@ -1030,15 +1046,19 @@ def validate_star_allele(a, b): ## for CYP2D6
     return False
 
 def main_cyp_hprc():
-    truth_dict = load_HPRC_CYP_truth()
+    # truth_dict = load_HPRC_CYP_truth()
+    truth_dict = load_1k_CYP_truth()
     pangu_result_dict = {}
     spec_result_dict = {} 
     # print (truth_dict)
     # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
     # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"
 
-    pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc_ont/"
-    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc_ont/"
+    # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc_ont/"
+    # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc_ont/"
+
+    pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_1k/"
+    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k/"
     ## for each file with suffix _report.json in the pangu_dir
     for file in os.listdir(pangu_dir):
         if file.endswith("_report.json"):
