@@ -1030,19 +1030,20 @@ def main_cyp_hprc():
     #### remove the elements in the truth_dict that are not in the pangu_result_dict
     truth_dict = get_shared_sample(truth_dict, pangu_result_dict)
     print ("pangu", len(pangu_result_dict), "truth", len(truth_dict))
+    compare_four(truth_dict, pangu_result_dict, ['CYP2D6'], 8, "CYP")
     
     ## for each folder in the spec_dir, the sample name is the folder name
-    # for folder in os.listdir(spec_dir):
-    #     ## check if the folder is a folder
-    #     if not os.path.isdir(os.path.join(spec_dir, folder)):
-    #         continue
-    #     sample = folder
-    #     spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
-    #     pure_diplotype, spec_result_dict[sample] = read_spec_result(spec_result)
-        # print (pure_diplotype, spec_result_dict[sample])
+    for folder in os.listdir(spec_dir):
+        ## check if the folder is a folder
+        if not os.path.isdir(os.path.join(spec_dir, folder)):
+            continue
+        sample = folder
+        spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
+        pure_diplotype, spec_result_dict[sample] = read_spec_result(spec_result)
+        print (pure_diplotype, spec_result_dict[sample])
     
-    compare_four(truth_dict, pangu_result_dict, ['CYP2D6'], 8, "CYP")
-    # compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
+    
+    compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
 
 
 if __name__ == "__main__":
