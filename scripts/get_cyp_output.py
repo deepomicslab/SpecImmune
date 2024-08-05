@@ -254,7 +254,8 @@ def refine_amplicon_output(pangu_result, pangu_alleles):
 def read_star_result(star_result_file):
     ## check if it exists
     if not os.path.exists(star_result_file):
-        raise FileNotFoundError(f"{star_result_file} does not exist")
+        print (f"WARNING: {star_result_file} does not exist")
+        return ['NA', 'NA']
     star_result = []
     with open(star_result_file, 'r') as f:
         f.readline()
