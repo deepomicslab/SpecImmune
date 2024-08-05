@@ -922,12 +922,17 @@ def get_shared_sample(truth_dict, infer_dict):
 ###### for cyp
 ## read a jason file into a dictionary
 def read_pangu_result(pangu_result):
+    print (pangu_result)
     # check if the file exists
     if not os.path.exists(pangu_result):
         raise FileNotFoundError(f"{pangu_result} does not exist")
     with open(pangu_result, 'r') as f:
         pangu_result = json.load(f)
-
+    if len(pangu_result) != 1:
+        #raise FileNotFoundError(f"{pangu_result} is empty")
+        return {'CYP2D6':[['NA'], ['NA']]}
+    #if 'diplotype' not in pangu_result[0]:
+    #    raise FileNotFoundError(f"{pangu_result} has no diplotype")
     diplotype = pangu_result[0]['diplotype']
     # print (diplotype)
     # print (pangu_result[0]['haplotypes'])
@@ -944,6 +949,8 @@ def read_pangu_result(pangu_result):
     # return pangu_result, pangu_alleles
     pure_diplotype = diplotype.split()[1]
     diplotype_list = pure_diplotype.split("/")
+    if len(diplotype_list) == 1:
+        diplotype_list.append("NA")
     # print (pure_diplotype)
     return {'CYP2D6':[[diplotype_list[0]], [diplotype_list[1]]]}
 
@@ -1025,6 +1032,9 @@ def main_cyp_hprc():
     # print (truth_dict)
     pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
     spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"
+
+    pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc_ont/"
+    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc_ont/"
     ## for each file with suffix _report.json in the pangu_dir
     for file in os.listdir(pangu_dir):
         if file.endswith("_report.json"):

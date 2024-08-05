@@ -11,7 +11,7 @@ cnv_alleles = ['*68', '*61', '*63', '*4.013', '*36', '*83', '*10', '*17', '*13',
 def read_pangu_result(pangu_result):
     # check if the file exists
     if not os.path.exists(pangu_result):
-        raise FileNotFoundError(f"{pangu_result} does not exist")
+        print (f"WARNING: {pangu_result} does not exist")
     with open(pangu_result, 'r') as f:
         pangu_result = json.load(f)
 
