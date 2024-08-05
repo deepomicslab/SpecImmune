@@ -948,6 +948,9 @@ def read_pangu_result(pangu_result):
         
     # return pangu_result, pangu_alleles
     pure_diplotype = diplotype.split()[1]
+    return get_standard_diploid(pure_diplotype)
+
+def get_standard_diploid(pure_diplotype):
     diplotype_list = pure_diplotype.split("/")
     if len(diplotype_list) == 1:
         diplotype_list.append("NA")
@@ -977,7 +980,7 @@ def read_spec_result(spec_result):
                     spec_result_dict[gene] = []
                 spec_result_dict[gene].append([allele])
     # print ("#", pure_diplotype, spec_result_dict)
-    return pure_diplotype, spec_result_dict
+    return get_standard_diploid(pure_diplotype), spec_result_dict
 
 def load_HPRC_CYP_truth():
     cyp_hprc_truth = 'cyp/HPRC_truth.csv'
@@ -1033,8 +1036,8 @@ def main_cyp_hprc():
     pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
     spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"
 
-    pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc_ont/"
-    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc_ont/"
+    # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc_ont/"
+    # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc_ont/"
     ## for each file with suffix _report.json in the pangu_dir
     for file in os.listdir(pangu_dir):
         if file.endswith("_report.json"):
@@ -1055,7 +1058,7 @@ def main_cyp_hprc():
             continue
         sample = folder
         spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
-        pure_diplotype, spec_result_dict[sample] = read_spec_result(spec_result)
+        spec_result_dict[sample], all_gene_result = read_spec_result(spec_result)
         # print (pure_diplotype, spec_result_dict[sample])
     
     compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
