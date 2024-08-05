@@ -1034,11 +1034,11 @@ def main_cyp_hprc():
     pangu_result_dict = {}
     spec_result_dict = {} 
     # print (truth_dict)
-    pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
-    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"
+    # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
+    # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"
 
-    # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc_ont/"
-    # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc_ont/"
+    pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc_ont/"
+    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc_ont/"
     ## for each file with suffix _report.json in the pangu_dir
     for file in os.listdir(pangu_dir):
         if file.endswith("_report.json"):
