@@ -163,7 +163,7 @@ def main(args):
         # os.system(command)
         star_call = f"""
         bash {sys.path[0]}/run_dv.sh {args['hg38']} {args['o']}/{args['n']}/{args['n']}.bam {args['o']}/{args['n']}/{args['n']}.vcf {args['o']}/{args['n']}/{args['n']}.g.vcf {args['j']} chr22:42126499-42130865 /home/wangshuai/00.hla/03.hla/deepvariant/deepvariant-1.5.0.sif
-        python3 {sys.path[0]}/CYP_star_caller.py  {args['o']}/{args['n']}/{args['n']}.vcf chr22:42126499-42130865  {args['o']}/{args['n']}/{args['n']}.test.type
+        python3 {sys.path[0]}/CYP_star_caller.py  cyp2d6 {args['o']}/{args['n']}/{args['n']}.vcf chr22:42126499-42130865  {args['o']}/{args['n']}/{args['n']}.test.type
         """
         os.system(star_call)
         
