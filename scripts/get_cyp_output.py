@@ -72,6 +72,10 @@ def merge_result(pangu_result, pangu_alleles, spec_result, over2hap, tool='spec'
         print ("cnv detected, use pangu result")
     elif len(pangu_result) >= 1 and over2hap:
         print ("over 2 hap detected, use pangu result")
+    """
+    if False:
+        pass
+    """
     else:  # use spec result
         print ("no cnv detected, use spec result")
         
@@ -85,7 +89,7 @@ def merge_result(pangu_result, pangu_alleles, spec_result, over2hap, tool='spec'
             for i in [2, 3]:
                 # print (spec_result[i][4])
                 if int(spec_result[i][4]) < read_cutoff and copynumber == 2: # use step 1 result
-                    spec_alleles.append(spec_result[i][5])
+                    spec_alleles.append(spec_result[i][5].split(';')[0])
                 else:
                     if spec_result[i][2] != 'NA':
                         spec_alleles.append(spec_result[i][2].split(';')[0])
@@ -93,7 +97,7 @@ def merge_result(pangu_result, pangu_alleles, spec_result, over2hap, tool='spec'
             spec_alleles, star_alleles = refine_spec_alleles(spec_alleles)
         else:  ## for stargazer
             spec_alleles, star_alleles = spec_result, spec_result
-            
+        print (spec_alleles, star_alleles)    
         if copynumber <= 2:
             diplotype = "/".join(star_alleles)
             detailed_diplotype = "/".join(spec_alleles)
@@ -271,15 +275,16 @@ if __name__ == "__main__":
     # prefix = "/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/HG00436_1/HG00436_1"
     prefix = sys.argv[1]
     seq_tech = sys.argv[2]
-    tool = 'star'
+    tool = 'spec' #spec or star
 
     pangu_result = f"{prefix}_report.json"
     spec_result_file = f"{prefix}.CYP.final.type.result.txt"
     star_result_file = f"{prefix}.Stargazer.type.txt"
-    merge_result_file = f"{prefix}.CYP.merge.type.result.txt2"
+    merge_result_file = f"{prefix}.CYP.merge.type.result.txt"
     pangu_result, pangu_alleles = read_pangu_result(pangu_result)
     spec_result, all_spec_result = read_spec_result(spec_result_file)
-    spec_result = read_star_result(star_result_file)
+    if tool != 'spec':
+        spec_result = read_star_result(star_result_file)
 
     if seq_tech == 'amplicon' and len(pangu_result) >= 1:
         diplotype, pangu_alleles = refine_amplicon_output(pangu_result, pangu_alleles)
