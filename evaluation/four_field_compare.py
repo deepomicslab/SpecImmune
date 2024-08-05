@@ -583,7 +583,7 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
             # if has_intersection(true_list[1], hla_la_list[0]):
             #     sec += 1  
             fir, sec = for_rev_compare(true_list, hla_la_list, gene_class)
-            
+
 
             if gene not in gene_dict:
                 gene_dict[gene] = [0, 0]
@@ -936,8 +936,9 @@ def read_pangu_result(pangu_result):
         
     # return pangu_result, pangu_alleles
     pure_diplotype = diplotype.split()[1]
+    diplotype_list = pure_diplotype.split("/")
     # print (pure_diplotype)
-    return pure_diplotype
+    return {'DYP2D6':[[diplotype_list[0]], [diplotype_list[1]]]}
 
 def read_spec_result(spec_result):
     # check if the file exists
@@ -1000,9 +1001,30 @@ def validate_star_allele(a, b): ## for CYP2D6
         return True
     return False
 
-
-                
-        
+def main_cyp_hprc():
+    truth_dict = load_HPRC_CYP_truth()
+    pangu_result_dict = {}
+    spec_result_dict = {} 
+    # print (truth_dict)
+    pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
+    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"
+    ## for each file with suffix _report.json in the pangu_dir
+    for file in os.listdir(pangu_dir):
+        if file.endswith("_report.json"):
+            sample = file.split("_")[0]
+            pangu_result = os.path.join(pangu_dir, file)
+            pangu_diplotype = read_pangu_result(pangu_result)
+            pangu_result_dict[sample] = pangu_diplotype
+    
+    ## for each folder in the spec_dir, the sample name is the folder name
+    for folder in os.listdir(spec_dir):
+        sample = folder
+        spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
+        pure_diplotype, spec_result_dict[sample] = read_spec_result(spec_result)
+        # print (pure_diplotype, spec_result_dict[sample])
+    
+    compare_four(truth_dict, pangu_result_dict, ['CYP2D6'], 8, "CYP")
+    compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
 
 
 if __name__ == "__main__":
@@ -1050,7 +1072,8 @@ if __name__ == "__main__":
     # read_pangu_result("/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon2/NA17246-SRR15476220/NA17246-SRR15476220_report.json")
     # read_spec_result("/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon2/NA17246-SRR15476220/NA17246-SRR15476220.CYP.merge.type.result.txt")
     # load_HPRC_CYP_truth()
-    print (validate_star_allele('*41x2', '*41x3'))
+    # print (validate_star_allele('*41x2', '*41x3'))
+    main_cyp_hprc()
 
     #### TCR evaluation in 11 samples with given truth
     # main_TCR("/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/")
