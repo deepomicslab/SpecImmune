@@ -913,9 +913,10 @@ def load_TCR_truth():
 
 def get_shared_sample(truth_dict, infer_dict):
     new_truth_dict = {}
-    for sample in infer_dict:
-        pure_sample = sample.split(".")[0]
-        new_truth_dict[sample] = infer_dict[pure_sample]
+    for sample in truth_dict:
+        # pure_sample = sample.split(".")[0]
+        if sample in infer_dict:
+            new_truth_dict[sample] = truth_dict[sample]
     return new_truth_dict
 
 ###### for cyp
