@@ -117,9 +117,11 @@ def refine_spec_alleles(spec_alleles):
     star_alleles  =  []
     print (spec_alleles)
     for i in range(len(spec_alleles)):
-
-        spec_alleles[i] = "*" + spec_alleles[i].split("*")[1]
-        star_alleles.append("*" + spec_alleles[i].split("*")[1].split('.')[0])
+        if len(spec_alleles[i].split("*")) > 1:
+            spec_alleles[i] = "*" + spec_alleles[i].split("*")[1]
+            star_alleles.append("*" + spec_alleles[i].split("*")[1].split('.')[0])
+        else:
+            star_alleles.append("NA")
     return spec_alleles, star_alleles
 
 def extract_pangu_diploid(diplotype):
