@@ -100,9 +100,15 @@ def _hap2as(stardb, hap):
         if "x" in sa:
             n = int(sa.split("x")[1])
             name = sa.split("x")[0]
-            result += stardb[name].score * n
+            if name in stardb:
+              result += stardb[name].score * n
+            else:
+              result += -100 * n
         else:
-            result += stardb[sa].score
+            if sa in stardb:
+              result += stardb[sa].score
+            else:
+              result += -100
     return result
 
 ptcallers = {
