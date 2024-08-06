@@ -30,7 +30,8 @@ from downsample_bam import downsample_func
 from folder_objects import My_folder
 
 # gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
-  
+
+CNV_CYP2D6 = ['CYP2D6*68', 'CYP2D6*61', 'CYP2D6*63', 'CYP2D6*4.013', 'CYP2D6*36', 'CYP2D6*83', 'CYP2D6*10', 'CYP2D6*17', 'CYP2D6*13', 'CYP2D6*79','CYP2D6*80', 'CYP2D6*78', 'CYP2D6*67', 'CYP2D6*66', 'CYP2D6*76','CYP2D6*5']
 
 
 def construct_matrix(args, gene, bam, record_candidate_alleles):
@@ -60,8 +61,24 @@ def construct_matrix(args, gene, bam, record_candidate_alleles):
             record_read_allele_dict[read_name][allele_name] = my_read
             allele_name_dict[allele_name] += 1
         # elif record_read_allele_dict[read_name][allele_name].identity < my_read.identity:
-        elif record_read_allele_dict[read_name][allele_name].match_num < my_read.match_num:
-            record_read_allele_dict[read_name][allele_name] = my_read
+        else:
+            if args['i'] != 'CYP':
+                if record_read_allele_dict[read_name][allele_name].match_num < my_read.match_num:
+                    record_read_allele_dict[read_name][allele_name] = my_read
+            else:
+                if record_read_allele_dict[read_name][allele_name].alignment_score < my_read.alignment_score:
+                    record_read_allele_dict[read_name][allele_name] = my_read
+            # else:
+            #     if my_read.match_num/record_read_allele_dict[read_name][allele_name].match_num > 0.95 and my_read.identity > record_read_allele_dict[read_name][allele_name].identity:
+            #         record_read_allele_dict[read_name][allele_name] = my_read
+            #     elif record_read_allele_dict[read_name][allele_name].match_num < my_read.match_num:
+            #         record_read_allele_dict[read_name][allele_name] = my_read
+                # if record_read_allele_dict[read_name][allele_name].identity < my_read.identity:
+                #     record_read_allele_dict[read_name][allele_name] = my_read
+        # if read_name == "95da644d-6c77-4fab-b63b-5427f480fb95":
+        #     if allele_name in ['CYP2D6*1.001', 'CYP2D6*15.003']:
+        #         print (allele_name, my_read.match_num, my_read.identity, my_read.alignment_score)
+                
 
 
 
@@ -143,6 +160,13 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
 
     for i in range(allele_num):
         for j in range(i+1, allele_num):
+
+            if args["i"] == "CYP":
+                if allele_name_list[i].split(".")[0] in ["CYP2D6*171", "CYP2D6*141","CYP2D6*83", "CYP2D6*122", "CYP2D6*86"]+CNV_CYP2D6:
+                    continue
+                if allele_name_list[j].split(".")[0] in ["CYP2D6*171","CYP2D6*141", "CYP2D6*83", "CYP2D6*122", "CYP2D6*86"]+CNV_CYP2D6:
+                    continue
+
             allele_pair_obj = My_allele_pair(allele_name_list[i], allele_name_list[j])
             allele_pair_obj.assign_reads(record_read_allele_dict)
 
@@ -219,13 +243,13 @@ def print_match_results(sorted_record_allele_pair_match_len, record_allele_pair_
         print(
             i, 
             int(sorted_record_allele_pair_match_len[i][1]), 
-            round(record_allele_pair_identity[tag],4), 
+            round(record_allele_pair_identity[tag],6), 
             allele_list[0],
-            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],4),
+            round(record_allele_pair_sep_match[tag][allele_list[0]]["identity"],6),
             round(record_allele_pair_sep_match[tag][allele_list[0]]["depth"]),
             round(record_allele_pair_sep_match[tag][allele_list[0]]["coverage"],3),
             allele_list[1], 
-            round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],4), 
+            round(record_allele_pair_sep_match[tag][allele_list[1]]["identity"],6), 
             round(record_allele_pair_sep_match[tag][allele_list[1]]["depth"]),
             round(record_allele_pair_sep_match[tag][allele_list[1]]["coverage"],3), 
             sep=",", 
@@ -256,7 +280,9 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
         ide_diff_cutoff = 2e-4
     # if gene  in ["HLA-C"]:
     #     len_diff_cutoff =  1e-3
-
+    if args['i'] == "CYP":
+        len_diff_cutoff = 0.1
+        ide_diff_cutoff = 1e-5
 
     # if gene  in ["DPB1"]:
     #     len_diff_cutoff = 1e-2
@@ -265,6 +291,7 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     for i in range(len(sorted_record_allele_pair_match_len)):
         tag = sorted_record_allele_pair_match_len[i][0]
         allele_list = tag.split("&")
+        # print (allele_list)
 
         # print(
         #     "#pass len", int(sorted_record_allele_pair_match_len[i][1]),

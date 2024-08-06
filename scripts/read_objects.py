@@ -58,6 +58,8 @@ class My_read():
         for ta in read.get_tags():
             if ta[0] == 'NM':
                 self.mismatch_num = ta[1]  
+            if ta[0] == 'AS':
+                self.alignment_score = ta[1]
         
         if self.alignment_len == 0:
             # print ("exit as the read is unmapped", read.query_name, read.cigar)
