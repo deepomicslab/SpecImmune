@@ -4,6 +4,7 @@ out_vcf=$3
 out_gvcf=$4
 threads=$5
 region=$6
+sif=$7
 data_type='ONT_R104'
 BIN_VERSION="1.5.0"
 # data_type='PACBIO'
@@ -17,7 +18,12 @@ out_vcf_file="$(basename "$out_vcf")"
 out_gvcf_file="$(basename "$out_gvcf")"
 ref_file="$(basename "$ref")"
 
-SIF_FILE="/home/xuedowang2/scratch/test_mhc_indiv_genome/deepvariant-1.5.0.sif"
+## if $sif is not given then
+if [ -z "$sif" ]; then
+    SIF_FILE="/home/xuedowang2/scratch/test_mhc_indiv_genome/deepvariant-1.5.0.sif"
+else
+    SIF_FILE=$sif
+fi
 
 # activate conda environment (optional)
 

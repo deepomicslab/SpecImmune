@@ -914,22 +914,28 @@ def load_TCR_truth():
 
 def get_shared_sample(truth_dict, infer_dict):
     new_truth_dict = {}
-    for sample in infer_dict:
-        pure_sample = sample.split(".")[0]
-        new_truth_dict[sample] = infer_dict[pure_sample]
+    for sample in truth_dict:
+        # pure_sample = sample.split(".")[0]
+        if sample in infer_dict:
+            new_truth_dict[sample] = truth_dict[sample]
     return new_truth_dict
 
 ###### for cyp
 ## read a json file into a dictionary
 def read_pangu_result(pangu_result):
+    print (pangu_result)
     # check if the file exists
     if not os.path.exists(pangu_result):
         raise FileNotFoundError(f"{pangu_result} does not exist")
     with open(pangu_result, 'r') as f:
         pangu_result = json.load(f)
-
+    if len(pangu_result) != 1:
+        #raise FileNotFoundError(f"{pangu_result} is empty")
+        return {'CYP2D6':[['NA'], ['NA']]}
+    #if 'diplotype' not in pangu_result[0]:
+    #    raise FileNotFoundError(f"{pangu_result} has no diplotype")
     diplotype = pangu_result[0]['diplotype']
-    print (diplotype)
+    # print (diplotype)
     # print (pangu_result[0]['haplotypes'])
     # pangu_hap_calls = []
     # pangu_alleles = set()
@@ -943,7 +949,12 @@ def read_pangu_result(pangu_result):
         
     # return pangu_result, pangu_alleles
     pure_diplotype = diplotype.split()[1]
+    return get_standard_diploid(pure_diplotype)
+
+def get_standard_diploid(pure_diplotype):
     diplotype_list = pure_diplotype.split("/")
+    if len(diplotype_list) == 1:
+        diplotype_list.append("NA")
     # print (pure_diplotype)
     return {'CYP2D6':[[diplotype_list[0]], [diplotype_list[1]]]}
 
@@ -961,12 +972,16 @@ def read_spec_result(spec_result):
                 pure_diplotype = field[2]
             if field[0] != "#" and field[0] != "Locus":
                 gene = field[0]
-                allele = field[6]
+                allele = field[6]  #suballele
+                if allele != "NA":
+                    allele = allele.split(".")[0] # star allele
+                    allele = "*" + allele.split('*')[1]
+
                 if gene not in spec_result_dict:
                     spec_result_dict[gene] = []
                 spec_result_dict[gene].append([allele])
-    print ("#", pure_diplotype, spec_result_dict)
-    return pure_diplotype, spec_result_dict
+    # print ("#", pure_diplotype, spec_result_dict)
+    return get_standard_diploid(pure_diplotype), spec_result_dict
 
 def load_HPRC_CYP_truth():
     cyp_hprc_truth = 'cyp/HPRC_truth.csv'
@@ -975,18 +990,37 @@ def load_HPRC_CYP_truth():
     df = pd.read_csv(cyp_hprc_truth)
     for index, row in df.iterrows():
         sample = row['Sample']
-        ref = row['CYP2D6 Reference']
+        # ref = row['CYP2D6 Reference']
+        ref = row['PacBio HiFi Call']
         field = ref.split('/')
         # print (sample, ref)
         truth_dict[sample]['CYP2D6'] = [[field[0]], [field[1]]]
     # print (truth_dict)
     return truth_dict
 
+def load_1k_CYP_truth():
+    cyp_hprc_truth = 'cyp/ont_truth_merge.csv'
+    truth_dict = defaultdict(dict)
+    ## read the csv with pd
+    for line in open(cyp_hprc_truth):
+        e_field = line.strip().split()
+        sample = e_field[0]
+        field = e_field[1].split('/')
+        # print (sample, ref)
+        truth_dict[sample]['CYP2D6'] = [[field[0]], [field[1]]]
+    return truth_dict
+
 def validate_star_allele(a, b): ## for CYP2D6
     # a truth
     # b result
+    # get star allele from suballele
+    # b = b.split('.')[0]
     a = a.replace(" ", "")
+    a = a.replace("(", "")
+    a = a.replace(")", "")
     b = b.replace(" ", "")
+    b = b.replace("(", "")
+    b = b.replace(")", "")
     field = a.split("+")
     if len(field) >= 2:
         c = field[1] + "+" + field[0]
@@ -1006,15 +1040,26 @@ def validate_star_allele(a, b): ## for CYP2D6
         return True
     elif c.replace("xN", "x4") == b:
         return True
+    elif a.replace("*36+*36", "*36x2") == b:
+        return True
+    elif a.replace("*68+*68", "*68x2") == b:
+        return True
     return False
 
 def main_cyp_hprc():
-    truth_dict = load_HPRC_CYP_truth()
+    # truth_dict = load_HPRC_CYP_truth()
+    truth_dict = load_1k_CYP_truth()
     pangu_result_dict = {}
     spec_result_dict = {} 
     # print (truth_dict)
-    pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
-    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"
+    # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
+    # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"
+
+    # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc_ont/"
+    # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc_ont/"
+
+    pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_1k/"
+    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k/"
     ## for each file with suffix _report.json in the pangu_dir
     for file in os.listdir(pangu_dir):
         if file.endswith("_report.json"):
@@ -1026,19 +1071,19 @@ def main_cyp_hprc():
     #### remove the elements in the truth_dict that are not in the pangu_result_dict
     truth_dict = get_shared_sample(truth_dict, pangu_result_dict)
     print ("pangu", len(pangu_result_dict), "truth", len(truth_dict))
+    compare_four(truth_dict, pangu_result_dict, ['CYP2D6'], 8, "CYP")
     
     ## for each folder in the spec_dir, the sample name is the folder name
-    # for folder in os.listdir(spec_dir):
-    #     ## check if the folder is a folder
-    #     if not os.path.isdir(os.path.join(spec_dir, folder)):
-    #         continue
-    #     sample = folder
-    #     spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
-    #     pure_diplotype, spec_result_dict[sample] = read_spec_result(spec_result)
+    for folder in os.listdir(spec_dir):
+        ## check if the folder is a folder
+        if not os.path.isdir(os.path.join(spec_dir, folder)):
+            continue
+        sample = folder
+        spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
+        spec_result_dict[sample], all_gene_result = read_spec_result(spec_result)
         # print (pure_diplotype, spec_result_dict[sample])
     
-    compare_four(truth_dict, pangu_result_dict, ['CYP2D6'], 8, "CYP")
-    # compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
+    compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
 
 # def parse_1000g_truth(file):
 #     # Region	Population	Sample ID	HLA-A 1	HLA-A 2	HLA-B 1	HLA-B 2	HLA-C 1	HLA-C 2	HLA-DQB1 1	HLA-DQB1 2	HLA-DRB1 1	HLA-DRB1 2
