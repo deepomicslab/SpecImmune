@@ -96,7 +96,7 @@ def map_phased_reads_2_ref_minimap():
             # minimap
             # minimap2 -t %s %s -a $hla_ref $outdir/$hla.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
             cmd=f"""
-                minimap2 -t {threads} -a {ref} {minimap_para} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
+                minimap2 -R "@RG\\tID:{gene}\\tSM:{gene}" -t {threads} -a {ref} {minimap_para} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
                 samtools index {bam}
                 samtools depth -d 1000000 -aa {bam} > {depth_file}
             """
@@ -111,7 +111,7 @@ def map_phased_reads_2_ref_minimap():
                 # minimap
                 # minimap2 -t %s %s -a $hla_ref $outdir/$hla.%s.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
                 cmd=f"""
-                    minimap2 -t {threads} -a {ref} {minimap_para} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
+                    minimap2  -R "@RG\\tID:{gene}\\tSM:{gene}" -t {threads} -a {ref} {minimap_para} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
                     samtools index {bam} 
                     samtools depth -d 1000000 -aa {bam} > {depth_file}
                 """
@@ -197,7 +197,7 @@ def map_long_reads_2_ref_minimap():
         # minimap
         # minimap2 -t %s %s -a $hla_ref $outdir/$hla.fq.gz | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$hla.bam
         cmd=f"""
-            minimap2 -t {threads} {minimap_para} -a {ref} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
+            minimap2  -R "@RG\\tID:{gene}\\tSM:{gene}"  -t {threads} {minimap_para} -a {ref} {fq} | samtools view -bS -F 0x804 -| samtools sort - >{bam}
             samtools index {bam}
             samtools depth -d 1000000 -aa {bam} > {depth_file}
         """
