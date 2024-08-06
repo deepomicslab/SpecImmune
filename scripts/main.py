@@ -16,6 +16,9 @@ def main(args):
     if args["version"]:
         print(f'Version: {__version__}')
         sys.exit(0)
+    ## check if the input data exists
+    if not os.path.exists(args["r"]):
+        raise Exception(f"Input data {args['r']} not exists.")
 
     if args['i'] == "HLA" or args['i'] == "KIR" or (args['i'] == "CYP"):
 

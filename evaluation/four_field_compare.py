@@ -1238,12 +1238,7 @@ if __name__ == "__main__":
     main_1kg_ont_HLA(gene_list, truth_dict_1000g, result_dir, gene_class, step, samples)
     # main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
 
-    ##### CYP
-    # read_pangu_result("/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon2/NA17246-SRR15476220/NA17246-SRR15476220_report.json")
-    # read_spec_result("/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon2/NA17246-SRR15476220/NA17246-SRR15476220.CYP.merge.type.result.txt")
-    # load_HPRC_CYP_truth()
-    # print (validate_star_allele('*41x2', '*41x3'))
-    # main_cyp_hprc()
+
 
     #### TCR evaluation in 11 samples with given truth
     # main_TCR("/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/")

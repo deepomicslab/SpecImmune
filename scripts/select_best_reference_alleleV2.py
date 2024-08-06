@@ -31,8 +31,13 @@ from folder_objects import My_folder
 
 # gene_list = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 
-CNV_CYP2D6 = ['CYP2D6*68', 'CYP2D6*61', 'CYP2D6*63', 'CYP2D6*4.013', 'CYP2D6*36', 'CYP2D6*83', 'CYP2D6*10', 'CYP2D6*17', 'CYP2D6*13', 'CYP2D6*79','CYP2D6*80', 'CYP2D6*78', 'CYP2D6*67', 'CYP2D6*66', 'CYP2D6*76','CYP2D6*5']
 
+
+def get_del_CYP2D6():
+    CNV_CYP2D6 = ['CYP2D6*68', 'CYP2D6*61', 'CYP2D6*63', 'CYP2D6*4.013', 'CYP2D6*36', 'CYP2D6*83', 'CYP2D6*10', 'CYP2D6*17', 'CYP2D6*13', 'CYP2D6*79','CYP2D6*80', 'CYP2D6*78', 'CYP2D6*67', 'CYP2D6*66', 'CYP2D6*76','CYP2D6*5']
+    RARE_CYP2D6 = ["CYP2D6*146","CYP2D6*171", "CYP2D6*141","CYP2D6*83", "CYP2D6*122", "CYP2D6*86"]
+    ignore_CYP2D6 = CNV_CYP2D6 + RARE_CYP2D6
+    return  ignore_CYP2D6
 
 def construct_matrix(args, gene, bam, record_candidate_alleles):
 
@@ -162,9 +167,9 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
         for j in range(i+1, allele_num):
 
             if args["i"] == "CYP":
-                if allele_name_list[i].split(".")[0] in ["CYP2D6*171", "CYP2D6*141","CYP2D6*83", "CYP2D6*122", "CYP2D6*86"]+CNV_CYP2D6:
+                if allele_name_list[i].split(".")[0] in ignore_CYP2D6:
                     continue
-                if allele_name_list[j].split(".")[0] in ["CYP2D6*171","CYP2D6*141", "CYP2D6*83", "CYP2D6*122", "CYP2D6*86"]+CNV_CYP2D6:
+                if allele_name_list[j].split(".")[0] in ignore_CYP2D6:
                     continue
 
             allele_pair_obj = My_allele_pair(allele_name_list[i], allele_name_list[j])
@@ -608,7 +613,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
 
-
+    ignore_CYP2D6 = get_del_CYP2D6()
     # gene_list, interval_dict =  get_focus_gene(args)
     my_db = My_db(args)
     my_folder = My_folder(args)
