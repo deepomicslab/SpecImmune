@@ -72,10 +72,6 @@ def merge_result(pangu_result, pangu_alleles, spec_result, over2hap, tool='spec'
         print ("cnv detected, use pangu result")
     elif len(pangu_result) >= 1 and over2hap:
         print ("over 2 hap detected, use pangu result")
-    """
-    if False:
-        pass
-    """
     else:  # use spec result
         print ("no cnv detected, use spec result")
         
@@ -90,9 +86,11 @@ def merge_result(pangu_result, pangu_alleles, spec_result, over2hap, tool='spec'
                 # print (spec_result[i][4])
                 if int(spec_result[i][4]) < read_cutoff and copynumber == 2: # use step 1 result
                     spec_alleles.append(spec_result[i][5].split(';')[0])
+                elif spec_result[i][2] == 'NA':
+                    spec_alleles.append(spec_result[i][5].split(';')[0])
                 else:
-                    if spec_result[i][2] != 'NA':
-                        spec_alleles.append(spec_result[i][2].split(';')[0])
+                    # if spec_result[i][2] != 'NA':
+                    spec_alleles.append(spec_result[i][2].split(';')[0])
             # print (spec_alleles)
             spec_alleles, star_alleles = refine_spec_alleles(spec_alleles)
         else:  ## for stargazer

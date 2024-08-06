@@ -48,7 +48,7 @@ def read_sra(sra_file):
                 -j 15 -y pacbio -i CYP \
                 -r {fq_dir}/$ID.fastq.gz --seq_tech amplicon  --align_method_1 minimap2
                 """
-                os.system(cmd)
+                # os.system(cmd)
 
                 cmd = f"""
                     sample={sample_id}
@@ -74,6 +74,23 @@ def read_sra(sra_file):
                 # print (cmd)
                 # os.system(cmd)
                 # break
+
+                cmd = f"""
+                    # sample={sample_id}
+                    
+                    ID={sra_id}
+                    sample={sample_id}-{sra_id}
+                    # fq=/mnt/d/HLAPro_backup/Nanopore_optimize/data/reads_cyp_hpc/$sample.CYP.fastq.gz
+                    fq={fq_dir}/$ID.fastq.gz
+                    outdir=/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/amplicon_pangu/
+                    ref=/mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa
+                    
+                    minimap2 -x map-ont -a  -R "@RG\\tID:$sample\\tSM:$sample" -t 15 $ref $fq | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
+                    samtools index $outdir/$sample.bam
+                    pangu $outdir/$sample.bam  -p $outdir/$sample -m amplicon 
+
+                """
+                os.system(cmd)
 
 
 sra_file = "./cyp/PRJNA754842.csv"
