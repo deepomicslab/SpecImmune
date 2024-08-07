@@ -76,6 +76,15 @@ def main(args):
             print("Please choose phase or assembly as analyze method.", flush=True)
             return
         
+        # format result file
+        command = f"""
+        python3 {sys.path[0]}/format_result.py {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.txt {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.formatted.txt
+        """
+        os.system(command)
+
+        
+
+        
         # remap reads for viz
         # if args["mode"] >=0:
         #     # map to step 2 alleles (if it's calssified as het in step 1, use split reads to map to step 2 alleles. else, use all reads to map to step 2 alleles)

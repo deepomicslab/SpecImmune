@@ -121,7 +121,7 @@ sorted_snv_sv_merged=$gene_work_dir/$sample.$hla.snv_sv.merged.sorted.vcf.gz
 bcftools sort $snv_sv_merged -Oz -o $sorted_snv_sv_merged
 tabix -f $sorted_snv_sv_merged
 
-if [[ "$hla" =~ ^(A|B|C)$ ]]; then
+if [[ "$hla" =~ ^(HLA-A|HLA-B|HLA-C)$ ]]; then
     sorted_snv_sv_merged=$phased_snv_vcf
 else
     sorted_snv_sv_merged=$gene_work_dir/$sample.$hla.snv_sv.merged.sorted.vcf.gz

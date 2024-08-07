@@ -514,6 +514,9 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
     gene_dict = {}
     for sample in truth_dict:
         print (sample)
+        if sample not in all_hla_la_result:
+            print (f"{sample} not in all_hla_la_result")
+            continue
         for gene in gene_list:
 
             if gene not in truth_dict[sample]:
@@ -1099,6 +1102,7 @@ def main_1kg_ont_HLA(gene_list, truth_dict, result_dir, gene_class="HLA", step =
         gene_list = [x.split("-")[-1] for x in gene_list]
    
     speclong_result_dict = parse_all_spleclong_1kg_ont_input(gene_class, step, result_dir, samples)
+    hla_hla_la_result = parse_all_hlala_input(gene_class, result_dir, samples)
     # print (all_hla_la_result)
     # return
     # all_old_hlala_result = parse_hlala_pacbio()
@@ -1130,6 +1134,21 @@ def parse_all_spleclong_1kg_ont_input(gene_class, step, outdir, samples):
             continue
         input_dict = parse_hla_hla_input(sample_result)
         all_speclong_result[sample] = input_dict
+
+def parse_all_hlala_input(gene_class, outdir, samples):
+    all_hlala_result = {}
+    for sample in samples:
+        sample_result = os.path.join(outdir, f"{sample}/{sample}/{sample}/hla/R1_bestguess.txt")
+        if not os.path.exists(sample_result):
+            print (sample_result, "does not exist")
+            continue
+        input_dict = parse_hlala_single(sample_result)
+        all_hlala_result[sample] = input_dict
+    return all_hlala_result
+
+def parse_hlala_single(file_path):
+    pass
+
 
 def read_samples(sample_file):
     samples = []
