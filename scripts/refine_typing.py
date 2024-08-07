@@ -18,6 +18,7 @@ from collections import defaultdict
 from determine_gene import get_focus_gene, get_folder_list
 from db_objects import My_db
 from folder_objects import My_folder
+from select_best_reference_alleleV2 import get_del_CYP2D6
 
 
 def get_1_element(lst):
@@ -217,7 +218,7 @@ def output(record_best_match, record_one_allele, gene_list, result_file, version
                 # print (a)
                 alleles += a[0] + ";"
                 info = record_all_match[tag][a[0]]
-                alleles_info += f"{a[0]}|{int(info[2])}|{round(info[3],3)};"
+                alleles_info += f"{a[0]}|{int(info[2])}|{round(info[3],6)};"
             out_alleles = alleles[:-1]
             alleles_info = alleles_info[:-1]
             if out_alleles == "":
@@ -239,6 +240,9 @@ def get_blast_info(blastfile, tag, record_all_match):
         field = line.strip().split()
         if field[0] != tag:
             continue
+        if args["i"] == "CYP":
+            if field[1].split(".")[0] in ignore_CYP2D6:
+                continue
         align_info = [field[1], int(field[3]), int(field[3])-float(field[2]), 1-float(field[2])/int(field[3]), 'x', 0, 0]
         record_all_match[tag][field[1]] = align_info
         # if field[1] in ["HLA-A*03:08:01:02", "HLA-A*03:01:01:12"]:
@@ -345,6 +349,7 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(0)
 
+    ignore_CYP2D6 = get_del_CYP2D6()
     my_db = My_db(args)    
     my_folder = My_folder(args)
     # gene_list, interval_dict =  get_focus_gene(args)

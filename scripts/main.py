@@ -16,6 +16,9 @@ def main(args):
     if args["version"]:
         print(f'Version: {__version__}')
         sys.exit(0)
+    ## check if the input data exists
+    if not os.path.exists(args["r"]):
+        raise Exception(f"Input data {args['r']} not exists.")
 
     if args['i'] == "HLA" or args['i'] == "KIR" or (args['i'] == "CYP"):
 
@@ -141,7 +144,8 @@ def main(args):
         samtools index {args["o"]}/{args["n"]}/{args["n"]}.bam
 
         # gatk3 -T HaplotypeCaller -R {args["hg38"]} -I {args["o"]}/{args["n"]}/{args["n"]}.bam -o {args["o"]}/{args["n"]}/{args["n"]}.vcf -L chr22:42126499-42130865
-        # whatshap phase -o {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz -r {args["hg38"]} --indels {args["o"]}/{args["n"]}/{args["n"]}.vcf {args["o"]}/{args["n"]}/{args["n"]}.bam
+        # java -Xmx5g -jar {sys.path[0]}/../packages/GenomeAnalysisTK.jar -T HaplotypeCaller -R {args["hg38"]} -I {args["o"]}/{args["n"]}/{args["n"]}.bam -o {args["o"]}/{args["n"]}/{args["n"]}.vcf.gz  -L chr22:42126499-42130865
+        # whatshap phase -o {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz -r {args["hg38"]} --indels {args["o"]}/{args["n"]}/{args["n"]}.vcf.gz {args["o"]}/{args["n"]}/{args["n"]}.bam
         # tabix -f {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz
         # python3 {sys.path[0]}/../packages/pangu/__main__.py --vcf {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz -m {args["seq_tech"]} -p {args["o"]}/{args["n"]}/{args["n"]} --verbose {args["o"]}/{args["n"]}/{args["n"]}.bam -x -g
         """
@@ -170,7 +174,21 @@ def main(args):
         python3 {sys.path[0]}/get_cyp_output.py {args["o"]}/{args["n"]}/{args["n"]} {args['seq_tech']}
         """
         os.system(command)
+        
+        # star_call = f"""
+        # # bash {sys.path[0]}/run_dv.sh {args['hg38']} {args['o']}/{args['n']}/{args['n']}.bam {args['o']}/{args['n']}/{args['n']}.vcf {args['o']}/{args['n']}/{args['n']}.g.vcf {args['j']} chr22:42126499-42130865 /home/wangshuai/00.hla/03.hla/deepvariant/deepvariant-1.5.0.sif
+        # # python3 {sys.path[0]}/CYP_star_caller.py  cyp2d6 {args['o']}/{args['n']}/{args['n']}.vcf chr22:42126499-42130865  {args['o']}/{args['n']}/{args['n']}.test.type
+        # java -Xmx5g -jar {sys.path[0]}/../packages/GenomeAnalysisTK.jar -T HaplotypeCaller -R {args["hg38"]} -I {args["o"]}/{args["n"]}/{args["n"]}.bam -o {args["o"]}/{args["n"]}/{args["n"]}.vcf.gz  -L chr22:42126499-42130865
+        # whatshap phase -o {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz -r {args["hg38"]} --indels {args["o"]}/{args["n"]}/{args["n"]}.vcf.gz {args["o"]}/{args["n"]}/{args["n"]}.bam
+        # tabix -f {args["o"]}/{args["n"]}/{args["n"]}.phase.vcf.gz
+        # python3 {sys.path[0]}/CYP_star_caller.py  cyp2d6 {args['o']}/{args['n']}/{args['n']}.phase.vcf.gz chr22:42126499-42130865  {args['o']}/{args['n']}/{args['n']}.Stargazer.type.txt
+        # """
+        # # os.system(star_call)
 
+        # command = f"""
+        # python3 {sys.path[0]}/get_cyp_output.py {args["o"]}/{args["n"]}/{args["n"]} {args['seq_tech']}
+        # """
+        # os.system(command)
         
 if __name__ == "__main__":   
 

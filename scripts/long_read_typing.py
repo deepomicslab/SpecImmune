@@ -210,9 +210,17 @@ class Fasta():
         call_phase_cmd = f"""
         samtools index {bam}
         python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -b {my_folder.step2_genes_dir}/{gene}{suffix}.low_depth.bed -w {set_window} -d {int(set_dp)}
+        
         longshot -F -c {min_cov} -C 100000 -P {args["strand_bias_pvalue_cutoff"]} -r {interval} --bam {bam} --ref {hla_ref} --out {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.longshot.vcf
         bgzip -f {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.longshot.vcf
         tabix -f {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.longshot.vcf.gz
+
+        # samtools dict {hla_ref} > {hla_ref[:-6]}.dict
+        # java -Xmx5g -jar {sys.path[0]}/../packages/GenomeAnalysisTK.jar -T HaplotypeCaller -R {hla_ref} -I {bam} -o {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.longshot.raw.vcf.gz  -L {interval}
+        # whatshap phase -o {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.longshot.vcf.gz -r {hla_ref} --indels {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.longshot.raw.vcf.gz {bam}
+        # tabix -f {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.longshot.vcf.gz
+        
+
         zcat {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.longshot.vcf.gz > {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.phased.vcf
         bgzip -f {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.phased.vcf
         tabix -f {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.phased.vcf.gz

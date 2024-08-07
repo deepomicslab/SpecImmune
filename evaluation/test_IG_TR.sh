@@ -74,28 +74,29 @@
 #  -j 15 -y nanopore -i CYP \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/HG00436.CYP.fastq.gz --mode 1 --align_method_1 minimap2
 
-file_list_file="/mnt/d/HLAPro_backup/Nanopore_optimize/data/reads_cyp_hpc/hgscv_hifi_cyp.list"
-# Read the file list file line by line
-while IFS= read -r file_path; do
-    # Extract the base name of the file
-    file_basename=$(basename "$file_path" ".fastq.gz")
-    echo $file_basename
-    if [ "1" == "1" ]; then
+# file_list_file="/mnt/d/HLAPro_backup/Nanopore_optimize/data/reads_cyp_hpc/hgscv_hifi_cyp.list"
+# # Read the file list file line by line
+# while IFS= read -r file_path; do
+#     # Extract the base name of the file
+#     file_basename=$(basename "$file_path" ".fastq.gz")
+#     echo $file_basename
+#     if [ "1" == "1" ]; then
 
-python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n $file_basename\
- -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/hgscv_hifi\
- -j 15 -y pacbio -i CYP \
--r $file_path --align_method_1 minimap2
-        # python $tool --mode 3 -n $file_basename -o $outdir -j 15 -y nanopore -i HLA -r $file_path --db ../db/ 
-    fi
+# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n $file_basename\
+#  -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/hgscv_hifi\
+#  -j 15 -y pacbio -i CYP \
+# -r $file_path --align_method_1 minimap2
+#         # python $tool --mode 3 -n $file_basename -o $outdir -j 15 -y nanopore -i HLA -r $file_path --db ../db/ 
+#     break
+#     fi
 
-done < "$file_list_file"
+# done < "$file_list_file"
 
 
-# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18540_2\
-#  -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
-#  -j 15 -y nanopore -i CYP \
-# -r /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/NA18540/NA18540.noHap.fastq.gz\
+# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n HG02572\
+#  -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/hprc_hifi/\
+#  -j 15 -y pacbio -i CYP \
+# -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/CYP/HG02572/HG02572.CYP.fastq.gz\
 #  --mode 1 --align_method_1 minimap2
 
 
@@ -108,9 +109,15 @@ done < "$file_list_file"
 #  -j 15 -y pacbio -i CYP \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/HG00732_5/HG00732_5.noSV.fastq.gz.gz
 
-# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n HG03781 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
+# python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n HG03781 \
+#  -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
 #  -j 15 -y pacbio -i CYP \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/HG03781/HG03781.CYP.fastq.gz
+
+python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n HG00111 \
+ -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/1KGP\
+ -j 15 -y nanopore -i CYP \
+-r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/HG00111.CYP.fastq.gz --align_method_1 minimap2
 
 
 # python3 ../scripts/main.py --hg38 ../CYP_ref/CYP.segment.fa -n NA19239 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\
