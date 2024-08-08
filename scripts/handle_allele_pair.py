@@ -92,6 +92,7 @@ class My_allele_pair():
                 a2_identity = record_read_allele_dict[read_name][self.allele_2].identity
 
                 if gene_class != 'CYP':
+                # if True:
                     ## adjust identity based on match length
                     a1_identity = a1_identity * 1.0001 ** (record_read_allele_dict[read_name][self.allele_1].match_num- record_read_allele_dict[read_name][self.allele_2].match_num)
                     larger_index = determine_largest(a1_identity, a2_identity)

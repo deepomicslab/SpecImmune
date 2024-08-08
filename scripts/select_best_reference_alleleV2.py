@@ -286,7 +286,7 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     # if gene  in ["HLA-C"]:
     #     len_diff_cutoff =  1e-3
     if args['i'] == "CYP":
-        len_diff_cutoff = 0.01
+        len_diff_cutoff = 0.1
         ide_diff_cutoff = 1e-5
 
     # if gene  in ["DPB1"]:
