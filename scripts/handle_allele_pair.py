@@ -74,7 +74,7 @@ class My_allele_pair():
         self.match_len_list = []
         self.identity_list = []
     
-    def assign_reads(self, record_read_allele_dict):
+    def assign_reads(self, record_read_allele_dict, gene_class="HLA"):
         read_assign_dict = {}
         # test_tag = "HLA-S*01:01:01:01&HLA-S*01:02:01:03"
         # test_tag = "HLA-A*30:01:01:01&HLA-A*68:278"
@@ -88,13 +88,22 @@ class My_allele_pair():
             elif self.allele_2 not in record_read_allele_dict[read_name]:
                 larger_index = 0
             else: 
-                
                 a1_identity = record_read_allele_dict[read_name][self.allele_1].identity
                 a2_identity = record_read_allele_dict[read_name][self.allele_2].identity
 
-                ## adjust identity based on match length
-                a1_identity = a1_identity * 1.0001 ** (record_read_allele_dict[read_name][self.allele_1].match_num- record_read_allele_dict[read_name][self.allele_2].match_num)
-                larger_index = determine_largest(a1_identity, a2_identity)
+                if gene_class != 'CYP':
+                    ## adjust identity based on match length
+                    a1_identity = a1_identity * 1.0001 ** (record_read_allele_dict[read_name][self.allele_1].match_num- record_read_allele_dict[read_name][self.allele_2].match_num)
+                    larger_index = determine_largest(a1_identity, a2_identity)
+                else:
+                    if record_read_allele_dict[read_name][self.allele_1].alignment_score > record_read_allele_dict[read_name][self.allele_2].alignment_score:
+                        larger_index = 0
+                    elif record_read_allele_dict[read_name][self.allele_1].alignment_score < record_read_allele_dict[read_name][self.allele_2].alignment_score:
+                        larger_index = 1
+                    else:
+                        a1_identity = a1_identity * 1.0001 ** (record_read_allele_dict[read_name][self.allele_1].match_num- record_read_allele_dict[read_name][self.allele_2].match_num)
+                        larger_index = determine_largest(a1_identity, a2_identity)
+
 
             if larger_index == 0:
                 read_assign_dict[read_name] = [self.allele_1]

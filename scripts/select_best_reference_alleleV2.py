@@ -173,7 +173,7 @@ def model3(gene, record_read_allele_dict, allele_name_dict, record_allele_length
                     continue
 
             allele_pair_obj = My_allele_pair(allele_name_list[i], allele_name_list[j])
-            allele_pair_obj.assign_reads(record_read_allele_dict)
+            allele_pair_obj.assign_reads(record_read_allele_dict, args['i'])
 
             tag = allele_pair_obj.tag
 
@@ -286,7 +286,7 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     # if gene  in ["HLA-C"]:
     #     len_diff_cutoff =  1e-3
     if args['i'] == "CYP":
-        len_diff_cutoff = 0.1
+        len_diff_cutoff = 0.01
         ide_diff_cutoff = 1e-5
 
     # if gene  in ["DPB1"]:
