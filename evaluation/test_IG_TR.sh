@@ -114,10 +114,10 @@
 #  -j 15 -y pacbio -i CYP \
 # -r /mnt/d/HLAPro_backup/Nanopore_optimize/data/1000G_ont/downloads/HG03781/HG03781.CYP.fastq.gz
 
-python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA07019 \
+python3 ../scripts/main.py --hg38 //mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n NA18565 \
  -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/1KGP\
  -j 15 -y nanopore -i CYP \
--r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA07019.CYP.fastq.gz --align_method_1 minimap2
+-r /mnt/d/HLAPro_backup/Nanopore_optimize/data/CYP2D6/shuai/NA18565.CYP.fastq.gz --align_method_1 minimap2
 
 
 # python3 ../scripts/main.py --hg38 ../CYP_ref/CYP.segment.fa -n NA19239 -o /mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/\

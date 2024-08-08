@@ -1049,7 +1049,7 @@ def validate_star_allele(a, b): ## for CYP2D6
         return True
     return False
 
-def main_cyp_hprc():
+def main_cyp_hprc(pangu_dir, spec_dir):
     # truth_dict = load_HPRC_CYP_truth()
     truth_dict = load_1k_CYP_truth()
     pangu_result_dict = {}
@@ -1061,8 +1061,8 @@ def main_cyp_hprc():
     # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc_ont/"
     # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc_ont/"
 
-    pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_1k/"
-    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k/"
+    # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_1k/"
+    # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k/"
     ## for each file with suffix _report.json in the pangu_dir
     for file in os.listdir(pangu_dir):
         if file.endswith("_report.json"):
