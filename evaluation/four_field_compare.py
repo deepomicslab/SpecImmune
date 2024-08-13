@@ -1099,12 +1099,18 @@ def main_cyp_hprc(pangu_dir, spec_dir):
         # print (pure_diplotype, spec_result_dict[sample])
     compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
 
-
-    for cutoff in [10, 20, 30, 40, 50]:
+    cutoff_set = [10, 20, 30, 40, 50]
+    for cutoff in cutoff_set:
         print ("###", cutoff)
         cutoff_truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
         cutoff_spec_dict = filter_depth_sample(spec_result_dict, spec_depth_dict, cutoff)
         compare_four(cutoff_truth_dict, cutoff_spec_dict, ['CYP2D6'], 8, "CYP")
+
+    for cutoff in cutoff_set:
+        print ("###", cutoff)
+        cutoff_truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
+        cutoff_pangu_dict = filter_depth_sample(pangu_result_dict, spec_depth_dict, cutoff)
+        compare_four(cutoff_truth_dict, cutoff_pangu_dict, ['CYP2D6'], 8, "CYP")
 
 # def parse_1000g_truth(file):
 #     # Region	Population	Sample ID	HLA-A 1	HLA-A 2	HLA-B 1	HLA-B 2	HLA-C 1	HLA-C 2	HLA-DQB1 1	HLA-DQB1 2	HLA-DRB1 1	HLA-DRB1 2
