@@ -923,6 +923,14 @@ def get_shared_sample(truth_dict, infer_dict):
             new_truth_dict[sample] = truth_dict[sample]
     return new_truth_dict
 
+def filter_depth_sample(truth_dict, spec_depth_dict, cutoff=20):
+    new_truth_dict = {}
+    for sample in truth_dict:
+        # pure_sample = sample.split(".")[0]
+        if sample in spec_depth_dict and spec_depth_dict[sample]['DYP2D6'] >= cutoff:
+            new_truth_dict[sample] = truth_dict[sample]
+    return new_truth_dict
+
 ###### for cyp
 ## read a json file into a dictionary
 def read_pangu_result(pangu_result):
@@ -964,6 +972,7 @@ def get_standard_diploid(pure_diplotype):
 def read_spec_result(spec_result):
     # check if the file exists
     spec_result_dict = {}
+    spec_gene_depth = {}
     if not os.path.exists(spec_result):
         raise FileNotFoundError(f"{spec_result} does not exist")
     pure_diplotype = 'NA'
@@ -976,6 +985,8 @@ def read_spec_result(spec_result):
             if field[0] != "#" and field[0] != "Locus":
                 gene = field[0]
                 allele = field[6]  #suballele
+                read_num = int(field[4])
+                spec_gene_depth[gene] = read_num
                 if allele != "NA":
                     allele = allele.split(".")[0] # star allele
                     allele = "*" + allele.split('*')[1]
@@ -984,7 +995,7 @@ def read_spec_result(spec_result):
                     spec_result_dict[gene] = []
                 spec_result_dict[gene].append([allele])
     # print ("#", pure_diplotype, spec_result_dict)
-    return get_standard_diploid(pure_diplotype), spec_result_dict
+    return get_standard_diploid(pure_diplotype), spec_result_dict, spec_gene_depth
 
 def load_HPRC_CYP_truth():
     cyp_hprc_truth = 'cyp/HPRC_truth.csv'
@@ -1054,6 +1065,7 @@ def main_cyp_hprc(pangu_dir, spec_dir):
     truth_dict = load_1k_CYP_truth()
     pangu_result_dict = {}
     spec_result_dict = {} 
+    spec_depth_dict = {} 
     # print (truth_dict)
     # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
     # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"
@@ -1083,10 +1095,16 @@ def main_cyp_hprc(pangu_dir, spec_dir):
             continue
         sample = folder
         spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
-        spec_result_dict[sample], all_gene_result = read_spec_result(spec_result)
+        spec_result_dict[sample], all_gene_result, spec_depth_dict[sample] = read_spec_result(spec_result)
         # print (pure_diplotype, spec_result_dict[sample])
-    
     compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
+
+
+    for cutoff in [10, 20, 30, 40, 50]:
+        print ("###", cutoff)
+        cutoff_truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
+        cutoff_spec_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
+        compare_four(cutoff_truth_dict, cutoff_spec_dict, ['CYP2D6'], 8, "CYP")
 
 # def parse_1000g_truth(file):
 #     # Region	Population	Sample ID	HLA-A 1	HLA-A 2	HLA-B 1	HLA-B 2	HLA-C 1	HLA-C 2	HLA-DQB1 1	HLA-DQB1 2	HLA-DRB1 1	HLA-DRB1 2
