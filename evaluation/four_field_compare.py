@@ -1126,7 +1126,7 @@ def cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result
         data.append(['pangu', cutoff] + pangu_gene_accuracy_dict['CYP2D6'])
     
     # transfrom data to df
-    df = pd.DataFrame(data, columns = ['method', 'cutoff', 'correct', 'total', 'accuracy'])
+    df = pd.DataFrame(data, columns = ['method', 'cutoff', 'gene', 'correct', 'total', 'accuracy'])
     # save to csv
     df.to_csv("cyp_results/cyp_depth_cutoff.csv", index=False)
 
