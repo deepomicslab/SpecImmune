@@ -16,4 +16,5 @@ if __name__ == "__main__":
 
     pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_1k/"
     spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k3/"
-    main_cyp_hprc(pangu_dir, spec_dir)
+    result_file = "cyp_results/cyp_depth_cutoff.csv"
+    main_cyp_hprc(pangu_dir, spec_dir, result_file)

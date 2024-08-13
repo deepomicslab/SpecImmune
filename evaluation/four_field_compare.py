@@ -1065,7 +1065,7 @@ def validate_star_allele(a, b): ## for CYP2D6
         return True
     return False
 
-def main_cyp_hprc(pangu_dir, spec_dir):
+def main_cyp_hprc(pangu_dir, spec_dir, result_file):
     # truth_dict = load_HPRC_CYP_truth()
     truth_dict = load_1k_CYP_truth()
     pangu_result_dict = {}
@@ -1104,11 +1104,11 @@ def main_cyp_hprc(pangu_dir, spec_dir):
         # print (pure_diplotype, spec_result_dict[sample])
     compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
 
-    cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict)
+    cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file)
 
 
 
-def cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict):
+def cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file):
     data = []
     #cutoff_set = [0, 10, 20, 30, 40, 50]
     cutoff_set = [x * 10 for x in range(6)]
@@ -1129,7 +1129,8 @@ def cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result
     # transfrom data to df
     df = pd.DataFrame(data, columns = ['method', 'cutoff', 'gene', 'correct', 'total', 'accuracy'])
     # save to csv
-    df.to_csv("cyp_results/cyp_depth_cutoff.csv", index=False)
+    # df.to_csv("cyp_results/cyp_depth_cutoff.csv", index=False)
+    df.to_csv(result_file, index=False)
 
 # def parse_1000g_truth(file):
 #     # Region	Population	Sample ID	HLA-A 1	HLA-A 2	HLA-B 1	HLA-B 2	HLA-C 1	HLA-C 2	HLA-DQB1 1	HLA-DQB1 2	HLA-DRB1 1	HLA-DRB1 2
