@@ -15,5 +15,5 @@ if __name__ == "__main__":
     # print (validate_star_allele('*41x2', '*41x3'))
 
     pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_1k/"
-    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k/"
+    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k3/"
     main_cyp_hprc(pangu_dir, spec_dir)

@@ -927,7 +927,7 @@ def filter_depth_sample(truth_dict, spec_depth_dict, cutoff=20):
     new_truth_dict = {}
     for sample in truth_dict:
         # pure_sample = sample.split(".")[0]
-        if sample in spec_depth_dict and spec_depth_dict[sample]['DYP2D6'] >= cutoff:
+        if sample in spec_depth_dict and spec_depth_dict[sample]['CYP2D6'] >= cutoff:
             new_truth_dict[sample] = truth_dict[sample]
     return new_truth_dict
 
