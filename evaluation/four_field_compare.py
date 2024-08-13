@@ -513,7 +513,7 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
         map_to_latest_version = get_HLA_version_conversion()
     gene_dict = {}
     for sample in truth_dict:
-        print (sample)
+        # print (sample)
         if sample not in all_hla_la_result:
             print (f"{sample} not in all_hla_la_result")
             continue
@@ -1103,7 +1103,7 @@ def main_cyp_hprc(pangu_dir, spec_dir):
     for cutoff in [10, 20, 30, 40, 50]:
         print ("###", cutoff)
         cutoff_truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
-        cutoff_spec_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
+        cutoff_spec_dict = filter_depth_sample(spec_result_dict, spec_depth_dict, cutoff)
         compare_four(cutoff_truth_dict, cutoff_spec_dict, ['CYP2D6'], 8, "CYP")
 
 # def parse_1000g_truth(file):
