@@ -642,12 +642,12 @@ def cal_accuracy(gene_dict):
         # print (gene, items)
         total_correct += items[0]
         total += items[1]
-        print (gene, items[0], items[1], round(items[0]/items[1],2))
-        gene_accuracy_dict[gene] = [gene, items[0], items[1], round(items[0]/items[1],2)]
+        print (gene, items[0], items[1], round(items[0]/items[1],3))
+        gene_accuracy_dict[gene] = [gene, items[0], items[1], round(items[0]/items[1],3)]
     if total == 0:
         print ("total accuracy", total_correct, total, 0)
     else:
-        print ("total accuracy", total_correct, total, round(total_correct/total,2))
+        print ("total accuracy", total_correct, total, round(total_correct/total,3))
     return gene_accuracy_dict
 
 def count_report_allele(all_hla_la_result, gene_list):
