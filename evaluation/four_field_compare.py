@@ -599,13 +599,15 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
             # else:
             #     print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
         # sys.exit(1)
-    cal_accuracy(gene_dict)
+    gene_accuracy_dict = cal_accuracy(gene_dict)
     
     print ("truth:")
     count_report_allele(truth_dict, gene_list)
     print ("result:")
     count_report_allele(all_hla_la_result, gene_list)
     print ("finished")
+
+    return gene_accuracy_dict  # {gene: [gene, correct, total, accuracy]}
 
 def for_rev_compare(true_list, hla_la_list, gene_class):
     fir = 0
@@ -634,16 +636,19 @@ def for_rev_compare(true_list, hla_la_list, gene_class):
     return fir, sec
 
 def cal_accuracy(gene_dict):
+    gene_accuracy_dict = {}
     total_correct, total = 0, 0
     for gene, items in gene_dict.items():
         # print (gene, items)
         total_correct += items[0]
         total += items[1]
         print (gene, items[0], items[1], round(items[0]/items[1],2))
+        gene_accuracy_dict[gene] = [gene, items[0], items[1], round(items[0]/items[1],2)]
     if total == 0:
         print ("total accuracy", total_correct, total, 0)
     else:
         print ("total accuracy", total_correct, total, round(total_correct/total,2))
+    return gene_accuracy_dict
 
 def count_report_allele(all_hla_la_result, gene_list):
     count_list = []
@@ -1099,18 +1104,31 @@ def main_cyp_hprc(pangu_dir, spec_dir):
         # print (pure_diplotype, spec_result_dict[sample])
     compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
 
+    cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict)
+
+
+
+def cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict):
+    data = []
     cutoff_set = [10, 20, 30, 40, 50]
     for cutoff in cutoff_set:
         print ("###", cutoff)
         cutoff_truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
         cutoff_spec_dict = filter_depth_sample(spec_result_dict, spec_depth_dict, cutoff)
-        compare_four(cutoff_truth_dict, cutoff_spec_dict, ['CYP2D6'], 8, "CYP")
+        spec_gene_accuracy_dict = compare_four(cutoff_truth_dict, cutoff_spec_dict, ['CYP2D6'], 8, "CYP")
+        data.append(['SpecLong', cutoff] + spec_gene_accuracy_dict['CYP2D6'])
 
     for cutoff in cutoff_set:
         print ("###", cutoff)
         cutoff_truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
         cutoff_pangu_dict = filter_depth_sample(pangu_result_dict, spec_depth_dict, cutoff)
-        compare_four(cutoff_truth_dict, cutoff_pangu_dict, ['CYP2D6'], 8, "CYP")
+        pangu_gene_accuracy_dict = compare_four(cutoff_truth_dict, cutoff_pangu_dict, ['CYP2D6'], 8, "CYP")
+        data.append(['pangu', cutoff] + pangu_gene_accuracy_dict['CYP2D6'])
+    
+    # transfrom data to df
+    df = pd.DataFrame(data, columns = ['method', 'cutoff', 'correct', 'total', 'accuracy'])
+    # save to csv
+    df.to_csv("cyp_results/cyp_depth_cutoff.csv", index=False)
 
 # def parse_1000g_truth(file):
 #     # Region	Population	Sample ID	HLA-A 1	HLA-A 2	HLA-B 1	HLA-B 2	HLA-C 1	HLA-C 2	HLA-DQB1 1	HLA-DQB1 2	HLA-DRB1 1	HLA-DRB1 2
