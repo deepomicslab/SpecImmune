@@ -1065,9 +1065,11 @@ def validate_star_allele(a, b): ## for CYP2D6
         return True
     return False
 
-def main_cyp_hprc(pangu_dir, spec_dir, result_file):
-    # truth_dict = load_HPRC_CYP_truth()
-    truth_dict = load_1k_CYP_truth()
+def main_cyp_hprc(pangu_dir, spec_dir, result_file, dataset="1k"):
+    if dataset == "1k":
+        truth_dict = load_1k_CYP_truth()
+    else:
+        truth_dict = load_HPRC_CYP_truth()
     pangu_result_dict = {}
     spec_result_dict = {} 
     spec_depth_dict = {} 
