@@ -1,0 +1,13 @@
+method,cutoff,gene,correct,total,accuracy
+SpecLong,0,CYP2D6,85,112,0.76
+SpecLong,10,CYP2D6,78,104,0.75
+SpecLong,20,CYP2D6,48,64,0.75
+SpecLong,30,CYP2D6,26,34,0.76
+SpecLong,40,CYP2D6,22,28,0.79
+SpecLong,50,CYP2D6,7,8,0.88
+pangu,0,CYP2D6,80,112,0.71
+pangu,10,CYP2D6,75,104,0.72
+pangu,20,CYP2D6,47,64,0.73
+pangu,30,CYP2D6,24,34,0.71
+pangu,40,CYP2D6,18,28,0.64
+pangu,50,CYP2D6,5,8,0.62

@@ -1110,7 +1110,8 @@ def main_cyp_hprc(pangu_dir, spec_dir):
 
 def cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict):
     data = []
-    cutoff_set = [0, 10, 20, 30, 40, 50]
+    #cutoff_set = [0, 10, 20, 30, 40, 50]
+    cutoff_set = [x * 10 for x in range(6)]
     for cutoff in cutoff_set:
         print ("###", cutoff)
         cutoff_truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
