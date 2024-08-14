@@ -264,9 +264,7 @@ def parse_spechla_clean_input(input_file):
                     gene_index[i] = gene
                     if gene not in input_dict:
                         input_dict[gene] = []
-
             if idx == 2:  
-
                 field = line.strip().split('\t')
                 # print (field)
                 for i in range(1, len(field)):
@@ -337,14 +335,41 @@ def parse_all_spleclong_pacbio_input(gene_class, step = 1, outdir="/mnt/d/HLAPro
         all_hla_la_result[sample] = input_dict
     return all_hla_la_result
 
-def parse_all_spechla_input(truth_dict):
+# def parse_all_spechla_input(truth_dict):
+#     all_spechla_result = {}
+#     for sample in truth_dict:
+#         # input_file = f"hla_nanopore/details/{sample}.hla.result.details.txt" ## 
+#         # input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output/fredhutch-hla-{sample}/hla.result.details.txt"  # SpecHLA
+#         input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output2/fredhutch-hla-{sample}/hla.new.result.txt"  # new
+#         input_dict = parse_spechla_clean_input(input_file)
+#         # input_dict = parse_spechla_input(input_file)
+#         all_spechla_result[sample] = input_dict
+#     return all_spechla_result
+
+def parse_spechla_hlalalike_input(input_file):
+    spechla_dict = defaultdict(lambda: [[], []])
+    # use csv
+    with open(input_file, 'r') as f:
+        reader = csv.reader(f, delimiter='\t')
+        for idx, line in enumerate(reader):
+            if idx == 0:
+                continue
+            gene = line[0]
+            hap = int(line[1])-1
+            alleles = line[2]
+            alleles = alleles.split(";")
+            spechla_dict[gene][hap]=alleles
+    return spechla_dict
+
+def parse_all_spechla_input(gene_class, spechla_result_dir, samples):
     all_spechla_result = {}
-    for sample in truth_dict:
-        # input_file = f"hla_nanopore/details/{sample}.hla.result.details.txt" ## 
-        # input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output/fredhutch-hla-{sample}/hla.result.details.txt"  # SpecHLA
-        input_file = f"/mnt/d/HLAPro_backup/Nanopore_optimize/output2/fredhutch-hla-{sample}/hla.new.result.txt"  # new
-        input_dict = parse_spechla_clean_input(input_file)
-        # input_dict = parse_spechla_input(input_file)
+    for sample in samples:
+        input_file = os.path.join(spechla_result_dir, f"{sample}/{sample}/hlala.like.results.txt")
+        if os.path.exists(input_file):
+            input_dict = parse_spechla_hlalalike_input(input_file)
+        else:
+            print(f"File {input_file} does not exist")
+            input_dict = {}
         all_spechla_result[sample] = input_dict
     return all_spechla_result
 
@@ -1347,13 +1372,14 @@ def parse_1000g_truth(file):
 
 
 
-def main_1kg_ont_HLA(gene_list, truth_dict, spec_result_dir, hlala_result_dir, gene_class="HLA", step = 2, samples = []):
+def main_1kg_ont_HLA(gene_list, truth_dict, spec_result_dir, spechla_result_dir, hlala_result_dir, gene_class="HLA", step = 2, samples = []):
     ## remove HLA- prefix in gene_list
     if gene_class == "HLA":
         gene_list = [x.split("-")[-1] for x in gene_list]
    
-    speclong_result_dict = parse_all_spleclong_1kg_ont_input(gene_class, step, spec_result_dir, samples)
+    # speclong_result_dict = parse_all_spleclong_1kg_ont_input(gene_class, step, spec_result_dir, samples)
     hla_hla_la_result = parse_all_hlala_input(gene_class, hlala_result_dir, samples)
+    # spechla_result_dict = parse_all_spechla_input(gene_class, spechla_result_dir, samples)
     # print (all_hla_la_result)
     # return
     # all_old_hlala_result = parse_hlala_pacbio()
@@ -1363,8 +1389,9 @@ def main_1kg_ont_HLA(gene_list, truth_dict, spec_result_dir, hlala_result_dir, g
     #print("speclong_result_dict:", speclong_result_dict)
    
     #print(speclong_result_dict)
-    compare_four_1KGP_ONT(truth_dict, speclong_result_dict, gene_list, 8, gene_class)
+    # compare_four_1KGP_ONT(truth_dict, speclong_result_dict, gene_list, 8, gene_class)
     compare_four_1KGP_ONT_hlala(truth_dict, hla_hla_la_result, gene_list, 8, gene_class)
+    # compare_four_1KGP_ONT(truth_dict, spechla_result_dict, gene_list, 8, gene_class)
     print ("------------------")
     # if gene_class == "IG_TR":
     #     compare_four(new_truth_dict, all_hla_la_result, IG_list, 8, gene_class)
@@ -1381,7 +1408,7 @@ def parse_all_spleclong_1kg_ont_input(gene_class, step, outdir, samples):
     if step == 1:
         suffix = ".type.result.txt"
     else:
-        suffix = ".final.type.result.txt"
+        suffix = ".final.type.result.formatted.txt"
     for sample in samples:
         sample_result = os.path.join(outdir, f"{sample}/{sample}/{sample}.{gene_class}{suffix}")
         if not os.path.exists(sample_result):
@@ -1432,7 +1459,7 @@ def parse_hlala_single(file_path):
     
     return hlala_dict
 
-def main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, hlala_result_dir, gene_class="HLA", step=2, samples=[]):
+def main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, spechla_result_dir,  hlala_result_dir, gene_class="HLA", step=2, samples=[]):
 
     ## remove HLA- prefix in gene_list
     if gene_class == "HLA":
@@ -1440,12 +1467,16 @@ def main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, hlala_result_dir, 
     # gene_list = ['B']
     if gene_class != "IG_TR":
         all_truth_dict = parse_truth_from_align_all(truth_dir, gene_class)
+    print("truth sample count",len(all_truth_dict))
+    print("res sample count",len(samples))
 
     speclong_result_dict = parse_all_spleclong_1kg_ont_input(gene_class, step, spec_result_dir, samples)
+    spechla_result_dict = parse_all_spechla_input(gene_class, spechla_result_dir, samples)
     hla_la_result = parse_all_hlala_input(gene_class, hlala_result_dir, samples)
-    compare_four(all_truth_dict, speclong_result_dict, gene_list, 8, gene_class)
+    # compare_four(all_truth_dict, speclong_result_dict, gene_list, 8, gene_class)
+    compare_four(all_truth_dict, spechla_result_dict, gene_list, 8, gene_class)
     print ("------------------")
-    compare_four(all_truth_dict, hla_la_result, gene_list, 8, gene_class)
+    # compare_four(all_truth_dict, hla_la_result, gene_list, 8, gene_class)
     # if gene_class == "IG_TR":
     #     compare_four(new_truth_dict, all_hla_la_result, IG_list, 8, gene_class)
     #     print ("------------------")
@@ -1490,7 +1521,7 @@ if __name__ == "__main__":
     # truth_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/hgscv2_truth_bwa_zip/"
     # result_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/kir_typing_out/"
 
-    # truth_dict_1000g=parse_1000g_truth("20181129_HLA_types_full_1000_Genomes_Project_panel.txt")
+    truth_dict_1000g=parse_1000g_truth("20181129_HLA_types_full_1000_Genomes_Project_panel.txt")
 
 
     # step = 2   ### 1 or 2, assess result in step 1 or step 2
@@ -1500,39 +1531,43 @@ if __name__ == "__main__":
     # main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
 
     # 1KGP ont HLA
-    # samples=read_samples("all.run.samples")
-    # # samples=["HG04227"]
-    # step = 2   ### 1 or 2, assess result in step 1 or step 2
-    # # db_dir = f"../db/{gene_class}/"
-    # db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
-    # spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/speclong_out/"
-    # hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/hlala_out/"
-    # gene_list, interval_dict =  get_focus_gene(gene_class)
-    # gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
-    # main_1kg_ont_HLA(gene_list, truth_dict_1000g, spec_result_dir, hlala_result_dir, gene_class, step, samples)
+    samples=read_samples("3parts.merge.samples.unique")
+    # samples=["HG04227"]
+    step = 2   ### 1 or 2, assess result in step 1 or step 2
+    # db_dir = f"../db/{gene_class}/"
+    db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
+    spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun/"
+    hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/hlala_out/"
+    spechla_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/spechla_out/"
+    gene_list, interval_dict =  get_focus_gene(gene_class)
+    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
+    main_1kg_ont_HLA(gene_list, truth_dict_1000g, spec_result_dir, spechla_result_dir, hlala_result_dir, gene_class, step, samples)
     # main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
 
     # HPRC hifi HLA
-    samples=read_samples("all.samples")
-    step = 2   ### 1 or 2, assess result in step 1 or step 2
-    db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
-    spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/speclong_out/hifi"
-    hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/hlala_out/hifi"
-    truth_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/hprc_truth_bwa_zip/"
-    gene_list, interval_dict =  get_focus_gene(gene_class)
-    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
-    main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, hlala_result_dir, gene_class, step, samples)
-
-    # HPRC ont HLA
-    # samples=read_samples("all.samples")
+    # samples=read_samples("hprc1_2.samples")
     # step = 2   ### 1 or 2, assess result in step 1 or step 2
     # db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
-    # spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/speclong_out/ont"
-    # hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/hlala_out/ont"
+    # spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/speclong_out_rerun/hifi"
+    # hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/hlala_out/hifi"
+    # spechla_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/spechla_out/hifi"
     # truth_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/hprc_truth_bwa_zip/"
     # gene_list, interval_dict =  get_focus_gene(gene_class)
     # gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
-    # main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, hlala_result_dir, gene_class, step, samples)
+    # main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, spechla_result_dir,  hlala_result_dir, gene_class, step, samples)
+
+    # HPRC ont HLA
+    # samples=read_samples("hprc1_2.samples")
+    # step = 2   ### 1 or 2, assess result in step 1 or step 2
+    # db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
+    # spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/speclong_out_rerun/ont"
+    # hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/hlala_out/ont"
+    # spechla_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/spechla_out/ont"
+    # truth_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/hprc_truth_bwa_zip/"
+    # gene_list, interval_dict =  get_focus_gene(gene_class)
+    # gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
+    # main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, spechla_result_dir, hlala_result_dir, gene_class, step, samples)
+
 
 
 
