@@ -936,6 +936,17 @@ def filter_depth_sample(truth_dict, spec_depth_dict, cutoff=20):
             new_truth_dict[sample] = truth_dict[sample]
     return new_truth_dict
 
+def filter_depth_sample_all(truth_dict, spec_depth_dict, cutoff=20):
+    new_truth_dict = {}
+    for sample in truth_dict:
+        # pure_sample = sample.split(".")[0]
+        if sample in spec_depth_dict:
+            new_truth_dict[sample] = {}
+            for gene in spec_depth_dict[sample]:
+                if spec_depth_dict[sample][gene] >= cutoff:
+                    new_truth_dict[sample] = truth_dict[sample][gene]
+    return new_truth_dict
+
 ###### for cyp
 ## read a json file into a dictionary
 def read_pangu_result(pangu_result):
@@ -1098,6 +1109,39 @@ def validate_star_allele(a, b): ## for CYP2D6
     elif a.replace("*68+*68", "*68x2") == b:
         return True
     return False
+
+def main_all_cyp(spec_dir, result_file):
+    gene_class = "CYP"
+    truth_dict = load_GeT_RM4()
+
+    spec_result_dict = {} 
+    spec_depth_dict = {} 
+
+    
+    ## for each folder in the spec_dir, the sample name is the folder name
+    for folder in os.listdir(spec_dir):
+        ## check if the folder is a folder
+        if not os.path.isdir(os.path.join(spec_dir, folder)):
+            continue
+        sample = folder
+        spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
+        spec_result_dict[sample], all_gene_result, spec_depth_dict[sample] = read_spec_result(spec_result)
+        # print (pure_diplotype, spec_result_dict[sample])
+    truth_dict = get_shared_sample(truth_dict, spec_result_dict)
+    print ("speclong:")
+
+    cutoff = 0
+    truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
+    spec_result_dict = filter_depth_sample(spec_result_dict, spec_depth_dict, cutoff)
+
+    gene_list, interval_dict =  get_focus_gene(gene_class)
+    spec_gene_accuracy_dict = compare_four(truth_dict, spec_result_dict, gene_list, 8, gene_class)
+    data = []
+    for gene in spec_gene_accuracy_dict:
+        data.append(spec_gene_accuracy_dict[gene])
+
+    df = pd.DataFrame(data, columns = ['gene', 'correct', 'total', 'accuracy'])
+    df.to_csv(result_file, index=False)
 
 def main_cyp_hprc(pangu_dir, spec_dir, result_file, dataset="1k"):
     if dataset == "1k":
