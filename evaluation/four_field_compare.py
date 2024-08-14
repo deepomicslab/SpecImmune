@@ -1125,7 +1125,7 @@ def main_all_cyp(spec_dir, result_file):
             continue
         sample = folder
         spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
-        spec_result_dict[sample], all_gene_result, spec_depth_dict[sample] = read_spec_result(spec_result)
+        cyp_2d6_rsult, spec_result_dict[sample], spec_depth_dict[sample] = read_spec_result(spec_result)
         # print (pure_diplotype, spec_result_dict[sample])
     truth_dict = get_shared_sample(truth_dict, spec_result_dict)
     print ("speclong:")
