@@ -10,7 +10,7 @@ p <- ggplot(data=df, aes(x=cutoff, y=accuracy, color = method)) +
   geom_point()+
   xlab("No. of reads")+
   ylab("Accuracy")+
-  scale_color_manual(values = c("slateblue1", "tomato"))
+  scale_color_manual(values = c("slateblue1", "tomato"))+theme_classic()
 
 # p + scale_fill_manual(values=c("slateblue1" , "tomato"))
 p

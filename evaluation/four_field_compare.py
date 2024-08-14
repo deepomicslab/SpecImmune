@@ -1029,6 +1029,38 @@ def load_1k_CYP_truth():
         truth_dict[sample]['CYP2D6'] = [[field[0]], [field[1]]]
     return truth_dict
 
+def load_GeT_RM4():
+    GeT_RM_truth = {}
+    ## read the excel into dataframe
+    import pandas as pd
+    file = "cyp/GeT_RM_truth.csv"
+    df = pd.read_csv(file)
+    # print (df.columns)
+    ## enumerate each row
+    for index, row in df.iterrows():
+        sample = row['Coriell #  https://www.coriell.org/  ']
+
+        if sample not in GeT_RM_truth:
+            GeT_RM_truth[sample] = {}
+        # for enumarate the df column
+        for gene in df.columns:
+            if len(gene.split()) != 1:
+                continue
+            # print (gene)
+
+            truth = row[gene]
+            ## check if truth is nan
+            if pd.isna(truth):
+                continue
+            if truth == 'no consensus' or truth == 'duplication':
+                continue
+            if len(truth.split("/")) != 2:
+                continue
+            # print (sample, gene, truth)
+            GeT_RM_truth[sample][gene] = truth.split("/")
+
+    return GeT_RM_truth
+
 def validate_star_allele(a, b): ## for CYP2D6
     # a truth
     # b result
@@ -1037,9 +1069,11 @@ def validate_star_allele(a, b): ## for CYP2D6
     a = a.replace(" ", "")
     a = a.replace("(", "")
     a = a.replace(")", "")
+    a = a.replace("**", "*")
     b = b.replace(" ", "")
     b = b.replace("(", "")
     b = b.replace(")", "")
+    b = b.replace("**", "*")
     field = a.split("+")
     if len(field) >= 2:
         c = field[1] + "+" + field[0]
@@ -1104,6 +1138,7 @@ def main_cyp_hprc(pangu_dir, spec_dir, result_file, dataset="1k"):
         spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
         spec_result_dict[sample], all_gene_result, spec_depth_dict[sample] = read_spec_result(spec_result)
         # print (pure_diplotype, spec_result_dict[sample])
+    print ("speclong:")
     compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
 
     cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file)
