@@ -4,6 +4,9 @@ import argparse
 from tqdm import tqdm
 import sys
 
+sys.path.insert(0, sys.path[0]+'/../scripts/')
+from four_field_compare import load_GeT_RM4
+
 # Base URL for the FTP server
 base_url = 'https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/'
 
@@ -34,26 +37,6 @@ def get_sample_name(file_path):
     sample_name = filename.split('.')[0]
     return sample_name
 
-def load_GeT_RM(given_sample_list):
-    GeT_RM_sample_list = []
-    sampl_truth = {}
-    with open('cyp/CYP_GeT-RM_truth.csv') as f:
-        for line in f:
-            line = line.strip().split(',')
-            sample = line[0]
-            if len(line) < 4:
-                continue
-            truth = line[3]
-            sampl_truth[sample] = truth
-            # print (sample, truth)
-            if sample in given_sample_list:
-                GeT_RM_sample_list.append(sample)
-    print (len(GeT_RM_sample_list))
-    print (GeT_RM_sample_list)
-    # file = open('cyp/ont_truth.csv', 'w')
-    # for sample in GeT_RM_sample_list:
-    #     file.write(f"{sample}\t{sampl_truth[sample]}\n")
-    # file.close()
 
 def load_GeT_RM3(given_sample_list):
     GeT_RM_sample_list = []
@@ -77,7 +60,7 @@ def load_GeT_RM3(given_sample_list):
     #     file.write(f"{sample}\t{sampl_truth[sample]}\n")
     # file.close()
 
-def load_GeT_RM4():
+def load_GeT_RM():
     GeT_RM_truth = {}
     ## read the excel into dataframe
     import pandas as pd
@@ -202,19 +185,36 @@ def load_Stargazer_truth():
 
     return Stargazer_truth
 
+def rm_cyp2d6(GeT_RM_truth):
+    new = {}
+    for sample in GeT_RM_truth:
+        s = {}
+        for gene in GeT_RM_truth[sample]:
+            if gene != 'CYP2D6':
+                s[gene] = GeT_RM_truth[sample][gene]
+        if len(s) > 0:
+            new[sample] = s
+    return new
 
 if __name__ == '__main__':
     # parser = argparse.ArgumentParser(description='Download files from a given list.')
     # parser.add_argument('file_list', type=str, help='Path to the file containing the list of files to download.')
     # args = parser.parse_args()
     
-    GeT_RM_truth1 = load_GeT_RM4()
-    GeT_RM_truth2 = load_Stargazer_truth()
+    # GeT_RM_truth1 = load_GeT_RM()
+    # GeT_RM_truth2 = load_Stargazer_truth()
 
-    GeT_RM_truth = {**GeT_RM_truth1, **GeT_RM_truth2}
+    # GeT_RM_truth = {**GeT_RM_truth1, **GeT_RM_truth2}
+    # ont_file_list = "lkg_ont_vienna_merge.files.hg38.list"
+    # ont_sample_list = main(ont_file_list)
+    # truth_file = 'cyp/ont_truth_merge.csv'
+    # check_share_sample(GeT_RM_truth, ont_sample_list, truth_file)
+
+    GeT_RM_truth = load_GeT_RM4()
+    GeT_RM_truth = rm_cyp2d6(GeT_RM_truth)
     ont_file_list = "lkg_ont_vienna_merge.files.hg38.list"
     ont_sample_list = main(ont_file_list)
-    truth_file = 'cyp/ont_truth_merge.csv'
+    truth_file = 'cyp/ont_truth_all_genes.csv'
     check_share_sample(GeT_RM_truth, ont_sample_list, truth_file)
 
     # hgscv_clr = "igsr_HGSVC2_PacBio_CLR.tsv"

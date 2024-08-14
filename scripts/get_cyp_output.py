@@ -72,6 +72,8 @@ def merge_result(pangu_result, pangu_alleles, spec_result, over2hap, tool='spec'
         print ("cnv detected, use pangu result")
     elif len(pangu_result) >= 1 and over2hap:
         print ("over 2 hap detected, use pangu result")
+    elif len(pangu_result) >= 1 and seq_data == 'pacbio-hifi' and seq_tech != 'amplicon':
+        print ("wgs hifi data, use pangu result")
     else:  # use spec result
         print ("no cnv detected, use spec result")
         
@@ -273,6 +275,7 @@ if __name__ == "__main__":
     # prefix = "/mnt/d/HLAPro_backup/Nanopore_optimize/cyp_results/HG00436_1/HG00436_1"
     prefix = sys.argv[1]
     seq_tech = sys.argv[2]
+    seq_data = sys.argv[3]
     tool = 'spec' #spec or star
 
     pangu_result = f"{prefix}_report.json"

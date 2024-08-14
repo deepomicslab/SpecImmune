@@ -513,7 +513,7 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
         map_to_latest_version = get_HLA_version_conversion()
     gene_dict = {}
     for sample in truth_dict:
-        print (sample)
+        # print (sample)
         if sample not in all_hla_la_result:
             print (f"{sample} not in all_hla_la_result")
             continue
@@ -599,13 +599,15 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
             # else:
             #     print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
         # sys.exit(1)
-    cal_accuracy(gene_dict)
+    gene_accuracy_dict = cal_accuracy(gene_dict)
     
     print ("truth:")
     count_report_allele(truth_dict, gene_list)
     print ("result:")
     count_report_allele(all_hla_la_result, gene_list)
     print ("finished")
+
+    return gene_accuracy_dict  # {gene: [gene, correct, total, accuracy]}
 
 def for_rev_compare(true_list, hla_la_list, gene_class):
     fir = 0
@@ -634,16 +636,19 @@ def for_rev_compare(true_list, hla_la_list, gene_class):
     return fir, sec
 
 def cal_accuracy(gene_dict):
+    gene_accuracy_dict = {}
     total_correct, total = 0, 0
     for gene, items in gene_dict.items():
         # print (gene, items)
         total_correct += items[0]
         total += items[1]
-        print (gene, items[0], items[1], round(items[0]/items[1],2))
+        print (gene, items[0], items[1], round(items[0]/items[1],3))
+        gene_accuracy_dict[gene] = [gene, items[0], items[1], round(items[0]/items[1],3)]
     if total == 0:
         print ("total accuracy", total_correct, total, 0)
     else:
-        print ("total accuracy", total_correct, total, round(total_correct/total,2))
+        print ("total accuracy", total_correct, total, round(total_correct/total,3))
+    return gene_accuracy_dict
 
 def count_report_allele(all_hla_la_result, gene_list):
     count_list = []
@@ -923,6 +928,25 @@ def get_shared_sample(truth_dict, infer_dict):
             new_truth_dict[sample] = truth_dict[sample]
     return new_truth_dict
 
+def filter_depth_sample(truth_dict, spec_depth_dict, cutoff=20):
+    new_truth_dict = {}
+    for sample in truth_dict:
+        # pure_sample = sample.split(".")[0]
+        if sample in spec_depth_dict and spec_depth_dict[sample]['CYP2D6'] >= cutoff:
+            new_truth_dict[sample] = truth_dict[sample]
+    return new_truth_dict
+
+def filter_depth_sample_all(truth_dict, spec_depth_dict, cutoff=20):
+    new_truth_dict = {}
+    for sample in truth_dict:
+        # pure_sample = sample.split(".")[0]
+        if sample in spec_depth_dict:
+            new_truth_dict[sample] = {}
+            for gene in spec_depth_dict[sample]:
+                if spec_depth_dict[sample][gene] >= cutoff:
+                    new_truth_dict[sample] = truth_dict[sample][gene]
+    return new_truth_dict
+
 ###### for cyp
 ## read a json file into a dictionary
 def read_pangu_result(pangu_result):
@@ -964,6 +988,7 @@ def get_standard_diploid(pure_diplotype):
 def read_spec_result(spec_result):
     # check if the file exists
     spec_result_dict = {}
+    spec_gene_depth = {}
     if not os.path.exists(spec_result):
         raise FileNotFoundError(f"{spec_result} does not exist")
     pure_diplotype = 'NA'
@@ -976,6 +1001,8 @@ def read_spec_result(spec_result):
             if field[0] != "#" and field[0] != "Locus":
                 gene = field[0]
                 allele = field[6]  #suballele
+                read_num = int(field[4])
+                spec_gene_depth[gene] = read_num
                 if allele != "NA":
                     allele = allele.split(".")[0] # star allele
                     allele = "*" + allele.split('*')[1]
@@ -984,7 +1011,7 @@ def read_spec_result(spec_result):
                     spec_result_dict[gene] = []
                 spec_result_dict[gene].append([allele])
     # print ("#", pure_diplotype, spec_result_dict)
-    return get_standard_diploid(pure_diplotype), spec_result_dict
+    return get_standard_diploid(pure_diplotype), spec_result_dict, spec_gene_depth
 
 def load_HPRC_CYP_truth():
     cyp_hprc_truth = 'cyp/HPRC_truth.csv'
@@ -1013,6 +1040,38 @@ def load_1k_CYP_truth():
         truth_dict[sample]['CYP2D6'] = [[field[0]], [field[1]]]
     return truth_dict
 
+def load_GeT_RM4():
+    GeT_RM_truth = {}
+    ## read the excel into dataframe
+    import pandas as pd
+    file = "cyp/GeT_RM_truth.csv"
+    df = pd.read_csv(file)
+    # print (df.columns)
+    ## enumerate each row
+    for index, row in df.iterrows():
+        sample = row['Coriell #  https://www.coriell.org/  ']
+
+        if sample not in GeT_RM_truth:
+            GeT_RM_truth[sample] = {}
+        # for enumarate the df column
+        for gene in df.columns:
+            if len(gene.split()) != 1:
+                continue
+            # print (gene)
+
+            truth = row[gene]
+            ## check if truth is nan
+            if pd.isna(truth):
+                continue
+            if truth == 'no consensus' or truth == 'duplication':
+                continue
+            if len(truth.split("/")) != 2:
+                continue
+            # print (sample, gene, truth)
+            GeT_RM_truth[sample][gene] = truth.split("/")
+
+    return GeT_RM_truth
+
 def validate_star_allele(a, b): ## for CYP2D6
     # a truth
     # b result
@@ -1021,9 +1080,11 @@ def validate_star_allele(a, b): ## for CYP2D6
     a = a.replace(" ", "")
     a = a.replace("(", "")
     a = a.replace(")", "")
+    a = a.replace("**", "*")
     b = b.replace(" ", "")
     b = b.replace("(", "")
     b = b.replace(")", "")
+    b = b.replace("**", "*")
     field = a.split("+")
     if len(field) >= 2:
         c = field[1] + "+" + field[0]
@@ -1049,11 +1110,47 @@ def validate_star_allele(a, b): ## for CYP2D6
         return True
     return False
 
-def main_cyp_hprc():
-    # truth_dict = load_HPRC_CYP_truth()
-    truth_dict = load_1k_CYP_truth()
+def main_all_cyp(spec_dir, result_file):
+    gene_class = "CYP"
+    truth_dict = load_GeT_RM4()
+
+    spec_result_dict = {} 
+    spec_depth_dict = {} 
+
+    
+    ## for each folder in the spec_dir, the sample name is the folder name
+    for folder in os.listdir(spec_dir):
+        ## check if the folder is a folder
+        if not os.path.isdir(os.path.join(spec_dir, folder)):
+            continue
+        sample = folder
+        spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
+        cyp_2d6_rsult, spec_result_dict[sample], spec_depth_dict[sample] = read_spec_result(spec_result)
+        # print (pure_diplotype, spec_result_dict[sample])
+    truth_dict = get_shared_sample(truth_dict, spec_result_dict)
+    print ("speclong:")
+
+    cutoff = 0
+    truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
+    spec_result_dict = filter_depth_sample(spec_result_dict, spec_depth_dict, cutoff)
+
+    gene_list, interval_dict =  get_focus_gene(gene_class)
+    spec_gene_accuracy_dict = compare_four(truth_dict, spec_result_dict, gene_list, 8, gene_class)
+    data = []
+    for gene in spec_gene_accuracy_dict:
+        data.append(spec_gene_accuracy_dict[gene])
+
+    df = pd.DataFrame(data, columns = ['gene', 'correct', 'total', 'accuracy'])
+    df.to_csv(result_file, index=False)
+
+def main_cyp_hprc(pangu_dir, spec_dir, result_file, dataset="1k"):
+    if dataset == "1k":
+        truth_dict = load_1k_CYP_truth()
+    else:
+        truth_dict = load_HPRC_CYP_truth()
     pangu_result_dict = {}
     spec_result_dict = {} 
+    spec_depth_dict = {} 
     # print (truth_dict)
     # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
     # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"
@@ -1061,8 +1158,8 @@ def main_cyp_hprc():
     # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc_ont/"
     # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc_ont/"
 
-    pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_1k/"
-    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k/"
+    # pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_1k/"
+    # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k/"
     ## for each file with suffix _report.json in the pangu_dir
     for file in os.listdir(pangu_dir):
         if file.endswith("_report.json"):
@@ -1083,10 +1180,39 @@ def main_cyp_hprc():
             continue
         sample = folder
         spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
-        spec_result_dict[sample], all_gene_result = read_spec_result(spec_result)
+        spec_result_dict[sample], all_gene_result, spec_depth_dict[sample] = read_spec_result(spec_result)
         # print (pure_diplotype, spec_result_dict[sample])
-    
+    print ("speclong:")
     compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
+
+    cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file)
+
+
+
+def cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file):
+    data = []
+    #cutoff_set = [0, 10, 20, 30, 40, 50]
+    cutoff_set = [x * 5 for x in range(5)]
+    #cutoff_set = [x * 10 for x in range(6)]
+    for cutoff in cutoff_set:
+        print ("###", cutoff)
+        cutoff_truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
+        cutoff_spec_dict = filter_depth_sample(spec_result_dict, spec_depth_dict, cutoff)
+        spec_gene_accuracy_dict = compare_four(cutoff_truth_dict, cutoff_spec_dict, ['CYP2D6'], 8, "CYP")
+        data.append(['SpecLong', cutoff] + spec_gene_accuracy_dict['CYP2D6'])
+
+    for cutoff in cutoff_set:
+        print ("###", cutoff)
+        cutoff_truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
+        cutoff_pangu_dict = filter_depth_sample(pangu_result_dict, spec_depth_dict, cutoff)
+        pangu_gene_accuracy_dict = compare_four(cutoff_truth_dict, cutoff_pangu_dict, ['CYP2D6'], 8, "CYP")
+        data.append(['pangu', cutoff] + pangu_gene_accuracy_dict['CYP2D6'])
+    
+    # transfrom data to df
+    df = pd.DataFrame(data, columns = ['method', 'cutoff', 'gene', 'correct', 'total', 'accuracy'])
+    # save to csv
+    # df.to_csv("cyp_results/cyp_depth_cutoff.csv", index=False)
+    df.to_csv(result_file, index=False)
 
 # def parse_1000g_truth(file):
 #     # Region	Population	Sample ID	HLA-A 1	HLA-A 2	HLA-B 1	HLA-B 2	HLA-C 1	HLA-C 2	HLA-DQB1 1	HLA-DQB1 2	HLA-DRB1 1	HLA-DRB1 2

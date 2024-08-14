@@ -9,6 +9,7 @@ test/test
 nohup.out
 # C extensions
 *.so
+evaluation/cyp_results/figures
 
 # Distribution / packaging
 .Python

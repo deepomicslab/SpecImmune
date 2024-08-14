@@ -171,7 +171,7 @@ def main(args):
 
         command = f"""
         python3 {sys.path[0]}/assign_cyp_reads.py {args["o"]}/{args["n"]}/{args["n"]} {args["r"]}
-        python3 {sys.path[0]}/get_cyp_output.py {args["o"]}/{args["n"]}/{args["n"]} {args['seq_tech']}
+        python3 {sys.path[0]}/get_cyp_output.py {args["o"]}/{args["n"]}/{args["n"]} {args['seq_tech']} {args['y']}
         """
         os.system(command)
         
