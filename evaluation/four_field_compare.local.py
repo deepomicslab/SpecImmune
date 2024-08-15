@@ -5,6 +5,7 @@ import numpy as np
 import csv
 import pandas as pd
 import json
+import pandas as pd
 
 import sys, os
 sys.path.insert(0, sys.path[0]+'/../scripts/')
@@ -555,8 +556,9 @@ def store_results(truth_dict, all_hla_la_result, gene_list, result_file):
     df.to_csv(result_file, index=False)
     print (f"Results saved in {result_file}")
 
-def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="CYP"):
+def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="CYP", tag=""):
     ### input dict structure: {sample: {gene: [[a,b,c], [c,d,e]]}}
+    right_match_count_dict = defaultdict(lambda: defaultdict(tuple))
     if gene_class == "HLA":
         map_to_latest_version = get_HLA_version_conversion()
     gene_dict = {}
@@ -641,6 +643,8 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
                 gene_dict[gene] = [0, 0]
             gene_dict[gene][0] += max([fir, sec])
             gene_dict[gene][1] += 2
+            right_match_count_dict[gene][sample] = (max([fir, sec]), 2)
+
 
             if max([fir, sec]) != 2:
                 print (sample, gene, true_list, "<<<wrong>>>" ,hla_la_list, max([fir, sec]))
@@ -648,6 +652,14 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
             #     print (sample, gene, true_list, "<<<correct>>>" ,hla_la_list, max([fir, sec]))
         # sys.exit(1)
     cal_accuracy(gene_dict)
+    table=create_count_table(right_match_count_dict)
+    if tag == "speclong":
+        write_table =spec_res_table
+    elif tag == "spechla":
+        write_table =spechla_res_table
+    else:
+        write_table = hlala_res_table
+    table.to_csv(write_table)
     
     print ("truth:")
     count_report_allele(truth_dict, gene_list)
@@ -656,10 +668,11 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
     print ("finished")
 
 
-def compare_four_1KGP_ONT(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="CYP"):
+def compare_four_1KGP_ONT(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="CYP", tag=""):
     ### input dict structure: {sample: {gene: [[a,b,c], [c,d,e]]}}
     # print(truth_dict["HG02643"]["A"], all_hla_la_result["HG02643"]["A"])
     #return
+    right_match_count_dict = defaultdict(lambda: defaultdict(tuple))
     if gene_class == "HLA":
         map_to_latest_version = get_HLA_version_conversion()
         map_to_latest_version_1KGP_ONT = get_HLA_version_conversion_1KGP_ONT()
@@ -754,6 +767,7 @@ def compare_four_1KGP_ONT(truth_dict, all_hla_la_result, gene_list, digit=8, gen
                 gene_dict[gene] = [0, 0]
             gene_dict[gene][0] += max([fir, sec])
             gene_dict[gene][1] += 2
+            right_match_count_dict[gene][sample] = (max([fir, sec]), 2)
 
             if max([fir, sec]) != 2:
                 print (sample, gene, true_list, "<<<wrong>>>" ,hla_la_list, max([fir, sec]))
@@ -762,6 +776,10 @@ def compare_four_1KGP_ONT(truth_dict, all_hla_la_result, gene_list, digit=8, gen
         # sys.exit(1)
             # return
     cal_accuracy(gene_dict)
+
+    table=create_count_table(right_match_count_dict)
+    write_table =spec_match_count_table if tag == "speclong" else spechla_match_count_table
+    table.to_csv(write_table)
     
     print ("truth:")
     count_report_allele(truth_dict, gene_list)
@@ -773,6 +791,7 @@ def compare_four_1KGP_ONT_hlala(truth_dict, all_hla_la_result, gene_list, digit=
     ### input dict structure: {sample: {gene: [[a,b,c], [c,d,e]]}}
     # print(truth_dict["HG02643"]["A"], all_hla_la_result["HG02643"]["A"])
     #return
+    right_match_count_dict = defaultdict(lambda: defaultdict(tuple))
     if gene_class == "HLA":
         map_to_latest_version = get_HLA_version_conversion()
         map_to_latest_version_1KGP_ONT = get_HLA_version_conversion_1KGP_ONT()
@@ -867,6 +886,7 @@ def compare_four_1KGP_ONT_hlala(truth_dict, all_hla_la_result, gene_list, digit=
                 gene_dict[gene] = [0, 0]
             gene_dict[gene][0] += max([fir, sec])
             gene_dict[gene][1] += 2
+            right_match_count_dict[gene][sample] = (max([fir, sec]), 2)
 
             if max([fir, sec]) != 2:
                 print (sample, gene, true_list, "<<<wrong>>>" ,hla_la_list, max([fir, sec]))
@@ -875,6 +895,10 @@ def compare_four_1KGP_ONT_hlala(truth_dict, all_hla_la_result, gene_list, digit=
         # sys.exit(1)
             # return
     cal_accuracy(gene_dict)
+    table=create_count_table(right_match_count_dict)
+    
+    table.to_csv(hlala_match_count_table)
+
     
     print ("truth:")
     count_report_allele(truth_dict, gene_list)
@@ -1378,8 +1402,8 @@ def main_1kg_ont_HLA(gene_list, truth_dict, spec_result_dir, spechla_result_dir,
         gene_list = [x.split("-")[-1] for x in gene_list]
    
     # speclong_result_dict = parse_all_spleclong_1kg_ont_input(gene_class, step, spec_result_dir, samples)
-    hla_hla_la_result = parse_all_hlala_input(gene_class, hlala_result_dir, samples)
-    # spechla_result_dict = parse_all_spechla_input(gene_class, spechla_result_dir, samples)
+    # hla_hla_la_result = parse_all_hlala_input(gene_class, hlala_result_dir, samples)
+    spechla_result_dict = parse_all_spechla_input(gene_class, spechla_result_dir, samples)
     # print (all_hla_la_result)
     # return
     # all_old_hlala_result = parse_hlala_pacbio()
@@ -1389,9 +1413,9 @@ def main_1kg_ont_HLA(gene_list, truth_dict, spec_result_dir, spechla_result_dir,
     #print("speclong_result_dict:", speclong_result_dict)
    
     #print(speclong_result_dict)
-    # compare_four_1KGP_ONT(truth_dict, speclong_result_dict, gene_list, 8, gene_class)
-    compare_four_1KGP_ONT_hlala(truth_dict, hla_hla_la_result, gene_list, 8, gene_class)
-    # compare_four_1KGP_ONT(truth_dict, spechla_result_dict, gene_list, 8, gene_class)
+    # compare_four_1KGP_ONT(truth_dict, speclong_result_dict, gene_list, 8, gene_class, "speclong")
+    # compare_four_1KGP_ONT_hlala(truth_dict, hla_hla_la_result, gene_list, 8, gene_class)
+    compare_four_1KGP_ONT(truth_dict, spechla_result_dict, gene_list, 8, gene_class, "spechla")
     print ("------------------")
     # if gene_class == "IG_TR":
     #     compare_four(new_truth_dict, all_hla_la_result, IG_list, 8, gene_class)
@@ -1473,10 +1497,10 @@ def main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, spechla_result_dir
     speclong_result_dict = parse_all_spleclong_1kg_ont_input(gene_class, step, spec_result_dir, samples)
     spechla_result_dict = parse_all_spechla_input(gene_class, spechla_result_dir, samples)
     hla_la_result = parse_all_hlala_input(gene_class, hlala_result_dir, samples)
-    # compare_four(all_truth_dict, speclong_result_dict, gene_list, 8, gene_class)
-    compare_four(all_truth_dict, spechla_result_dict, gene_list, 8, gene_class)
+    compare_four(all_truth_dict, speclong_result_dict, gene_list, 8, gene_class, "speclong")
+    compare_four(all_truth_dict, spechla_result_dict, gene_list, 8, gene_class, "spechla")
     print ("------------------")
-    # compare_four(all_truth_dict, hla_la_result, gene_list, 8, gene_class)
+    compare_four(all_truth_dict, hla_la_result, gene_list, 8, gene_class, "hlala")
     # if gene_class == "IG_TR":
     #     compare_four(new_truth_dict, all_hla_la_result, IG_list, 8, gene_class)
     #     print ("------------------")
@@ -1486,6 +1510,18 @@ def main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, spechla_result_dir
     # result_file = f"{benchmark_result_dir}/{gene_class}/pacbio_{gene_class}.csv"
     # store_results(new_truth_dict, all_hla_la_result, gene_list, result_file)
 
+
+def create_count_table(read_counts):
+    # df = pd.DataFrame(read_counts).fillna(0).astype(int).T
+    data = []
+    for gene, samples in read_counts.items():
+        for sample, values in samples.items():
+            max_value, constant_value = values
+            data.append((gene, sample, max_value, constant_value))
+
+    # Convert the list of tuples to a DataFrame
+    df = pd.DataFrame(data, columns=['Gene', 'Sample', 'Match', 'Total'])
+    return df
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='compare results')
@@ -1521,7 +1557,7 @@ if __name__ == "__main__":
     # truth_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/hgscv2_truth_bwa_zip/"
     # result_dir = "/scratch/project/cs_shuaicli/wxd/hla_pacbio_new/hifi/kir_typing_out/"
 
-    truth_dict_1000g=parse_1000g_truth("20181129_HLA_types_full_1000_Genomes_Project_panel.txt")
+    # truth_dict_1000g=parse_1000g_truth("20181129_HLA_types_full_1000_Genomes_Project_panel.txt")
 
 
     # step = 2   ### 1 or 2, assess result in step 1 or step 2
@@ -1531,30 +1567,35 @@ if __name__ == "__main__":
     # main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
 
     # 1KGP ont HLA
-    samples=read_samples("3parts.merge.samples.unique")
-    # samples=["HG04227"]
-    step = 2   ### 1 or 2, assess result in step 1 or step 2
-    # db_dir = f"../db/{gene_class}/"
-    db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
-    spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun/"
-    hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/hlala_out/"
-    spechla_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/spechla_out/"
-    gene_list, interval_dict =  get_focus_gene(gene_class)
-    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
-    main_1kg_ont_HLA(gene_list, truth_dict_1000g, spec_result_dir, spechla_result_dir, hlala_result_dir, gene_class, step, samples)
-    # main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
-
-    # HPRC hifi HLA
-    # samples=read_samples("hprc1_2.samples")
+    # samples=read_samples("3parts.merge.samples.unique")
+    # # samples=["HG04227"]
     # step = 2   ### 1 or 2, assess result in step 1 or step 2
+    # # db_dir = f"../db/{gene_class}/"
     # db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
-    # spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/speclong_out_rerun/hifi"
-    # hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/hlala_out/hifi"
-    # spechla_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/spechla_out/hifi"
-    # truth_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/hprc_truth_bwa_zip/"
+    # spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun/"
+    # spec_match_count_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun/match_count_table.csv"
+    # hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/hlala_out/"
+    # hlala_match_count_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/hlala_out/match_count_table.csv"
+    # spechla_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/spechla_out/"
+    # spechla_match_count_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/spechla_out/match_count_table.csv"
     # gene_list, interval_dict =  get_focus_gene(gene_class)
     # gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
-    # main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, spechla_result_dir,  hlala_result_dir, gene_class, step, samples)
+    # main_1kg_ont_HLA(gene_list, truth_dict_1000g, spec_result_dir, spechla_result_dir, hlala_result_dir, gene_class, step, samples)
+
+    # HPRC hifi HLA
+    samples=read_samples("hprc1_2.samples")
+    step = 2   ### 1 or 2, assess result in step 1 or step 2
+    db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
+    spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/speclong_out_rerun/hifi"
+    spec_res_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/speclong_out_rerun/hifi/match_count_table.csv"
+    hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/hlala_out/hifi"
+    hlala_res_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/hlala_out/hifi/match_count_table.csv"
+    spechla_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/spechla_out/hifi"
+    spechla_res_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/spechla_out/hifi/match_count_table.csv"
+    truth_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/hprc_truth_bwa_zip/"
+    gene_list, interval_dict =  get_focus_gene(gene_class)
+    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
+    main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, spechla_result_dir,  hlala_result_dir, gene_class, step, samples)
 
     # HPRC ont HLA
     # samples=read_samples("hprc1_2.samples")
