@@ -1,0 +1,213 @@
+NA18506
+/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/NA18506/NA18506.IG_TR_typing_result.txt
+NA18508
+/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/NA18508/NA18508.IG_TR_typing_result.txt
+NA18507
+/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/NA18507/NA18507.IG_TR_typing_result.txt
+HG02059
+/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/HG02059/HG02059.IG_TR_typing_result.txt
+HG02060
+/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/HG02060/HG02060.IG_TR_typing_result.txt
+HG02061
+/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/HG02061/HG02061.IG_TR_typing_result.txt
+NA18956
+/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/NA18956/NA18956.IG_TR_typing_result.txt
+NA18517
+/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/NA18517/NA18517.IG_TR_typing_result.txt
+NA10831
+/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/NA10831/NA10831.IG_TR_typing_result.txt
+HG01361
+/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/HG01361/HG01361.IG_TR_typing_result.txt
+HG01175
+/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/HG01175/HG01175.IG_TR_typing_result.txt
+HG02059 TRBV20-1 [['02'], ['05']] <<<wrong>>> [['TRBV20-1*02'], ['TRBV20-1*02']] 1
+HG02059 TRBV6-6 [['01'], ['02']] <<<wrong>>> [['TRBV6-6*04'], ['TRBV6-6*02']] 1
+gene not in infer_dict  HG02060 TRBJ2-2
+HG02060 TRBV20-1 [['01'], ['05']] <<<wrong>>> [['TRBV20-1*01'], ['TRBV20-1*02']] 1
+gene not in infer_dict  HG02060 TRBJ2-1
+HG02060 TRBV6-6 [['01'], ['01']] <<<wrong>>> [['TRBV6-6*01'], ['TRBV6-6*04']] 1
+HG02061 TRBV20-1 [['01'], ['02']] <<<wrong>>> [['TRBV20-1*02'], ['TRBV20-1*02']] 1
+HG02061 TRBV6-6 [['01'], ['02']] <<<wrong>>> [['TRBV6-6*02'], ['TRBV6-6*04']] 1
+NA18956 TRBV20-1 [['01'], ['01']] <<<wrong>>> [['TRBV20-1*01'], ['TRBV20-1*02']] 1
+NA18956 TRBV6-6 [['01'], ['01']] <<<wrong>>> [['TRBV6-6*04'], ['TRBV6-6*01']] 1
+empty truth NA18517 TRBJ2-2 [['NA'], ['NA']]
+NA18517 TRBV6-6 [['01'], ['02']] <<<wrong>>> [['TRBV6-6*02'], ['TRBV6-6*04']] 1
+NA10831 TRBV24-1 [['02'], ['02']] <<<wrong>>> [['TRBV24-1*02'], ['TRBV24-1*01']] 1
+NA10831 TRBV6-6 [['01'], ['01']] <<<wrong>>> [['TRBV6-6*04'], ['TRBV6-6*01']] 1
+HG01361 TRBV20-1 [['01'], ['01']] <<<wrong>>> [['TRBV20-1*01'], ['TRBV20-1*05']] 1
+HG01361 TRBV6-6 [['01'], ['01']] <<<wrong>>> [['TRBV6-6*01'], ['TRBV6-6*04']] 1
+HG01175 TRAV6 [['02'], ['03']] <<<wrong>>> [['TRAV6*02'], ['TRAV6*02']] 1
+HG01175 TRBV6-6 [['01'], ['01']] <<<wrong>>> [['TRBV6-6*01'], ['TRBV6-6*04']] 1
+TRBV10-3 22 22 1.0
+TRAJ32 22 22 1.0
+TRAV1-2 22 22 1.0
+TRAV5 22 22 1.0
+TRAJ14 22 22 1.0
+TRBV10-2 22 22 1.0
+TRBV6-2 22 22 1.0
+TRAJ28 22 22 1.0
+TRBV30 12 12 1.0
+TRAV24 22 22 1.0
+TRAJ10 22 22 1.0
+TRAV8-3 22 22 1.0
+TRDV3 22 22 1.0
+TRAV9-2 16 16 1.0
+TRDD3 22 22 1.0
+TRBV15 22 22 1.0
+TRAV6 21 22 0.955
+TRDJ1 22 22 1.0
+TRAJ37 22 22 1.0
+TRAJ38 22 22 1.0
+TRBV5-1 22 22 1.0
+TRAJ31 18 18 1.0
+TRBV12-4 16 16 1.0
+TRAJ18 22 22 1.0
+TRAV1-1 22 22 1.0
+TRAV8-1 18 18 1.0
+TRAV2 22 22 1.0
+TRAJ52 20 20 1.0
+TRAJ29 22 22 1.0
+TRBV24-1 21 22 0.955
+TRAV40 20 20 1.0
+TRAJ23 22 22 1.0
+TRBJ1-2 22 22 1.0
+TRAV8-6 22 22 1.0
+TRDD2 22 22 1.0
+TRBV4-2 22 22 1.0
+TRAV26-1 22 22 1.0
+TRAJ36 22 22 1.0
+TRBV2 22 22 1.0
+TRBV4-1 22 22 1.0
+TRBV17 22 22 1.0
+TRAV8-2 14 14 1.0
+TRAJ6 22 22 1.0
+TRAJ5 16 16 1.0
+TRAJ1 18 18 1.0
+TRAJ30 22 22 1.0
+TRBJ2-2 18 18 1.0
+TRBV25-1 22 22 1.0
+TRBV20-1 17 22 0.773
+TRBV9 22 22 1.0
+TRAJ16 20 20 1.0
+TRBV6-4 22 22 1.0
+TRBJ2-1 20 20 1.0
+TRAV13-1 22 22 1.0
+TRAV16 22 22 1.0
+TRAV9-1 18 18 1.0
+TRBV6-5 22 22 1.0
+TRBJ1-4 22 22 1.0
+TRAJ57 18 18 1.0
+TRAJ45 22 22 1.0
+TRBJ1-1 22 22 1.0
+TRAJ47 22 22 1.0
+TRAJ3 18 18 1.0
+TRAJ41 22 22 1.0
+TRBV5-7 20 20 1.0
+TRAJ61 22 22 1.0
+TRAJ56 22 22 1.0
+TRAJ20 22 22 1.0
+TRAJ2 22 22 1.0
+TRAV18 20 20 1.0
+TRAV19 20 20 1.0
+TRAV34 20 20 1.0
+TRAJ7 22 22 1.0
+TRBV13 20 20 1.0
+TRAJ54 22 22 1.0
+TRAJ4 22 22 1.0
+TRAV17 22 22 1.0
+TRBV14 22 22 1.0
+TRAJ26 20 20 1.0
+TRAJ13 22 22 1.0
+TRAJ46 22 22 1.0
+TRAJ34 22 22 1.0
+TRAJ48 22 22 1.0
+TRBV16 22 22 1.0
+TRAV41 22 22 1.0
+TRBV5-5 20 20 1.0
+TRBJ1-6 22 22 1.0
+TRAJ40 22 22 1.0
+TRBJ1-3 22 22 1.0
+TRBV29-1 22 22 1.0
+TRAJ58 22 22 1.0
+TRBV28 22 22 1.0
+TRDD1 22 22 1.0
+TRBV11-1 20 20 1.0
+TRBV12-5 10 10 1.0
+TRBV19 18 18 1.0
+TRAJ22 22 22 1.0
+TRDJ2 22 22 1.0
+TRBV3-1 22 22 1.0
+TRAJ49 22 22 1.0
+TRAJ39 22 22 1.0
+TRAV30 10 10 1.0
+TRAV8-7 22 22 1.0
+TRAV10 20 20 1.0
+TRAV7 22 22 1.0
+TRAV22 22 22 1.0
+TRAV26-2 18 18 1.0
+TRAV12-1 20 20 1.0
+TRAJ12 22 22 1.0
+TRAJ43 22 22 1.0
+TRBV7-3 22 22 1.0
+TRBD1 22 22 1.0
+TRAV21 22 22 1.0
+TRAJ59 22 22 1.0
+TRBV5-6 20 20 1.0
+TRAJ11 22 22 1.0
+TRAJ35 22 22 1.0
+TRAJ42 22 22 1.0
+TRAV3 22 22 1.0
+TRAV12-3 22 22 1.0
+TRBV6-1 22 22 1.0
+TRDJ3 22 22 1.0
+TRAJ33 22 22 1.0
+TRDV2 20 20 1.0
+TRAJ21 20 20 1.0
+TRAJ27 22 22 1.0
+TRBV7-1 22 22 1.0
+TRAJ25 22 22 1.0
+TRAJ24 20 20 1.0
+TRBV7-2 22 22 1.0
+TRBV23-1 22 22 1.0
+TRAJ50 22 22 1.0
+TRAV12-2 20 20 1.0
+TRAJ17 22 22 1.0
+TRAJ44 20 20 1.0
+TRBJ1-5 22 22 1.0
+TRAJ9 22 22 1.0
+TRAV20 22 22 1.0
+TRAJ53 22 22 1.0
+TRBV27 22 22 1.0
+TRBV11-3 22 22 1.0
+TRAV39 22 22 1.0
+TRBV5-4 18 18 1.0
+TRBV7-9 12 12 1.0
+TRAV4 18 18 1.0
+TRBV7-6 18 18 1.0
+TRBV7-4 18 18 1.0
+TRBV5-3 16 16 1.0
+TRAV38-1 18 18 1.0
+TRBV6-7 14 14 1.0
+TRAV25 14 14 1.0
+TRBV10-1 14 14 1.0
+TRBV18 18 18 1.0
+TRBV7-7 18 18 1.0
+TRBV11-2 18 18 1.0
+TRAV8-4 4 4 1.0
+TRBV6-8 16 16 1.0
+TRAJ19 14 14 1.0
+TRDJ4 14 14 1.0
+TRBV6-6 8 16 0.5
+TRAV13-2 16 16 1.0
+TRBV12-3 16 16 1.0
+TRAV27 8 8 1.0
+total accuracy 3291 3306 0.995
+truth:
+report allele no. Mean: 1.0, median: 1.0, range:[1-1]
+report allele no. NA: 2, total allele no.: 3586, NA ratio: 0.0005574136008918618
+result:
+report allele no. Mean: 1.0, median: 1.0, range:[1-1]
+report allele no. NA: 7, total allele no.: 3586, NA ratio: 0.0019482326746451434
+finished
+gene number 163 sample number 11
+Results saved in vdj_results//11samples_truth_tcr_IG_TR.csv

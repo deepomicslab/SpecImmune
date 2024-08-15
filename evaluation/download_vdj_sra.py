@@ -4,7 +4,7 @@ import os
 # Path to your CSV file
 csv_file_path = 'SRP272207.csv'
 data_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/VDJ/sra/"
-results_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/"
+results_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr2/"
 
 run_dict = {}
 # Open the CSV file and read the top 10 lines (excluding the header)
@@ -22,7 +22,7 @@ with open(csv_file_path, newline='') as csvfile:
             break
 
 for run_name, sample_name in run_dict.items():
-    if sample_name == "NA18506":
+    if sample_name != "HG02060":
         continue
     print(f"Run: {run_name}, Sample: {sample_name}")
     ## download the sra and convert to fastq
