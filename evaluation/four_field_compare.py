@@ -537,6 +537,9 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
                 continue
             if gene_class == "IG_TR" and check_TCR_Mutation(true_list):
                 continue
+            if true_list[0][0] == 'NA':
+                print ("empty truth", sample, gene, true_list)
+                continue
 
             
             
@@ -680,7 +683,7 @@ def count_report_allele(all_hla_la_result, gene_list):
     # for gene in count_gene_array:
     #     print (gene, np.mean(count_gene_array[gene]), np.median(count_gene_array[gene]), min(count_gene_array[gene]), max(count_gene_array[gene]))
 
-def load_vdj_result(raw_result):
+def load_vdj_result(raw_result, cutoff=5):
     """
     raw result is like:
     sample  gene    depth   phase_set       allele_1        score_1 length_1        hap_1   allele_2        score_2 length_2        hap_2   hg38_chrom      hg38_len        variant_num     hete_variant_num
@@ -692,6 +695,7 @@ def load_vdj_result(raw_result):
 
     """  
     store_alleles_dict = defaultdict(dict)
+    store_depth_dict = defaultdict(dict)
     sample = 'test'
     with open(raw_result, "r") as f:
         # skip the header
@@ -699,6 +703,9 @@ def load_vdj_result(raw_result):
         for line in f:
             line = line.strip().split("\t")
             gene = line[0]
+            dp = float(line[1])
+            if dp < cutoff:
+                continue
             allele1 = line[3]
             allele2 = line[7]
             if sample not in store_alleles_dict:
@@ -706,6 +713,7 @@ def load_vdj_result(raw_result):
             if gene not in store_alleles_dict[sample]:
                 store_alleles_dict[sample][gene] = []
             store_alleles_dict[sample][gene] = [[allele1], [allele2]]
+            store_depth_dict[sample][gene] = dp
     # print (store_alleles_dict[sample])
     return store_alleles_dict[sample]
 
@@ -864,7 +872,7 @@ def assess_gene_copy(mean_len, max_match, max_identity, min_mat=0.8, min_identi 
         return True
     return False
 
-def main_TCR(result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/"):
+def main_TCR(result_dir, benchmark_result_dir,gene_list,gene_class, cutoff):
     truth_dict = load_TCR_truth()
     new_truth_dict = {}
     
@@ -876,17 +884,17 @@ def main_TCR(result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/")
         # infer = os.path.join(result_dir, f"{sample}/NA18506_new/NA18506_new.IG_TR_typing_result.txt")
         if os.path.exists(infer):
             print (infer)
-            sample_infer_dict = load_vdj_result(infer)
+            sample_infer_dict = load_vdj_result(infer, cutoff)
             infer_dict[sample] = sample_infer_dict
             new_truth_dict[sample] = truth_dict[sample]
             sample_list.append(sample)
 
             gene_list = list(set(truth_dict[sample].keys()) & set(sample_infer_dict.keys()))
-    
+    # print (new_truth_dict['NA18517']['TRBJ2-2'])
     compare_four(new_truth_dict, infer_dict, gene_list, 8, "IG_TR")
     print ("gene number", len(gene_list), "sample number", len(sample_list))
 
-    result_file = f"{benchmark_result_dir}/TR/11samples_truth_tcr_{gene_class}.csv"
+    result_file = f"{benchmark_result_dir}/11samples_truth_tcr_{gene_class}.csv"
     store_results(new_truth_dict, infer_dict, gene_list, result_file)
 
 def load_TCR_truth():
