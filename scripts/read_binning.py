@@ -48,9 +48,9 @@ class Score_Obj():
         if args['i'] == "CYP" and read_obj.match_num < 500:
             return
         
-        if args['i'] == "CYP" and read_obj.loci_name != "CYP2D6": ## strict filter for CYP other genes
-            if read_obj.match_num < 1000 or read_obj.identity < 0.95:
-                return
+        # if args['i'] == "CYP" and read_obj.loci_name != "CYP2D6": ## strict filter for CYP other genes
+        #     if read_obj.match_num < 1000 or read_obj.identity < 0.95:
+        #         return
 
 
         if read_obj.identity < args["min_identity"]:
