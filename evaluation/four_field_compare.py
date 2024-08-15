@@ -872,10 +872,10 @@ def assess_gene_copy(mean_len, max_match, max_identity, min_mat=0.8, min_identi 
         return True
     return False
 
-def main_TCR(result_dir, benchmark_result_dir,gene_list,gene_class, cutoff):
+def main_TCR(result_dir, benchmark_result_dir,gene_list,gene_class, sum_result_file, cutoff):
     truth_dict = load_TCR_truth()
     new_truth_dict = {}
-    
+    tcr_gene_list = []
     sample_list = []
     infer_dict = {}
     for sample in truth_dict:
@@ -889,13 +889,22 @@ def main_TCR(result_dir, benchmark_result_dir,gene_list,gene_class, cutoff):
             new_truth_dict[sample] = truth_dict[sample]
             sample_list.append(sample)
 
-            gene_list = list(set(truth_dict[sample].keys()) & set(sample_infer_dict.keys()))
+            tcr_gene_list = list(set(truth_dict[sample].keys()) & set(sample_infer_dict.keys()))
     # print (new_truth_dict['NA18517']['TRBJ2-2'])
-    compare_four(new_truth_dict, infer_dict, gene_list, 8, "IG_TR")
-    print ("gene number", len(gene_list), "sample number", len(sample_list))
+    ## sort the tcr_gene_list according to the gene list
+    tcr_gene_list = sorted(tcr_gene_list, key=lambda x: gene_list.index(x))
+    spec_gene_accuracy_dict = compare_four(new_truth_dict, infer_dict, tcr_gene_list, 8, "IG_TR")
+    print ("gene number", len(tcr_gene_list), "sample number", len(sample_list))
 
     result_file = f"{benchmark_result_dir}/11samples_truth_tcr_{gene_class}.csv"
-    store_results(new_truth_dict, infer_dict, gene_list, result_file)
+    store_results(new_truth_dict, infer_dict, tcr_gene_list, result_file)
+
+    data = []
+    for gene in spec_gene_accuracy_dict:
+        data.append(spec_gene_accuracy_dict[gene])
+
+    df = pd.DataFrame(data, columns = ['gene', 'correct', 'total', 'accuracy'])
+    df.to_csv(sum_result_file, index=False)
 
 def load_TCR_truth():
     tcr_trut_file = "tcr_truth.csv"

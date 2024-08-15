@@ -18,9 +18,10 @@ if __name__ == "__main__":
     # main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
 
     benchmark_result_dir = "vdj_results/"
+    sum_result_file = benchmark_result_dir + "tcr_11.csv"
     tcr_result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr/"
     cutoff = 5
-    main_TCR(tcr_result_dir, benchmark_result_dir,gene_list,gene_class,cutoff)
+    main_TCR(tcr_result_dir, benchmark_result_dir,gene_list,gene_class,sum_result_file,cutoff)
 
 
 
