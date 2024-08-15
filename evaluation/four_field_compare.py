@@ -1110,7 +1110,7 @@ def validate_star_allele(a, b): ## for CYP2D6
         return True
     return False
 
-def main_all_cyp(spec_dir, result_file):
+def main_all_cyp(spec_dir, result_file, cutoff=0):
     gene_class = "CYP"
     truth_dict = load_GeT_RM4()
 
@@ -1130,7 +1130,6 @@ def main_all_cyp(spec_dir, result_file):
     truth_dict = get_shared_sample(truth_dict, spec_result_dict)
     print ("speclong:")
 
-    cutoff = 0
     truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
     spec_result_dict = filter_depth_sample(spec_result_dict, spec_depth_dict, cutoff)
 

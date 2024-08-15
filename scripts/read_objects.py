@@ -291,6 +291,10 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
             if loci_name == "HLA-DRB1" and self.loci_object_dict[loci_name].represent_match_num < 300:
                 # print ("skip", read_name, loci_name, self.loci_object_dict[loci_name].represent_match_num, gene_score)
                 continue
+            # if loci_name in ['CYP2A13', 'CYP2A6', 'CYP2B6', 'CYP2C19', 'CYP2C8', 'CYP2C9', 'CYP3A4', 'CYP3A5', 'CYP4F2', 'NAT2', 'NUDT15', 'SLCO1B1']:
+            #     if self.loci_object_dict[loci_name].represent_match_num < 1000 \
+            #         or self.loci_object_dict[loci_name].represent_identity < 0.92:
+            #         continue
 
             my_interval = [self.loci_object_dict[loci_name].start,self.loci_object_dict[loci_name].end]  
 
@@ -341,12 +345,13 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
             record_interval += my_interval
         # print (assigned_locus)
         # print ("#####\n")
-        if len(assigned_locus) > 1 and assigned_locus[0] == assigned_locus[1]:
-            print ("###########", gene_score, 
-                    assigned_locus, 
-                    read_name,
-                    self.loci_object_dict[gene_score[0][0]].represent_match_num, 
-                    self.loci_object_dict[gene_score[1][0]].represent_match_num)
+        # if len(assigned_locus) > 1 and assigned_locus[0] == assigned_locus[1]:
+        #     print ("###########", gene_score, 
+        #             assigned_locus, 
+        #             read_name,
+        #             self.loci_object_dict[gene_score[0][0]].represent_match_num, 
+        #             self.loci_object_dict[gene_score[1][0]].represent_match_num)
+        # assigned_locus = self.remove_reads(assigned_locus)
         return assigned_locus
 
     def intervals_overlap(self, interval1, interval2):
@@ -364,6 +369,19 @@ class Read_bin():  # the match for a single read in all the alleles of a locus
         
         # Otherwise, the intervals overlap
         return True
+
+    def remove_reads(self, assigned_locus):
+        ## independently remove the reads assigned to some genes
+        cyp_others = ['CYP2A13', 'CYP2A6', 'CYP2B6', 'CYP2C19', 'CYP2C8', 'CYP2C9', 'CYP3A4', 'CYP3A5', 'CYP4F2', 'NAT2', 'NUDT15', 'SLCO1B1']
+        new = []
+        for loci_name in assigned_locus:
+            if loci_name in cyp_others:
+                if self.loci_object_dict[loci_name].represent_match_num > 3000 \
+                    and self.loci_object_dict[loci_name].represent_identity > 0.95:
+                    new.append(loci_name)
+            else:
+                new.append(loci_name)
+        return new
 
 
 
