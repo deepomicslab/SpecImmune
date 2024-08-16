@@ -59,7 +59,7 @@ for cutoff in read_cutoffs:
     print(plot_data[cutoff])
 
 
-exit()  # Remove this line to continue with the rest of the code
+# exit()  # Remove this line to continue with the rest of the code
 # Step 5: Plot the first set of results by cutoff and save to PDF
 plt.figure(figsize=(10, 12))  # Adjusted figure size with smaller height for subplots
 
@@ -81,11 +81,13 @@ for i, cutoff in enumerate(read_cutoffs, 1):
     plt.ylabel("Accuracy", fontsize=10)
     plt.xticks(rotation=45, fontsize=8)
     plt.yticks(fontsize=8)
+    plt.ylim(0, 1.05)  # Assuming accuracy is between 0 and 1
+
     
     # Legend outside on the right with no background
     plt.legend(title="Methods", loc='center left', bbox_to_anchor=(1, 0.5), fontsize=8, frameon=False)
 
-plt.tight_layout(pad=2.0)  # Adjust padding for better spacing
+plt.tight_layout(pad=1)  # Adjust padding for better spacing
 plt.savefig("cutoff_accuracy_plots.pdf", bbox_inches='tight')  # Save the first plot as a PDF
 # plt.show()
 
@@ -105,11 +107,11 @@ for i, gene in enumerate(genes_in_dfs, 1):
     plt.ylabel("Accuracy", fontsize=10)
     plt.xticks(rotation=45, fontsize=8)
     plt.yticks(fontsize=8)
-    plt.ylim(0, 1)  # Assuming accuracy is between 0 and 1
+    plt.ylim(0, 1.05)  # Assuming accuracy is between 0 and 1
     
     # Legend outside on the right with no background
     plt.legend(title="Methods", loc='center left', bbox_to_anchor=(1, 0.5), fontsize=8, frameon=False)
 
-plt.tight_layout(pad=2.0)  # Adjust padding for better spacing
+plt.tight_layout(pad=1)  # Adjust padding for better spacing
 plt.savefig("gene_accuracy_by_cutoff_plots.pdf", bbox_inches='tight')  # Save the second plot as a PDF
 # plt.show()
