@@ -13,7 +13,6 @@ from get_lite_db import convert_field_for_allele
 from determine_gene import get_focus_gene
 from db_objects import My_db
 
-
 # gene_list = ['C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 # gene_list = ['DRB1']
 
@@ -74,17 +73,17 @@ def parse_truth(truth_file):
     # print (truth_dict)
     return truth_dict
 
-def parse_truth_from_align_all(align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/",gene_class = "HLA", len_cutoff = 0):
+def parse_truth_from_align_all(allele_length_dict, align_dir="/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/",gene_class = "HLA", len_cutoff = 0):
     all_truth_dict = {}
     for file in os.listdir(align_dir):
         if file.endswith(f"_extracted_{gene_class}_align.txt"):
             truth_file = os.path.join(align_dir, file)
-            sample_truth_dict, sample_name = parse_truth_from_align(truth_file, gene_class, len_cutoff)
+            sample_truth_dict, sample_name = parse_truth_from_align(allele_length_dict, truth_file, gene_class, len_cutoff)
             all_truth_dict[sample_name] = sample_truth_dict
     # print (all_truth_dict)
     return all_truth_dict
 
-def parse_truth_from_align(truth_file, gene_class = "HLA", len_cutoff = 0, cov_cutoff = 0.95, ide_cutoff = 0.99):
+def parse_truth_from_align(allele_length_dict, truth_file, gene_class = "HLA", len_cutoff = 0, cov_cutoff = 0.95, ide_cutoff = 0.99):
     # truth_file = "/mnt/d/HLAPro_backup/Nanopore_optimize/pacbio_truth/upload/HG00096_extracted_HLA_align.txt"
     match_len_dict = defaultdict(dict)
     identity_dict = defaultdict(dict)
@@ -105,7 +104,6 @@ def parse_truth_from_align(truth_file, gene_class = "HLA", len_cutoff = 0, cov_c
             identity = float(field[5])  
             if identity < ide_cutoff:
                 continue
-
             true_allele_len = allele_length_dict[allele_name]
             if match_len/true_allele_len < cov_cutoff:
                 continue
@@ -303,7 +301,7 @@ def parse_all_spleclong_pacbio_input(gene_class, step = 1, outdir="/mnt/d/HLAPro
                     print(f"File {input_file} and {new_input_file} does not exist")
                     input_dict = {}
         else:
-            infer = os.path.join(result_dir, f"{sample}/{sample}.IG_TR_typing_result.txt")
+            infer = os.path.join(outdir, f"{sample}/{sample}.IG_TR_typing_result.txt")
             # infer = os.path.join(result_dir, f"{sample}/NA18506_new/NA18506_new.IG_TR_typing_result.txt")
             if os.path.exists(infer):
                 print (infer)
@@ -789,11 +787,11 @@ def main_pacbio(gene_list, truth_dir, result_dir, gene_class="HLA", step = 2):
         gene_list = [x.split("-")[-1] for x in gene_list]
     # gene_list = ['B']
     if gene_class != "IG_TR":
-        all_truth_dict = parse_truth_from_align_all(truth_dir, gene_class)
+        all_truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class)
         
     else:
         len_cutoff = 0
-        all_truth_dict = parse_truth_from_align_all(truth_dir, gene_class, len_cutoff)
+        all_truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
         IG_list, TR_list = split_IG_TR(gene_list)
 
     # print (all_truth_dict['NA12878'])
@@ -819,6 +817,49 @@ def main_pacbio(gene_list, truth_dir, result_dir, gene_class="HLA", step = 2):
     
     result_file = f"{benchmark_result_dir}/{gene_class}/pacbio_{gene_class}.csv"
     store_results(new_truth_dict, all_hla_la_result, gene_list, result_file)
+    # count_report_allele(all_hla_la_result)
+
+def main_vdj_hgscv(gene_list, truth_dir, result_dir, allele_length_dict, gene_class="IG_TR",step = 2):
+
+    # print (allele_length_dict)
+    len_cutoff = 0
+    all_truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
+    IG_list, TR_list = split_IG_TR(gene_list)
+
+    all_hla_la_result = parse_all_spleclong_pacbio_input(gene_class, step, result_dir, )
+
+    new_truth_dict = {}
+    for sample in all_hla_la_result:
+        pure_sample = sample.split(".")[0]
+        new_truth_dict[sample] = all_truth_dict[pure_sample]
+
+    # print (new_truth_dict.keys(), new_truth_dict["HG00514.1"].keys())
+    # print (all_hla_la_result.keys())
+    spec_gene_accuracy_dict = compare_four(new_truth_dict, all_hla_la_result, gene_list, 8, gene_class)
+    print ("gene number", len(spec_gene_accuracy_dict))
+
+
+    # shared_gene_list = []
+    # for gene in gene_list:
+    #     if gene in spec_gene_accuracy_dict:
+    #         shared_gene_list.append(gene)
+
+    # data = []
+    # for gene in shared_gene_list:
+    #     data.append(spec_gene_accuracy_dict[gene] + [gene[:3], gene[:4]] )
+
+    # df = pd.DataFrame(data, columns = ['gene', 'correct', 'total', 'accuracy', 'class', 'subclass'])
+    # df.to_csv(sum_result_file, index=False)
+
+    # print ("------------------")
+    # if gene_class == "IG_TR":
+    #     compare_four(new_truth_dict, all_hla_la_result, IG_list, 8, gene_class)
+    #     print ("------------------")
+    #     compare_four(new_truth_dict, all_hla_la_result, TR_list, 8, gene_class)
+    #     print ("------------------")
+    
+    # result_file = f"{benchmark_result_dir}/{gene_class}/pacbio_{gene_class}.csv"
+    # store_results(new_truth_dict, all_hla_la_result, gene_list, result_file)
     # count_report_allele(all_hla_la_result)
 
 def parse_hlala_pacbio(file_path="HLA-LA.merge.result.txt"):
@@ -889,9 +930,13 @@ def main_TCR(result_dir, benchmark_result_dir,gene_list,gene_class, sum_result_f
             new_truth_dict[sample] = truth_dict[sample]
             sample_list.append(sample)
 
-            tcr_gene_list = list(set(truth_dict[sample].keys()) & set(sample_infer_dict.keys()))
-    # print (new_truth_dict['NA18517']['TRBJ2-2'])
+            # if sample == 'NA18506':
+            #     print (sample_infer_dict['TRBJ2-5'])
+
+            tcr_gene_list += list(set(truth_dict[sample].keys()) & set(sample_infer_dict.keys()))
+    # print ("truth", new_truth_dict['NA18506']['TRBJ2-5'])
     ## sort the tcr_gene_list according to the gene list
+    tcr_gene_list = list(set(tcr_gene_list))
     tcr_gene_list = sorted(tcr_gene_list, key=lambda x: gene_list.index(x))
     spec_gene_accuracy_dict = compare_four(new_truth_dict, infer_dict, tcr_gene_list, 8, "IG_TR")
     print ("gene number", len(tcr_gene_list), "sample number", len(sample_list))
