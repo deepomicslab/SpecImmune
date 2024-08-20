@@ -95,12 +95,20 @@ def fast_cal_gene_depth(depth_file, gene_interval_dict):
             # if gene == "IGHD3-22":
             #     print (gene, chrom, start, end, store_all_depth[chrom][start-1:end])
             gene_mean_depth_dict[gene] = round(np.mean(store_all_depth[chrom][start-1:end]),1)
-
-
-
-
     return gene_mean_depth_dict, gene_pos_dict
 
+def load_gene_depth(gene_depth_file):
+    gene_mean_depth_dict = {}
+
+    with open(gene_depth_file, "r") as f:
+        for line in f:
+            line = line.strip().split()
+            gene = line[0]
+            depth = float(line[-1])
+
+            gene_mean_depth_dict[gene] = depth
+
+    return gene_mean_depth_dict
 
 def parse_phase_blocks(vcf_path):
     # Open the VCF file
@@ -379,6 +387,7 @@ if __name__ == "__main__":
     #         print (gene, chrom, my_db.gene_interval_dict[chrom][gene])
 
     depth_file = args["o"] + "/" + args["n"] + "/" + args["n"] + ".depth.txt"
+    gene_depth_file = args["o"] + "/" + args["n"] + "/gene_mean_depth.txt"
     depth_bed_file = args["o"] + "/" + args["n"] + "/low_depth.bed"
     phased_vcf = args["o"] + "/" + args["n"] + "/" + args["n"] + ".phase.norm.vcf.gz"
     raw_result = args["o"] + "/" + args["n"] + "/" + args["n"] + ".IG.TR.allele.txt"
@@ -388,9 +397,10 @@ if __name__ == "__main__":
         os.makedirs(tmp_dir) 
     # print (my_db.gene_interval_dict)
     # gene_mean_depth_dict, gene_pos_dict = fast_cal_gene_depth(depth_file, my_db.gene_interval_dict)
-    gene_mean_depth_dict = {}
-    for gene in focus_gene_list:
-        gene_mean_depth_dict[gene] = 100
+    gene_mean_depth_dict = load_gene_depth(gene_depth_file)
+    # gene_mean_depth_dict = {}
+    # for gene in focus_gene_list:
+    #     gene_mean_depth_dict[gene] = 100
     # get_phased_block(args["phased_vcf"])
 
 

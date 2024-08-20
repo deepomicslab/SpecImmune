@@ -4,7 +4,7 @@ import os
 # Path to your CSV file
 csv_file_path = 'SRP272207.csv'
 data_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/VDJ/sra/"
-results_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr3/"
+results_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results_tcr4/"
 
 run_dict = {}
 # Open the CSV file and read the top 10 lines (excluding the header)
@@ -22,7 +22,7 @@ with open(csv_file_path, newline='') as csvfile:
             break
 
 for run_name, sample_name in run_dict.items():
-    if sample_name == "NA18506":
+    if sample_name == "HG02059":
         continue
     print(f"Run: {run_name}, Sample: {sample_name}")
     ## download the sra and convert to fastq
@@ -37,6 +37,6 @@ for run_name, sample_name in run_dict.items():
     ## run typing
     cmd = f"""
         # echo python3 ../scripts/main.py -n {sample_name} -o {results_dir} -j 15 -y nanopore -i IG_TR  -r {data_dir}/{sample_name}.fastq.gz
-        python3 ../scripts/main.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n {sample_name} -o {results_dir} -j 15 -y nanopore -i IG_TR  -r {data_dir}/{sample_name}.fastq.gz
+        /usr/bin/time -v -o {results_dir}/{sample_name}.time python3 ../scripts/main.py --hg38 /mnt/d/HLAPro_backup/Nanopore_optimize/data/hg38/hg38_no_alt.fa -n {sample_name} -o {results_dir} -j 15 -y nanopore -i IG_TR  -r {data_dir}/{sample_name}.fastq.gz
     """
     os.system(cmd)

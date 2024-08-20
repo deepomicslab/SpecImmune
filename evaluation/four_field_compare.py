@@ -899,11 +899,16 @@ def main_TCR(result_dir, benchmark_result_dir,gene_list,gene_class, sum_result_f
     result_file = f"{benchmark_result_dir}/11samples_truth_tcr_{gene_class}.csv"
     store_results(new_truth_dict, infer_dict, tcr_gene_list, result_file)
 
-    data = []
-    for gene in spec_gene_accuracy_dict:
-        data.append(spec_gene_accuracy_dict[gene])
+    shared_gene_list = []
+    for gene in gene_list:
+        if gene in spec_gene_accuracy_dict:
+            shared_gene_list.append(gene)
 
-    df = pd.DataFrame(data, columns = ['gene', 'correct', 'total', 'accuracy'])
+    data = []
+    for gene in shared_gene_list:
+        data.append(spec_gene_accuracy_dict[gene] + [gene[:3], gene[:4]] )
+
+    df = pd.DataFrame(data, columns = ['gene', 'correct', 'total', 'accuracy', 'class', 'subclass'])
     df.to_csv(sum_result_file, index=False)
 
 def load_TCR_truth():

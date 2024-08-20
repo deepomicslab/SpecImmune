@@ -11,6 +11,7 @@ import pickle
 import sys
 import argparse
 from argparse import ArgumentTypeError
+from collections import defaultdict
 
 
 # IG_TR_chrs = {'chr14:20121838-24045098':1, 'chr14:104363198-108375071':1,'chr2:87360568-91735370':1,'chr22:20530934-24421435':1\
@@ -32,23 +33,20 @@ class Mask_low():
         self.window = args["w"]
         self.lowest_depth = args["d"]
         self.mask_dict = {}
-        self.focus_exon = str2bool(args["f"])
+        # self.focus_exon = str2bool(args["f"])
 
     def record_depth(self):
         f = open(self.depth_file)
         for line in f:
             array = line.strip().split()
             gene = array[0]
-            # if args['i'] == 'IG_TR' and args['r']:
-            #     if gene not in IG_TR_chrs:
-            #         continue
             depth = int(array[2])
             if gene not in self.depth_dict:
                 self.depth_dict[gene] = []
             self.depth_dict[gene].append(depth)
 
     def get_low_region(self, depth_list, mask_region, interval_start, interval_end):
-        
+        depth_list = np.array(depth_list)
         mask_flag = False
         mask_start, mask_end = 0, 0
         # for i in range(self.window, len(depth_list)):
@@ -139,6 +137,131 @@ class Mask_low():
         # with open("%s/mask_dict.pkl"%(outdir), 'wb') as f:
         #     pickle.dump(self.mask_dict, f)
 
+class Mask_low_no_zero(Mask_low):  ## load normal samtools depth file, no 0 depth
+
+    def __init__(self, depth_file):
+        super().__init__(depth_file)
+        self.depth_dict = defaultdict(dict)
+
+    def record_depth(self):
+        f = open(self.depth_file)
+        for line in f:
+            array = line.strip().split()
+            gene = array[0]
+            locus = int(array[1]) 
+            depth = int(array[2])
+            self.depth_dict[gene][locus] = depth
+        f.close()
+
+    def read_regions(self, gene):
+        """
+            chr2    0       91736370
+            chr7    0       144314399
+            chr14   0       108376071
+            chr22   0       24422435
+        """
+        exon_intervals = []
+        f = open(args['r'], 'r')
+        for line in f:
+            array = line.strip().split()
+            chr = array[0]
+            if chr != gene:
+                continue
+            start = int(array[1])
+            end = int(array[2])
+            exon_intervals.append([start, end]) 
+        f.close()
+        return exon_intervals
+
+    def get_low_region(self, gene, mask_region, interval_start, interval_end):
+
+        mask_flag = False
+        mask_start, mask_end = 0, 0
+        # for i in range(self.window, len(depth_list)):
+        for i in range(interval_start+self.window, interval_end):
+            win_start = i-self.window
+            win_end = i
+            ## cal mean depth
+            win_sum = 0
+            for j in range(win_start, win_end+1):
+                if j in self.depth_dict[gene]:
+                    win_sum += self.depth_dict[gene][j]
+            win_mean_depth = win_sum/self.window
+            # win_mean_depth = np.mean(depth_list[win_start:win_end])
+            # print (win_mean_depth, self.lowest_depth, mask_flag)
+            if win_mean_depth < self.lowest_depth:
+                if mask_flag == False:
+                    mask_start = win_start
+                    mask_end = win_end 
+                else:
+                    mask_end = win_end
+                mask_flag = True
+            else:
+                if mask_flag == True:
+                    if len(mask_region) > 0 and mask_start < mask_region[-1][1]:
+                        mask_region[-1][1] = mask_end
+                    else:
+                        mask_region.append([mask_start, mask_end])
+                mask_flag = False
+        if mask_flag == True:
+            if len(mask_region) > 0 and mask_start < mask_region[-1][1]:
+                mask_region[-1][1] = mask_end
+            else:
+                mask_region.append([mask_start, mask_end])
+        return mask_region
+    def cal_gene_dp(self):
+
+        f = open(args['g'], 'r')
+        o = open("%s/gene_mean_depth.txt"%(args["o"]), 'w')
+        for line in f:
+            array = line.strip().split()
+            chr = array[1]
+            start = int(array[2])
+            end = int(array[3])
+            gene_dp_sum = 0
+            if chr in self.depth_dict:
+                for i in range(start, end+1):
+                    if i in self.depth_dict[chr]:
+                        gene_dp_sum += self.depth_dict[chr][i]
+            gene_mean_dp = round(gene_dp_sum/(end-start+1),2)
+            print (line.strip(), gene_mean_dp, file = o)
+        f.close()
+        o.close()
+
+
+    def main(self):
+        
+        self.record_depth()
+
+        print ("detect mean depth for genes...")
+        if args['g']:
+            self.cal_gene_dp()
+
+        print ("detect low depth regions...")
+        f = open(mask_bed, 'w')
+        for gene in self.depth_dict.keys():
+            # depth_list = self.depth_dict[gene]
+            focus_intervals = self.read_regions(gene)
+            end = focus_intervals[-1][1] + 1
+
+            print (gene, focus_intervals)
+
+            # depth_list = []
+            # for i in range(1, focus_intervals[-1][1] + 1):
+            #     if i in self.depth_dict[gene]:
+            #         depth_list.append(self.depth_dict[gene][i])
+            #     else:
+            #         depth_list.append(0)
+
+            mask_region = self.get_low_region(gene, [], 1, end)
+
+            for mask in mask_region:
+                print (gene, mask[0]-1, mask[1]-1, file = f)
+        f.close()
+
+
+
+
 
 
 if __name__ == "__main__":
@@ -151,9 +274,10 @@ if __name__ == "__main__":
     required.add_argument("-o", type=str, help="outdir", metavar="\b", default="./output")
     optional.add_argument("-w", type=int, help="Windows size while using sliding the ref", metavar="\b", default=20)
     optional.add_argument("-d", type=int, help="Minimum mean depth in a window.", metavar="\b", default=5)
-    optional.add_argument("-f", type=str, help="Whether only mask exons.", metavar="\b", default="False")
-    optional.add_argument("-r", type=str, help="only check this region, bed file.", metavar="\b")
-    optional.add_argument("-i", type=str, help="gene class.", metavar="\b", default="HLA")
+    # optional.add_argument("-f", type=str, help="Whether only mask exons.", metavar="\b", default="False")
+    optional.add_argument("-r", type=str, help="only check these regions, bed file.", metavar="\b")
+    optional.add_argument("-g", type=str, help="gene interval file, cal mean depth for these genes.", metavar="\b")
+    # optional.add_argument("-i", type=str, help="gene class.", metavar="\b", default="HLA")
     optional.add_argument("-b", type=str, help="output bed", metavar="\b")
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
@@ -170,5 +294,10 @@ if __name__ == "__main__":
         mask_bed = "%s/low_depth.bed"%(outdir)
     else:
         mask_bed = args["b"]
-    mas = Mask_low(depth_file)
-    mas.main()
+    if not args["r"]:
+        mas = Mask_low(depth_file)
+        mas.main()
+    else:
+        print ("no zero depth mode")
+        mas = Mask_low_no_zero(depth_file)
+        mas.main()
