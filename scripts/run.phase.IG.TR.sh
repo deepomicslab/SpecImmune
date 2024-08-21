@@ -45,8 +45,8 @@ tabix -f $outdir/$sample.phase.vcf.gz
 samtools depth -b $dir/../gene_dist/IG_TR_chrs.bed $bam > $outdir/$sample.depth.txt
 
 python3 $dir/mask_low_depth_region.py -c $outdir/$sample.depth.txt -o $outdir  -d $low_depth -w 3 \
- -g ../gene_dist/IG_TR.gene.bed\
- -r ../gene_dist/IG_TR_chrs.bed
+ -g $dir/../gene_dist/IG_TR.gene.bed\
+ -r $dir/../gene_dist/IG_TR_chrs.bed
 
 bcftools norm -f $ref -O z -o $outdir/$sample.phase.norm.vcf.gz $outdir/$sample.phase.vcf.gz
 tabix -f $outdir/$sample.phase.norm.vcf.gz
