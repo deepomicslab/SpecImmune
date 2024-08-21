@@ -853,47 +853,52 @@ def main_vdj_hgscv2(gene_list, truth_dir, result_dir, allele_length_dict, sum_re
     cutoff = 15
     truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
     IG_list, TR_list = split_IG_TR(gene_list)
+    all_data, all_gene_data = [], []
+    for cutoff in [0, 5, 10, 15, 20]:
+        new_truth_dict = {}
+        tcr_gene_list = []
+        sample_list = []
+        infer_dict = {}
+        for sample in truth_dict:
+            print (sample)
+            infer = os.path.join(result_dir, f"{sample}/{sample}.IG_TR_typing_result.txt")
+            if os.path.exists(infer):
+                print (infer)
+                sample_infer_dict, sample_infer_depth_dict = load_vdj_result(infer, cutoff)
+                infer_dict[sample] = sample_infer_dict
+                new_truth_dict[sample] = truth_dict[sample]
+                sample_list.append(sample)
+                tcr_gene_list += list(set(truth_dict[sample].keys()) & set(sample_infer_dict.keys()))
 
-    new_truth_dict = {}
-    tcr_gene_list = []
-    sample_list = []
-    infer_dict = {}
-    for sample in truth_dict:
-        print (sample)
-        infer = os.path.join(result_dir, f"{sample}/{sample}.IG_TR_typing_result.txt")
-        if os.path.exists(infer):
-            print (infer)
-            sample_infer_dict, sample_infer_depth_dict = load_vdj_result(infer, cutoff)
-            infer_dict[sample] = sample_infer_dict
-            new_truth_dict[sample] = truth_dict[sample]
-            sample_list.append(sample)
-            tcr_gene_list += list(set(truth_dict[sample].keys()) & set(sample_infer_dict.keys()))
+        tcr_gene_list = list(set(tcr_gene_list))
+        tcr_gene_list = sorted(tcr_gene_list, key=lambda x: gene_list.index(x))
+        spec_gene_accuracy_dict = compare_four(new_truth_dict, infer_dict, tcr_gene_list, 8, "IG_TR")
+        print ("gene number", len(tcr_gene_list), "sample number", len(sample_list))
 
-    tcr_gene_list = list(set(tcr_gene_list))
-    tcr_gene_list = sorted(tcr_gene_list, key=lambda x: gene_list.index(x))
-    spec_gene_accuracy_dict = compare_four(new_truth_dict, infer_dict, tcr_gene_list, 8, "IG_TR")
-    print ("gene number", len(tcr_gene_list), "sample number", len(sample_list))
+        shared_gene_list = []
+        for gene in gene_list:
+            if gene in spec_gene_accuracy_dict:
+                shared_gene_list.append(gene)
 
-    shared_gene_list = []
-    for gene in gene_list:
-        if gene in spec_gene_accuracy_dict:
-            shared_gene_list.append(gene)
+        data = []
+        for gene in shared_gene_list:
+            data.append(spec_gene_accuracy_dict[gene] + [gene[:3], gene[:4], cutoff] )
+        all_gene_data += data
 
-    data = []
-    for gene in shared_gene_list:
-        data.append(spec_gene_accuracy_dict[gene] + [gene[:3], gene[:4]] )
 
-    df = pd.DataFrame(data, columns = ['gene', 'correct', 'total', 'accuracy', 'class', 'subclass'])
+        new_data = class_to_chain(data, cutoff)
+        all_data += new_data
+
+    df = pd.DataFrame(all_gene_data, columns = ['gene', 'correct', 'total', 'accuracy', 'class', 'subclass', 'cutoff'])
     df.to_csv(sum_result_file, index=False)
 
-    new_data = class_to_chain(data)
-    df = pd.DataFrame(new_data, columns = ['chain', 'correct', 'total', 'class', 'accuracy'])
+    df = pd.DataFrame(all_data, columns = ['chain', 'correct', 'total', 'class', 'accuracy', 'cutoff'])
     df.to_csv(sum_result_file[:-4] + "_chain.csv", index=False)
 
-def class_to_chain(data): ## classify vdj genes
+def class_to_chain(data, cutoff): ## classify vdj genes
     chain_dict = {}
     for da in data:
-        chain = da[0][:4]
+        chain = da[0][:3]
         main_chain = da[0][:3]
         if chain not in chain_dict:
             chain_dict[chain] = [0, 0, main_chain]
@@ -901,7 +906,7 @@ def class_to_chain(data): ## classify vdj genes
         chain_dict[chain][1] += int(da[2])
     new_data = []
     for chain in chain_dict:
-        new_data.append([chain] + chain_dict[chain] + [chain_dict[chain][0]/chain_dict[chain][1]])
+        new_data.append([chain] + chain_dict[chain] + [chain_dict[chain][0]/chain_dict[chain][1], cutoff])
     return new_data
 
 
