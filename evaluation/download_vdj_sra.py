@@ -47,6 +47,8 @@ def hgsvc_hifi():
     data_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/reads_vdj_hpc/"
     results_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results2/"
     for sample_name in sample_list:
+        # if sample_name != 'HG00732':
+        #     continue
         ## run typing
         cmd = f"""
             # echo python3 ../scripts/main.py -n {sample_name} -o {results_dir} -j 15 -y nanopore -i IG_TR  -r {data_dir}/{sample_name}.fastq.gz

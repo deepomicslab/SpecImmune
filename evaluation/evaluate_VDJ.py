@@ -27,7 +27,7 @@ if __name__ == "__main__":
     #### evaluation in HGSCV2
     gene_class = "IG_TR"
     truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
-    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results/"
+    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results2/"
     sum_result_file = benchmark_result_dir + "HGSCV2_hifi.csv"
     # cutoff = 2
     main_vdj_hgscv2(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, gene_class)

@@ -126,7 +126,10 @@ def parse_truth_from_align(allele_length_dict, truth_file, gene_class = "HLA", l
         sample_truth_dict[gene] = [[], []]
         ## sort the alleles by match_len
         for hap in match_len_dict[gene]:
-            top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene_class)
+            if gene_class=="IG_TR":
+                top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene_class, 0.1, 0.01)
+            else:
+                top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene_class)
             hap_index = int(hap[-1]) -1
             sample_truth_dict[gene][hap_index] = top_alleles
             # print (top_5_percent, "/".join(top_5_percent))
@@ -847,7 +850,7 @@ def main_vdj_hgscv2(gene_list, truth_dir, result_dir, allele_length_dict, sum_re
 
     # print (allele_length_dict)
     len_cutoff = 0
-    cutoff = 5
+    cutoff = 15
     truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
     IG_list, TR_list = split_IG_TR(gene_list)
 
