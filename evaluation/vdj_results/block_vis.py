@@ -32,8 +32,8 @@ def load_vdj_result(raw_result, sample, cutoff=0):
             allele1 = line[3]
             allele2 = line[7]
             phase_set = line[2]
-            if allele1 != allele2:
-                phase_set_dict[phase_set].append([allele1, allele2])
+            # if allele1 != allele2:
+            phase_set_dict[phase_set].append([allele1, allele2])
 
             if sample not in store_alleles_dict:
                 store_alleles_dict[sample] = {}
@@ -41,22 +41,33 @@ def load_vdj_result(raw_result, sample, cutoff=0):
                 store_alleles_dict[sample][gene] = []
             store_alleles_dict[sample][gene] = [[allele1], [allele2]]
     
-    # for phase_set, alleles in phase_set_dict.items():
-    #     print (phase_set, len(alleles))
+    for phase_set, alleles in phase_set_dict.items():
+        print (phase_set, len(alleles))
     return store_alleles_dict
 
-# raw_result = '/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results2/NA19240/NA19240.IG_TR_typing_result.txt'
-# load_vdj_result(raw_result)
-bed_db = Bed_db()
-hg38_gene_info = bed_db.get_hg38_gene_interval() 
-gene_list_sorted_by_pos = list(hg38_gene_info.keys())
-focus_gene_list = gene_list_sorted_by_pos[345:367]
+def prepare_for_vis():
+    # raw_result = '/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results2/NA19240/NA19240.IG_TR_typing_result.txt'
+    # load_vdj_result(raw_result)
+    bed_db = Bed_db()
+    hg38_gene_info = bed_db.get_hg38_gene_interval() 
+    gene_list_sorted_by_pos = list(hg38_gene_info.keys())
+    focus_gene_list = gene_list_sorted_by_pos[345:362]
 
-for sample in ['NA19238','NA19239','NA19240']:
-    raw_result = f'/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results2/{sample}/{sample}.IG_TR_typing_result.txt'
-    store_alleles_dict = load_vdj_result(raw_result,sample)
-    for gene in focus_gene_list:
-        if gene in store_alleles_dict[sample]:
-            print (sample, gene, store_alleles_dict[sample][gene])
-        else:
-            print (sample, gene, 'NA')
+    for sample in ['HG00512','HG00513','HG00514']:#  ['NA19238','NA19239','NA19240']:
+        raw_result = f'/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results2/{sample}/{sample}.IG_TR_typing_result.txt'
+        store_alleles_dict = load_vdj_result(raw_result,sample)
+        for gene in focus_gene_list:
+            if gene in store_alleles_dict[sample]:
+                print (sample, gene, store_alleles_dict[sample][gene])
+            else:
+                print (sample, gene, 'NA')
+
+if __name__ == "__main__":
+    trio1 = ['HG00731','HG00732','HG00733']
+    trio2 = ['HG00512','HG00513','HG00514']
+    trio3 = ['NA19238','NA19239','NA19240']
+
+    ## check how many blocks are trio-cosnsitent
+    for sample in trio1:
+        raw_result = f'/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results2/{sample}/{sample}.IG_TR_typing_result.txt'
+        store_alleles_dict = load_vdj_result(raw_result,sample)

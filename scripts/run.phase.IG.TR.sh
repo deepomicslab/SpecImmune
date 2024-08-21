@@ -18,6 +18,8 @@ samtools index $outdir/$sample.bam
 samtools view -b -L $dir/../gene_dist/IG_TR_chrs.bed $outdir/$sample.bam > $outdir/$sample.VDJ.bam
 samtools sort $outdir/$sample.VDJ.bam -o $bam
 samtools index $bam
+rm $outdir/$sample.VDJ.bam
+rm $outdir/$sample.bam*
 
 ################ java -Xmx5g -jar ../packages/GenomeAnalysisTK.jar -T HaplotypeCaller -R $ref  -I $bam -o $outdir/$sample.longshot.vcf
 longshot -n -F -S --sample_id $sample  --bam $bam --ref $ref --out $outdir/$sample.longshot.vcf 
@@ -50,6 +52,8 @@ python3 $dir/mask_low_depth_region.py -c $outdir/$sample.depth.txt -o $outdir  -
 
 bcftools norm -f $ref -O z -o $outdir/$sample.phase.norm.vcf.gz $outdir/$sample.phase.vcf.gz
 tabix -f $outdir/$sample.phase.norm.vcf.gz
+rm $bam
+rm $bam.bai
 
 
 

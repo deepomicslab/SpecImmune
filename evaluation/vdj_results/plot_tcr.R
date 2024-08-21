@@ -6,7 +6,7 @@ library(cowplot)
 # library(grid)
 
 
-pdf(file="figures/tcr11.pdf", width=12, height=8, onefile=FALSE)
+pdf(file="figures/tcr11.pdf", width=12, height=6, onefile=FALSE)
 
 
 df<-read.table("tcr_11.csv", sep=",", header=TRUE)
@@ -16,7 +16,7 @@ df$gene <- factor(df$gene, levels=df$gene)
 p1<-ggplot(data=df, aes(x=gene, y=accuracy, fill=subclass)) +
   geom_bar(stat="identity", width=0.5)+
   theme_minimal()+
-   theme(legend.position = "none", axis.text.x = element_text(size = 6))+
+   theme(legend.position = "none", axis.text.x = element_text(size = 5))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
   ylab("Accuracy")+scale_fill_brewer(palette="Dark2")
@@ -25,7 +25,7 @@ p1<-ggplot(data=df, aes(x=gene, y=accuracy, fill=subclass)) +
 p2<-ggplot(data=df, aes(x=gene, y=total, fill=subclass)) +
   geom_bar(stat="identity", width=0.5)+ #"#E69F00"
   theme_minimal()+
-   theme(legend.position = "none", axis.text.x = element_text(size = 6))+
+   theme(legend.position = "none", axis.text.x = element_text(size = 5))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("TCR Loci")+
   ylab("No. of alleles")+scale_fill_brewer(palette="Dark2")
