@@ -28,6 +28,7 @@ if __name__ == "__main__":
     gene_class = "IG_TR"
 
     # truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
+    # truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hprc_truth_bwa/"
     # result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/vdj_results2/"
     # sum_result_file = benchmark_result_dir + "HGSCV2_hifi.csv"
 

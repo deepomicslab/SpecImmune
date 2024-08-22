@@ -5,6 +5,7 @@ import numpy as np
 import csv
 import pandas as pd
 import json
+import pickle
 
 import sys, os
 sys.path.insert(0, sys.path[0]+'/../scripts/')
@@ -851,7 +852,16 @@ def main_vdj_hgscv2(gene_list, truth_dir, result_dir, allele_length_dict, sum_re
     # print (allele_length_dict)
     len_cutoff = 0
     cutoff = 15
-    truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
+    # hgscv_pickle = "vdj_results/HGSCV2_truth_dict.pkl"
+    hgscv_pickle = "vdj_results/HPRC_truth_dict.pkl"
+    # truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
+    # ### use pickle to save truth dict 
+    # with open(hgscv_pickle, "wb") as f:
+    #     pickle.dump(truth_dict, f)
+    ## load the pickle file
+    with open(hgscv_pickle, "rb") as f:
+        truth_dict = pickle.load(f)
+    # """
     IG_list, TR_list = split_IG_TR(gene_list)
     all_data, all_gene_data = [], []
     for cutoff in [0, 5, 10, 15, 20]:
@@ -894,6 +904,7 @@ def main_vdj_hgscv2(gene_list, truth_dir, result_dir, allele_length_dict, sum_re
 
     df = pd.DataFrame(all_data, columns = ['chain', 'correct', 'total', 'class', 'accuracy', 'cutoff'])
     df.to_csv(sum_result_file[:-4] + "_chain.csv", index=False)
+    # """
 
 def class_to_chain(data, cutoff): ## classify vdj genes
     chain_dict = {}
