@@ -10,7 +10,7 @@
   p1<-ggplot(df, aes(x=Num, y = after_stat(density))) +
     # geom_histogram(position="identity", alpha=0.5,bins = 50, fill="skyblue", color="skyblue")+
     geom_histogram(aes(y=after_stat(density)), 
-                   position="identity", color="blue", fill="lightblue")+
+                   position="identity", color="#E6AB02", fill="#E6AB02")+
     xlab("No. of gene loci")+
     ylab("Density")+
     # geom_density(lwd = 0.3, colour = "#F8766D",

@@ -15,7 +15,8 @@ df$gene <- factor(df$gene, levels=df$gene)
 
 p1<-ggplot(data=df, aes(x=gene, y=accuracy, fill=subclass)) +
   geom_bar(stat="identity", width=0.5)+
-  theme_minimal()+
+  # theme_minimal()+
+  theme_classic()+
    theme(legend.position = "none", axis.text.x = element_text(size = 5))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
@@ -24,7 +25,8 @@ p1<-ggplot(data=df, aes(x=gene, y=accuracy, fill=subclass)) +
 
 p2<-ggplot(data=df, aes(x=gene, y=total, fill=subclass)) +
   geom_bar(stat="identity", width=0.5)+ #"#E69F00"
-  theme_minimal()+
+  # theme_minimal()+
+  theme_classic()+
    theme(legend.position = "none", axis.text.x = element_text(size = 5))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("TCR Loci")+

@@ -12,7 +12,7 @@ p1<- ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
   xlab("Depth")+
   ylim(c(0.85,1))+
   ggtitle('HGSCV2 HiFi')+
-  ylab("Accuracy")+theme_classic()+scale_fill_brewer(palette="Dark2")
+  ylab("Accuracy")+theme_classic()+scale_color_brewer(palette="Dark2")
 
 
 df<-read.table("hgscv2_clr_chain.csv", sep=",", header=TRUE)
@@ -22,7 +22,7 @@ p2<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
   xlab("Depth")+
   ylim(c(0.85,1))+
   ggtitle('HGSCV2 PacBio CLR')+
-  ylab("Accuracy")+theme_classic()+scale_fill_brewer(palette="Dark2")
+  ylab("Accuracy")+theme_classic()+scale_color_brewer(palette="Dark2")
 
 df<-read.table("HPRC_hifi_chain.csv", sep=",", header=TRUE)
 p3<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
@@ -31,7 +31,7 @@ p3<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
   xlab("Depth")+
   ylim(c(0.85,1))+
   ggtitle('HPRC HiFi')+
-  ylab("Accuracy")+theme_classic()+scale_fill_brewer(palette="Dark2")
+  ylab("Accuracy")+theme_classic()+scale_color_brewer(palette="Dark2")
 
 df<-read.table("HPRC_ont_chain.csv", sep=",", header=TRUE)
 p4<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
@@ -40,7 +40,7 @@ p4<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
   xlab("Depth")+
   ylim(c(0.85,1))+
   ggtitle('HPRC ONT')+
-  ylab("Accuracy")+theme_classic()+scale_fill_brewer(palette="Dark2")
+  ylab("Accuracy")+theme_classic()+scale_color_brewer(palette="Dark2")
 
 prow <- plot_grid(
   p1 + theme(legend.position="none"),
@@ -65,39 +65,39 @@ dev.off()
 
 
 
-# pdf(file="figures/hgscv_hifi.pdf", width=5, height=3, onefile=FALSE)
-# df<-read.table("HGSCV2_hifi_chain.csv", sep=",", header=TRUE)
-# ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
-#   geom_line()+
-#   geom_point()+
-#   xlab("Depth")+
-#   ylab("Accuracy")+theme_classic()+scale_fill_brewer(palette="Dark2")
-# dev.off()
+pdf(file="figures/hgscv_hifi.pdf", width=5, height=3, onefile=FALSE)
+df<-read.table("HGSCV2_hifi_chain.csv", sep=",", header=TRUE)
+ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
+  geom_line()+
+  geom_point()+
+  xlab("Depth")+
+  ylab("Accuracy")+theme_classic()+scale_color_brewer(palette="Dark2")
+dev.off()
 
-# pdf(file="figures/HGSCV_CLR.pdf", width=5, height=3, onefile=FALSE)
-# df<-read.table("hgscv2_clr_chain.csv", sep=",", header=TRUE)
-# ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
-#   geom_line()+
-#   geom_point()+
-#   xlab("Depth")+
-#   ylab("Accuracy")+theme_classic()+scale_fill_brewer(palette="Dark2")
-# dev.off()
+pdf(file="figures/HGSCV_CLR.pdf", width=5, height=3, onefile=FALSE)
+df<-read.table("hgscv2_clr_chain.csv", sep=",", header=TRUE)
+ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
+  geom_line()+
+  geom_point()+
+  xlab("Depth")+
+  ylab("Accuracy")+theme_classic()+scale_color_brewer(palette="Dark2")
+dev.off()
 
-# pdf(file="figures/HPRC_ont.pdf", width=5, height=3, onefile=FALSE)
-# df<-read.table("HPRC_ont_chain.csv", sep=",", header=TRUE)
-# ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
-#   geom_line()+
-#   geom_point()+
-#   xlab("Depth")+
-#   ylab("Accuracy")+theme_classic()+scale_fill_brewer(palette="Dark2")
-# dev.off()
+pdf(file="figures/HPRC_ont.pdf", width=5, height=3, onefile=FALSE)
+df<-read.table("HPRC_ont_chain.csv", sep=",", header=TRUE)
+ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
+  geom_line()+
+  geom_point()+
+  xlab("Depth")+
+  ylab("Accuracy")+theme_classic()+scale_color_brewer(palette="Dark2")
+dev.off()
 
-# pdf(file="figures/HPRC_hifi.pdf", width=5, height=3, onefile=FALSE)
-# df<-read.table("HPRC_hifi_chain.csv", sep=",", header=TRUE)
-# ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
-#   geom_line()+
-#   geom_point()+
-#   xlab("Depth")+
-#   ylab("Accuracy")+theme_classic()+scale_fill_brewer(palette="Dark2")
-# dev.off()
+pdf(file="figures/HPRC_hifi.pdf", width=5, height=3, onefile=FALSE)
+df<-read.table("HPRC_hifi_chain.csv", sep=",", header=TRUE)
+ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
+  geom_line()+
+  geom_point()+
+  xlab("Depth")+
+  ylab("Accuracy")+theme_classic()+scale_color_brewer(palette="Dark2")
+dev.off()
 
