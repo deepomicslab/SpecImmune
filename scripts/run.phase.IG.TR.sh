@@ -11,9 +11,11 @@ bam=$outdir/$sample.VDJ.sort.bam
 dir=$(cd `dirname $0`; pwd)
 
 ###### minimap2 -t $threads -R "@RG\tID:$sample\tSM:$sample" -k 19 -w 19 -g 10k -A 1 -B 4 -O 6,26 -E 2,1 -s 200 -a $ref $reads  | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
-##### minimap2 -t $threads -R "@RG\tID:$sample\tSM:$sample" -a $ref $reads  | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
 
-bwa mem -t $threads -R "@RG\tID:$sample\tSM:$sample" $ref $reads | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
+
+minimap2 -t $threads -R "@RG\tID:$sample\tSM:$sample" -a $ref $reads  | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
+
+#bwa mem -t $threads -R "@RG\tID:$sample\tSM:$sample" $ref $reads | samtools view -bS -F 0x800 -| samtools sort - >$outdir/$sample.bam
 samtools index $outdir/$sample.bam
 samtools view -b -L $dir/../gene_dist/IG_TR_chrs.bed $outdir/$sample.bam > $outdir/$sample.VDJ.bam
 samtools sort $outdir/$sample.VDJ.bam -o $bam
