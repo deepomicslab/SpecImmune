@@ -847,13 +847,16 @@ def main_vdj_hgscv(gene_list, truth_dir, result_dir, allele_length_dict, gene_cl
     spec_gene_accuracy_dict = compare_four(new_truth_dict, all_hla_la_result, gene_list, 8, gene_class)
     print ("gene number", len(spec_gene_accuracy_dict))
 
-def main_vdj_hgscv2(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, gene_class="IG_TR",):
+def main_vdj_hgscv2(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, dataset="HPRC"):
 
     # print (allele_length_dict)
     len_cutoff = 0
     cutoff = 15
     # hgscv_pickle = "vdj_results/HGSCV2_truth_dict.pkl"
-    hgscv_pickle = "vdj_results/HPRC_truth_dict.pkl"
+    if dataset == "HPRC":
+        hgscv_pickle = "vdj_results/HPRC_truth_dict.pkl"
+    else:
+        hgscv_pickle = "vdj_results/HGSCV2_truth_dict.pkl"
     # truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
     # ### use pickle to save truth dict 
     # with open(hgscv_pickle, "wb") as f:
