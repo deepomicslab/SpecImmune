@@ -79,7 +79,10 @@ def parse_truth_from_align_all(allele_length_dict, align_dir,gene_class = "HLA",
     for file in os.listdir(align_dir):
         if file.endswith(f"_extracted_{gene_class}_align.txt"):
             truth_file = os.path.join(align_dir, file)
-            sample_truth_dict, sample_name = parse_truth_from_align(allele_length_dict, truth_file, gene_class, len_cutoff)
+            if gene_class == 'KIR':
+                sample_truth_dict, sample_name = parse_truth_from_align(allele_length_dict, truth_file, gene_class, len_cutoff, 0.95,0.995)
+            else:
+                sample_truth_dict, sample_name = parse_truth_from_align(allele_length_dict, truth_file, gene_class, len_cutoff)
             all_truth_dict[sample_name] = sample_truth_dict
     # print (all_truth_dict)
     return all_truth_dict

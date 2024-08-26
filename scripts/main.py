@@ -37,7 +37,7 @@ def main(args):
         command = f"""
         ## second: find a pair of alleles for each locus
         python3 {sys.path[0]}/select_best_reference_alleleV2.py --max_read_num {args["max_read_num"]} --candidate_allele_num {args["candidate_allele_num"]} \
-            --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
+            --hete_p {args["hete_p"]} --align_method {args['align_method_2']} -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
             --db {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
         """
         if args["seq_tech"] != "rna":

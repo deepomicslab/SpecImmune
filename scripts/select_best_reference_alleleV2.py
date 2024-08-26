@@ -506,7 +506,7 @@ def main():
 
 
         #  load alignment from bam
-        bam, depth_file, sort_depth_file = map2db(args, gene, my_db, my_folder, args["max_read_num"])
+        bam, depth_file, sort_depth_file = map2db(args, gene, my_db, my_folder, args["max_read_num"],args["align_method"])
         get_depth = Get_depth(depth_file)
         get_depth.record_depth()
         record_candidate_alleles, record_allele_length_no_use = get_depth.select(sort_depth_file, gene_list, args["candidate_allele_num"])

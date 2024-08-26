@@ -125,7 +125,7 @@ def subsample_fastq(gene, read_num, my_folder):
 
 
 
-def map2db(args, gene, my_db, my_folder, read_num=500):
+def map2db(args, gene, my_db, my_folder, read_num=500, align_method='minimap2'):
     # map binned reads to all alleles of each locus
     read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
     if args["seq_tech"] == "rna":
@@ -153,18 +153,18 @@ def map2db(args, gene, my_db, my_folder, read_num=500):
         samtools depth -aa {bam}>{depth_file}
         echo alignment done.
         """
-    # elif args['i'] == 'CYP':
-    #     alignDB_order = f"""
-    #     sample={args["n"]}
-    #     ref={ref}
-    #     bwa index $ref
-    #     bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref {sub_fastq} > {sam}
-    #     samtools view -bS -F 0x804  {sam} | samtools sort - >{bam}
-    #     samtools index {bam}
-    #     samtools depth -aa {bam}>{depth_file}
-    #     rm {sam}
-    #     echo alignment done.
-    #     """
+    elif align_method == 'bwa':
+        alignDB_order = f"""
+        sample={args["n"]}
+        ref={ref}
+        bwa index $ref
+        bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref {sub_fastq} > {sam}
+        samtools view -bS -F 0x804  {sam} | samtools sort - >{bam}
+        samtools index {bam}
+        samtools depth -aa {bam}>{depth_file}
+        rm {sam}
+        echo alignment done.
+        """
     else:
         alignDB_order = f"""
         sample={args["n"]}
