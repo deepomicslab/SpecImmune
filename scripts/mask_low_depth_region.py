@@ -274,7 +274,7 @@ if __name__ == "__main__":
     required.add_argument("-o", type=str, help="outdir", metavar="\b", default="./output")
     optional.add_argument("-w", type=int, help="Windows size while using sliding the ref", metavar="\b", default=20)
     optional.add_argument("-d", type=int, help="Minimum mean depth in a window.", metavar="\b", default=5)
-    # optional.add_argument("-f", type=str, help="Whether only mask exons.", metavar="\b", default="False")
+    optional.add_argument("-f", type=str, help="Whether only mask exons.", metavar="\b", default="False")
     optional.add_argument("-r", type=str, help="only check these regions, bed file.", metavar="\b")
     optional.add_argument("-g", type=str, help="gene interval file, cal mean depth for these genes.", metavar="\b")
     # optional.add_argument("-i", type=str, help="gene class.", metavar="\b", default="HLA")

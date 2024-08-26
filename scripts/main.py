@@ -31,8 +31,8 @@ def main(args):
         python3 {sys.path[0]}/read_binning.py -r {args["r"]} -n {args["n"]} -i {args["i"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} \
             --db {args["db"]} --min_identity {args["min_identity"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]} --align_method {args["align_method_1"]}
         """
-        if args["mode"] >=1:
-            os.system(command)
+        # if args["mode"] >=1:
+        #     os.system(command)
 
         command = f"""
         ## second: find a pair of alleles for each locus
@@ -40,9 +40,9 @@ def main(args):
             --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
             --db {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
         """
-        if args["seq_tech"] != "rna":
-            if args["mode"] >=1:
-                os.system(command)
+        # if args["seq_tech"] != "rna":
+        #     if args["mode"] >=1:
+        #         os.system(command)
 
         # return
 
