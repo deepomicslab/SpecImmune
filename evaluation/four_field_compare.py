@@ -514,6 +514,7 @@ def store_results(truth_dict, all_hla_la_result, gene_list, result_file):
                 if len(all_hla_la_result[sample][gene][i]) == 0:
                     all_hla_la_result[sample][gene][i] = 'NA'
                 else:
+                    # print (all_hla_la_result[sample][gene][i])
                     all_hla_la_result[sample][gene][i] = "/".join(all_hla_la_result[sample][gene][i])
             data.append([sample, gene, truth_dict[sample][gene][0], truth_dict[sample][gene][1], all_hla_la_result[sample][gene][0], all_hla_la_result[sample][gene][1]])
     # print (data[1])
@@ -950,6 +951,9 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
         spec_gene_accuracy_dict = compare_four(new_truth_dict, infer_dict, tcr_gene_list, 8, gene_class)
         print ("gene number", len(tcr_gene_list), "sample number", len(sample_list))
 
+        result_file = f"{sum_result_file[:-4]}_result.csv"
+        store_results(new_truth_dict, infer_dict, tcr_gene_list, result_file)
+
         shared_gene_list = []
         for gene in gene_list:
             if gene in spec_gene_accuracy_dict:
@@ -1217,7 +1221,7 @@ def read_spec_kir_result(spec_result, cutoff=0):
                 #     allele_list = genotype.split(";")
                 if gene not in spec_result_dict:
                     spec_result_dict[gene] = []
-                spec_result_dict[gene].append(genotype)
+                spec_result_dict[gene].append(genotype.split(";"))
     # print ("#", pure_diplotype, spec_result_dict)
     return spec_result_dict, spec_gene_depth
 
