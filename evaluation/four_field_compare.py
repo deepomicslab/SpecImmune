@@ -129,6 +129,9 @@ def parse_truth_from_align(allele_length_dict, truth_file, gene_class = "HLA", l
         for hap in match_len_dict[gene]:
             if gene_class=="IG_TR":
                 top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene_class, 0.1, 0.01)
+            # elif gene in ['KIR3DP1','KIR3DL1','KIR2DL1']:
+            elif gene_class=="KIR":
+                top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene_class, 0.05, 0.0005) #
             else:
                 top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene_class)
             hap_index = int(hap[-1]) -1
@@ -141,9 +144,9 @@ def select_top_alleles(my_match_len_dict, my_identity_dict, gene_class, len_diff
     sorted_match_len = sorted(my_match_len_dict.items(), key=lambda x: x[1], reverse=True)
     if gene_class == "CYP":
         ide_diff_cutoff = 0.00001
-    if gene_class == "KIR":
-        ide_diff_cutoff = 0
-        len_diff_cutoff = 0
+    # if gene_class == "KIR":
+    #     ide_diff_cutoff = 0.01
+    #     len_diff_cutoff = 0.01
     
     ## find the alleles with match len no shorter than len_diff_cutoff compared to the longest match len
     good_length_list = {}
@@ -162,7 +165,6 @@ def select_top_alleles(my_match_len_dict, my_identity_dict, gene_class, len_diff
     for allele, identity in good_length_list.items():
         if float(identity) >= float(sorted_identity[0][1]) * (1-ide_diff_cutoff):
             good_identity_list.append(allele)
-    
     return good_identity_list
 
 def parse_hla_hla_input(input_file):
@@ -916,13 +918,13 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
     gene_class = 'KIR'
     # print (allele_length_dict)
     len_cutoff = 0
-    cutoff = 15
+    cutoff = 0
 
     truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
 
     all_data, all_gene_data = [], []
     # for cutoff in [0, 5, 10, 15, 20]:
-    for cutoff in [10]:
+    for cutoff in [0]:
         new_truth_dict = {}
         tcr_gene_list = []
         sample_list = []

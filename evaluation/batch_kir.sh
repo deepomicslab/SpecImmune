@@ -1,14 +1,15 @@
 threads=15
 samples=(HG00512 HG00513 HG00514 HG00731 HG00732 HG00733 NA19238 NA19239 NA19240)
+# samples=(HG00513)
 src=/home/wangshuai/softwares//SpecLong/scripts/
 reads_dir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/reads_kir_hpc/
-outdir=/mnt/d/HLAPro_backup/Nanopore_optimize/KIR_HGSCV2_hifi
+outdir=/mnt/d/HLAPro_backup/Nanopore_optimize/KIR_HGSCV2_hifi2
 for sample in ${samples[@]}; do
 
     echo "Processing $sample"
     
     fq=$reads_dir/$sample.KIR.fastq.gz
-    python3 $src/main.py -r $fq -n $sample -i KIR -j $threads -o $outdir --align_method_1 minimap2
+    python3 $src/main.py -r $fq -n $sample -i KIR -j $threads -o $outdir #--align_method_1 minimap2
     # break
 
 

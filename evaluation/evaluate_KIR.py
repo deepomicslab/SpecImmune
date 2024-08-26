@@ -38,6 +38,6 @@ if __name__ == "__main__":
 
 
     truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
-    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/KIR_HGSCV2_hifi/"
+    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/KIR_HGSCV2_hifi2/"
     sum_result_file = benchmark_result_dir + "HGSCV2_hifi.csv"
     main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, '')
