@@ -85,7 +85,7 @@ def create_HLA_directories_and_save_sequences(fasta_path, output_base_dir, gene_
     print(f"All sequences have been categorized by gene and saved in {output_base_dir}")
     print(f"Merged FASTA file created and indexed at {merged_fasta_filename}")
 
-def create_KIR_directories_and_save_sequences(fasta_path, output_base_dir, gene_list, interval_dict):
+def create_KIR_directories_and_save_sequences(fasta_path, output_base_dir, gene_list):
     """
     Parse a FASTA file, create directories based on gene names, 
     and save corresponding sequences to these directories.
