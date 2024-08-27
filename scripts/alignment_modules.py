@@ -235,11 +235,21 @@ def read_bin_map2db(args, my_db, align_tool="bwa"):
         bwa mem -t {args["j"]} {my_db.full_db} {args["r"]} |samtools view -bS -o {outbam}
         echo alignment done.
         """
+        # if args['i'] == 'KIR':
+        #     alignDB_order = f"""
+        #     bwa mem -a -t {args["j"]} {my_db.full_db} {args["r"]} |samtools view -bS -o {outbam}
+        #     echo alignment done.
+        #     """
     elif align_tool == 'minimap2':
         alignDB_order = f"""
         minimap2 -t {args["j"]} {minimap_para} -a {minimap_db} {args["r"]} |samtools view -bS -o {outbam}
         echo alignment done.
         """
+        # if args['i'] == 'KIR':
+        #     alignDB_order = f"""
+        #     minimap2 -N 1000 -t {args["j"]} {minimap_para} -a {minimap_db} {args["r"]} |samtools view -bS -o {outbam}
+        #     echo alignment done.
+        #     """
     else:
         raise ValueError("Invalid alignment method specified.")
     # else:

@@ -556,9 +556,6 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
             if true_list[0][0] == 'NA':
                 print ("empty truth", sample, gene, true_list)
                 continue
-
-            
-            
             if hla_la_list[1] == '' and hla_la_list[0] == '':
                 print ("inferred empty", sample, gene, hla_la_list)
                 continue
@@ -593,18 +590,11 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
                 
                 true_list[i] = convert_field(true_list[i], digit)
                 hla_la_list[i] = convert_field(hla_la_list[i], digit)
+            if gene_class == 'KIR':
+                if hla_la_list[0][0] == 'NA' or hla_la_list[1][0] == 'NA':
+                    print ("inferred NA", sample, gene, hla_la_list)
+                    continue
 
-            # fir = 0
-            # if has_intersection(true_list[0], hla_la_list[0]):
-            #     fir += 1
-            # if has_intersection(true_list[1], hla_la_list[1]):
-            #     fir += 1   
-
-            # sec = 0
-            # if has_intersection(true_list[0], hla_la_list[1]):
-            #     sec += 1
-            # if has_intersection(true_list[1], hla_la_list[0]):
-            #     sec += 1  
             fir, sec = for_rev_compare(true_list, hla_la_list, gene_class)
 
 

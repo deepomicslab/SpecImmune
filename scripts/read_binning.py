@@ -116,8 +116,7 @@ class Binning():
         for read in self.bamfile:
             if read.is_unmapped:
                 continue
-            # print (read)
-            # read_obj = Read_Obj(read)
+
             read_obj = My_read()
             read_obj.load_bam(read)
             scor.add_read(read_obj)

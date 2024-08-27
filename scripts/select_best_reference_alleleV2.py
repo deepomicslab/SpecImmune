@@ -293,6 +293,8 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     if args['i'] == "KIR":
         len_diff_cutoff = 0.05
         ide_diff_cutoff = 1e-5
+    if gene == 'KIR3DP1':
+        len_diff_cutoff = 0.1
 
     # if gene  in ["DPB1"]:
     #     len_diff_cutoff = 1e-2

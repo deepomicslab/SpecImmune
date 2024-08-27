@@ -25,6 +25,9 @@ class My_read():
         self.match_rate = None
         self.mismatch_rate = None
         self.gap_ends_flag = False
+        self.SA_flag = False
+        self.XA_flag = False
+        self.first_SA = '' 
 
         # self.get_match_length(read)
 
@@ -60,6 +63,13 @@ class My_read():
                 self.mismatch_num = ta[1]  
             if ta[0] == 'AS':
                 self.alignment_score = ta[1]
+            if ta[0] == 'SA':
+                # print (ta)
+                self.SA_flag = True
+                self.first_SA = ta[1].split(",")[0]
+            if ta[0] == 'XA':
+                # print (ta)
+                self.XA_flag = True
         
         if self.alignment_len == 0:
             # print ("exit as the read is unmapped", read.query_name, read.cigar)
@@ -78,6 +88,10 @@ class My_read():
         #     self.loci_name = "KIR2DL5"
         if self.alignment_len < 400 and self.allele_name[0:3] == "KIR":
             self.identity = 0
+        # if self.SA_flag and self.loci_name == "KIR3DP1" and self.first_SA.split("*")[0] == "KIR2DL4":
+        #     self.identity = 0
+        # if self.XA_flag and self.loci_name == "KIR3DP1":
+        #     self.identity = 0
 
         self.match_rate = self.identity
         self.mismatch_rate = 1 - self.match_rate
