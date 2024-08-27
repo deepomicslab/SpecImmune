@@ -461,6 +461,16 @@ def convert_field(mylist, digit=8):
         mylist[j] = convert_field_for_allele(mylist[j], digit)
     return mylist
 
+def convert_kir_field(mylist, field=3):
+    for j in range(len(mylist)):
+        arr = mylist[j].split("*")
+        if field == 1:
+            arr[1] = arr[1][:3]
+        if field == 2:
+            arr[1] = arr[1][:5]
+        mylist[j] = arr[0] + '*' + arr[1]
+    return mylist
+
 def convert_HLA_version(mylist, map_to_latest_version):
     for j in range(len(mylist)):
         if mylist[j] in map_to_latest_version:
@@ -587,9 +597,14 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
                 if gene_class == "HLA":  ## map to the latest IMGT version
                     true_list[i] = convert_HLA_version(true_list[i], map_to_latest_version)
                     hla_la_list[i] = convert_HLA_version(hla_la_list[i], map_to_latest_version)
-                
-                true_list[i] = convert_field(true_list[i], digit)
-                hla_la_list[i] = convert_field(hla_la_list[i], digit)
+
+                if gene_class != "KIR":
+                    true_list[i] = convert_field(true_list[i], digit)
+                    hla_la_list[i] = convert_field(hla_la_list[i], digit)
+                else:
+                    true_list[i] = convert_kir_field(true_list[i], digit)
+                    hla_la_list[i] = convert_kir_field(hla_la_list[i], digit) 
+
             if gene_class == 'KIR':
                 if hla_la_list[0][0] == 'NA' or hla_la_list[1][0] == 'NA':
                     print ("inferred NA", sample, gene, hla_la_list)
@@ -913,7 +928,7 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
     # print (allele_length_dict)
     len_cutoff = 0
     cutoff = 0
-
+    field = 3
     truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
 
     all_data, all_gene_data = [], []
@@ -938,7 +953,7 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
 
         tcr_gene_list = list(set(tcr_gene_list))
         tcr_gene_list = sorted(tcr_gene_list, key=lambda x: gene_list.index(x))
-        spec_gene_accuracy_dict = compare_four(new_truth_dict, infer_dict, tcr_gene_list, 8, gene_class)
+        spec_gene_accuracy_dict = compare_four(new_truth_dict, infer_dict, tcr_gene_list, field, gene_class)
         print ("gene number", len(tcr_gene_list), "sample number", len(sample_list))
 
         result_file = f"{sum_result_file[:-4]}_result.csv"

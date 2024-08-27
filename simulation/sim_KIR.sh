@@ -1,36 +1,36 @@
-set -e 
+# set -e 
 ## use pbsim2
 
 
 outdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads/
-resultdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results/
+resultdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results2/
 
 
 for i in {1..5}
 do
-    sample=KIR_dp50_acc98_$i
+    sample=KIR_dp20_acc98_$i
 
     #### simulation
-    # mkdir $outdir/$sample
-    # perl simu.data.haplotype.kir2.pl $sample $outdir/$sample
-    # pbsim --prefix $outdir/$sample/$sample --depth 50 --hmm_model pbsim_model/P4C2.model --accuracy-mean 0.95 $outdir/$sample/$sample.KIR.sep.fa
+    mkdir $outdir/$sample
+    perl simu.data.haplotype.kir2.pl $sample $outdir/$sample
+    pbsim --prefix $outdir/$sample/$sample --depth 10 --hmm_model pbsim_model/P4C2.model --accuracy-mean 0.95 $outdir/$sample/$sample.KIR.sep.fa
 
-    # cat $outdir/$sample/${sample}_*fastq>$outdir/$sample/${sample}.fastq
-    # rm $outdir/$sample/${sample}_*fastq
-    # rm $outdir/$sample/${sample}_*.ref
-    # rm $outdir/$sample/${sample}_*.maf
-    # gzip -f $outdir/$sample/${sample}.fastq
+    cat $outdir/$sample/${sample}_*fastq>$outdir/$sample/${sample}.fastq
+    rm $outdir/$sample/${sample}_*fastq
+    rm $outdir/$sample/${sample}_*.ref
+    rm $outdir/$sample/${sample}_*.maf
+    gzip -f $outdir/$sample/${sample}.fastq
 
 
     #### run
-    python3 ../scripts/main.py -n $sample -o $resultdir -j 15 -y pacbio -i KIR -r $outdir/$sample/${sample}.fastq.gz --db ../db/ 
+    python3 ../scripts/main.py -n $sample -o $resultdir -j 15 -y pacbio -i KIR -r $outdir/$sample/${sample}.fastq.gz
 
     #### evaluation
-    # python3 ../evaluation/assess_read_bin.py $outdir/$sample/${sample}.assign.txt $outdir/$sample/$sample.KIR.sep.fa $outdir/$sample/${sample}.fastq.gz 
+    python3 ../evaluation/assess_read_bin.py $resultdir/$sample/${sample}.read_binning.txt $outdir/$sample/$sample.KIR.sep.fa $outdir/$sample/${sample}.fastq.gz 
     python3 ../evaluation/assess_typing.py -i KIR --true $outdir/$sample/$sample.KIR.hap.alleles.txt --infer $resultdir/$sample/${sample}.KIR.type.result.txt 
     echo "----split-----"
-    python3 ../evaluation/assess_typing.py -i KIR --true $outdir/$sample/$sample.KIR.hap.alleles.txt --infer $resultdir/$sample/hlala.like.results.txt
-    break
+    python3 ../evaluation/assess_typing.py -i KIR --true $outdir/$sample/$sample.KIR.hap.alleles.txt --infer $resultdir/$sample/${sample}.KIR.final.type.result.txt 
+    # break
 
 done
 
