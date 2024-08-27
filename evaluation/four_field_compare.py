@@ -1217,11 +1217,12 @@ def read_spec_kir_result(spec_result, cutoff=0):
                 if read_num < cutoff:
                     continue
                 spec_gene_depth[gene] = read_num
-                # if genotype != "NA":
-                #     allele_list = genotype.split(";")
                 if gene not in spec_result_dict:
                     spec_result_dict[gene] = []
-                spec_result_dict[gene].append(genotype.split(";"))
+                if genotype != "NA":
+                    spec_result_dict[gene].append(genotype.split(";"))
+                else:
+                    spec_result_dict[gene].append([genotype])
     # print ("#", pure_diplotype, spec_result_dict)
     return spec_result_dict, spec_gene_depth
 
