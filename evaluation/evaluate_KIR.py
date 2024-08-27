@@ -37,7 +37,16 @@ if __name__ == "__main__":
     benchmark_result_dir = "kir_results/"
 
 
-    truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
-    result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/KIR_HGSCV2_hifi2/"
-    sum_result_file = benchmark_result_dir + "HGSCV2_hifi.csv"
+    # truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
+    # result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/KIR_HGSCV2_hifi2/"
+    # sum_result_file = benchmark_result_dir + "HGSCV2_hifi.csv"
+    # main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, '')
+
+    truth_dir = "/home/wangshuai/00.hla/long/experiments/upload_truth/hprc_truth_bwa_zip/"
+    result_dir = "/home/wangshuai/00.hla/long/experiments/kir/kir_results/hprc_hifi/"
+    sum_result_file = benchmark_result_dir + "HPRC_hifi.csv"
     main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, '')
+
+
+
+    # truth_dir = "/home/wangshuai/00.hla/long/experiments/upload_truth/hgscv2_truth_bwa_zip/"
