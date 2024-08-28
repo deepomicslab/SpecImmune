@@ -464,12 +464,12 @@ def convert_field(mylist, digit=8):
 def convert_kir_field(mylist, field=3):
     for j in range(len(mylist)):
         arr = mylist[j].split("*")
-        if field == 1:
-            arr[1] = arr[1][:3]
-        if field == 2:
-            arr[1] = arr[1][:5]
-        #print (arr)
         if len(arr) == 2:
+            if field == 1:
+                arr[1] = arr[1][:3]
+            if field == 2:
+                arr[1] = arr[1][:5]
+        
             mylist[j] = arr[0] + '*' + arr[1]
     return mylist
 

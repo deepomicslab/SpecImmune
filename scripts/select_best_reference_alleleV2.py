@@ -325,12 +325,10 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
         #     sep="\t"
         # )
         if args['i'] == "KIR":
-            if abs(record_allele_pair_sep_match[tag][allele_list[0]]["identity"] - record_allele_pair_sep_match[tag][allele_list[1]]["identity"]) > 0.07:
+            if abs(record_allele_pair_sep_match[tag][allele_list[0]]["identity"] - record_allele_pair_sep_match[tag][allele_list[1]]["identity"]) > 0.1:
                 continue
             depth_list = [record_allele_pair_sep_match[tag][allele_list[0]]["depth"], record_allele_pair_sep_match[tag][allele_list[1]]["depth"]]
-            if max(depth_list) == 0:
-                continue
-            if min(depth_list)/max(depth_list) < 0.5:
+            if max(depth_list) != 0 and min(depth_list)/max(depth_list) < 0.2:
                 continue
 
         if (highest_match_score - sorted_record_allele_pair_match_len[i][1])/highest_match_score <= len_diff_cutoff:
