@@ -931,11 +931,10 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
     len_cutoff = 0
     cutoff = 0
     
-    truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
-
     all_data, all_gene_data = [], []
     for cutoff in [0, 5, 10, 15, 20]:
     #for cutoff in [0]:
+        truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
         new_truth_dict = {}
         tcr_gene_list = []
         sample_list = []

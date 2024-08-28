@@ -28,7 +28,7 @@ do
     # #### evaluation
     # python3 ../evaluation/assess_read_bin.py $resultdir/$sample/${sample}.read_binning.txt $outdir/$sample/$sample.KIR.sep.fa $outdir/$sample/${sample}.fastq.gz 
     # python3 ../evaluation/assess_typing.py -i KIR --true $outdir/$sample/$sample.KIR.hap.alleles.txt --infer $resultdir/$sample/${sample}.KIR.type.result.txt 
-    echo "----split-----"
+    echo "----split-----$sample"
     python3 ../evaluation/assess_typing.py -i KIR --true $outdir/$sample/$sample.KIR.hap.alleles.txt --infer $resultdir/$sample/${sample}.KIR.final.type.result.txt 
     # break
 
