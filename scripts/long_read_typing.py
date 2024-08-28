@@ -147,7 +147,7 @@ class Fasta():
         return float(subprocess.check_output(avg_depth_cmd, shell=True).strip())
 
     def run_command(self, cmd, description):
-        print(f"Executing {description}:\n{cmd}", flush=True)
+        # print(f"Executing {description}:\n{cmd}", flush=True)
         try:
             subprocess.run(cmd, shell=True, check=True, executable='/bin/bash')
         except subprocess.CalledProcessError as e:

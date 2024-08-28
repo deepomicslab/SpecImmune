@@ -295,6 +295,12 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
         ide_diff_cutoff = 1e-5
     if gene == 'KIR3DP1':
         len_diff_cutoff = 0.1
+    if gene == 'KIR3DL3':
+        len_diff_cutoff = 0.01
+    if gene == 'KIR2DP1':
+        len_diff_cutoff = 0.001
+    if gene == 'KIR2DS4':
+        len_diff_cutoff = 0.005
 
     # if gene  in ["DPB1"]:
     #     len_diff_cutoff = 1e-2
@@ -318,6 +324,14 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
         #     round(record_allele_pair_sep_match[tag][allele_list[1]]["coverage"],3),
         #     sep="\t"
         # )
+        if args['i'] == "KIR":
+            if abs(record_allele_pair_sep_match[tag][allele_list[0]]["identity"] - record_allele_pair_sep_match[tag][allele_list[1]]["identity"]) > 0.07:
+                continue
+            depth_list = [record_allele_pair_sep_match[tag][allele_list[0]]["depth"], record_allele_pair_sep_match[tag][allele_list[1]]["depth"]]
+            if max(depth_list) == 0:
+                continue
+            if min(depth_list)/max(depth_list) < 0.5:
+                continue
 
         if (highest_match_score - sorted_record_allele_pair_match_len[i][1])/highest_match_score <= len_diff_cutoff:
             good_length_dict[tag] = record_allele_pair_identity[tag]
