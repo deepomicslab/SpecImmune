@@ -468,7 +468,9 @@ def convert_kir_field(mylist, field=3):
             arr[1] = arr[1][:3]
         if field == 2:
             arr[1] = arr[1][:5]
-        mylist[j] = arr[0] + '*' + arr[1]
+        #print (arr)
+        if len(arr) == 2:
+            mylist[j] = arr[0] + '*' + arr[1]
     return mylist
 
 def convert_HLA_version(mylist, map_to_latest_version):
@@ -932,8 +934,8 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
     truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
 
     all_data, all_gene_data = [], []
-    # for cutoff in [0, 5, 10, 15, 20]:
-    for cutoff in [0]:
+    for cutoff in [0, 5, 10, 15, 20]:
+    #for cutoff in [0]:
         new_truth_dict = {}
         tcr_gene_list = []
         sample_list = []
