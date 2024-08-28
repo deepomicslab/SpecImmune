@@ -923,12 +923,12 @@ def main_vdj_hgscv2(gene_list, truth_dir, result_dir, allele_length_dict, sum_re
     df.to_csv(sum_result_file[:-4] + "_chain.csv", index=False)
     # """
 
-def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, dataset="HPRC"):
+def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, field = 3):
     gene_class = 'KIR'
     # print (allele_length_dict)
     len_cutoff = 0
     cutoff = 0
-    field = 3
+    
     truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
 
     all_data, all_gene_data = [], []
