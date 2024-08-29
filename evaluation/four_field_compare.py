@@ -969,9 +969,26 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
         for gene in shared_gene_list:
             data.append(spec_gene_accuracy_dict[gene] + [gene[:3], gene[:4], cutoff, field] )
         all_gene_data += data
+
+        if cutoff == 0:
+            new_data = []
+            for gene in gene_list:
+                if gene in spec_gene_accuracy_dict:
+                    new_data.append([gene, spec_gene_accuracy_dict[gene][1], gene[:4], cutoff, field, 'correct'] )
+                    new_data.append([gene, spec_gene_accuracy_dict[gene][2], gene[:4], cutoff, field, 'total'] )
+                else:
+                    new_data.append([gene, 0, gene[:4], cutoff, field, 'correct'] )
+                    new_data.append([gene, 0, gene[:4], cutoff, field, 'total'] )             
+
+            my_result_file = f"{sum_result_file[:-4]}_field{field}_count.csv"
+            df = pd.DataFrame(new_data, columns = ['gene', 'count', 'subclass', 'cutoff', 'resolution','type'])
+            df.to_csv(my_result_file, index=False)
+
     sum_result_file = f"{sum_result_file[:-4]}_field{field}_result.csv"
     df = pd.DataFrame(all_gene_data, columns = ['gene', 'correct', 'total', 'accuracy', 'class', 'subclass', 'cutoff', 'resolution'])
     df.to_csv(sum_result_file, index=False)
+
+
 
 def class_to_chain(data, cutoff): ## classify vdj genes
     chain_dict = {}
