@@ -26,10 +26,12 @@ while IFS= read -r file_path; do
 
     echo $sample
     if [ "1" == "1" ]; then
-    # if [ "$sample" == "fredhutch-hla-GO85" ]; then
+    # if [ "$sample" == "HG02486" ]; then
         echo "Processing $sample"
         
+        
         fq=$reads_dir/$sample.KIR.fastq.gz
+        # sample=HG02559_2
         python3 $src/main.py -r $fq -n $sample -i KIR -j $threads -o $outdir --hete_p 0.2 #--align_method_1 minimap2 #--align_method_2 bwa #--align_method_1 minimap2
         # break
         

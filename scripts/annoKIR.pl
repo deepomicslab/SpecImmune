@@ -68,7 +68,12 @@ foreach my $class (@genes) {
             # print command
                 print "blastn -query $fa -out $workdir/$tag.blast.out1 -db $ref -outfmt 7 -num_threads 4 -max_target_seqs 10000000\n";
        #      `blastn -query $ref -out $fadir/$tag.blast.out2 -db $fa -outfmt 7 -num_threads 4 -max_target_seqs 10000000`;
-        } else {
+        } 
+        elsif ($class eq "KIR3DL2") {
+            `blastn -query $fa -out $workdir/$tag.blast.out1 -db $ref -outfmt 7 -gapopen 1 -gapextend 1 -num_threads 4 -max_hsps 1 -max_target_seqs 10000000`;
+        } 
+        
+        else {
             `blastn -query $fa -out $workdir/$tag.blast.out1 -db $ref -outfmt 7 -num_threads 4 -max_target_seqs 10000000 -perc_identity 95 -qcov_hsp_perc 10`;
        #      `blastn -query $ref -out $fadir/$tag.blast.out2 -db $fa -outfmt 7 -num_threads 4 -max_target_seqs 10000000 -perc_identity 95 -qcov_hsp_perc 10`;
         }
@@ -78,11 +83,18 @@ foreach my $class (@genes) {
         while (<IN1>) {
             chomp;
             next if (/^#/);
-            my ($hla, $t, $m, $d, $a) = (split)[1, 3, 4, 5, 11];
+            my ($hla, $iden, $t, $m, $d, $a) = (split)[1, 2, 3, 4, 5, 11];
             next if ($t < $cutoff);
             $hash11{$hla} += $t;
-            $hash12{$hla} += $m + $d;
+            
             $hasha{$hla} += $a;
+            if ($class eq "KIR3DL2") {
+                $hash12{$hla} += (100-$iden) * $t / 100;
+
+            }
+            else{
+                $hash12{$hla} += $m + $d;
+            }
         }
         close IN1;
 

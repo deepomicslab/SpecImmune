@@ -80,7 +80,7 @@ def parse_truth_from_align_all(allele_length_dict, align_dir,gene_class = "HLA",
         if file.endswith(f"_extracted_{gene_class}_align.txt"):
             truth_file = os.path.join(align_dir, file)
             if gene_class == 'KIR':
-                sample_truth_dict, sample_name = parse_truth_from_align(allele_length_dict, truth_file, gene_class, len_cutoff, 0.95,0.995)
+                sample_truth_dict, sample_name = parse_truth_from_align(allele_length_dict, truth_file, gene_class, len_cutoff, 0.95,0.99)
             else:
                 sample_truth_dict, sample_name = parse_truth_from_align(allele_length_dict, truth_file, gene_class, len_cutoff)
             all_truth_dict[sample_name] = sample_truth_dict
@@ -134,7 +134,7 @@ def parse_truth_from_align(allele_length_dict, truth_file, gene_class = "HLA", l
                 top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene_class, 0.1, 0.01)
             # elif gene in ['KIR3DP1','KIR3DL1','KIR2DL1']:
             elif gene_class=="KIR":
-                top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene_class, 0.05, 0.0005) #
+                top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene_class, 0.05, 0.0005) #0.0005
             else:
                 top_alleles = select_top_alleles(match_len_dict[gene][hap], identity_dict[gene][hap], gene_class)
             hap_index = int(hap[-1]) -1
@@ -933,7 +933,7 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
     
     all_data, all_gene_data = [], []
     for cutoff in [0, 5, 10, 15, 20]:
-    #for cutoff in [0]:
+    # for cutoff in [0]:
         truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
         new_truth_dict = {}
         tcr_gene_list = []
@@ -967,10 +967,10 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
 
         data = []
         for gene in shared_gene_list:
-            data.append(spec_gene_accuracy_dict[gene] + [gene[:3], gene[:4], cutoff] )
+            data.append(spec_gene_accuracy_dict[gene] + [gene[:3], gene[:4], cutoff, field] )
         all_gene_data += data
-
-    df = pd.DataFrame(all_gene_data, columns = ['gene', 'correct', 'total', 'accuracy', 'class', 'subclass', 'cutoff'])
+    sum_result_file = f"{sum_result_file[:-4]}_field{field}_result.csv"
+    df = pd.DataFrame(all_gene_data, columns = ['gene', 'correct', 'total', 'accuracy', 'class', 'subclass', 'cutoff', 'resolution'])
     df.to_csv(sum_result_file, index=False)
 
 def class_to_chain(data, cutoff): ## classify vdj genes

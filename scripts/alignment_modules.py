@@ -227,8 +227,6 @@ def read_bin_map2db(args, my_db, align_tool="bwa"):
     #     minimap_db = ref_index
 
     outbam = f"""{args["o"]}/{args["n"]}/{args["n"]}.db.bam"""
-    # map raw reads to database
-    # if args["seq_tech"] != 'rna':
 
     if align_tool == 'bwa':
         alignDB_order = f"""
@@ -259,4 +257,8 @@ def read_bin_map2db(args, my_db, align_tool="bwa"):
     #     echo alignment done.
     #     """
     # print (alignDB_order)
-    os.system(alignDB_order)
+
+    if not os.path.exists(outbam) or os.path.getsize(outbam) == 0:
+        os.system(alignDB_order)
+    else:
+        print(f"{outbam} is detected, skip the alignment.")
