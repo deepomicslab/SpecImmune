@@ -751,7 +751,8 @@ def assess_sim_module(truth, infer, gene_list, gene_class="HLA"):
     truth_dict["test"] = sample_truth_dict
     infer_dict["test"] = sample_infer_dict
     gene_list = [del_prefix(x) for x in gene_list]
-    compare_four(truth_dict, infer_dict, gene_list, 8, gene_class)
+    spec_gene_accuracy_dict = compare_four(truth_dict, infer_dict, gene_list, 8, gene_class)
+    return spec_gene_accuracy_dict
 
 def assess_sim():
     truth = "../test/test.HLA.hap.alleles.txt"

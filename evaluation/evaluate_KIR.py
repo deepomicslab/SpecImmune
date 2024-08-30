@@ -36,12 +36,12 @@ if __name__ == "__main__":
     # main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
 
     benchmark_result_dir = "kir_results/"
-
+    data = []
     for field in [1,2,3]:
         truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
         result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/KIR_HGSCV2_hifi2/"
         sum_result_file = benchmark_result_dir + "HGSCV2_hifi.csv"
-        main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, field)
+        # main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, field)
 
         # truth_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hprc_truth_bwa/"
         # result_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/KIR_HPRC_hifi/"
@@ -62,11 +62,19 @@ if __name__ == "__main__":
         # result_dir = "/home/wangshuai/00.hla/long/experiments/kir/kir_results/hgscv2_clr/"
         # sum_result_file = benchmark_result_dir + "hgscv2_clr.csv"
         # main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, field)
+ 
+        result_file = f'{sum_result_file[:-4]}_field{field}_result.csv'
+        depth_dict = cal_total_accuracy(result_file)
+        for cutoff in depth_dict:
+            data.append([cutoff, depth_dict[cutoff][0], depth_dict[cutoff][1], depth_dict[cutoff][2], 'HGSCV2_hifi', field])
 
-        # data = []
-        # depth_dict = cal_total_accuracy(sum_result_file)
-        # for cutoff in depth_dict:
-        #     data.append([cutoff, depth_dict[cutoff][0], depth_dict[cutoff][1], depth_dict[cutoff][2], 'HPRC_hifi_2', field])
-        #     print (cutoff, depth_dict[cutoff][0], depth_dict[cutoff][1], depth_dict[cutoff][2])
-        # print ('\n')
+        sum_result_file = benchmark_result_dir + "HPRC_hifi_2.csv"
+        result_file = f'{sum_result_file[:-4]}_field{field}_result.csv'
+        depth_dict = cal_total_accuracy(result_file)
+        for cutoff in depth_dict:
+            data.append([cutoff, depth_dict[cutoff][0], depth_dict[cutoff][1], depth_dict[cutoff][2], 'HPRC_hifi', field])
+
+
+    df = pd.DataFrame(data, columns = ['depth', 'correct', 'total', 'accuracy', 'dataset', 'field'])
+    df.to_csv(benchmark_result_dir + "/all_loci_depth.csv", index=False)
 

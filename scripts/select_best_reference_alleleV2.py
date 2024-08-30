@@ -335,7 +335,18 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
             good_length_dict[tag] = record_allele_pair_identity[tag]
         else:
             break
-    print ("# pass match len cutoff", len(good_length_dict))
+    print ("# allele pairs that pass match len cutoff", len(good_length_dict))
+
+    if len(good_length_dict) == 0:
+        print ("# no allele pair selected, use less strict criteria", len(good_length_dict))
+        for i in range(len(sorted_record_allele_pair_match_len)):
+            tag = sorted_record_allele_pair_match_len[i][0]
+            allele_list = tag.split("&")
+            if (highest_match_score - sorted_record_allele_pair_match_len[i][1])/highest_match_score <= len_diff_cutoff:
+                good_length_dict[tag] = record_allele_pair_identity[tag]
+            else:
+                break
+
     identity_sorted_list = sorted(good_length_dict.items(), key=lambda x: x[1], reverse=True)
     match_len_with_max_identity = identity_sorted_list[0][1]
     full_result_list = []
