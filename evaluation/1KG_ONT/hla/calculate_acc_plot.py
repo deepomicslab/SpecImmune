@@ -65,6 +65,7 @@ plt.figure(figsize=(10, 12))  # Adjusted figure size with smaller height for sub
 
 # Use the specified colors
 colors = ["#FF5959", "#FFAD5A",  "#4F9DA6"]
+colors = ["#D2D2D2", "#062565", "#0098B4"]
 
 for i, cutoff in enumerate(read_cutoffs, 1):
     plt.subplot(5, 2, i)  # Create subplots in a 5x2 grid
@@ -74,25 +75,25 @@ for i, cutoff in enumerate(read_cutoffs, 1):
         genes = [item['Gene'] for item in gene_accuracies]
         accuracies = [item['Accuracy'] for item in gene_accuracies]
         
-        sns.lineplot(x=genes, y=accuracies, label=df_name, color=color, marker='o')
+        sns.lineplot(x=genes, y=accuracies, label=df_name, color=color, marker='o', linewidth=3)
     
-    plt.title(f"Reads Cutoff = {cutoff}", fontsize=12)
-    plt.xlabel("Gene", fontsize=10)
-    plt.ylabel("Accuracy", fontsize=10)
-    plt.xticks(rotation=45, fontsize=8)
-    plt.yticks(fontsize=8)
-    plt.ylim(0, 1.05)  # Assuming accuracy is between 0 and 1
+    plt.title(f"Depth Cutoff = {cutoff}", fontsize=14)
+    plt.xlabel("Locus", fontsize=14)
+    plt.ylabel("Accuracy", fontsize=14)
+    plt.xticks(rotation=45, fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.ylim(0, 1.1)  # Assuming accuracy is between 0 and 1
 
     
     # Legend outside on the right with no background
-    plt.legend(title="Methods", loc='center left', bbox_to_anchor=(1, 0.5), fontsize=8, frameon=False)
+    plt.legend(title="", loc='center left', bbox_to_anchor=(1, 0.5), fontsize=14, frameon=False)
 
 plt.tight_layout(pad=1)  # Adjust padding for better spacing
-plt.savefig("cutoff_accuracy_plots.pdf", bbox_inches='tight')  # Save the first plot as a PDF
+plt.savefig("cutoff_accuracy_plots.svg", format="svg", bbox_inches='tight', dpi=600)  # Save the first plot as a PDF
 # plt.show()
 
 # Step 6: Plot the second set of results by gene, each gene in a row, and save to PDF
-plt.figure(figsize=(6, len(genes_in_dfs) * 2.5))  # Adjusted figure size with smaller width
+plt.figure(figsize=(6, len(genes_in_dfs) * 2))  # Adjusted figure size with smaller width
 
 for i, gene in enumerate(genes_in_dfs, 1):
     plt.subplot(len(genes_in_dfs), 1, i)  # Each gene gets its own row
@@ -103,15 +104,15 @@ for i, gene in enumerate(genes_in_dfs, 1):
         sns.lineplot(x=read_cutoffs, y=accuracies, label=df_name, color=color, marker='o')
     
     plt.title(f"{gene}", fontsize=12)
-    plt.xlabel("Depth Cutoff", fontsize=10)
+    plt.xlabel("Depth Cutoff", fontsize=14)
     plt.ylabel("Accuracy", fontsize=10)
     plt.xticks(rotation=45, fontsize=8)
-    plt.yticks(fontsize=8)
-    plt.ylim(0, 1.05)  # Assuming accuracy is between 0 and 1
+    plt.yticks(fontsize=14)
+    plt.ylim(0, 1.1)  # Assuming accuracy is between 0 and 1
     
     # Legend outside on the right with no background
-    plt.legend(title="Methods", loc='center left', bbox_to_anchor=(1, 0.5), fontsize=8, frameon=False)
+    plt.legend(title="", loc='center left', bbox_to_anchor=(1, 0.5), fontsize=8, frameon=False)
 
 plt.tight_layout(pad=1)  # Adjust padding for better spacing
-plt.savefig("gene_accuracy_by_cutoff_plots.pdf", bbox_inches='tight')  # Save the second plot as a PDF
+plt.savefig("gene_accuracy_by_cutoff_plots.svg", format="svg", bbox_inches='tight', dpi=600)  # Save the second plot as a PDF
 # plt.show()

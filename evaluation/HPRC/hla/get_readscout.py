@@ -113,13 +113,15 @@ def create_count_table(read_counts):
     return df
 
 def main():
-    samples_file = 'hprc1_2.samples'
+    samples_file = 'all.samples'
     # hifi
     HPRC_hifi = "/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/speclong_out_rerun/hifi"
     HPRC_ont = "/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/HPRC_part1/data/speclong_out_rerun/ont"
+    HGSVC_hifi = "/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hla_pacbio_new/hifi/typing_out_specrerun/"
+    HGSVC_clr = "/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hgsvc_clr/speclong_out_rerun/"
 
 
-    fastq_dirs = [HPRC_ont]
+    fastq_dirs = [HGSVC_clr]
 
     dp_counts = process_samples(samples_file, fastq_dirs)
     count_table = create_count_table(dp_counts)
@@ -127,7 +129,7 @@ def main():
     print(count_table)
 
     # count_table.to_csv('read_counts.csv')
-    count_table.to_csv('read_depth_ont.csv')
+    count_table.to_csv('read_depth.csv')
 
 if __name__ == '__main__':
     main()
