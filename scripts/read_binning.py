@@ -51,7 +51,10 @@ class Score_Obj():
         # if args['i'] == "CYP" and read_obj.loci_name != "CYP2D6": ## strict filter for CYP other genes
         #     if read_obj.match_num < 1000 or read_obj.identity < 0.95:
         #         return
-
+        # if read_obj.loci_name == 'KIR3DL2' and read_obj.identity < 0.9:
+        #     return
+        # if read_obj.loci_name == 'KIR3DL2' and read_obj.match_num < 2000:
+        #     return
 
         if read_obj.identity < args["min_identity"]:
             return
@@ -116,8 +119,7 @@ class Binning():
         for read in self.bamfile:
             if read.is_unmapped:
                 continue
-            # print (read)
-            # read_obj = Read_Obj(read)
+
             read_obj = My_read()
             read_obj.load_bam(read)
             scor.add_read(read_obj)

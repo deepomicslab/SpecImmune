@@ -24,6 +24,6 @@ if __name__ == "__main__":
 
     gene_list, interval_dict =  get_focus_gene(args)
 
-    assess_sim_module(args["true"], args["infer"], gene_list, args['i'])
+    spec_gene_accuracy_dict = assess_sim_module(args["true"], args["infer"], gene_list, args['i'])
 
 

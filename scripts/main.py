@@ -37,7 +37,7 @@ def main(args):
         command = f"""
         ## second: find a pair of alleles for each locus
         python3 {sys.path[0]}/select_best_reference_alleleV2.py --max_read_num {args["max_read_num"]} --candidate_allele_num {args["candidate_allele_num"]} \
-            --hete_p {args["hete_p"]} --align_method minimap2 -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
+            --hete_p {args["hete_p"]} --align_method {args['align_method_2']} -r {args["r"]} -n {args["n"]}  -i {args["i"]} -o {args["o"]} -j {args["j"]} -y {args["y"]} \
             --db {args["db"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
         """
         if args["seq_tech"] != "rna":
@@ -117,7 +117,7 @@ def main(args):
         my_db = My_db(args)
         command = f"""
         bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
-        python3 {sys.path[0]}/get_IG_TR_depth.py -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
+        python3 {sys.path[0]}/get_IG_TR_depth.py --lite 0 -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
         """
         os.system(command)
     else:

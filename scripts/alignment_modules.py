@@ -125,7 +125,7 @@ def subsample_fastq(gene, read_num, my_folder):
 
 
 
-def map2db(args, gene, my_db, my_folder, read_num=500):
+def map2db(args, gene, my_db, my_folder, read_num=500, align_method='minimap2'):
     # map binned reads to all alleles of each locus
     read_type = Read_Type(args["seq_tech"], args["y"], args["RNA_type"])
     if args["seq_tech"] == "rna":
@@ -153,18 +153,18 @@ def map2db(args, gene, my_db, my_folder, read_num=500):
         samtools depth -aa {bam}>{depth_file}
         echo alignment done.
         """
-    # elif args['i'] == 'CYP':
-    #     alignDB_order = f"""
-    #     sample={args["n"]}
-    #     ref={ref}
-    #     bwa index $ref
-    #     bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref {sub_fastq} > {sam}
-    #     samtools view -bS -F 0x804  {sam} | samtools sort - >{bam}
-    #     samtools index {bam}
-    #     samtools depth -aa {bam}>{depth_file}
-    #     rm {sam}
-    #     echo alignment done.
-    #     """
+    elif align_method == 'bwa':
+        alignDB_order = f"""
+        sample={args["n"]}
+        ref={ref}
+        bwa index $ref
+        bwa mem -R '@RG\\tID:foo\\tSM:bar' -a -t {args["j"]} $ref {sub_fastq} > {sam}
+        samtools view -bS -F 0x804  {sam} | samtools sort - >{bam}
+        samtools index {bam}
+        samtools depth -aa {bam}>{depth_file}
+        rm {sam}
+        echo alignment done.
+        """
     else:
         alignDB_order = f"""
         sample={args["n"]}
@@ -227,19 +227,27 @@ def read_bin_map2db(args, my_db, align_tool="bwa"):
     #     minimap_db = ref_index
 
     outbam = f"""{args["o"]}/{args["n"]}/{args["n"]}.db.bam"""
-    # map raw reads to database
-    # if args["seq_tech"] != 'rna':
 
     if align_tool == 'bwa':
         alignDB_order = f"""
         bwa mem -t {args["j"]} {my_db.full_db} {args["r"]} |samtools view -bS -o {outbam}
         echo alignment done.
         """
+        # if args['i'] == 'KIR':
+        #     alignDB_order = f"""
+        #     bwa mem -a -t {args["j"]} {my_db.full_db} {args["r"]} |samtools view -bS -o {outbam}
+        #     echo alignment done.
+        #     """
     elif align_tool == 'minimap2':
         alignDB_order = f"""
         minimap2 -t {args["j"]} {minimap_para} -a {minimap_db} {args["r"]} |samtools view -bS -o {outbam}
         echo alignment done.
         """
+        # if args['i'] == 'KIR':
+        #     alignDB_order = f"""
+        #     minimap2 -N 1000 -t {args["j"]} {minimap_para} -a {minimap_db} {args["r"]} |samtools view -bS -o {outbam}
+        #     echo alignment done.
+        #     """
     else:
         raise ValueError("Invalid alignment method specified.")
     # else:
@@ -249,4 +257,8 @@ def read_bin_map2db(args, my_db, align_tool="bwa"):
     #     echo alignment done.
     #     """
     # print (alignDB_order)
-    os.system(alignDB_order)
+
+    if not os.path.exists(outbam) or os.path.getsize(outbam) == 0:
+        os.system(alignDB_order)
+    else:
+        print(f"{outbam} is detected, skip the alignment.")

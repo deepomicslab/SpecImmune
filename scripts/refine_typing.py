@@ -141,6 +141,11 @@ def select_by_alignment(align_list, gene):
     # f.close()
     len_diff_cutoff = 0.02
     ide_diff_cutoff = 0.0004
+
+    # if gene == 'KIR3DP1':
+    #     len_diff_cutoff = 0.15
+    if gene == 'KIR2DS4':
+        len_diff_cutoff = 0.1
     # print ("ienti:",identity_sorted_list)
     intersection_alleles = list(set(max_match_len_alleles) & set(max_identity_alleles))   
     # print (">>>>>>>>>", match_sorted_list[:10])

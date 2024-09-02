@@ -289,6 +289,18 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
     if args['i'] == "CYP":
         len_diff_cutoff = 0.1
         ide_diff_cutoff = 1e-5
+        
+    if args['i'] == "KIR":
+        len_diff_cutoff = 0.05
+        ide_diff_cutoff = 1e-5
+    if gene == 'KIR3DP1':
+        len_diff_cutoff = 0.1
+    if gene == 'KIR3DL3':
+        len_diff_cutoff = 0.01
+    if gene == 'KIR2DP1':
+        len_diff_cutoff = 0.001
+    if gene == 'KIR2DS4':
+        len_diff_cutoff = 0.005
 
     # if gene  in ["DPB1"]:
     #     len_diff_cutoff = 1e-2
@@ -312,12 +324,29 @@ def choose_best_alleles(gene, record_allele_pair_match_len, record_allele_pair_i
         #     round(record_allele_pair_sep_match[tag][allele_list[1]]["coverage"],3),
         #     sep="\t"
         # )
+        if args['i'] == "KIR":
+            if abs(record_allele_pair_sep_match[tag][allele_list[0]]["identity"] - record_allele_pair_sep_match[tag][allele_list[1]]["identity"]) > 0.1:
+                continue
+            depth_list = [record_allele_pair_sep_match[tag][allele_list[0]]["depth"], record_allele_pair_sep_match[tag][allele_list[1]]["depth"]]
+            if max(depth_list) != 0 and min(depth_list)/max(depth_list) < 0.2:
+                continue
 
         if (highest_match_score - sorted_record_allele_pair_match_len[i][1])/highest_match_score <= len_diff_cutoff:
             good_length_dict[tag] = record_allele_pair_identity[tag]
         else:
             break
-    print ("# pass match len cutoff", len(good_length_dict))
+    print ("# allele pairs that pass match len cutoff", len(good_length_dict))
+
+    if len(good_length_dict) == 0:
+        print ("# no allele pair selected, use less strict criteria", len(good_length_dict))
+        for i in range(len(sorted_record_allele_pair_match_len)):
+            tag = sorted_record_allele_pair_match_len[i][0]
+            allele_list = tag.split("&")
+            if (highest_match_score - sorted_record_allele_pair_match_len[i][1])/highest_match_score <= len_diff_cutoff:
+                good_length_dict[tag] = record_allele_pair_identity[tag]
+            else:
+                break
+
     identity_sorted_list = sorted(good_length_dict.items(), key=lambda x: x[1], reverse=True)
     match_len_with_max_identity = identity_sorted_list[0][1]
     full_result_list = []
@@ -502,7 +531,7 @@ def main():
 
 
         #  load alignment from bam
-        bam, depth_file, sort_depth_file = map2db(args, gene, my_db, my_folder, args["max_read_num"])
+        bam, depth_file, sort_depth_file = map2db(args, gene, my_db, my_folder, args["max_read_num"],args["align_method"])
         get_depth = Get_depth(depth_file)
         get_depth.record_depth()
         record_candidate_alleles, record_allele_length_no_use = get_depth.select(sort_depth_file, gene_list, args["candidate_allele_num"])
