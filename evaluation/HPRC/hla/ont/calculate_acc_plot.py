@@ -14,9 +14,10 @@ df_names = ['HLA*LA', 'SpecHLA', 'SpecLong']  # Updated labels for DataFrames
 
 # Define colors to be used for each software tool
 colors = ["#FF5959", "#FFAD5A", "#4F9DA6"]  # Colors for HLA*LA, SpecHLA, and SpecLong respectively
+colors = ["#D2D2D2", "#062565", "#0098B4"]
 
 # Step 2: Read the gene read counts file into a DataFrame
-gene_reads_df = pd.read_csv('read_depth_ont.csv', index_col=0)
+gene_reads_df = pd.read_csv('read_depth.csv', index_col=0)
 gene_reads_df.columns = gene_reads_df.columns.str.replace('HLA-', '', regex=False)
 
 # Define gene classes
@@ -105,18 +106,18 @@ for i, (class_name, genes) in enumerate(gene_classes.items(), 1):
 
         sns.lineplot(x=read_cutoffs, y=accuracies_by_cutoff, label=df_name, color=color, marker='o')
 
-    plt.title(f"{class_name}", fontsize=10)
-    plt.xlabel("Depth Cutoff", fontsize=9)
-    plt.ylabel("Average Accuracy", fontsize=9)
-    plt.xticks(rotation=45, fontsize=8)
-    plt.yticks(fontsize=8)
-    plt.ylim(0, 1.05)  # Assuming accuracy is between 0 and 1
+    plt.title(f"{class_name}", fontsize=14)
+    plt.xlabel("Depth Cutoff", fontsize=14)
+    plt.ylabel("Average Accuracy", fontsize=10)
+    plt.xticks(rotation=45, fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.ylim(0, 1.1)  # Assuming accuracy is between 0 and 1
 
     # Legend inside the plot
-    plt.legend(title="Methods", fontsize=8, frameon=False)
+    plt.legend(title="", fontsize=8, frameon=False)
 
 plt.tight_layout(pad=1)  # Adjust padding for better spacing
-plt.savefig("HPRC_ONT_performance_by_class_and_cutoff.pdf", bbox_inches='tight')  # Save the plot as a PDF
+plt.savefig("HPRC_ONT_performance_by_class_and_cutoff.svg", bbox_inches='tight', format="svg", dpi=600)  # Save the plot as a PDF
 
 # Figure 2: Individual gene plots grouped by class, with 4 subplots per row
 for class_name, genes in gene_classes.items():
@@ -137,19 +138,19 @@ for class_name, genes in gene_classes.items():
             
             sns.lineplot(x=read_cutoffs, y=accuracies_by_cutoff, label=df_name, color=color, marker='o')
 
-        plt.title(f"{gene}", fontsize=10)
-        plt.xlabel("Depth Cutoff", fontsize=9)
-        plt.ylabel("Accuracy", fontsize=9)
-        plt.xticks(rotation=45, fontsize=8)
-        plt.yticks(fontsize=8)
+        plt.title(f"{gene}", fontsize=14)
+        plt.xlabel("Depth Cutoff", fontsize=14)
+        plt.ylabel("Accuracy", fontsize=14)
+        plt.xticks(rotation=45, fontsize=14)
+        plt.yticks(fontsize=14)
         plt.ylim(0, 1.05)
 
         # Add the legend only to the first subplot in the first row
         # if idx == 0:
-        plt.legend(title="Methods", fontsize=8, frameon=False, loc="lower left")
+        plt.legend(title="", fontsize=8, frameon=False, loc="lower left")
 
     plt.tight_layout(pad=1)  # Adjust padding for better spacing
-    plt.savefig(f"HPRC_ONT_performance_by_gene_and_cutoff_{class_name}.pdf", bbox_inches='tight')  # Save the plot as a PDF
+    plt.savefig(f"HPRC_ONT_performance_by_gene_and_cutoff_{class_name}.svg", bbox_inches='tight', format="svg", dpi=600)  # Save the plot as a PDF
 
 # Uncomment the line below if you want to display the plot interactively
 # plt.show()

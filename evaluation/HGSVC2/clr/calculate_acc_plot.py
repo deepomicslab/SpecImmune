@@ -16,7 +16,6 @@ df_names = ['HLA*LA', 'SpecHLA', 'SpecLong']  # Updated labels for DataFrames
 colors = ["#FF5959", "#FFAD5A", "#4F9DA6"]  # Colors for HLA*LA, SpecHLA, and SpecLong respectively
 colors = ["#D2D2D2", "#062565", "#0098B4"]
 
-
 # Step 2: Read the gene read counts file into a DataFrame
 gene_reads_df = pd.read_csv('read_depth.csv', index_col=0)
 gene_reads_df.columns = gene_reads_df.columns.str.replace('HLA-', '', regex=False)
@@ -105,7 +104,7 @@ for i, (class_name, genes) in enumerate(gene_classes.items(), 1):
             avg_accuracy = sum(gene_accuracies) / len(gene_accuracies) if gene_accuracies else None
             accuracies_by_cutoff.append(avg_accuracy)
 
-        sns.lineplot(x=read_cutoffs, y=accuracies_by_cutoff, label=df_name, color=color, marker='o')
+        sns.lineplot(x=read_cutoffs, y=accuracies_by_cutoff, label=df_name, color=color, marker='o', linewidth=2)
 
     plt.title(f"{class_name}", fontsize=14)
     plt.xlabel("Depth Cutoff", fontsize=14)
@@ -118,7 +117,7 @@ for i, (class_name, genes) in enumerate(gene_classes.items(), 1):
     plt.legend(title="", fontsize=8, frameon=False)
 
 plt.tight_layout(pad=1)  # Adjust padding for better spacing
-plt.savefig("HPRC_HIFI_performance_by_class_and_cutoff.svg", bbox_inches='tight', format="svg", dpi=600)  # Save the plot as a PDF
+plt.savefig("HGSVC_CLR_performance_by_class_and_cutoff.svg", bbox_inches='tight', format="svg", dpi=600)  # Save the plot as a PDF
 
 # Figure 2: Individual gene plots grouped by class, with 4 subplots per row
 for class_name, genes in gene_classes.items():
@@ -148,10 +147,10 @@ for class_name, genes in gene_classes.items():
 
         # Add the legend only to the first subplot in the first row
         # if idx == 0:
-        plt.legend(title="Methods", fontsize=8, frameon=False, loc="lower left")
+        plt.legend(title="", fontsize=8, frameon=False, loc="lower left")
 
     plt.tight_layout(pad=1)  # Adjust padding for better spacing
-    plt.savefig(f"HPRC_HIFI_performance_by_gene_and_cutoff_{class_name}.svg", bbox_inches='tight', format="svg", dpi=600)  # Save the plot as a PDF
+    plt.savefig(f"HGSVC_CLR_performance_by_gene_and_cutoff_{class_name.replace(' ', '_')}.svg", bbox_inches='tight', format="svg", dpi=600)  # Save the plot as a PDF
 
 # Uncomment the line below if you want to display the plot interactively
 # plt.show()
