@@ -932,7 +932,7 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
     len_cutoff = 0
     cutoff = 0
     
-    all_data, all_gene_data = [], []
+    all_data, all_gene_data, depth_data  = [], [], []
     for cutoff in [0, 5, 10, 15, 20]:
     # for cutoff in [0]:
         truth_dict = parse_truth_from_align_all(allele_length_dict, truth_dir, gene_class, len_cutoff)
@@ -952,6 +952,12 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
                 new_truth_dict[sample] = truth_dict[sample]
                 sample_list.append(sample)
                 tcr_gene_list += list(set(truth_dict[sample].keys()) & set(sample_infer_dict.keys()))
+
+                if cutoff == 0:
+                    for gene in sample_infer_depth_dict:
+                        # if gene not in ['KIR2DL4', 'KIR3DL3','KIR3DL2','KIR3DP1']:
+                        #     continue
+                        depth_data.append([sample, gene, sample_infer_depth_dict[gene]])
 
         tcr_gene_list = list(set(tcr_gene_list))
         tcr_gene_list = sorted(tcr_gene_list, key=lambda x: gene_list.index(x))
@@ -985,9 +991,13 @@ def main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_fi
             df = pd.DataFrame(new_data, columns = ['gene', 'count', 'subclass', 'cutoff', 'resolution','type'])
             df.to_csv(my_result_file, index=False)
 
-    sum_result_file = f"{sum_result_file[:-4]}_field{field}_result.csv"
+    sum_result_file2 = f"{sum_result_file[:-4]}_field{field}_result.csv"
     df = pd.DataFrame(all_gene_data, columns = ['gene', 'correct', 'total', 'accuracy', 'class', 'subclass', 'cutoff', 'resolution'])
-    df.to_csv(sum_result_file, index=False)
+    df.to_csv(sum_result_file2, index=False)
+
+    sum_result_file3 = f"{sum_result_file[:-4]}_read_num.csv"
+    df = pd.DataFrame(depth_data, columns = ['sample', 'gene', 'read_num'])
+    df.to_csv(sum_result_file3, index=False)
 
 
 

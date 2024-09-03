@@ -24,8 +24,8 @@ i=1
 
 data = []
 data2 = []
-dp_list =  [5, 10, 15, 20, 25, 30, 35, 40]
-# dp_list = [5, 10, 15, 20]
+# dp_list =  [5, 10, 15, 20, 25, 30, 35, 40]
+dp_list = [40]
 for dp in dp_list:
     data_dict = {}
     for i in range(1, 21):
