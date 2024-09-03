@@ -2,20 +2,20 @@
 ## use pbsim2
 
 
-outdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads4/
-resultdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results4/
+outdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads5/
+resultdir=/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results5/
 
 for dp in 5 10 15 20 25 30 35 40
 do
 for i in {1..20}
 do
-    sample=KIR_dp${dp}_acc95_$i
+    sample=KIR_dp${dp}_acc85_$i
     echo $sample
 
     #### simulation
     mkdir $outdir/$sample
     perl simu.data.haplotype.kir2.pl $sample $outdir/$sample
-    pbsim --prefix $outdir/$sample/$sample --depth $dp --hmm_model pbsim_model/P4C2.model --accuracy-mean 0.95 $outdir/$sample/$sample.KIR.sep.fa
+    pbsim --prefix $outdir/$sample/$sample --depth $dp --hmm_model pbsim_model/P4C2.model --accuracy-mean 0.85 $outdir/$sample/$sample.KIR.sep.fa
 
     cat $outdir/$sample/${sample}_*fastq>$outdir/$sample/${sample}.fastq
     rm $outdir/$sample/${sample}_*fastq
