@@ -48,10 +48,10 @@ if __name__ == "__main__":
         # sum_result_file = benchmark_result_dir + "HPRC_hifi_2.csv"
         # main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, field)
 
-        # truth_dir = "/home/wangshuai/00.hla/long/experiments/upload_truth/hprc_truth_bwa_zip/"
-        # result_dir = "/home/wangshuai/00.hla/long/experiments/kir/kir_results/hprc_hifi/"
-        # sum_result_file = benchmark_result_dir + "HPRC_hifi.csv"
-        # main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, field)
+        truth_dir = "/home/wangshuai/00.hla/long/experiments/upload_truth/hprc_truth_bwa_zip/"
+        result_dir = "/home/wangshuai/00.hla/long/experiments/kir/kir_results/hprc_hifi2/"
+        sum_result_file = benchmark_result_dir + "HPRC_hifi.csv"
+        main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, field)
 
         # truth_dir = "/home/wangshuai/00.hla/long/experiments/upload_truth/hprc_truth_bwa_zip/"
         # result_dir = "/home/wangshuai/00.hla/long/experiments/kir/kir_results/hprc_ont/"
@@ -65,7 +65,7 @@ if __name__ == "__main__":
  
 
 
-
+        """ 
         sum_result_file = benchmark_result_dir + "HPRC_hifi.csv"
         result_file = f'{sum_result_file[:-4]}_field{field}_result.csv'
         depth_dict = cal_total_accuracy(result_file)
@@ -90,8 +90,9 @@ if __name__ == "__main__":
         depth_dict = cal_total_accuracy(result_file)
         for cutoff in depth_dict:
             data.append([cutoff, depth_dict[cutoff][0], depth_dict[cutoff][1], depth_dict[cutoff][2], 'HGSCV2 CLR', field])
+        """
 
-
+    """
     df = pd.DataFrame(data, columns = ['depth', 'correct', 'total', 'accuracy', 'dataset', 'field'])
     df.to_csv(benchmark_result_dir + "/all_loci_depth.csv", index=False)
-
+    """
