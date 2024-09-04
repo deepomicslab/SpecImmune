@@ -49,7 +49,7 @@ if __name__ == "__main__":
         # main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, field)
 
         # truth_dir = "/home/wangshuai/00.hla/long/experiments/upload_truth/hprc_truth_bwa_zip/"
-        # result_dir = "/home/wangshuai/00.hla/long/experiments/kir/kir_results/hprc_hifi/"
+        # result_dir = "/home/wangshuai/00.hla/long/experiments/kir/kir_results/hprc_hifi2/"
         # sum_result_file = benchmark_result_dir + "HPRC_hifi.csv"
         # main_kir(gene_list, truth_dir, result_dir, allele_length_dict, sum_result_file, field)
 
@@ -90,6 +90,7 @@ if __name__ == "__main__":
         depth_dict = cal_total_accuracy(result_file)
         for cutoff in depth_dict:
             data.append([cutoff, depth_dict[cutoff][0], depth_dict[cutoff][1], depth_dict[cutoff][2], 'HGSCV2 CLR', field])
+
 
 
     df = pd.DataFrame(data, columns = ['depth', 'correct', 'total', 'accuracy', 'dataset', 'field'])

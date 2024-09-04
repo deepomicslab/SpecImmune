@@ -25,8 +25,8 @@ done
 
 
 #     echo $sample
-#     if [ "1" == "1" ]; then
-#     # if [ "$sample" == "HG02486" ]; then
+#     # if [ "1" == "1" ]; then
+#     if [ "$sample" == "HG00621" ]; then
 #         echo "Processing $sample"
         
         

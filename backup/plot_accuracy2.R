@@ -4,7 +4,7 @@ library(cowplot)
 library(dplyr)
 
 
-pdf(file="figures/kir_depth_change.pdf", width=8, height=3, onefile=FALSE)
+pdf(file="figures/kir_depth_change2.pdf", width=8, height=3, onefile=FALSE)
 
 df<-read.table("all_loci_depth.csv", sep=",", header=TRUE)
 df <- dplyr::filter(df, depth != 20)
