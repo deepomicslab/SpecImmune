@@ -19,7 +19,7 @@ ggplot(data = df, aes(x=Gene, y=Depth, fill=Accuracy)) +
    scale_x_discrete(guide = guide_axis(angle = 90))+
  geom_tile(color = "white")+
  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
-   midpoint = 0.9, limit = c(0.75,1), space = "Lab", 
+   midpoint = 0.8, limit = c(0.65,1), space = "Lab", 
     name="3-field\nAccuracy") +
 #   theme_classic()
 

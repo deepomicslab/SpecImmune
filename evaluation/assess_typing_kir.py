@@ -16,8 +16,8 @@ gene_list, interval_dict =  get_focus_gene(args)
 
 
 
-outdir='/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads3/'
-resultdir='/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results3/'
+outdir='/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads5/'
+resultdir='/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results5/'
 
 dp=5
 i=1
@@ -25,11 +25,11 @@ i=1
 data = []
 data2 = []
 # dp_list =  [5, 10, 15, 20, 25, 30, 35, 40]
-dp_list = [40]
+dp_list = [5, 10, 15, 20, 25, 30]
 for dp in dp_list:
     data_dict = {}
-    for i in range(1, 21):
-        sample=f'KIR_dp{dp}_acc90_{i}'
+    for i in range(1, 51):
+        sample=f'KIR_dp{dp}_acc85_{i}'
         print (sample)
         true=f'{outdir}/{sample}/{sample}.KIR.hap.alleles.txt'
         infer= f'{resultdir}/{sample}/{sample}.KIR.final.type.result.txt' 
