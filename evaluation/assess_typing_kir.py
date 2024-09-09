@@ -16,36 +16,43 @@ gene_list, interval_dict =  get_focus_gene(args)
 
 
 
-outdir='/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads5/'
-resultdir='/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results5/'
+outdir='/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads3/'
+resultdir='/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results3/'
 
 dp=5
 i=1
 
 data = []
 data2 = []
+data3 = []
 # dp_list =  [5, 10, 15, 20, 25, 30, 35, 40]
 dp_list = [5, 10, 15, 20, 25, 30]
 for dp in dp_list:
     data_dict = {}
+    dp_data = [0, 0]
     for i in range(1, 51):
-        sample=f'KIR_dp{dp}_acc85_{i}'
-        print (sample)
+        sample=f'KIR_dp{dp}_acc90_{i}'
+        # print (sample)
         true=f'{outdir}/{sample}/{sample}.KIR.hap.alleles.txt'
         infer= f'{resultdir}/{sample}/{sample}.KIR.final.type.result.txt' 
         spec_gene_accuracy_dict = assess_sim_module(true, infer, gene_list, args['i'])
         for gene in spec_gene_accuracy_dict:
-            print (gene, spec_gene_accuracy_dict[gene])
+            # print (gene, spec_gene_accuracy_dict[gene])
             if gene not in data_dict:
                 data_dict[gene] = [0, 0]
             data_dict[gene][0] += spec_gene_accuracy_dict[gene][1]
             data_dict[gene][1] += spec_gene_accuracy_dict[gene][2]
+
+            dp_data[0] += spec_gene_accuracy_dict[gene][1]
+            dp_data[1] += spec_gene_accuracy_dict[gene][2]
+    print (dp*2, dp_data, dp_data[0]/dp_data[1])
+    data3.append([dp*2, dp_data[0]/dp_data[1]])
     
     accuracy_list = []
     for gene in gene_list:
         accuracy_list.append(data_dict[gene][0]/data_dict[gene][1])
         data2.append([dp*2, gene, data_dict[gene][0]/data_dict[gene][1]])
-    print (accuracy_list)
+    # print (accuracy_list)
     data.append(accuracy_list)
 
 ## transform the data to a pandas dataframe, and give row names
@@ -55,6 +62,8 @@ df.to_csv("kir_results/sim_results.csv", index=True)
 
 df = pd.DataFrame(data2, columns=['Depth', 'Gene', 'Accuracy'])
 df.to_csv("kir_results/sim_results2.csv", index=True)
+
+print (data3)
 
 
 

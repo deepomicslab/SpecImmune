@@ -2,7 +2,7 @@
 library(ggplot2)
 
 
-pdf(file="figures/kir_heatmap.pdf", width=6, height=3, onefile=FALSE)
+pdf(file="figures/kir_heatmap.pdf", width=5, height=2.3, onefile=FALSE)
 
 
 ## row name is true
@@ -19,7 +19,7 @@ ggplot(data = df, aes(x=Gene, y=Depth, fill=Accuracy)) +
    scale_x_discrete(guide = guide_axis(angle = 90))+
  geom_tile(color = "white")+
  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
-   midpoint = 0.8, limit = c(0.65,1), space = "Lab", 
+   midpoint = 0.88, limit = c(0.75,1), space = "Lab", 
     name="3-field\nAccuracy") +
 #   theme_classic()
 

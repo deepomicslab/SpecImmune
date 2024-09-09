@@ -1,5 +1,9 @@
 import pandas as pd
 
+import sys, os
+sys.path.insert(0, sys.path[0]+'/../')
+from four_field_compare import convert_field
+
 
 ## read the file using pandas, sep is \t
 def get_super_pop(super_pop_file):
@@ -36,7 +40,9 @@ def read_alleles(allele_file, super_pop_dict, sample_pop_dict):
             alleles_dict[super_pop][row['Locus']] = []
         ## check if empty
         if row['Genotype'] != "NA" and row['Genotype'] != "" and not pd.isna(row['Genotype']):
-            alleles_dict[super_pop][row['Locus']].append(row['Genotype'])
+            genotype = row['Genotype']
+            genotype = convert_field([genotype], 4)[0]
+            alleles_dict[super_pop][row['Locus']].append(genotype)
     return alleles_dict
 
 def count_freq(list):
