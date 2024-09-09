@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+import allel
+import scipy
+from scipy.spatial import distance
 
 import sys, os
 sys.path.insert(0, sys.path[0]+'/../')
@@ -36,6 +39,8 @@ def get_super_pop(super_pop_file):
     df = pd.read_csv(super_pop_file, sep='\t')
     super_pop_dict = {}
     for index, row in df.iterrows():
+        if  pd.isna(row['Population Code']) or pd.isna(row['Super Population']):
+            continue
         super_pop_dict[row['Population Code']] = row['Super Population']
     # print (super_pop_dict)
     return super_pop_dict
@@ -52,6 +57,7 @@ def get_sample_pop(sample_pop_file):
 def read_alleles(allele_file, super_pop_dict, sample_pop_dict,read_num_cutoff=10,field=8):
     df = pd.read_csv(allele_file)
     alleles_dict = {}
+    pop_alleles_dict = {}
     alleles_gene_dict = {}
     alleles_sample_dict = {}
 
@@ -87,10 +93,15 @@ def read_alleles(allele_file, super_pop_dict, sample_pop_dict,read_num_cutoff=10
             alleles_dict[super_pop][row['Locus']].append(genotype)
             if row['Locus'] not in alleles_gene_dict:
                 alleles_gene_dict[row['Locus']] = []
+            if pop not in pop_alleles_dict:
+                pop_alleles_dict[pop] = {}
+            if row['Locus'] not in pop_alleles_dict[pop]:
+                pop_alleles_dict[pop][row['Locus']] = []
+            pop_alleles_dict[pop][row['Locus']].append(genotype)
             alleles_gene_dict[row['Locus']].append(genotype)
             alleles_sample_dict[row['Sample']].append(genotype)
     print ("considered_sample_num", len(alleles_sample_dict), "gene num", len(alleles_gene_dict))
-    return alleles_dict, alleles_gene_dict, alleles_sample_dict
+    return alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict
 
 def count_freq(list, count='no'):
     ## count the frequency of each allele
@@ -216,6 +227,78 @@ def cumulative_analysis(alleles_sample_dict, super_pop_dict, cumulative_file):
     df.to_csv(cumulative_file, index=False)
     print (len(set(all_uniq_alleles)))
 
+def calculate_fst(allele_freq_group_a, allele_freq_group_b):
+    p_bar = (np.array(allele_freq_group_a) + np.array(allele_freq_group_b)) / 2
+    p_i_group_a = np.mean(allele_freq_group_a)
+    p_i_group_b = np.mean(allele_freq_group_b)
+    
+    Hs = np.mean((np.array(allele_freq_group_a) - p_i_group_a)**2 + (np.array(allele_freq_group_b) - p_i_group_b)**2)
+    Ht = np.mean((p_bar - p_i_group_a)**2 + (p_bar - p_i_group_b)**2)
+    
+    fst = (Ht - Hs) / Ht
+    
+    return fst
+
+def Fst_analysis(alleles_dict, fst_file):
+    super_pop_freq_dist = {}
+    all_pop_alleles = []
+    super_pop_list = list(alleles_dict.keys())
+    for super_pop in alleles_dict:
+        if super_pop == 'Non-pop':
+            continue
+        if super_pop not in super_pop_freq_dist:
+            super_pop_freq_dist[super_pop] = {}
+        all_alleles = []
+        for locus in alleles_dict[super_pop]:
+            all_alleles += alleles_dict[super_pop][locus]
+            all_pop_alleles += alleles_dict[super_pop][locus]
+
+        locus_freq_dict = count_freq(all_alleles)
+        super_pop_freq_dist[super_pop].update(locus_freq_dict)
+    
+    uniq_alleles = list(set(all_pop_alleles))
+    allele_freq  = []
+    group_names = []
+    for super_pop in super_pop_freq_dist:
+        freq = []
+        for allele in uniq_alleles:
+            if allele not in super_pop_freq_dist[super_pop]:
+                freq.append(0) 
+            else:
+                freq.append(super_pop_freq_dist[super_pop][allele])
+        allele_freq.append(freq)
+        group_names.append(super_pop)
+
+    # Calculate pairwise Fst values using scikit-allel
+    # pairwise_fst_values = calculate_pairwise_fst(allele_freq)
+
+    data = []
+    # Print the pairwise Fst values for each pair of groups
+    for i in range(len(group_names)):
+        for j in range(len(group_names)):
+            fst_value = calculate_fst(allele_freq[i], allele_freq[j])
+            ## calculate correlation for the two groups using scipy
+            result = scipy.stats.pearsonr(allele_freq[i], allele_freq[j])
+            jsd = distance.jensenshannon(allele_freq[i], allele_freq[j])
+            print(f"Fst value between {group_names[i]} and {group_names[j]}: {jsd}")
+            data.append([group_names[i], group_names[j], jsd])
+    df = pd.DataFrame(data, columns=['Group1', 'Group2', 'JSD'])
+    df.to_csv(fst_file, index=False)
+
+def sort_pop(super_pop_dict):
+    pop_dict = {}
+    for pop in super_pop_dict:
+        if super_pop_dict[pop] not in pop_dict:
+            pop_dict[super_pop_dict[pop]] = []
+        pop_dict[super_pop_dict[pop]].append(pop)
+    pop_list = []
+    for super_pop in pop_dict:
+        print (super_pop, pop_dict[super_pop])
+        pop_dict[super_pop] = sorted(pop_dict[super_pop])
+        pop_list += pop_dict[super_pop]
+    print (pop_list)
+            
+
 super_pop_file = "hla/20131219.populations.tsv"
 sample_pop_file = "hla/20130606_sample_info.xlsx"
 allele_file = "hla/speclong_res_merged_samples.csv"
@@ -224,9 +307,10 @@ histogram_file = "hla/hla_hist.csv"
 gene_allele_file = "hla/hla_gene_allele.csv"
 MAF_file = "hla/hla_maf.csv"
 cumulative_file = "hla/hla_cumulative.csv"
+fst_file = "hla/hla_fst.csv"
 super_pop_dict = get_super_pop(super_pop_file)
 sample_pop_dict = get_sample_pop(sample_pop_file)
-alleles_dict, alleles_gene_dict, alleles_sample_dict = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 8)
+alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 8)
 
 
 # count_alleles(alleles_dict, freq_file)
@@ -234,7 +318,11 @@ alleles_dict, alleles_gene_dict, alleles_sample_dict = read_alleles(allele_file,
 # for_histogram(alleles_gene_dict, histogram_file)
 # os.system("Rscript plot_hitogram.R")
 
-MAF_analysis(alleles_gene_dict, MAF_file, gene_allele_file)
+# MAF_analysis(alleles_gene_dict, MAF_file, gene_allele_file)
 
-cumulative_analysis(alleles_sample_dict, super_pop_dict, cumulative_file)
+# cumulative_analysis(alleles_sample_dict, super_pop_dict, cumulative_file)
+
+# Fst_analysis(pop_alleles_dict, fst_file)
+sort_pop(super_pop_dict)
+
 
