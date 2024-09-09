@@ -471,9 +471,9 @@ if __name__ == "__main__":
     required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
     optional.add_argument("--db", type=str, help="db dir.", metavar="\b", default=sys.path[0] + "/../db/")
     optional.add_argument("--map_tool", type=str, help="bwa or minimap2.", metavar="\b", default="bwa")
-    optional.add_argument("--phased_vcf", type=str, help="phased_vcf.", metavar="\b")
-    optional.add_argument("--phased_ref", type=str, help="phased_ref.", metavar="\b")
-    optional.add_argument("--phased_mask", type=str, help="phased_mask.", metavar="\b")
+    optional.add_argument("--phased_vcf", type=str, help="phased_vcf.", metavar="\b", default="none")
+    optional.add_argument("--phased_ref", type=str, help="phased_ref.", metavar="\b", default="none")
+    optional.add_argument("--phased_mask", type=str, help="phased_mask.", metavar="\b", default="none")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=10)
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     # optional.add_argument("-u", type=str, help="Choose full-length or exon typing. 0 indicates full-length, 1 means exon.", metavar="\b", default="0")
@@ -491,11 +491,11 @@ if __name__ == "__main__":
     samples_list = [sample]
     # gene_list = ["A", "B", "C", "DPA1", "DPB1", "DQA1", "DQB1", "DRB1"]
 
-    if args['1']  and args['2'] in args:
+    if args['1']  and args['2']:
         print ("accept haplotype files")
         record_truth_file_dict = {sample : [args['1'], args['2']]}
-    elif 'phased_vcf' in args and 'phased_ref' in args:
-        print ("accept phased vcf")
+    elif args["phased_vcf"] != 'none' and args["phased_ref"] != 'none' and args["phased_mask"] != 'none':
+        print ("accept phased vcf", args["phased_vcf"])
         get_consensus(args["phased_vcf"], args["phased_ref"], args["phased_mask"], result_path, sample)
         print ("consensus done")
         record_truth_file_dict = {sample : [f"{result_path}/{sample}.hap1.fasta", f"{result_path}/{sample}.hap2.fasta"]}
@@ -524,14 +524,17 @@ if __name__ == "__main__":
 
         for hap_index in range(2):
             input_sam = f"{result_path}/{sample}.h{hap_index+1}.{my_db.gene_class}.sam"
-            if args['map_tool'] == "minimap2":
-                minimap(sample, hap_index, input_sam)
-            elif args['map_tool'] == "bwa":
-                # pass
-                bwa(sample, hap_index, input_sam)
+            if not os.path.exists(input_sam):
+                if args['map_tool'] == "minimap2":
+                    minimap(sample, hap_index, input_sam)
+                elif args['map_tool'] == "bwa":
+                    # pass
+                    bwa(sample, hap_index, input_sam)
+                else:
+                    print ("Please choose minimap2 or bwa as map tool.")
+                    sys.exit(0)
             else:
-                print ("Please choose minimap2 or bwa as map tool.")
-                sys.exit(0)
+                print (f"{input_sam} already exists.")
             assembly_file = record_truth_file_dict[sample][hap_index]
             # open the input FASTA file
             

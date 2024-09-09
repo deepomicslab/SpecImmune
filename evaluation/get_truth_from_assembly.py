@@ -36,14 +36,14 @@ def get_phased_assemblies_hprc():
     # print (record_truth_file_dict)
     return  record_truth_file_dict
 
-inpath = "/mnt/d/my_HLA/assembly/"
-outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
-record_truth_file_dict = get_phased_assemblies()
+# inpath = "/mnt/d/my_HLA/assembly/"
+# outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hgscv2_truth_bwa/"
+# record_truth_file_dict = get_phased_assemblies()
 
 
-# inpath = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/HPRC_assembly/"
-# outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hprc_truth_bwa/"
-# record_truth_file_dict = get_phased_assemblies_hprc()
+inpath = "/mnt/d/HLAPro_backup/Nanopore_optimize/data/HPRC_assembly/"
+outdir = "/mnt/d/HLAPro_backup/Nanopore_optimize/hprc_truth_bwa/"
+record_truth_file_dict = get_phased_assemblies_hprc()
 
 for sample in record_truth_file_dict:
     # if sample != "HG00096":
@@ -59,8 +59,8 @@ for sample in record_truth_file_dict:
     #         os.system(cmd)
     #     else:
     #         print (f"{record_truth_file_dict[sample][i]} already indexed")
-    for gene_class in ["HLA", "CYP", "KIR", "IG_TR"]:
-    # for gene_class in ["IG_TR"]:
+    # for gene_class in ["HLA", "CYP", "KIR", "IG_TR"]:
+    for gene_class in ["HLA"]:
         cmd = f"""
         python3 ../scripts/typing_from_assembly.py -j 15 -1 {record_truth_file_dict[sample][0]} -2 {record_truth_file_dict[sample][1]} -n {sample} -i {gene_class} -o {outdir}  
         """
