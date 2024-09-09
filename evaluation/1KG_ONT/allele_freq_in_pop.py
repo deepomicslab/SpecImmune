@@ -285,7 +285,7 @@ def Fst_analysis(alleles_dict, fst_file):
     df = pd.DataFrame(data, columns=['Group1', 'Group2', 'JSD'])
     df.to_csv(fst_file, index=False)
 
-def sort_pop(super_pop_dict):
+def sort_pop(super_pop_dict, color_file):
     pop_dict = {}
     for pop in super_pop_dict:
         if super_pop_dict[pop] not in pop_dict:
@@ -297,6 +297,12 @@ def sort_pop(super_pop_dict):
         pop_dict[super_pop] = sorted(pop_dict[super_pop])
         pop_list += pop_dict[super_pop]
     print (pop_list)
+    data = []
+    for pop in pop_list:
+        data.append([pop, 1, super_pop_dict[pop]])
+    df = pd.DataFrame(data, columns=['y', 'x', 'group'])
+    df.to_csv(color_file, index=False)
+    return pop_list
             
 
 super_pop_file = "hla/20131219.populations.tsv"
@@ -308,6 +314,7 @@ gene_allele_file = "hla/hla_gene_allele.csv"
 MAF_file = "hla/hla_maf.csv"
 cumulative_file = "hla/hla_cumulative.csv"
 fst_file = "hla/hla_fst.csv"
+color_file = "hla/hla_color.csv"
 super_pop_dict = get_super_pop(super_pop_file)
 sample_pop_dict = get_sample_pop(sample_pop_file)
 alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 8)
@@ -323,6 +330,7 @@ alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict = read_all
 # cumulative_analysis(alleles_sample_dict, super_pop_dict, cumulative_file)
 
 # Fst_analysis(pop_alleles_dict, fst_file)
-sort_pop(super_pop_dict)
+sort_pop(super_pop_dict, color_file)
+
 
 
