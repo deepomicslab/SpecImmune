@@ -1,0 +1,118 @@
+Gene,Gene Group,Count,Frequency,Group
+HLA-T,Pseudogenes,1,0.1111111111111111,rare
+HLA-T,Pseudogenes,2,0.2222222222222222,low-frequency
+HLA-T,Pseudogenes,6,0.6666666666666666,common
+HLA-A,Class I,183,0.8356164383561644,rare
+HLA-A,Class I,32,0.1461187214611872,low-frequency
+HLA-A,Class I,4,0.0182648401826484,common
+HLA-U,Pseudogenes,1,0.14285714285714285,rare
+HLA-U,Pseudogenes,2,0.2857142857142857,low-frequency
+HLA-U,Pseudogenes,4,0.5714285714285714,common
+HLA-DMA,Class II,15,0.75,rare
+HLA-DMA,Class II,0,0.0,low-frequency
+HLA-DMA,Class II,5,0.25,common
+HLA-J,Pseudogenes,1,0.05263157894736842,rare
+HLA-J,Pseudogenes,11,0.5789473684210527,low-frequency
+HLA-J,Pseudogenes,7,0.3684210526315789,common
+HLA-DPA1,Class II,25,0.5681818181818182,rare
+HLA-DPA1,Class II,11,0.25,low-frequency
+HLA-DPA1,Class II,8,0.18181818181818182,common
+HLA-DQA1,Class II,26,0.45614035087719296,rare
+HLA-DQA1,Class II,27,0.47368421052631576,low-frequency
+HLA-DQA1,Class II,4,0.07017543859649122,common
+HLA-DPA2,Class II,0,0.0,rare
+HLA-DPA2,Class II,1,0.16666666666666666,low-frequency
+HLA-DPA2,Class II,5,0.8333333333333334,common
+HLA-G,Class I,54,0.7297297297297297,rare
+HLA-G,Class I,13,0.17567567567567569,low-frequency
+HLA-G,Class I,7,0.0945945945945946,common
+HLA-P,Pseudogenes,0,0.0,rare
+HLA-P,Pseudogenes,1,0.2,low-frequency
+HLA-P,Pseudogenes,4,0.8,common
+MICA,Non-HLA,26,0.5531914893617021,rare
+MICA,Non-HLA,16,0.3404255319148936,low-frequency
+MICA,Non-HLA,5,0.10638297872340426,common
+HLA-DQB1,Class II,136,0.7953216374269005,rare
+HLA-DQB1,Class II,29,0.1695906432748538,low-frequency
+HLA-DQB1,Class II,6,0.03508771929824561,common
+HLA-E,Class I,17,0.68,rare
+HLA-E,Class I,3,0.12,low-frequency
+HLA-E,Class I,5,0.2,common
+MICB,Non-HLA,34,0.8717948717948718,rare
+MICB,Non-HLA,1,0.02564102564102564,low-frequency
+MICB,Non-HLA,4,0.10256410256410256,common
+TAP1,Non-HLA,2,0.2857142857142857,rare
+TAP1,Non-HLA,0,0.0,low-frequency
+TAP1,Non-HLA,5,0.7142857142857143,common
+HLA-DQB2,Class II,13,0.6190476190476191,rare
+HLA-DQB2,Class II,2,0.09523809523809523,low-frequency
+HLA-DQB2,Class II,6,0.2857142857142857,common
+TAP2,Non-HLA,6,0.4,rare
+TAP2,Non-HLA,1,0.06666666666666667,low-frequency
+TAP2,Non-HLA,8,0.5333333333333333,common
+HLA-B,Class I,114,0.6826347305389222,rare
+HLA-B,Class I,53,0.31736526946107785,low-frequency
+HLA-B,Class I,0,0.0,common
+HLA-DOA,Class II,27,0.5294117647058824,rare
+HLA-DOA,Class II,18,0.35294117647058826,low-frequency
+HLA-DOA,Class II,6,0.11764705882352941,common
+HLA-K,Pseudogenes,0,0.0,rare
+HLA-K,Pseudogenes,2,0.2857142857142857,low-frequency
+HLA-K,Pseudogenes,5,0.7142857142857143,common
+HLA-DQA2,Class II,14,0.6086956521739131,rare
+HLA-DQA2,Class II,3,0.13043478260869565,low-frequency
+HLA-DQA2,Class II,6,0.2608695652173913,common
+HLA-H,Pseudogenes,8,0.27586206896551724,rare
+HLA-H,Pseudogenes,16,0.5517241379310345,low-frequency
+HLA-H,Pseudogenes,5,0.1724137931034483,common
+HLA-DOB,Class II,2,0.18181818181818182,rare
+HLA-DOB,Class II,3,0.2727272727272727,low-frequency
+HLA-DOB,Class II,6,0.5454545454545454,common
+HLA-DRA,Class II,14,0.2916666666666667,rare
+HLA-DRA,Class II,30,0.625,low-frequency
+HLA-DRA,Class II,4,0.08333333333333333,common
+HLA-DRB1,Class II,219,0.8081180811808119,rare
+HLA-DRB1,Class II,52,0.1918819188191882,low-frequency
+HLA-DRB1,Class II,0,0.0,common
+HLA-F,Class I,32,0.6153846153846154,rare
+HLA-F,Class I,12,0.23076923076923078,low-frequency
+HLA-F,Class I,8,0.15384615384615385,common
+HLA-N,Pseudogenes,1,0.2,rare
+HLA-N,Pseudogenes,1,0.2,low-frequency
+HLA-N,Pseudogenes,3,0.6,common
+HLA-DRB3,Class II,18,0.5454545454545454,rare
+HLA-DRB3,Class II,12,0.36363636363636365,low-frequency
+HLA-DRB3,Class II,3,0.09090909090909091,common
+HLA-DMB,Class II,6,0.3157894736842105,rare
+HLA-DMB,Class II,8,0.42105263157894735,low-frequency
+HLA-DMB,Class II,5,0.2631578947368421,common
+HLA-C,Class I,86,0.6825396825396826,rare
+HLA-C,Class I,37,0.29365079365079366,low-frequency
+HLA-C,Class I,3,0.023809523809523808,common
+HLA-DRB4,Class II,18,0.6206896551724138,rare
+HLA-DRB4,Class II,5,0.1724137931034483,low-frequency
+HLA-DRB4,Class II,6,0.20689655172413793,common
+HLA-W,Pseudogenes,0,0.0,rare
+HLA-W,Pseudogenes,6,0.5,low-frequency
+HLA-W,Pseudogenes,6,0.5,common
+HLA-DPB1,Class II,245,0.8477508650519031,rare
+HLA-DPB1,Class II,43,0.14878892733564014,low-frequency
+HLA-DPB1,Class II,1,0.0034602076124567475,common
+HLA-L,Pseudogenes,1,0.16666666666666666,rare
+HLA-L,Pseudogenes,1,0.16666666666666666,low-frequency
+HLA-L,Pseudogenes,4,0.6666666666666666,common
+HLA-DRB5,Class II,0,0.0,rare
+HLA-DRB5,Class II,5,0.45454545454545453,low-frequency
+HLA-DRB5,Class II,6,0.5454545454545454,common
+HLA-DPB2,Class II,0,0.0,rare
+HLA-DPB2,Class II,0,0.0,low-frequency
+HLA-DPB2,Class II,6,1.0,common
+HLA-V,Pseudogenes,0,0.0,rare
+HLA-V,Pseudogenes,0,0.0,low-frequency
+HLA-V,Pseudogenes,4,1.0,common
+HLA-S,Pseudogenes,0,0.0,rare
+HLA-S,Pseudogenes,0,0.0,low-frequency
+HLA-S,Pseudogenes,6,1.0,common
+HLA-Y,Pseudogenes,0,0.0,rare
+HLA-Y,Pseudogenes,0,0.0,low-frequency
+HLA-Y,Pseudogenes,1,1.0,common
