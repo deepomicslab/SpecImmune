@@ -1500,7 +1500,7 @@ def main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, spechla_result_dir
     compare_four(all_truth_dict, speclong_result_dict, gene_list, 8, gene_class, "speclong")
     compare_four(all_truth_dict, spechla_result_dict, gene_list, 8, gene_class, "spechla")
     # print ("------------------")
-    # compare_four(all_truth_dict, hla_la_result, gene_list, 8, gene_class, "hlala")
+    compare_four(all_truth_dict, hla_la_result, gene_list, 8, gene_class, "hlala")
     # if gene_class == "IG_TR":
     #     compare_four(new_truth_dict, all_hla_la_result, IG_list, 8, gene_class)
     #     print ("------------------")
@@ -1567,20 +1567,20 @@ if __name__ == "__main__":
     # main_pacbio(gene_list, truth_dir, result_dir, gene_class, step)
 
     # 1KGP ont HLA
-    samples=read_samples("3parts.merge.samples.unique")
-    # samples=["HG04227"]
-    step = 2   ### 1 or 2, assess result in step 1 or step 2
-    # db_dir = f"../db/{gene_class}/"
-    db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
-    spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun/"
-    spec_match_count_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun/match_count_table.csv"
-    hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/hlala_out/"
-    hlala_match_count_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/hlala_out/match_count_table.csv"
-    spechla_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/spechla_out/"
-    spechla_match_count_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/spechla_out/match_count_table.csv"
-    gene_list, interval_dict =  get_focus_gene(gene_class)
-    gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
-    main_1kg_ont_HLA(gene_list, truth_dict_1000g, spec_result_dir, spechla_result_dir, hlala_result_dir, gene_class, step, samples)
+    # samples=read_samples("3parts.merge.samples.unique")
+    # # samples=["HG04227"]
+    # step = 2   ### 1 or 2, assess result in step 1 or step 2
+    # # db_dir = f"../db/{gene_class}/"
+    # db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
+    # spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun/"
+    # spec_match_count_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun/match_count_table.csv"
+    # hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/hlala_out/"
+    # hlala_match_count_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/hlala_out/match_count_table.csv"
+    # spechla_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/spechla_out/"
+    # spechla_match_count_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/1KGP_ONT/spechla_out/match_count_table.csv"
+    # gene_list, interval_dict =  get_focus_gene(gene_class)
+    # gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
+    # main_1kg_ont_HLA(gene_list, truth_dict_1000g, spec_result_dir, spechla_result_dir, hlala_result_dir, gene_class, step, samples)
 
     # HPRC hifi HLA
     # samples=read_samples("hprc1_2.samples")
@@ -1632,14 +1632,15 @@ if __name__ == "__main__":
     step = 2   ### 1 or 2, assess result in step 1 or step 2
     db_dir=f"/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/SpecLong/db/{gene_class}/"
     spec_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hla_pacbio_new/hifi/typing_out_specrerun/"
-    spec_res_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hla_pacbio_new/hifi/typing_out_specrerun/match_count_table.csv"
+    spec_res_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hla_pacbio_new/hifi/typing_out_specrerun/speclong.match.csv"
     hlala_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hla_pacbio_new/hifi/hlala_res/"
-    hlala_res_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hla_pacbio_new/hifi/hlala_res/match_count_table.csv"
+    hlala_res_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hla_pacbio_new/hifi/hlala_res/hlala.match.csv"
     spechla_result_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hla_pacbio_new/hifi/spechla_res/"
-    spechla_res_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hla_pacbio_new/hifi/spechla_res/match_count_table.csv"
+    spechla_res_table="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hla_pacbio_new/hifi/spechla_res/spechla.match.csv"
     truth_dir="/gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/hla_pacbio_new/hifi/hgscv2_truth_bwa_zip/"
     gene_list, interval_dict =  get_focus_gene(gene_class)
     gene_mean_len, allele_length_dict = cal_gene_len(db_dir)
+    print("gene_list:",gene_list)
     main_HPRC_hifi_HLA(gene_list, truth_dir, spec_result_dir, spechla_result_dir, hlala_result_dir, gene_class, step, samples)
 
     
