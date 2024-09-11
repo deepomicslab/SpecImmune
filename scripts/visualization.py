@@ -19,21 +19,30 @@ from folder_objects import My_folder
 def calculate_percent_identity(bam_file):
     bam = pysam.AlignmentFile(bam_file, "rb")
     percent_identity = []
+    
     for read in bam:
         if read.is_unmapped:
             continue
         
-        # Calculate the number of identical matches (M) and total alignment length (L)
-        num_matches = sum(map(lambda cigar: cigar[1] if cigar[0] == 0 else 0, read.cigartuples))
-        total_length = sum(map(lambda cigar: cigar[1] if cigar[0] in (0, 1, 2, 7, 8) else 0, read.cigartuples))
+        # Get the alignment length (L) which is the total length of the read aligned
+        alignment_length = read.query_alignment_length
         
-        if total_length > 0:
-            percent_identity.append((num_matches / total_length) * 100)
-
-            # print(f"{read.query_name}\t{percent_identity:.2f}%")
+        # Get the number of mismatches and indels from the NM tag
+        num_mismatches = read.get_tag('NM') if read.has_tag('NM') else 0
+        
+        # Calculate the number of matches
+        num_matches = alignment_length - num_mismatches
+        
+        if alignment_length > 0:
+            identity_percentage = (num_matches / alignment_length) * 100
+            percent_identity.append(identity_percentage)
     
     bam.close()
-    return percent_identity[0]
+    
+    if percent_identity:
+        return percent_identity[0]  # Return the first read's percent identity
+    else:
+        return None
 
 def remove_characters(s):
     """
@@ -89,7 +98,7 @@ def files_to_pdf(bam, vcf, ref, gene, out_pdf, alleles, alleles_bams=[], tag="ho
 
 
 
-    bam_track = SingleEndBAMTrack(bam, name=f"Alignment (reference: constructed {tag} {allele_idx+1})", bam_type="normal")
+    bam_track = SingleEndBAMTrack(bam, name=f"Alignment (reference: reconstructed gene haplotype {allele_idx+1})", bam_type="normal")
     bam_track.draw_mismatches = True
     bam_track.quick_consensus = True
     bam_track.color_fn = lambda x: "lightgray"

@@ -29,8 +29,8 @@ software_genes = {
 
 # Define gene classes
 class1_genes = ['A', 'B', 'C', 'E', 'F', 'G']
-class1_pseudogenes = ['H', 'J', 'K', 'L', 'N', 'P', 'S', 'T', 'U', 'V', 'W']
-class2_genes = ['DRA', 'DQA1', 'DQA2', 'DQB1', 'DPA1', 'DPA2', 'DPB1', 'DPB2', 'DMA', 'DMB', 'DOA', 'DOB', 'DRB1', 'DRB3', 'DRB4']
+class1_pseudogenes = ['H', 'J', 'K', 'L', 'N', 'P', 'S', 'T', 'U', 'V', 'W', 'Y']
+class2_genes = ['DRA', 'DQA1', 'DQA2', 'DQB1', 'DQB2', 'DPA1', 'DPA2', 'DPB1', 'DPB2', 'DMA', 'DMB', 'DOA', 'DOB', 'DRB1', 'DRB3', 'DRB4', 'DRB5']
 non_hla_genes = ['MICA', 'MICB', 'TAP1', 'TAP2']
 
 gene_classes = {
