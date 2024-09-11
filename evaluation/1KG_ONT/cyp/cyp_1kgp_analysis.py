@@ -6,7 +6,7 @@ from scipy.spatial import distance
 
 import sys, os
 sys.path.insert(0, sys.path[0]+'/../')
-from four_field_compare import convert_field
+# from four_field_compare import convert_field
 
 class1_genes = ['A', 'B', 'C', 'E', 'F', 'G']
 class1_pseudogenes = ['H', 'J', 'K', 'L', 'N', 'P', 'S', 'T', 'U', 'V', 'W', 'Y']
@@ -60,6 +60,7 @@ def read_alleles(allele_file, super_pop_dict, sample_pop_dict,read_num_cutoff=10
     pop_alleles_dict = {}
     alleles_gene_dict = {}
     alleles_sample_dict = {}
+    sample_phenotype_dict = {}
 
     for index, row in df.iterrows():
         if row['Sample'] not in sample_pop_dict:
@@ -71,6 +72,10 @@ def read_alleles(allele_file, super_pop_dict, sample_pop_dict,read_num_cutoff=10
             pop = sample_pop_dict[row['Sample']]
             super_pop = super_pop_dict[pop]
             # print (row['Sample'], sample_pop_dict[row['Sample']])
+        
+        # if row['Sample'] == "HG01341":
+        #     print ("HG01341 has unkown allele")
+        #     continue
 
         if row['Sample'] not in alleles_sample_dict:
             alleles_sample_dict[row['Sample']] = []
@@ -86,10 +91,10 @@ def read_alleles(allele_file, super_pop_dict, sample_pop_dict,read_num_cutoff=10
         if row['Locus'] not in alleles_dict[super_pop]:
             alleles_dict[super_pop][row['Locus']] = []
         ## check if empty
-        if row['Genotype'] != "NA" and row['Genotype'] != "" and not pd.isna(row['Genotype']):
+        if row['Genotype'] != "NA" and row['Genotype'] != "" and not pd.isna(row['Genotype']) and row['Genotype'] != "unknown":
             genotype = row['Genotype']
             genotype = genotype.split(";")[0]
-            genotype = convert_field([genotype], field)[0]
+            # genotype = convert_field([genotype], field)[0]
             alleles_dict[super_pop][row['Locus']].append(genotype)
             if row['Locus'] not in alleles_gene_dict:
                 alleles_gene_dict[row['Locus']] = []
@@ -100,8 +105,12 @@ def read_alleles(allele_file, super_pop_dict, sample_pop_dict,read_num_cutoff=10
             pop_alleles_dict[pop][row['Locus']].append(genotype)
             alleles_gene_dict[row['Locus']].append(genotype)
             alleles_sample_dict[row['Sample']].append(genotype)
-    print ("considered_sample_num", len(alleles_sample_dict), "gene num", len(alleles_gene_dict))
-    return alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict
+
+            sample_phenotype_dict[row['Sample']] = [row['Phenotype'], row['Activity_score']]
+
+    print ("considered_sample_num", len(sample_phenotype_dict), "gene num", len(alleles_gene_dict))
+    # print ("HG00365" in sample_phenotype_dict)
+    return alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict,sample_phenotype_dict
 
 def count_freq(list, count='no'):
     ## count the frequency of each allele
@@ -304,21 +313,104 @@ def sort_pop(super_pop_dict, color_file):
     df.to_csv(color_file, index=False)
     return pop_list
             
+def get_phenotype_proportion(super_pop_dict, sample_pop_dict, sample_phenotype_dict, pheno_file, activity_file):
+    phenotype_dict = {}
+    data = []
+    activity_data = []
+    for sample in sample_phenotype_dict:
+        if sample not in sample_pop_dict:
+            continue
+        pop = sample_pop_dict[sample]
+        super_pop = super_pop_dict[pop]
+        phenotype = sample_phenotype_dict[sample][0]
+        if float(sample_phenotype_dict[sample][1]) >= 0:
+            activity_data.append([sample, super_pop, phenotype, float(sample_phenotype_dict[sample][1])])
+        
+        if super_pop not in phenotype_dict:
+            phenotype_dict[super_pop] = {}
+        if phenotype not in phenotype_dict[super_pop]:
+            phenotype_dict[super_pop][phenotype] = 0
+        phenotype_dict[super_pop][phenotype] += 1
+    for super_pop in phenotype_dict:
+        total = sum(phenotype_dict[super_pop].values())
+        for phenotype in phenotype_dict[super_pop]:
+            freq = phenotype_dict[super_pop][phenotype]/total
+            print (super_pop, phenotype, phenotype_dict[super_pop][phenotype], total, freq)
+            data.append([super_pop, phenotype, phenotype_dict[super_pop][phenotype], total, freq])
+    df = pd.DataFrame(data, columns=['Super_Pop', 'Phenotype', 'Count', 'Total', 'Frequency'])
+    df.to_csv(pheno_file, index=False)
 
-super_pop_file = "hla/20131219.populations.tsv"
-sample_pop_file = "hla/20130606_sample_info.xlsx"
-allele_file = "hla/speclong_res_merged_samples.csv"
-freq_file = "hla/hla_freq.csv"
-histogram_file = "hla/hla_hist.csv"
-gene_allele_file = "hla/hla_gene_allele.csv"
-MAF_file = "hla/hla_maf.csv"
-cumulative_file = "hla/hla_cumulative.csv"
-fst_file = "hla/hla_fst.csv"
-color_file = "hla/hla_color.csv"
+    df2 = pd.DataFrame(activity_data, columns=['Sample', 'Super_Pop', 'Phenotype', 'Activity_score'])
+    df2.to_csv(activity_file, index=False)
+    # return phenotype_dict
+
+def get_allele_proportion(super_pop_dict, sample_pop_dict, alleles_sample_dict,hap_freq_file,hap_count_file):
+    data = []
+    pop_allele_dict = {}
+    hap_count_dict = {}
+    all_haps = []
+    for sample in alleles_sample_dict:
+        if sample not in sample_pop_dict:
+            continue
+        pop = sample_pop_dict[sample]
+        super_pop = super_pop_dict[pop]
+        if pop not in pop_allele_dict:
+            pop_allele_dict[pop] = []
+        pop_allele_dict[pop] += alleles_sample_dict[sample]
+        all_haps += alleles_sample_dict[sample]
+        for hap in alleles_sample_dict[sample]:
+            if hap not in hap_count_dict:
+                hap_count_dict[hap] = 0
+            hap_count_dict[hap] += 1
+    uniq_haps = list(set(all_haps))
+    for pop in pop_allele_dict:
+        total = len(pop_allele_dict[pop])
+        allele_freq = count_freq(pop_allele_dict[pop], "yes")
+        for allele in uniq_haps:
+            if allele in allele_freq:
+                freq = allele_freq[allele]/total
+                data.append([pop, allele, allele_freq[allele], total, freq])
+            else:
+                data.append([pop, allele, 0, total, 0])
+    # print (uniq_haps)
+    # print (data)
+    df = pd.DataFrame(data, columns=['Pop', 'Allele', 'Count', 'Total', 'Frequency'])
+    df.to_csv(hap_freq_file, index=False)
+
+    ## sort hap by count using hap_count_dict
+    # sorted_haps = dict(sorted(hap_count_dict.items(), key=lambda x: x[1], reverse=True))
+    # print (list(sorted_haps.keys()))
+    data = []
+    for hap in hap_count_dict:
+        data.append([hap, hap_count_dict[hap]])
+    df = pd.DataFrame(data, columns=['Hap', 'Count'])
+    df.to_csv(hap_count_file, index=False)
+
+        
+
+super_pop_file = "../hla/20131219.populations.tsv"
+sample_pop_file = "../hla/20130606_sample_info.xlsx"
+allele_file = "cyp_1k_all.csv"
+freq_file = "./cyp_freq.csv"
+histogram_file = "./cyp_hist.csv"
+gene_allele_file = "./cyp_gene_allele.csv"
+MAF_file = "./cyp_maf.csv"
+cumulative_file = "./cyp_cumulative.csv"
+fst_file = "./cyp_fst.csv"
+color_file = "./cyp_color.csv"
+pheno_file = "./cyp_pheno.csv"
+activity_file = "./cyp_activity.csv"
+hap_freq_file = "./cyp_hap_freq.csv"
+hap_count_file = "./cyp_hap_count.csv"
+
 super_pop_dict = get_super_pop(super_pop_file)
 sample_pop_dict = get_sample_pop(sample_pop_file)
-alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 8)
+alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict,sample_phenotype_dict = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 8)
 
+
+# get_phenotype_proportion(super_pop_dict, sample_pop_dict, sample_phenotype_dict,pheno_file,activity_file)
+
+get_allele_proportion(super_pop_dict, sample_pop_dict, alleles_sample_dict,hap_freq_file,hap_count_file)
 
 # count_alleles(alleles_dict, freq_file)
 
@@ -330,7 +422,7 @@ alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict = read_all
 # cumulative_analysis(alleles_sample_dict, super_pop_dict, cumulative_file)
 
 # Fst_analysis(pop_alleles_dict, fst_file)
-sort_pop(super_pop_dict, color_file)
+# sort_pop(super_pop_dict, color_file)
 
 
 
