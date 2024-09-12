@@ -372,14 +372,15 @@ def get_allele_proportion(super_pop_dict, sample_pop_dict, alleles_sample_dict,h
                 data.append([pop, allele, allele_freq[allele], total, freq])
             else:
                 data.append([pop, allele, 0, total, 0])
-    # print (uniq_haps)
+    print ("unique haplotypes number:", len(uniq_haps))
     # print (data)
     df = pd.DataFrame(data, columns=['Pop', 'Allele', 'Count', 'Total', 'Frequency'])
     df.to_csv(hap_freq_file, index=False)
 
     ## sort hap by count using hap_count_dict
-    # sorted_haps = dict(sorted(hap_count_dict.items(), key=lambda x: x[1], reverse=True))
-    # print (list(sorted_haps.keys()))
+    sorted_haps = sorted(hap_count_dict.items(), key=lambda x: x[1], reverse=True)
+    print (sorted_haps[:5])
+
     data = []
     for hap in hap_count_dict:
         data.append([hap, hap_count_dict[hap]])
