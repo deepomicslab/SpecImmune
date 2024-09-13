@@ -4,32 +4,72 @@ import numpy as np
 import argparse
 from scipy.spatial.distance import squareform
 from tqdm import tqdm
+import pandas as pd
+import random
 
-GENES = [ 'HLA-A', 'HLA-B', 'HLA-C', 'HLA-DMA', 'HLA-DMB', 'HLA-DOA', 'HLA-DOB', 'HLA-DPA1', 'HLA-DPB1', 'HLA-DPB2', 'HLA-DQA1', 'HLA-DQB1','HLA-DQB2', 'HLA-DRA', 'HLA-DRB1', 'HLA-DRB3', 'HLA-DRB4', 'HLA-DRB5', 'HLA-E', 'HLA-F', 'HLA-G', 'HLA-H', 'HLA-J', 'HLA-K', 'HLA-L', 'HLA-P', 'HLA-V', 'HLA-Y', 'HLA-DQA2', 'HLA-DPA2', 'HLA-N', 'HLA-S', 'HLA-T', 'HLA-U', 'HLA-W', 'MICA', 'MICB', 'TAP1', 'TAP2', 'HFE' ]
+# 基因列表
+GENES = [
+    'HLA-A', 'HLA-B', 'HLA-C',
+    'HLA-DPA1', 'HLA-DPB1', 'HLA-DPB2', 'HLA-DQA1', 'HLA-DQB1',
+    'HLA-DRB1', 'HLA-DQA2'
+]
+
 
 def generate_bam_and_get_divergency(allele1, allele2, bam_file):
-    # 使用 minimap2 和 samtools 生成 BAM 文件，同时抑制 samtools 输出日志信息
+    """使用 minimap2 比对两个等位基因，并返回比对的差异值。"""
     minimap2_cmd = f"minimap2 -ax asm10 {allele1} {allele2} -t {args.threads} | samtools view -bS -F 0x800 - | samtools sort > {bam_file}"
     subprocess.run(minimap2_cmd, shell=True, check=True, stderr=subprocess.DEVNULL)
     
-    # 使用 samtools 提取 BAM 文件中的第一条记录，同时抑制 samtools 输出日志信息
     result = subprocess.run(f"samtools view {bam_file} | head -n 1", 
                             stdout=subprocess.PIPE, shell=True, check=True, stderr=subprocess.DEVNULL)
     
     first_record = result.stdout.decode('utf-8').strip()
     
     if not first_record:
-        return None  # 如果没有任何记录，返回 None
+        return None
     
-    # 查找 de:f: 标签并提取 divergency 值
     for field in first_record.split('\t'):
         if field.startswith('de:f:'):
             return float(field.split(':')[-1])
     
-    # 如果没有找到 de:f: 标签，返回 None
+    return None
+
+def generate_bam_and_get_divergency_nm(allele1, allele2, bam_file, threads=4):
+    """
+    使用 minimap2 比对两个等位基因，并返回比对的差异值 (使用 NM 标签)。
+    
+    Parameters:
+    - allele1: 第一个等位基因的路径
+    - allele2: 第二个等位基因的路径
+    - bam_file: 输出 BAM 文件的路径
+    - threads: 使用的线程数 (默认值: 4)
+    
+    Returns:
+    - NM tag (edit distance) from the first alignment record, or None if not found.
+    """
+    # 运行 minimap2 进行比对并生成 BAM 文件
+    minimap2_cmd = f"minimap2 -ax asm10 {allele1} {allele2} -t {threads} | samtools view -bS -F 0x800 - | samtools sort > {bam_file}"
+    subprocess.run(minimap2_cmd, shell=True, check=True, stderr=subprocess.DEVNULL)
+    
+    # 提取 BAM 文件中的第一个比对记录
+    result = subprocess.run(f"samtools view {bam_file} | head -n 1", 
+                            stdout=subprocess.PIPE, shell=True, check=True, stderr=subprocess.DEVNULL)
+    
+    # 解析第一个比对记录
+    first_record = result.stdout.decode('utf-8').strip()
+    
+    if not first_record:
+        return None
+    
+    # 查找 NM 标签 (edit distance)
+    for field in first_record.split('\t'):
+        if field.startswith('NM:i:'):
+            return int(field.split(':')[-1])  # 返回 NM 标签的值
+    
     return None
 
 def compute_sample_pair_divergency_vector(sample1, sample2, bam_output_folder):
+    """计算两个样本之间的差异向量（针对每个基因），返回差异值。"""
     divergency_vector = []
     sample1_folder = os.path.join(args.path, sample1, sample1, 'Sequences')
     sample2_folder = os.path.join(args.path, sample2, sample2, 'Sequences')
@@ -41,71 +81,42 @@ def compute_sample_pair_divergency_vector(sample1, sample2, bam_output_folder):
         s2_allele2 = os.path.join(sample2_folder, f'HLA.allele.2.{gene}.fasta')
 
         dv_s1_s2 = []
-        dv_s1a1_s2a1 = 0
-        dv_s1a2_s2a2 = 0
-        dv_s1a1_s2a2 = 0
-        dv_s1a2_s2a1 = 0
-        # for s1a1-s2a1 and s1a2-s2a2
-        if os.path.exists(s1_allele1) and os.path.exists(s2_allele1):
-            dv_s1a1_s2a1 = generate_bam_and_get_divergency(s1_allele1, s2_allele1, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a1_s2a1.bam'))
-        else:
-            dv_s1a1_s2a1 = 0
-        
-        if os.path.exists(s1_allele2) and os.path.exists(s2_allele2):
-            dv_s1a2_s2a2 = generate_bam_and_get_divergency(s1_allele2, s2_allele2, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a2_s2a2.bam'))
-        else:
-            dv_s1a2_s2a2 = 0
-        if dv_s1a1_s2a1 == None:
-            dv_s1a1_s2a1 = 0
-        if dv_s1a2_s2a2 == None:
-            dv_s1a2_s2a2 = 0
-        dv_s1_s2.append((dv_s1a1_s2a1+dv_s1a2_s2a2)/2)
-        # for s1a1-s2a2 and s1a2-s2a1
-        if os.path.exists(s1_allele1) and os.path.exists(s2_allele2):
-            dv_s1a1_s2a2 = generate_bam_and_get_divergency(s1_allele1, s2_allele2, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a1_s2a2.bam'))
-        else:
-            dv_s1a1_s2a2 = 0
-        if os.path.exists(s1_allele2) and os.path.exists(s2_allele1):
-            dv_s1a2_s2a1 = generate_bam_and_get_divergency(s1_allele2, s2_allele1, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a2_s2a1.bam'))
-        else:
-            dv_s1a2_s2a1 = 0
-        if dv_s1a1_s2a2 == None:
-            dv_s1a1_s2a2 = 0
-        if dv_s1a2_s2a1 == None:
-            dv_s1a2_s2a1 = 0
-        dv_s1_s2.append((dv_s1a1_s2a2+dv_s1a2_s2a1)/2)
+        # 比对等位基因1
+        dv_s1a1_s2a1 = generate_bam_and_get_divergency_nm(s1_allele1, s2_allele1, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a1_s2a1.bam')) or 0
+        dv_s1a2_s2a2 = generate_bam_and_get_divergency_nm(s1_allele2, s2_allele2, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a2_s2a2.bam')) or 0
+        dv_s1_s2.append((dv_s1a1_s2a1 + dv_s1a2_s2a2) / 2)
+
+        # 跨等位基因比对
+        dv_s1a1_s2a2 = generate_bam_and_get_divergency_nm(s1_allele1, s2_allele2, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a1_s2a2.bam')) or 0
+        dv_s1a2_s2a1 = generate_bam_and_get_divergency_nm(s1_allele2, s2_allele1, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a2_s2a1.bam')) or 0
+        dv_s1_s2.append((dv_s1a1_s2a2 + dv_s1a2_s2a1) / 2)
+
+        # 选择最小差异值作为该基因的差异值
         divergency_vector.append(min(dv_s1_s2))
     
     return divergency_vector
 
-# 计算所有样本之间的divergency矩阵并保存为 CSV 文件，每个条目是一个divergency向量
 def compute_distance_matrix(sample_names, output_csv, bam_output_folder):
+    """计算所有样本两两之间的距离矩阵并保存到 CSV。"""
     num_samples = len(sample_names)
     num_genes = len(GENES)
-    
-    # 初始化一个空矩阵，存储每对样本间的divergency向量
     distance_matrix = np.zeros((num_samples, num_samples, num_genes))
     
-    # 确保 BAM 输出目录存在
     os.makedirs(bam_output_folder, exist_ok=True)
     
-    # 遍历样本对并计算两两样本之间的divergency向量
     total_pairs = num_samples * (num_samples - 1) // 2
-    for i, item in enumerate(range(num_samples)):
+    for i in range(num_samples):
         for j in range(i + 1, num_samples):
-            # 显示进度条
             tqdm.write(f"Processing {sample_names[i]} vs {sample_names[j]}... ({i * num_samples + j + 1}/{total_pairs})")
             divergency_vector = compute_sample_pair_divergency_vector(sample_names[i], sample_names[j], bam_output_folder)
             distance_matrix[i, j, :] = divergency_vector
-            distance_matrix[j, i, :] = divergency_vector  # 距离矩阵是对称的
+            distance_matrix[j, i, :] = divergency_vector
     
-    # 展平矩阵中的每对样本的divergency向量，并保存到CSV
+    # 保存结果到 CSV 文件
     with open(output_csv, 'w') as f:
-        # 写入表头
         header = "Sample1,Sample2," + ",".join(GENES) + "\n"
         f.write(header)
         
-        # 写入每对样本的divergency向量，避免重复输出对称样本对
         for i in range(num_samples):
             for j in range(i + 1, num_samples):
                 sample1 = sample_names[i]
@@ -116,26 +127,109 @@ def compute_distance_matrix(sample_names, output_csv, bam_output_folder):
 
     print(f"Distance matrix saved to {output_csv}")
 
-# 解析命令行参数
-def parse_arguments():
-    parser = argparse.ArgumentParser(description="Calculate distance matrix for HLA gene alleles between samples.")
+def get_population(df, sample_name):
+    """根据样本名称获取其对应的 Population。"""
+    sample_row = df[df['Sample'] == sample_name]
     
-    parser.add_argument('-i', '--input', required=True, help="Input file containing sample names (one per line).")
-    parser.add_argument('-p', '--path', required=True, help="Base path where sample folders are stored.")
-    parser.add_argument('-o', '--output', required=True, help="Output CSV file for the distance matrix.")
-    parser.add_argument('-b', '--bam_output', required=True, help="Directory to save generated BAM files.")
-    parser.add_argument('-t', '--threads', type=int, default=1, help="Number of threads to use for minimap2.")
+    if sample_row.empty:
+        return "Unknown"
+    
+    return sample_row['Population'].values[0]
+
+def parse_arguments():
+    """解析命令行参数。"""
+    parser = argparse.ArgumentParser(description="计算样本之间的HLA基因等位基因距离矩阵。")
+    
+    parser.add_argument('-i', '--input', required=True, help="包含样本名称的输入文件（每行一个样本）。")
+    parser.add_argument('-p', '--path', required=True, help="样本文件夹的基本路径。")
+    parser.add_argument('-o', '--output', required=True, help="输出距离矩阵的CSV文件。")
+    parser.add_argument('-b', '--bam_output', required=True, help="保存生成BAM文件的目录。")
+    parser.add_argument('-t', '--threads', type=int, default=1, help="minimap2使用的线程数。")
+    parser.add_argument('-d', '--depth', required=True, help="包含基因深度信息的CSV文件。")
+    parser.add_argument('-min_depth', '--min_depth', type=int, default=10, help="基因深度过滤的最小值。")
+    parser.add_argument('-cs', '--chosen_samples_output', required=True, help="保存选择样本的CSV文件。")
     
     return parser.parse_args()
 
-# 主函数
+def filter_samples_by_depth(depth_df, min_depth, genes):
+    """根据GENES列表中的基因深度过滤样本。"""
+    # 确保第一列是 "Sample"
+    if depth_df.columns[0] != 'Sample':
+        depth_df.rename(columns={depth_df.columns[0]: 'Sample'}, inplace=True)
+
+    # 只选择GENES列表中的基因列进行过滤
+    selected_columns = ['Sample'] + [gene for gene in genes if gene in depth_df.columns]
+    
+    # 过滤掉深度不足的样本
+    filtered_df = depth_df[selected_columns]
+    filtered_df = filtered_df[(filtered_df.iloc[:, 1:] >= min_depth).all(axis=1)]
+    
+    return filtered_df['Sample'].unique()
+
+def choose_random_samples_by_superpopulation(sample_df, num_samples_per_group=10):
+    """
+    根据Superpopulation随机选择样本，最多选择 num_samples_per_group 个样本。
+    如果Superpopulation的样本数少于 num_samples_per_group，则选择所有样本。
+    """
+    grouped = sample_df.groupby('Superpopulation')
+    
+    selected_samples = []
+    
+    for superpop, group in grouped:
+        # 从每个 Superpopulation 中选择最多 num_samples_per_group 个样本
+        selected_samples_from_group = group.sample(n=min(len(group), num_samples_per_group))['Sample'].values.tolist()
+        selected_samples.extend(selected_samples_from_group)
+    
+    return selected_samples
+
 if __name__ == '__main__':
-    # 解析命令行参数
     args = parse_arguments()
     
-    # 从样本名文件读取样本名列表
-    with open(args.input, 'r') as f:
-        sample_names = [line.strip() for line in f if line.strip()]
+    # 读取输入样本文件
+    sample_df = pd.read_csv(args.input, header=None, names=["Sample"])
+    metadata_df = pd.read_excel('./20130606_sample_info.xlsx', engine='openpyxl')
+
+    # 处理列名，去掉空格
+    metadata_df.columns = metadata_df.columns.str.replace(' ', '_')
+
+    # 获取样本对应的Population
+    sample_df['Population'] = sample_df['Sample'].apply(lambda x: get_population(metadata_df, x))
     
-    # 计算两两样本之间的divergency矩阵
-    compute_distance_matrix(sample_names, args.output, args.bam_output)
+    # Population到Superpopulation的映射字典
+    population_superpopulation_dict = {
+        'CDX': 'EAS', 'CHB': 'EAS', 'JPT': 'EAS', 'KHV': 'EAS', 'CHS': 'EAS',
+        'BEB': 'SAS', 'GIH': 'SAS', 'ITU': 'SAS', 'PJL': 'SAS', 'STU': 'SAS',
+        'ASW': 'AFR', 'ACB': 'AFR', 'ESN': 'AFR', 'GWD': 'AFR', 'LWK': 'AFR',
+        'MSL': 'AFR', 'YRI': 'AFR', 'GBR': 'EUR', 'FIN': 'EUR', 'IBS': 'EUR',
+        'TSI': 'EUR', 'CEU': 'EUR', 'CLM': 'AMR', 'MXL': 'AMR', 'PEL': 'AMR', 
+        'PUR': 'AMR'
+    }
+
+    # 映射Population到Superpopulation
+    sample_df['Superpopulation'] = sample_df['Population'].map(population_superpopulation_dict)
+
+    # 读取深度文件
+    depth_df = pd.read_csv(args.depth)
+
+    # 检查并重命名第一列为 'Sample' 如果它不是 'Sample'
+    if depth_df.columns[0] != 'Sample':
+        depth_df.rename(columns={depth_df.columns[0]: 'Sample'}, inplace=True)
+
+    # 根据GENES列表中的基因深度过滤样本
+    filtered_samples = filter_samples_by_depth(depth_df, args.min_depth, GENES)
+
+    # 过滤后的样本
+    filtered_sample_df = sample_df[sample_df['Sample'].isin(filtered_samples)]
+
+    # 随机选择每个Superpopulation的样本（尽可能选择10个样本）
+    selected_samples = choose_random_samples_by_superpopulation(filtered_sample_df, num_samples_per_group=10)
+
+    # 从DataFrame中获取选择的样本
+    selected_samples_df = sample_df[sample_df['Sample'].isin(selected_samples)]
+
+    # 保存选择的样本到CSV文件
+    selected_samples_df.to_csv(args.chosen_samples_output, index=False)
+    print(f"Selected samples saved to {args.chosen_samples_output}")
+
+    # 计算选择样本的距离矩阵
+    compute_distance_matrix(selected_samples, args.output, args.bam_output)
