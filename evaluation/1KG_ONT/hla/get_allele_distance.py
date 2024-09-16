@@ -84,12 +84,16 @@ def compute_sample_pair_divergency_vector(sample1, sample2, bam_output_folder):
         # 比对等位基因1
         dv_s1a1_s2a1 = generate_bam_and_get_divergency_nm(s1_allele1, s2_allele1, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a1_s2a1.bam')) or 0
         dv_s1a2_s2a2 = generate_bam_and_get_divergency_nm(s1_allele2, s2_allele2, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a2_s2a2.bam')) or 0
-        dv_s1_s2.append((dv_s1a1_s2a1 + dv_s1a2_s2a2) / 2)
+        # dv_s1_s2.append((dv_s1a1_s2a1 + dv_s1a2_s2a2) / 2)
+        dv_s1_s2.append(dv_s1a1_s2a1)
+        dv_s1_s2.append(dv_s1a2_s2a2)
 
         # 跨等位基因比对
         dv_s1a1_s2a2 = generate_bam_and_get_divergency_nm(s1_allele1, s2_allele2, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a1_s2a2.bam')) or 0
         dv_s1a2_s2a1 = generate_bam_and_get_divergency_nm(s1_allele2, s2_allele1, os.path.join(bam_output_folder, f'{sample1}_vs_{sample2}_{gene}_s1a2_s2a1.bam')) or 0
-        dv_s1_s2.append((dv_s1a1_s2a2 + dv_s1a2_s2a1) / 2)
+        # dv_s1_s2.append((dv_s1a1_s2a2 + dv_s1a2_s2a1) / 2)
+        dv_s1_s2.append(dv_s1a1_s2a2)
+        dv_s1_s2.append(dv_s1a2_s2a1)
 
         # 选择最小差异值作为该基因的差异值
         divergency_vector.append(min(dv_s1_s2))
@@ -223,6 +227,9 @@ if __name__ == '__main__':
 
     # 随机选择每个Superpopulation的样本（尽可能选择10个样本）
     selected_samples = choose_random_samples_by_superpopulation(filtered_sample_df, num_samples_per_group=10)
+
+    # optial: allow set samples manually
+    selected_samples = ['HG00418','HG00419','HG00420']
 
     # 从DataFrame中获取选择的样本
     selected_samples_df = sample_df[sample_df['Sample'].isin(selected_samples)]
