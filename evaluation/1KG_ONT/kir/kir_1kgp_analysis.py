@@ -49,6 +49,7 @@ def read_alleles(allele_file, super_pop_dict, sample_pop_dict,read_num_cutoff=10
     df = pd.read_csv(allele_file)
     alleles_dict = {}
     pop_alleles_dict = {}
+    pop_sample_num = {}
     alleles_gene_dict = {}
     alleles_sample_dict = {}
 
@@ -86,13 +87,16 @@ def read_alleles(allele_file, super_pop_dict, sample_pop_dict,read_num_cutoff=10
                 alleles_gene_dict[row['Locus']] = []
             if pop not in pop_alleles_dict:
                 pop_alleles_dict[pop] = {}
+            if pop not in pop_sample_num:
+                pop_sample_num[pop] = set()
+            pop_sample_num[pop].add(row['Sample'])
             if row['Locus'] not in pop_alleles_dict[pop]:
                 pop_alleles_dict[pop][row['Locus']] = []
             pop_alleles_dict[pop][row['Locus']].append(genotype)
             alleles_gene_dict[row['Locus']].append(genotype)
             alleles_sample_dict[row['Sample']].append(genotype)
     print ("considered_sample_num", len(alleles_sample_dict), "gene num", len(alleles_gene_dict))
-    return alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict
+    return alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict,pop_sample_num
 
 def count_freq(list, count='no'):
     ## count the frequency of each allele
@@ -289,6 +293,20 @@ def sort_pop(super_pop_dict, color_file):
     df.to_csv(color_file, index=False)
     return pop_list
             
+def pop_occur_freq(pop_alleles_dict,pop_sample_num):
+    data = []
+    for super_pop in pop_alleles_dict:
+        if super_pop == 'Non-pop':
+            continue
+
+        for locus in pop_alleles_dict[super_pop]:
+            count =  len(pop_alleles_dict[super_pop][locus])
+            freq= count/(len(pop_sample_num[super_pop])*2)
+            data.append([super_pop, locus, count, freq])
+            # print (super_pop, locus, count, freq)
+    df = pd.DataFrame(data, columns=['Group', 'Gene', 'Count','Freq'])
+    df.to_csv("pop_occur_freq.csv", index=False)
+
 
 super_pop_file = "../hla/20131219.populations.tsv"
 sample_pop_file = "../hla/20130606_sample_info.xlsx"
@@ -303,7 +321,7 @@ fst_file = "./kir_fst.csv"
 color_file = "./kir_color.csv"
 super_pop_dict = get_super_pop(super_pop_file)
 sample_pop_dict = get_sample_pop(sample_pop_file)
-alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 8)
+alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict,pop_sample_num = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 8)
 
 
 # count_alleles(alleles_dict, freq_file)
@@ -311,13 +329,15 @@ alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict = read_all
 # for_histogram(alleles_gene_dict, histogram_file)
 # os.system("Rscript plot_hitogram.R")
 
-MAF_analysis(alleles_gene_dict, MAF_file, gene_allele_file)
-
+# MAF_analysis(alleles_gene_dict, MAF_file, gene_allele_file)
+pop_occur_freq(pop_alleles_dict,pop_sample_num)
 
 # cumulative_analysis(alleles_sample_dict, super_pop_dict, cumulative_file)
 
 # Fst_analysis(pop_alleles_dict, fst_file)
 # sort_pop(super_pop_dict, color_file)
+
+
 
 
 
