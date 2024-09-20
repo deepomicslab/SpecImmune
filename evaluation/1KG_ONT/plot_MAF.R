@@ -17,3 +17,9 @@ ggplot(data=df, aes(x=Gene, y=Frequency, fill=Group)) +
 
 dev.off()
 
+
+## extract the elements with Group as rare
+df1 <- df[df$Group == "rare",]
+## sort df1 by Frequency
+df1 <- df1[order(df1$Frequency),]
+df1

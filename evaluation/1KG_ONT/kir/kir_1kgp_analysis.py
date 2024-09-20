@@ -307,6 +307,31 @@ def pop_occur_freq(pop_alleles_dict,pop_sample_num):
     df = pd.DataFrame(data, columns=['Group', 'Gene', 'Count','Freq'])
     df.to_csv("pop_occur_freq.csv", index=False)
 
+def LD_analysis(alleles_gene_dict, alleles_sample_dict):
+    loci_list =list(alleles_gene_dict.keys())
+    # gene1 = 'KIR3DL2'
+    # gene2 = 'KIR3DL3'
+    
+
+    for i in range(len(loci_list)):
+        for j in range(i+1, len(loci_list)):
+            gene1 = loci_list[i]
+            gene2 = loci_list[j]
+            
+            data = []
+            for sample in alleles_sample_dict:
+                gene1_alleles = []
+                gene2_alleles = []
+                for allele in alleles_sample_dict[sample]:
+                    if allele.split("*")[0] == gene1:
+                        gene1_alleles.append(allele)
+                    if allele.split("*")[0] == gene2:
+                        gene2_alleles.append(allele)
+                if len(gene1_alleles) == 2 and len(gene2_alleles) == 2:
+                    print (gene1_alleles[0], gene1_alleles[1], gene2_alleles[0], gene2_alleles[1])
+                    data.append([gene1_alleles[0], gene1_alleles[1], gene2_alleles[0], gene2_alleles[1]])
+            df = pd.DataFrame(data, columns=[gene1, gene1, gene2, gene2])
+            df.to_csv(f"/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/kir_LD/{gene1}_{gene2}_LD.csv", index=False)
 
 super_pop_file = "../hla/20131219.populations.tsv"
 sample_pop_file = "../hla/20130606_sample_info.xlsx"
@@ -330,12 +355,14 @@ alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict,pop_sample
 # os.system("Rscript plot_hitogram.R")
 
 # MAF_analysis(alleles_gene_dict, MAF_file, gene_allele_file)
-pop_occur_freq(pop_alleles_dict,pop_sample_num)
+# pop_occur_freq(pop_alleles_dict,pop_sample_num)
 
 # cumulative_analysis(alleles_sample_dict, super_pop_dict, cumulative_file)
 
 # Fst_analysis(pop_alleles_dict, fst_file)
 # sort_pop(super_pop_dict, color_file)
+
+LD_analysis(alleles_gene_dict, alleles_sample_dict)
 
 
 
