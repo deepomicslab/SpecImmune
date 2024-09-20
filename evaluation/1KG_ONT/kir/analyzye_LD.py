@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-def read_LD_values(indir):
+def read_LD_values(indir,outfile):
     ## for each file in the indir
     ## read the LD values and store them in a df
     ## return the df
@@ -25,8 +25,16 @@ def read_LD_values(indir):
             print (gene1, gene2, D, Wn)
             # break
     df = pd.DataFrame(data, columns = ['gene1', 'gene2', 'D', 'Wn'])
-    df.to_csv("kir_LD_values.csv", index = False)
+    df.to_csv(outfile, index = False)
 
-indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/kir_LD_result/"
-read_LD_values(indir)
+# indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/kir_LD_result/"
+# outfile = "kir_LD_values.csv"
+# read_LD_values(indir,outfile)
 
+# indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_LD_result/"
+# outfile = "hla_LD_values.csv"
+# read_LD_values(indir,outfile)
+
+indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_LD_result/"
+outfile = "hla_kir_LD_values.csv"
+read_LD_values(indir,outfile)
