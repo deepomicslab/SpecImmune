@@ -92,6 +92,8 @@ class SingleEndBAMTrack(IntervalTrack):
         self.draw_read_labels = False
 
         self.include_read_fn = allreads
+        self.max_window_height = 50
+        self.window_height_count=0
         # self.color_fn = color_by_strand
         
     def fetch(self):
@@ -105,6 +107,7 @@ class SingleEndBAMTrack(IntervalTrack):
         start, end = self.scale.start, self.scale.end
         
         for read in self.bam.fetch(chrom, start, end):
+            
             if not self.include_read_fn or self.include_read_fn(read):
                 # print(read)
 
@@ -523,6 +526,7 @@ class BAMCoverageTrack(GraphTrack):
         
         self.bam_path = bam_path
         self.bam = pysam.AlignmentFile(bam_path)
+        height = 50
         
     def layout(self, scale):
         import numpy as np

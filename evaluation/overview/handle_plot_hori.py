@@ -33,7 +33,7 @@ df.set_index('Locus', inplace=True)
 cmap = ListedColormap(['#DFF3F8', '#519D78'])  # '#DFF3F8' for 0, '#519D78' for 1
 
 # Create the heatmap
-plt.figure(figsize=(3, 10))  # Increased figure height to fit more gene labels
+plt.figure(figsize=(3, 15))  # Increased figure height to fit more gene labels
 ax = sns.heatmap(df, cmap=cmap, cbar=False, linewidths=0.5, linecolor='gray')
 
 # Rotate x and y labels

@@ -1,0 +1,1494 @@
+<svg version="1.1" baseProfile="full" width="2000" height="651" xmlns="http://www.w3.org/2000/svg">
+<!-- None -->
+<clipPath id="clip_path_0"><rect x="0" y="0" width="2000" height="646" /></clipPath>
+<g clip-path="url(#clip_path_0)">
+   <!-- Bam coverage -->
+   <clipPath id="clip_path_1"><rect x="0" y="0" width="2000" height="60" /></clipPath>
+   <g clip-path="url(#clip_path_1)">
+      <polygon points="0.00,75.00 154.15,75.00 154.72,71.43 155.30,71.43 155.87,67.86 158.15,67.86 158.72,60.71 161.58,60.71 162.15,57.14 212.39,57.14 212.96,75.00 286.61,75.00 287.18,57.14 361.98,57.14 362.55,53.57 364.83,53.57 365.40,57.14 365.97,53.57 367.11,53.57 367.68,50.00 373.97,50.00 374.54,46.43 440.77,46.43 441.34,75.00 577.79,75.00 578.36,71.43 578.93,42.86 592.63,42.86 593.21,46.43 593.78,46.43 594.35,42.86 602.91,42.86 603.48,46.43 604.05,42.86 665.72,42.86 666.29,39.29 667.43,39.29 668.00,42.86 668.57,39.29 713.67,39.29 714.24,35.71 714.82,35.71 715.39,28.57 735.94,28.57 736.51,75.00 737.08,75.00 737.65,71.43 738.80,71.43 739.37,75.00 1066.51,75.00 1067.09,32.14 1067.66,35.71 1068.23,28.57 1075.65,28.57 1076.22,25.00 1158.44,25.00 1159.01,28.57 1159.58,25.00 1180.13,25.00 1180.70,28.57 1181.27,25.00 1222.95,25.00 1223.52,28.57 1224.09,28.57 1224.66,75.00 1281.76,75.00 1282.33,71.43 1282.90,25.00 1287.47,25.00 1288.04,28.57 1288.61,25.00 1342.28,25.00 1342.85,28.57 1343.42,25.00 1347.99,25.00 1348.56,57.14 1349.13,57.14 1349.70,75.00 1600.34,75.00 1600.91,42.86 1601.48,42.86 1602.06,25.00 1620.33,25.00 1620.90,75.00 1701.40,75.00 1701.97,25.00 1708.25,25.00 1708.82,28.57 1709.39,25.00 1727.66,25.00 1728.23,57.14 1728.80,57.14 1729.37,75.00 1824.15,75.00 1824.72,42.86 1825.29,42.86 1825.86,25.00 1910.36,25.00 1910.93,28.57 1911.50,25.00 1989.72,25.00 1990.29,28.57 1990.86,25.00 1999.43,25.00 2000.00,75.00 2000.00,60.00 0.00,60.00" fill="#E86349" stroke="none"  />
+      <line x1="0.00" x2="1.00" y1="75.00" y2="30.83" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <line x1="0.00" x2="10.00" y1="75.00" y2="75.00" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="75.00" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >0</text>
+      <line x1="0.00" x2="10.00" y1="60.28" y2="60.28" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="60.28" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >4</text>
+      <line x1="0.00" x2="10.00" y1="45.56" y2="45.56" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="45.56" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >8</text>
+      <line x1="0.00" x2="10.00" y1="30.83" y2="30.83" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="30.83" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >12</text>
+      <defs>
+          <filter x="0" y="0" width="1" height="1" id="solid1">
+              <feFlood flood-opacity="0.9" flood-color="white"/>
+              <feComposite in="SourceGraphic"/>
+          </filter>
+      </defs>
+      <text x="5.00" y="14.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="white" filter="url(#solid1)" >Bam coverage</text>
+      <text x="5.00" y="14.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="black" >Bam coverage</text>
+   </g>
+   <!-- RNA reads from Haplotype 1 -->
+   <clipPath id="clip_path_2"><rect x="0" y="70" width="2000" height="150" /></clipPath>
+   <g clip-path="url(#clip_path_2)">
+      <path d="M 154.7245218384242 90 L 2000.0 90 L 2000.0 98 L 154.7245218384242 98 L 150.7245218384242 94.0 z" stroke="none" fill="lightgray" id="m64139_220130_061226/153421271/ccs0" />
+      <rect x="153.72" y="90.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="212.96" y="90.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="94.00" y2="94.00" stroke="black" stroke-width="1"  />
+      <rect x="441.34" y="90.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="94.00" y2="94.00" stroke="black" stroke-width="1"  />
+      <rect x="736.51" y="90.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="94.00" y2="94.00" stroke="black" stroke-width="1"  />
+      <rect x="1224.66" y="90.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="94.00" y2="94.00" stroke="black" stroke-width="1"  />
+      <rect x="1348.56" y="90.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="94.00" y2="94.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="90.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="94.00" y2="94.00" stroke="black" stroke-width="1"  />
+      <rect x="1728.23" y="90.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="94.00" y2="94.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="90.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 155.86640022837568 100 L 2000.0 100 L 2000.0 108 L 155.86640022837568 108 L 151.86640022837568 104.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/5637250/ccs1" />
+      <rect x="154.87" y="100.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="212.96" y="100.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="104.00" y2="104.00" stroke="black" stroke-width="1"  />
+      <rect x="441.34" y="100.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="104.00" y2="104.00" stroke="black" stroke-width="1"  />
+      <rect x="736.51" y="100.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="104.00" y2="104.00" stroke="black" stroke-width="1"  />
+      <rect x="1224.66" y="100.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="104.00" y2="104.00" stroke="black" stroke-width="1"  />
+      <rect x="1348.56" y="100.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="104.00" y2="104.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="100.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="104.00" y2="104.00" stroke="black" stroke-width="1"  />
+      <rect x="1728.23" y="100.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="104.00" y2="104.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="100.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 158.72109620325435 110 L 2000.0 110 L 2000.0 118 L 158.72109620325435 118 L 154.72109620325435 114.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/160040023/ccs2" />
+      <rect x="157.72" y="110.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="212.96" y="110.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="114.00" y2="114.00" stroke="black" stroke-width="1"  />
+      <rect x="441.34" y="110.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="114.00" y2="114.00" stroke="black" stroke-width="1"  />
+      <rect x="736.51" y="110.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="114.00" y2="114.00" stroke="black" stroke-width="1"  />
+      <rect x="1224.66" y="110.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="114.00" y2="114.00" stroke="black" stroke-width="1"  />
+      <rect x="1348.56" y="110.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="114.00" y2="114.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="110.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="114.00" y2="114.00" stroke="black" stroke-width="1"  />
+      <rect x="1728.23" y="110.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="114.00" y2="114.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="110.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 158.72109620325435 120 L 2000.0 120 L 2000.0 128 L 158.72109620325435 128 L 154.72109620325435 124.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/179766766/ccs3" />
+      <rect x="157.72" y="120.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="212.96" y="120.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="124.00" y2="124.00" stroke="black" stroke-width="1"  />
+      <rect x="441.34" y="120.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="124.00" y2="124.00" stroke="black" stroke-width="1"  />
+      <rect x="736.51" y="120.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="124.00" y2="124.00" stroke="black" stroke-width="1"  />
+      <rect x="1224.66" y="120.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="124.00" y2="124.00" stroke="black" stroke-width="1"  />
+      <rect x="1348.56" y="120.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="124.00" y2="124.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="120.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="124.00" y2="124.00" stroke="black" stroke-width="1"  />
+      <rect x="1728.23" y="120.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="124.00" y2="124.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="120.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 162.14673137310876 130 L 2000.0 130 L 2004.0 134.0 L 2000.0 138 L 162.14673137310876 138 z" stroke="none" fill="lightgray" id="m64139_220127_180020/657347/ccs4" />
+      <rect x="161.15" y="130.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="212.96" y="130.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="134.00" y2="134.00" stroke="black" stroke-width="1"  />
+      <rect x="441.34" y="130.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="134.00" y2="134.00" stroke="black" stroke-width="1"  />
+      <rect x="736.51" y="130.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="134.00" y2="134.00" stroke="black" stroke-width="1"  />
+      <rect x="1224.66" y="130.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="134.00" y2="134.00" stroke="black" stroke-width="1"  />
+      <rect x="1349.70" y="130.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="134.00" y2="134.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="130.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="134.00" y2="134.00" stroke="black" stroke-width="1"  />
+      <rect x="1729.37" y="130.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="134.00" y2="134.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="130.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 362.54638880959175 140 L 2000.0 140 L 2000.0 148 L 362.54638880959175 148 L 358.54638880959175 144.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/86049494/ccs5" />
+      <rect x="361.55" y="140.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="441.34" y="140.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="144.00" y2="144.00" stroke="black" stroke-width="1"  />
+      <rect x="736.51" y="140.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="144.00" y2="144.00" stroke="black" stroke-width="1"  />
+      <rect x="1223.52" y="140.00" width="59.38" height="8.00" fill="white" stroke="none" />
+      <line x1="1223.52" x2="1282.90" y1="144.00" y2="144.00" stroke="black" stroke-width="1"  />
+      <rect x="1348.56" y="140.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="144.00" y2="144.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="140.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="144.00" y2="144.00" stroke="black" stroke-width="1"  />
+      <rect x="1728.23" y="140.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="144.00" y2="144.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="140.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 367.68484156437336 150 L 2000.0 150 L 2000.0 158 L 367.68484156437336 158 L 363.68484156437336 154.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/120391570/ccs6" />
+      <rect x="366.68" y="150.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="441.34" y="150.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="154.00" y2="154.00" stroke="black" stroke-width="1"  />
+      <rect x="736.51" y="150.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="154.00" y2="154.00" stroke="black" stroke-width="1"  />
+      <rect x="1224.66" y="150.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="154.00" y2="154.00" stroke="black" stroke-width="1"  />
+      <rect x="1348.56" y="150.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="154.00" y2="154.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="150.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="154.00" y2="154.00" stroke="black" stroke-width="1"  />
+      <rect x="1728.23" y="150.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="154.00" y2="154.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="150.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 374.5361119040822 160 L 2000.0 160 L 2000.0 168 L 374.5361119040822 168 L 370.5361119040822 164.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/93520248/ccs7" />
+      <rect x="373.54" y="160.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="441.34" y="160.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="164.00" y2="164.00" stroke="black" stroke-width="1"  />
+      <rect x="736.51" y="160.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="164.00" y2="164.00" stroke="black" stroke-width="1"  />
+      <rect x="1224.66" y="160.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="164.00" y2="164.00" stroke="black" stroke-width="1"  />
+      <rect x="1348.56" y="160.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="164.00" y2="164.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="160.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="164.00" y2="164.00" stroke="black" stroke-width="1"  />
+      <rect x="1728.23" y="160.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="164.00" y2="164.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="160.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 578.3614045104197 170 L 2000.0 170 L 2000.0 178 L 578.3614045104197 178 L 574.3614045104197 174.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/36635185/ccs8" />
+      <rect x="577.36" y="170.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="739.37" y="170.00" width="329.43" height="8.00" fill="white" stroke="none" />
+      <line x1="739.37" x2="1068.80" y1="174.00" y2="174.00" stroke="black" stroke-width="1"  />
+      <rect x="1224.66" y="170.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="174.00" y2="174.00" stroke="black" stroke-width="1"  />
+      <rect x="1348.56" y="170.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="174.00" y2="174.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="170.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="174.00" y2="174.00" stroke="black" stroke-width="1"  />
+      <rect x="1728.23" y="170.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="174.00" y2="174.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="170.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 666.2860405366828 180 L 2000.0 180 L 2000.0 188 L 666.2860405366828 188 L 662.2860405366828 184.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/16319934/ccs9" />
+      <rect x="665.29" y="180.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="736.51" y="180.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="184.00" y2="184.00" stroke="black" stroke-width="1"  />
+      <rect x="1147.94" y="180.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1224.66" y="180.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="184.00" y2="184.00" stroke="black" stroke-width="1"  />
+      <rect x="1348.56" y="180.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="184.00" y2="184.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="180.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="184.00" y2="184.00" stroke="black" stroke-width="1"  />
+      <rect x="1728.23" y="180.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="184.00" y2="184.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="180.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 714.2449329146446 190 L 2000.0 190 L 2004.0 194.0 L 2000.0 198 L 714.2449329146446 198 z" stroke="none" fill="lightgray" id="m64139_220127_180020/57477879/ccs10" />
+      <rect x="713.24" y="190.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="736.51" y="190.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="194.00" y2="194.00" stroke="black" stroke-width="1"  />
+      <rect x="1224.66" y="190.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="194.00" y2="194.00" stroke="black" stroke-width="1"  />
+      <rect x="1349.70" y="190.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="194.00" y2="194.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="190.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="194.00" y2="194.00" stroke="black" stroke-width="1"  />
+      <rect x="1729.37" y="190.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="194.00" y2="194.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="190.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 715.386811304596 200 L 2000.0 200 L 2004.0 204.0 L 2000.0 208 L 715.386811304596 208 z" stroke="none" fill="lightgray" id="m64139_220127_180020/101189848/ccs11" />
+      <rect x="714.39" y="200.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="736.51" y="200.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="204.00" y2="204.00" stroke="black" stroke-width="1"  />
+      <rect x="1224.66" y="200.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="204.00" y2="204.00" stroke="black" stroke-width="1"  />
+      <rect x="1349.70" y="200.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="204.00" y2="204.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="200.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="204.00" y2="204.00" stroke="black" stroke-width="1"  />
+      <rect x="1729.37" y="200.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="204.00" y2="204.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="200.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 715.386811304596 210 L 2000.0 210 L 2004.0 214.0 L 2000.0 218 L 715.386811304596 218 z" stroke="none" fill="lightgray" id="m64139_220127_180020/142213213/ccs12" />
+      <rect x="714.39" y="210.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="736.51" y="210.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="214.00" y2="214.00" stroke="black" stroke-width="1"  />
+      <rect x="1224.66" y="210.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="214.00" y2="214.00" stroke="black" stroke-width="1"  />
+      <rect x="1349.70" y="210.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="214.00" y2="214.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="210.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="214.00" y2="214.00" stroke="black" stroke-width="1"  />
+      <rect x="1729.37" y="210.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="214.00" y2="214.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="210.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 1076.2203825292606 220 L 2000.0 220 L 2004.0 224.0 L 2000.0 228 L 1076.2203825292606 228 z" stroke="none" fill="lightgray" id="m64139_220127_180020/179897324/ccs13" />
+      <rect x="1075.22" y="220.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="1224.66" y="220.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="224.00" y2="224.00" stroke="black" stroke-width="1"  />
+      <rect x="1349.70" y="220.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="224.00" y2="224.00" stroke="black" stroke-width="1"  />
+      <rect x="1620.90" y="220.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="224.00" y2="224.00" stroke="black" stroke-width="1"  />
+      <rect x="1729.37" y="220.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="224.00" y2="224.00" stroke="black" stroke-width="1"  />
+      <rect x="1999.00" y="220.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <defs>
+          <filter x="0" y="0" width="1" height="1" id="solid2">
+              <feFlood flood-opacity="0.9" flood-color="white"/>
+              <feComposite in="SourceGraphic"/>
+          </filter>
+      </defs>
+      <text x="5.00" y="84.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="white" filter="url(#solid2)" >RNA reads from Haplotype 1</text>
+      <text x="5.00" y="84.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="black" >RNA reads from Haplotype 1</text>
+   </g>
+   <!-- Isoform assembled from haplotype 1  -->
+   <clipPath id="clip_path_3"><rect x="0" y="230" width="2000" height="28" /></clipPath>
+   <g clip-path="url(#clip_path_3)">
+      <line x1="212.96" x2="287.18" y1="255.50" y2="255.50" stroke="#E89E9D"  />
+      <path d="M 220.20721920893203 253.5 L 222.20721920893203 255.5 L 220.20721920893203 257.5" stroke="#E89E9D" fill="transparent" xcenter="221.20721920893203" stroke-width="0.75" />
+      <path d="M 228.45411869191486 253.5 L 230.45411869191486 255.5 L 228.45411869191486 257.5" stroke="#E89E9D" fill="transparent" xcenter="229.45411869191486" stroke-width="0.75" />
+      <path d="M 236.7010181748977 253.5 L 238.7010181748977 255.5 L 236.7010181748977 257.5" stroke="#E89E9D" fill="transparent" xcenter="237.7010181748977" stroke-width="0.75" />
+      <path d="M 244.94791765788054 253.5 L 246.94791765788054 255.5 L 244.94791765788054 257.5" stroke="#E89E9D" fill="transparent" xcenter="245.94791765788054" stroke-width="0.75" />
+      <path d="M 253.1948171408634 253.5 L 255.1948171408634 255.5 L 253.1948171408634 257.5" stroke="#E89E9D" fill="transparent" xcenter="254.1948171408634" stroke-width="0.75" />
+      <path d="M 261.4417166238462 253.5 L 263.4417166238462 255.5 L 261.4417166238462 257.5" stroke="#E89E9D" fill="transparent" xcenter="262.4417166238462" stroke-width="0.75" />
+      <path d="M 269.68861610682904 253.5 L 271.68861610682904 255.5 L 269.68861610682904 257.5" stroke="#E89E9D" fill="transparent" xcenter="270.68861610682904" stroke-width="0.75" />
+      <path d="M 277.9355155898119 253.5 L 279.9355155898119 255.5 L 277.9355155898119 257.5" stroke="#E89E9D" fill="transparent" xcenter="278.9355155898119" stroke-width="0.75" />
+      <line x1="736.51" x2="1067.09" y1="255.50" y2="255.50" stroke="#E89E9D"  />
+      <path d="M 744.2108718842496 253.5 L 746.2108718842496 255.5 L 744.2108718842496 257.5" stroke="#E89E9D" fill="transparent" xcenter="745.2108718842496" stroke-width="0.75" />
+      <path d="M 752.910182249801 253.5 L 754.910182249801 255.5 L 752.910182249801 257.5" stroke="#E89E9D" fill="transparent" xcenter="753.910182249801" stroke-width="0.75" />
+      <path d="M 761.6094926153522 253.5 L 763.6094926153522 255.5 L 761.6094926153522 257.5" stroke="#E89E9D" fill="transparent" xcenter="762.6094926153522" stroke-width="0.75" />
+      <path d="M 770.3088029809036 253.5 L 772.3088029809036 255.5 L 770.3088029809036 257.5" stroke="#E89E9D" fill="transparent" xcenter="771.3088029809036" stroke-width="0.75" />
+      <path d="M 779.0081133464549 253.5 L 781.0081133464549 255.5 L 779.0081133464549 257.5" stroke="#E89E9D" fill="transparent" xcenter="780.0081133464549" stroke-width="0.75" />
+      <path d="M 787.7074237120063 253.5 L 789.7074237120063 255.5 L 787.7074237120063 257.5" stroke="#E89E9D" fill="transparent" xcenter="788.7074237120063" stroke-width="0.75" />
+      <path d="M 796.4067340775575 253.5 L 798.4067340775575 255.5 L 796.4067340775575 257.5" stroke="#E89E9D" fill="transparent" xcenter="797.4067340775575" stroke-width="0.75" />
+      <path d="M 805.1060444431089 253.5 L 807.1060444431089 255.5 L 805.1060444431089 257.5" stroke="#E89E9D" fill="transparent" xcenter="806.1060444431089" stroke-width="0.75" />
+      <path d="M 813.8053548086602 253.5 L 815.8053548086602 255.5 L 813.8053548086602 257.5" stroke="#E89E9D" fill="transparent" xcenter="814.8053548086602" stroke-width="0.75" />
+      <path d="M 822.5046651742116 253.5 L 824.5046651742116 255.5 L 822.5046651742116 257.5" stroke="#E89E9D" fill="transparent" xcenter="823.5046651742116" stroke-width="0.75" />
+      <path d="M 831.203975539763 253.5 L 833.203975539763 255.5 L 831.203975539763 257.5" stroke="#E89E9D" fill="transparent" xcenter="832.203975539763" stroke-width="0.75" />
+      <path d="M 839.9032859053142 253.5 L 841.9032859053142 255.5 L 839.9032859053142 257.5" stroke="#E89E9D" fill="transparent" xcenter="840.9032859053142" stroke-width="0.75" />
+      <path d="M 848.6025962708655 253.5 L 850.6025962708655 255.5 L 848.6025962708655 257.5" stroke="#E89E9D" fill="transparent" xcenter="849.6025962708655" stroke-width="0.75" />
+      <path d="M 857.3019066364169 253.5 L 859.3019066364169 255.5 L 857.3019066364169 257.5" stroke="#E89E9D" fill="transparent" xcenter="858.3019066364169" stroke-width="0.75" />
+      <path d="M 866.0012170019683 253.5 L 868.0012170019683 255.5 L 866.0012170019683 257.5" stroke="#E89E9D" fill="transparent" xcenter="867.0012170019683" stroke-width="0.75" />
+      <path d="M 874.7005273675195 253.5 L 876.7005273675195 255.5 L 874.7005273675195 257.5" stroke="#E89E9D" fill="transparent" xcenter="875.7005273675195" stroke-width="0.75" />
+      <path d="M 883.3998377330709 253.5 L 885.3998377330709 255.5 L 883.3998377330709 257.5" stroke="#E89E9D" fill="transparent" xcenter="884.3998377330709" stroke-width="0.75" />
+      <path d="M 892.0991480986222 253.5 L 894.0991480986222 255.5 L 892.0991480986222 257.5" stroke="#E89E9D" fill="transparent" xcenter="893.0991480986222" stroke-width="0.75" />
+      <path d="M 900.7984584641736 253.5 L 902.7984584641736 255.5 L 900.7984584641736 257.5" stroke="#E89E9D" fill="transparent" xcenter="901.7984584641736" stroke-width="0.75" />
+      <path d="M 909.4977688297249 253.5 L 911.4977688297249 255.5 L 909.4977688297249 257.5" stroke="#E89E9D" fill="transparent" xcenter="910.4977688297249" stroke-width="0.75" />
+      <path d="M 918.1970791952763 253.5 L 920.1970791952763 255.5 L 918.1970791952763 257.5" stroke="#E89E9D" fill="transparent" xcenter="919.1970791952763" stroke-width="0.75" />
+      <path d="M 926.8963895608276 253.5 L 928.8963895608276 255.5 L 926.8963895608276 257.5" stroke="#E89E9D" fill="transparent" xcenter="927.8963895608276" stroke-width="0.75" />
+      <path d="M 935.5956999263789 253.5 L 937.5956999263789 255.5 L 935.5956999263789 257.5" stroke="#E89E9D" fill="transparent" xcenter="936.5956999263789" stroke-width="0.75" />
+      <path d="M 944.2950102919302 253.5 L 946.2950102919302 255.5 L 944.2950102919302 257.5" stroke="#E89E9D" fill="transparent" xcenter="945.2950102919302" stroke-width="0.75" />
+      <path d="M 952.9943206574816 253.5 L 954.9943206574816 255.5 L 952.9943206574816 257.5" stroke="#E89E9D" fill="transparent" xcenter="953.9943206574816" stroke-width="0.75" />
+      <path d="M 961.6936310230328 253.5 L 963.6936310230328 255.5 L 961.6936310230328 257.5" stroke="#E89E9D" fill="transparent" xcenter="962.6936310230328" stroke-width="0.75" />
+      <path d="M 970.3929413885842 253.5 L 972.3929413885842 255.5 L 970.3929413885842 257.5" stroke="#E89E9D" fill="transparent" xcenter="971.3929413885842" stroke-width="0.75" />
+      <path d="M 979.0922517541355 253.5 L 981.0922517541355 255.5 L 979.0922517541355 257.5" stroke="#E89E9D" fill="transparent" xcenter="980.0922517541355" stroke-width="0.75" />
+      <path d="M 987.7915621196869 253.5 L 989.7915621196869 255.5 L 987.7915621196869 257.5" stroke="#E89E9D" fill="transparent" xcenter="988.7915621196869" stroke-width="0.75" />
+      <path d="M 996.4908724852382 253.5 L 998.4908724852382 255.5 L 996.4908724852382 257.5" stroke="#E89E9D" fill="transparent" xcenter="997.4908724852382" stroke-width="0.75" />
+      <path d="M 1005.1901828507896 253.5 L 1007.1901828507896 255.5 L 1005.1901828507896 257.5" stroke="#E89E9D" fill="transparent" xcenter="1006.1901828507896" stroke-width="0.75" />
+      <path d="M 1013.8894932163408 253.5 L 1015.8894932163408 255.5 L 1013.8894932163408 257.5" stroke="#E89E9D" fill="transparent" xcenter="1014.8894932163408" stroke-width="0.75" />
+      <path d="M 1022.5888035818922 253.5 L 1024.588803581892 255.5 L 1022.5888035818922 257.5" stroke="#E89E9D" fill="transparent" xcenter="1023.5888035818922" stroke-width="0.75" />
+      <path d="M 1031.2881139474434 253.5 L 1033.2881139474434 255.5 L 1031.2881139474434 257.5" stroke="#E89E9D" fill="transparent" xcenter="1032.2881139474434" stroke-width="0.75" />
+      <path d="M 1039.9874243129948 253.5 L 1041.9874243129948 255.5 L 1039.9874243129948 257.5" stroke="#E89E9D" fill="transparent" xcenter="1040.9874243129948" stroke-width="0.75" />
+      <path d="M 1048.6867346785461 253.5 L 1050.6867346785461 255.5 L 1048.6867346785461 257.5" stroke="#E89E9D" fill="transparent" xcenter="1049.6867346785461" stroke-width="0.75" />
+      <path d="M 1057.3860450440975 253.5 L 1059.3860450440975 255.5 L 1057.3860450440975 257.5" stroke="#E89E9D" fill="transparent" xcenter="1058.3860450440975" stroke-width="0.75" />
+      <line x1="1224.66" x2="1282.90" y1="255.50" y2="255.50" stroke="#E89E9D"  />
+      <path d="M 1231.9839729211697 253.5 L 1233.9839729211697 255.5 L 1231.9839729211697 257.5" stroke="#E89E9D" fill="transparent" xcenter="1232.9839729211697" stroke-width="0.75" />
+      <path d="M 1240.3033726193873 253.5 L 1242.3033726193873 255.5 L 1240.3033726193873 257.5" stroke="#E89E9D" fill="transparent" xcenter="1241.3033726193873" stroke-width="0.75" />
+      <path d="M 1248.6227723176053 253.5 L 1250.6227723176053 255.5 L 1248.6227723176053 257.5" stroke="#E89E9D" fill="transparent" xcenter="1249.6227723176053" stroke-width="0.75" />
+      <path d="M 1256.9421720158232 253.5 L 1258.9421720158232 255.5 L 1256.9421720158232 257.5" stroke="#E89E9D" fill="transparent" xcenter="1257.9421720158232" stroke-width="0.75" />
+      <path d="M 1265.261571714041 253.5 L 1267.261571714041 255.5 L 1265.261571714041 257.5" stroke="#E89E9D" fill="transparent" xcenter="1266.261571714041" stroke-width="0.75" />
+      <path d="M 1273.5809714122588 253.5 L 1275.5809714122588 255.5 L 1273.5809714122588 257.5" stroke="#E89E9D" fill="transparent" xcenter="1274.5809714122588" stroke-width="0.75" />
+      <line x1="1349.70" x2="1602.06" y1="255.50" y2="255.50" stroke="#E89E9D"  />
+      <path d="M 1357.4021577564058 253.5 L 1359.4021577564058 255.5 L 1357.4021577564058 257.5" stroke="#E89E9D" fill="transparent" xcenter="1358.4021577564058" stroke-width="0.75" />
+      <path d="M 1366.104058590174 253.5 L 1368.104058590174 255.5 L 1366.104058590174 257.5" stroke="#E89E9D" fill="transparent" xcenter="1367.104058590174" stroke-width="0.75" />
+      <path d="M 1374.8059594239419 253.5 L 1376.8059594239419 255.5 L 1374.8059594239419 257.5" stroke="#E89E9D" fill="transparent" xcenter="1375.8059594239419" stroke-width="0.75" />
+      <path d="M 1383.50786025771 253.5 L 1385.50786025771 255.5 L 1383.50786025771 257.5" stroke="#E89E9D" fill="transparent" xcenter="1384.50786025771" stroke-width="0.75" />
+      <path d="M 1392.2097610914782 253.5 L 1394.2097610914782 255.5 L 1392.2097610914782 257.5" stroke="#E89E9D" fill="transparent" xcenter="1393.2097610914782" stroke-width="0.75" />
+      <path d="M 1400.9116619252463 253.5 L 1402.9116619252463 255.5 L 1400.9116619252463 257.5" stroke="#E89E9D" fill="transparent" xcenter="1401.9116619252463" stroke-width="0.75" />
+      <path d="M 1409.6135627590145 253.5 L 1411.6135627590145 255.5 L 1409.6135627590145 257.5" stroke="#E89E9D" fill="transparent" xcenter="1410.6135627590145" stroke-width="0.75" />
+      <path d="M 1418.3154635927824 253.5 L 1420.3154635927824 255.5 L 1418.3154635927824 257.5" stroke="#E89E9D" fill="transparent" xcenter="1419.3154635927824" stroke-width="0.75" />
+      <path d="M 1427.0173644265506 253.5 L 1429.0173644265506 255.5 L 1427.0173644265506 257.5" stroke="#E89E9D" fill="transparent" xcenter="1428.0173644265506" stroke-width="0.75" />
+      <path d="M 1435.7192652603187 253.5 L 1437.7192652603187 255.5 L 1435.7192652603187 257.5" stroke="#E89E9D" fill="transparent" xcenter="1436.7192652603187" stroke-width="0.75" />
+      <path d="M 1444.4211660940869 253.5 L 1446.4211660940869 255.5 L 1444.4211660940869 257.5" stroke="#E89E9D" fill="transparent" xcenter="1445.4211660940869" stroke-width="0.75" />
+      <path d="M 1453.1230669278548 253.5 L 1455.1230669278548 255.5 L 1453.1230669278548 257.5" stroke="#E89E9D" fill="transparent" xcenter="1454.1230669278548" stroke-width="0.75" />
+      <path d="M 1461.824967761623 253.5 L 1463.824967761623 255.5 L 1461.824967761623 257.5" stroke="#E89E9D" fill="transparent" xcenter="1462.824967761623" stroke-width="0.75" />
+      <path d="M 1470.526868595391 253.5 L 1472.526868595391 255.5 L 1470.526868595391 257.5" stroke="#E89E9D" fill="transparent" xcenter="1471.526868595391" stroke-width="0.75" />
+      <path d="M 1479.2287694291592 253.5 L 1481.2287694291592 255.5 L 1479.2287694291592 257.5" stroke="#E89E9D" fill="transparent" xcenter="1480.2287694291592" stroke-width="0.75" />
+      <path d="M 1487.9306702629274 253.5 L 1489.9306702629274 255.5 L 1487.9306702629274 257.5" stroke="#E89E9D" fill="transparent" xcenter="1488.9306702629274" stroke-width="0.75" />
+      <path d="M 1496.6325710966953 253.5 L 1498.6325710966953 255.5 L 1496.6325710966953 257.5" stroke="#E89E9D" fill="transparent" xcenter="1497.6325710966953" stroke-width="0.75" />
+      <path d="M 1505.3344719304635 253.5 L 1507.3344719304635 255.5 L 1505.3344719304635 257.5" stroke="#E89E9D" fill="transparent" xcenter="1506.3344719304635" stroke-width="0.75" />
+      <path d="M 1514.0363727642316 253.5 L 1516.0363727642316 255.5 L 1514.0363727642316 257.5" stroke="#E89E9D" fill="transparent" xcenter="1515.0363727642316" stroke-width="0.75" />
+      <path d="M 1522.7382735979998 253.5 L 1524.7382735979998 255.5 L 1522.7382735979998 257.5" stroke="#E89E9D" fill="transparent" xcenter="1523.7382735979998" stroke-width="0.75" />
+      <path d="M 1531.440174431768 253.5 L 1533.440174431768 255.5 L 1531.440174431768 257.5" stroke="#E89E9D" fill="transparent" xcenter="1532.440174431768" stroke-width="0.75" />
+      <path d="M 1540.1420752655358 253.5 L 1542.1420752655358 255.5 L 1540.1420752655358 257.5" stroke="#E89E9D" fill="transparent" xcenter="1541.1420752655358" stroke-width="0.75" />
+      <path d="M 1548.843976099304 253.5 L 1550.843976099304 255.5 L 1548.843976099304 257.5" stroke="#E89E9D" fill="transparent" xcenter="1549.843976099304" stroke-width="0.75" />
+      <path d="M 1557.5458769330721 253.5 L 1559.5458769330721 255.5 L 1557.5458769330721 257.5" stroke="#E89E9D" fill="transparent" xcenter="1558.5458769330721" stroke-width="0.75" />
+      <path d="M 1566.2477777668403 253.5 L 1568.2477777668403 255.5 L 1566.2477777668403 257.5" stroke="#E89E9D" fill="transparent" xcenter="1567.2477777668403" stroke-width="0.75" />
+      <path d="M 1574.9496786006084 253.5 L 1576.9496786006084 255.5 L 1574.9496786006084 257.5" stroke="#E89E9D" fill="transparent" xcenter="1575.9496786006084" stroke-width="0.75" />
+      <path d="M 1583.6515794343763 253.5 L 1585.6515794343763 255.5 L 1583.6515794343763 257.5" stroke="#E89E9D" fill="transparent" xcenter="1584.6515794343763" stroke-width="0.75" />
+      <path d="M 1592.3534802681445 253.5 L 1594.3534802681445 255.5 L 1592.3534802681445 257.5" stroke="#E89E9D" fill="transparent" xcenter="1593.3534802681445" stroke-width="0.75" />
+      <line x1="1729.37" x2="1825.86" y1="255.50" y2="255.50" stroke="#E89E9D"  />
+      <path d="M 1736.4155485774097 253.5 L 1738.4155485774097 255.5 L 1736.4155485774097 257.5" stroke="#E89E9D" fill="transparent" xcenter="1737.4155485774097" stroke-width="0.75" />
+      <path d="M 1744.456275573318 253.5 L 1746.456275573318 255.5 L 1744.456275573318 257.5" stroke="#E89E9D" fill="transparent" xcenter="1745.456275573318" stroke-width="0.75" />
+      <path d="M 1752.4970025692264 253.5 L 1754.4970025692264 255.5 L 1752.4970025692264 257.5" stroke="#E89E9D" fill="transparent" xcenter="1753.4970025692264" stroke-width="0.75" />
+      <path d="M 1760.5377295651347 253.5 L 1762.5377295651347 255.5 L 1760.5377295651347 257.5" stroke="#E89E9D" fill="transparent" xcenter="1761.5377295651347" stroke-width="0.75" />
+      <path d="M 1768.578456561043 253.5 L 1770.578456561043 255.5 L 1768.578456561043 257.5" stroke="#E89E9D" fill="transparent" xcenter="1769.578456561043" stroke-width="0.75" />
+      <path d="M 1776.6191835569512 253.5 L 1778.6191835569512 255.5 L 1776.6191835569512 257.5" stroke="#E89E9D" fill="transparent" xcenter="1777.6191835569512" stroke-width="0.75" />
+      <path d="M 1784.6599105528594 253.5 L 1786.6599105528594 255.5 L 1784.6599105528594 257.5" stroke="#E89E9D" fill="transparent" xcenter="1785.6599105528594" stroke-width="0.75" />
+      <path d="M 1792.7006375487676 253.5 L 1794.7006375487676 255.5 L 1792.7006375487676 257.5" stroke="#E89E9D" fill="transparent" xcenter="1793.7006375487676" stroke-width="0.75" />
+      <path d="M 1800.741364544676 253.5 L 1802.741364544676 255.5 L 1800.741364544676 257.5" stroke="#E89E9D" fill="transparent" xcenter="1801.741364544676" stroke-width="0.75" />
+      <path d="M 1808.7820915405844 253.5 L 1810.7820915405844 255.5 L 1808.7820915405844 257.5" stroke="#E89E9D" fill="transparent" xcenter="1809.7820915405844" stroke-width="0.75" />
+      <path d="M 1816.8228185364926 253.5 L 1818.8228185364926 255.5 L 1816.8228185364926 257.5" stroke="#E89E9D" fill="transparent" xcenter="1817.8228185364926" stroke-width="0.75" />
+      <rect x="138.74" y="253.50" width="74.22" height="5.00" fill="#E89E9D" stroke="none" id="STRG.1.1" />
+      <rect x="1825.86" y="253.50" width="174.14" height="5.00" fill="#E89E9D" stroke="none" id="STRG.1.1" />
+      <rect x="138.74" y="250.00" width="74.22" height="12.00" fill="#E89E9D" stroke="none" id="STRG.1.1" />
+      <rect x="287.18" y="250.00" width="449.33" height="12.00" fill="#E89E9D" stroke="none" id="STRG.1.1" />
+      <rect x="1067.09" y="250.00" width="157.58" height="12.00" fill="#E89E9D" stroke="none" id="STRG.1.1" />
+      <rect x="1282.90" y="250.00" width="66.80" height="12.00" fill="#E89E9D" stroke="none" id="STRG.1.1" />
+      <rect x="1602.06" y="250.00" width="127.32" height="12.00" fill="#E89E9D" stroke="none" id="STRG.1.1" />
+      <rect x="1825.86" y="250.00" width="174.14" height="12.00" fill="#E89E9D" stroke="none" id="STRG.1.1" />
+      <text x="2003.00" y="260.00" font-size="10" font-family="Helvetica" text-anchor="start" >STRG.1.1</text>
+      <defs>
+          <filter x="0" y="0" width="1" height="1" id="solid3">
+              <feFlood flood-opacity="0.9" flood-color="white"/>
+              <feComposite in="SourceGraphic"/>
+          </filter>
+      </defs>
+      <text x="5.00" y="244.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="white" filter="url(#solid3)" >Isoform assembled from haplotype 1 </text>
+      <text x="5.00" y="244.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="black" >Isoform assembled from haplotype 1 </text>
+   </g>
+   <!-- Bam coverage -->
+   <clipPath id="clip_path_4"><rect x="0" y="268" width="2000" height="60" /></clipPath>
+   <g clip-path="url(#clip_path_4)">
+      <polygon points="0.00,343.00 117.04,343.00 117.61,340.37 134.17,340.37 134.74,337.74 154.15,337.74 154.72,332.47 157.01,332.47 157.58,329.84 158.15,329.84 158.72,319.32 212.39,319.32 212.96,343.00 286.61,343.00 287.18,319.32 291.18,319.32 291.75,316.68 373.97,316.68 374.54,314.05 393.95,314.05 394.52,311.42 440.77,311.42 441.34,340.37 578.36,340.37 578.93,311.42 702.26,311.42 702.83,314.05 714.82,314.05 715.39,311.42 735.94,311.42 736.51,343.00 1066.51,343.00 1067.09,308.79 1085.36,308.79 1085.93,306.16 1119.61,306.16 1120.18,303.53 1192.69,303.53 1193.26,295.63 1224.09,295.63 1224.66,343.00 1282.33,343.00 1282.90,295.63 1347.99,295.63 1348.56,321.95 1349.13,321.95 1349.70,343.00 1600.34,343.00 1600.91,316.68 1601.48,316.68 1602.06,295.63 1620.33,295.63 1620.90,343.00 1701.40,343.00 1701.97,293.00 1727.66,293.00 1728.23,319.32 1728.80,319.32 1729.37,343.00 1824.15,343.00 1824.72,316.68 1825.29,316.68 1825.86,293.00 1921.78,293.00 1922.35,295.63 1999.43,295.63 2000.00,343.00 2000.00,328.00 0.00,328.00" fill="#E86349" stroke="none"  />
+      <line x1="0.00" x2="1.00" y1="343.00" y2="298.83" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <line x1="0.00" x2="10.00" y1="343.00" y2="343.00" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="343.00" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >0</text>
+      <line x1="0.00" x2="10.00" y1="328.28" y2="328.28" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="328.28" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >6</text>
+      <line x1="0.00" x2="10.00" y1="313.56" y2="313.56" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="313.56" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >11</text>
+      <line x1="0.00" x2="10.00" y1="298.83" y2="298.83" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="298.83" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >17</text>
+      <defs>
+          <filter x="0" y="0" width="1" height="1" id="solid4">
+              <feFlood flood-opacity="0.9" flood-color="white"/>
+              <feComposite in="SourceGraphic"/>
+          </filter>
+      </defs>
+      <text x="5.00" y="282.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="white" filter="url(#solid4)" >Bam coverage</text>
+      <text x="5.00" y="282.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="black" >Bam coverage</text>
+   </g>
+   <!-- RNA reads from Haplotype 2 -->
+   <clipPath id="clip_path_5"><rect x="0" y="338" width="2000" height="200" /></clipPath>
+   <g clip-path="url(#clip_path_5)">
+      <path d="M 117.61347416500142 358 L 2000.0 358 L 2000.0 366 L 117.61347416500142 366 L 113.61347416500142 362.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/136644945/ccs0" />
+      <rect x="116.61" y="358.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="139.67" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="186.48" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="212.96" y="358.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="362.00" y2="362.00" stroke="black" stroke-width="1"  />
+      <rect x="300.67" y="358.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="302.95" y="358.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="360.62" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="391.45" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="392.59" y="358.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="393.73" y="358.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="399.44" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="441.34" y="358.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="362.00" y2="362.00" stroke="black" stroke-width="1"  />
+      <rect x="588.99" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="358.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="358.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="358.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="358.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="358.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="358.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="358.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="358.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="702.83" y="358.00" width="364.83" height="8.00" fill="white" stroke="none" />
+      <line x1="702.83" x2="1067.66" y1="362.00" y2="362.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="358.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="358.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="358.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="358.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="358.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="358.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="362.00" y2="362.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="358.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="358.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="358.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="358.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1348.56" y="358.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="362.00" y2="362.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="358.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="358.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="358.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="362.00" y2="362.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="358.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1728.23" y="358.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="362.00" y2="362.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="358.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="358.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="358.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="358.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="358.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="358.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="358.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 134.7416500142735 368 L 2000.0 368 L 2000.0 376 L 134.7416500142735 376 L 130.7416500142735 372.0 z" stroke="none" fill="lightgray" id="m64139_220130_061226/919982/ccs1" />
+      <rect x="133.74" y="368.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="139.67" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="186.48" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="212.96" y="368.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="372.00" y2="372.00" stroke="black" stroke-width="1"  />
+      <rect x="300.67" y="368.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="302.95" y="368.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="360.62" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="391.45" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="392.59" y="368.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="393.73" y="368.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="399.44" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="441.34" y="368.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="372.00" y2="372.00" stroke="black" stroke-width="1"  />
+      <rect x="588.99" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="368.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="368.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="368.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="368.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="368.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="368.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="707.75" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="708.32" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.51" y="368.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="372.00" y2="372.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="368.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="368.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="368.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="372.00" y2="372.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="368.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="368.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1348.56" y="368.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="372.00" y2="372.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="368.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="368.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="372.00" y2="372.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="368.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1728.23" y="368.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="372.00" y2="372.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="368.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="368.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="368.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="368.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="368.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 154.7245218384242 378 L 2000.0 378 L 2000.0 386 L 154.7245218384242 386 L 150.7245218384242 382.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/1180481/ccs2" />
+      <rect x="153.72" y="378.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="186.48" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="212.96" y="378.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="382.00" y2="382.00" stroke="black" stroke-width="1"  />
+      <rect x="300.67" y="378.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="302.95" y="378.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="360.62" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="391.45" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="392.59" y="378.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="393.73" y="378.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="399.44" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="441.34" y="378.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="382.00" y2="382.00" stroke="black" stroke-width="1"  />
+      <rect x="588.99" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="378.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="378.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="378.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="378.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="378.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="378.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="707.75" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="708.32" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.51" y="378.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="382.00" y2="382.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="378.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="378.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="378.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="382.00" y2="382.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="378.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="378.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1348.56" y="378.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="382.00" y2="382.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="378.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="378.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="382.00" y2="382.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="378.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1728.23" y="378.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="382.00" y2="382.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="378.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="378.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="378.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="378.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="378.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 154.7245218384242 388 L 2000.0 388 L 2000.0 396 L 154.7245218384242 396 L 150.7245218384242 392.0 z" stroke="none" fill="lightgray" id="m64139_220130_061226/82904269/ccs3" />
+      <rect x="153.72" y="388.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="186.48" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="212.96" y="388.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="392.00" y2="392.00" stroke="black" stroke-width="1"  />
+      <rect x="300.67" y="388.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="302.95" y="388.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="360.62" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="391.45" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="392.59" y="388.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="393.73" y="388.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="399.44" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="441.34" y="388.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="392.00" y2="392.00" stroke="black" stroke-width="1"  />
+      <rect x="588.99" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="388.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="388.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="388.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="388.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="388.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="388.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="707.75" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="708.32" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.51" y="388.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="392.00" y2="392.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="388.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="388.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="388.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="392.00" y2="392.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="388.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="388.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1348.56" y="388.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="392.00" y2="392.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="388.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="388.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="392.00" y2="392.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="388.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1728.23" y="388.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="392.00" y2="392.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="388.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="388.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="388.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="388.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="388.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 157.57921781330288 398 L 2000.0 398 L 2000.0 406 L 157.57921781330288 406 L 153.57921781330288 402.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/94242914/ccs4" />
+      <rect x="156.58" y="398.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="186.48" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="212.96" y="398.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="402.00" y2="402.00" stroke="black" stroke-width="1"  />
+      <rect x="300.67" y="398.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="302.95" y="398.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="360.62" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="391.45" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="392.59" y="398.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="393.73" y="398.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="399.44" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="441.34" y="398.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="402.00" y2="402.00" stroke="black" stroke-width="1"  />
+      <rect x="588.99" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="398.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="398.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="398.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="398.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="398.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="398.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="707.75" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="708.32" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.51" y="398.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="402.00" y2="402.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="398.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="398.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="398.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="402.00" y2="402.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="398.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="398.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1348.56" y="398.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="402.00" y2="402.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="398.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="398.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="402.00" y2="402.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="398.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1728.23" y="398.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="402.00" y2="402.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="398.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="398.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="398.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="398.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="398.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 158.72109620325435 408 L 2000.0 408 L 2004.0 412.0 L 2000.0 416 L 158.72109620325435 416 z" stroke="none" fill="lightgray" id="m64139_220127_180020/49218470/ccs5" />
+      <rect x="157.72" y="408.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="186.48" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="212.96" y="408.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="412.00" y2="412.00" stroke="black" stroke-width="1"  />
+      <rect x="300.67" y="408.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="302.95" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="360.62" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="391.45" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="392.59" y="408.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="393.73" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="399.44" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="441.34" y="408.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="412.00" y2="412.00" stroke="black" stroke-width="1"  />
+      <rect x="588.99" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="408.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="408.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="408.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="707.75" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="708.32" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.51" y="408.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="412.00" y2="412.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="408.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="408.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="412.00" y2="412.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="408.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1349.70" y="408.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="412.00" y2="412.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="408.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="412.00" y2="412.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="408.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1729.37" y="408.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="412.00" y2="412.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1988.37" y="408.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="408.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="408.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 158.72109620325435 418 L 2000.0 418 L 2004.0 422.0 L 2000.0 426 L 158.72109620325435 426 z" stroke="none" fill="lightgray" id="m64139_220127_180020/62915340/ccs6" />
+      <rect x="157.72" y="418.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="186.48" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="212.96" y="418.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="422.00" y2="422.00" stroke="black" stroke-width="1"  />
+      <rect x="300.67" y="418.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="302.95" y="418.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="360.62" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="391.45" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="392.59" y="418.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="393.73" y="418.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="399.44" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="441.34" y="418.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="422.00" y2="422.00" stroke="black" stroke-width="1"  />
+      <rect x="588.99" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="418.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="418.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="418.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="418.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="418.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="418.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="707.75" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="708.32" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.51" y="418.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="422.00" y2="422.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="418.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="418.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="418.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="422.00" y2="422.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="418.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="418.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1349.70" y="418.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="422.00" y2="422.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="418.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="418.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="422.00" y2="422.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="418.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1729.37" y="418.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="422.00" y2="422.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="418.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="418.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="418.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="418.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="418.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 158.72109620325435 428 L 2000.0 428 L 2004.0 432.0 L 2000.0 436 L 158.72109620325435 436 z" stroke="none" fill="lightgray" id="m64139_220127_180020/89262541/ccs7" />
+      <rect x="157.72" y="428.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="186.48" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="212.96" y="428.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="432.00" y2="432.00" stroke="black" stroke-width="1"  />
+      <rect x="300.67" y="428.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="302.95" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="360.62" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="391.45" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="392.59" y="428.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="393.73" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="399.44" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="491.36" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="501.64" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="509.06" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="563.87" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="569.58" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="574.15" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="588.99" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="428.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="428.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="428.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="707.75" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="708.32" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.51" y="428.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="432.00" y2="432.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="428.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="428.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="432.00" y2="432.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="428.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1349.70" y="428.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="432.00" y2="432.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="428.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="432.00" y2="432.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="428.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1729.37" y="428.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="432.00" y2="432.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="428.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="428.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="428.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 158.72109620325435 438 L 2000.0 438 L 2004.0 442.0 L 2000.0 446 L 158.72109620325435 446 z" stroke="none" fill="lightgray" id="m64139_220127_180020/168821867/ccs8" />
+      <rect x="157.72" y="438.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="186.48" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="212.96" y="438.00" width="74.79" height="8.00" fill="white" stroke="none" />
+      <line x1="212.96" x2="287.75" y1="442.00" y2="442.00" stroke="black" stroke-width="1"  />
+      <rect x="300.67" y="438.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="302.95" y="438.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="360.62" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="391.45" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="392.59" y="438.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="393.73" y="438.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="399.44" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="441.34" y="438.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="442.00" y2="442.00" stroke="black" stroke-width="1"  />
+      <rect x="588.99" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="438.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="438.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="438.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="438.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="438.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="438.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="707.75" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="708.32" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.51" y="438.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="442.00" y2="442.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="438.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="438.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="438.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="442.00" y2="442.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="438.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="438.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1349.70" y="438.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="442.00" y2="442.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="438.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="438.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="442.00" y2="442.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="438.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1729.37" y="438.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="442.00" y2="442.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="438.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="438.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="438.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="438.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="438.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 291.74992863260064 448 L 2000.0 448 L 2004.0 452.0 L 2000.0 456 L 291.74992863260064 456 z" stroke="none" fill="lightgray" id="m64139_220127_180020/15534622/ccs9" />
+      <rect x="290.75" y="448.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="300.67" y="448.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="302.95" y="448.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="360.62" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="391.45" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="392.59" y="448.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="393.73" y="448.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="399.44" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="441.34" y="448.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="452.00" y2="452.00" stroke="black" stroke-width="1"  />
+      <rect x="588.99" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="448.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="448.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="448.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="448.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="448.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="448.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="707.75" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="708.32" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.51" y="448.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="452.00" y2="452.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="448.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="448.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="448.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="452.00" y2="452.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="448.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="448.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1349.70" y="448.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="452.00" y2="452.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="448.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="448.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="452.00" y2="452.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="448.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1729.37" y="448.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="452.00" y2="452.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="448.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="448.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="448.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="448.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="448.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 374.5361119040822 458 L 1922.3522694833 458 L 1926.3522694833 462.0 L 1922.3522694833 466 L 374.5361119040822 466 z" stroke="none" fill="lightgray" id="m64139_220127_180020/8979596/ccs10" />
+      <rect x="373.54" y="458.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="391.45" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="392.59" y="458.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="393.73" y="458.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="399.44" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="441.34" y="458.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="462.00" y2="462.00" stroke="black" stroke-width="1"  />
+      <rect x="588.99" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="458.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="458.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="458.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="458.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="458.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="458.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="458.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="458.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="707.75" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="708.32" y="458.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.51" y="458.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="462.00" y2="462.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="458.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="458.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="458.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="458.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="458.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="458.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="462.00" y2="462.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="458.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="458.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="458.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="458.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1349.70" y="458.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="462.00" y2="462.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="458.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="458.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="458.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="462.00" y2="462.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="458.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1729.37" y="458.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="462.00" y2="462.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="458.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="458.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="458.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <path d="M 394.5189837282329 468 L 2000.0 468 L 2000.0 476 L 394.5189837282329 476 L 390.5189837282329 472.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/4129187/ccs11" />
+      <rect x="393.52" y="468.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="399.44" y="468.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="441.34" y="468.00" width="138.17" height="8.00" fill="white" stroke="none" />
+      <line x1="441.34" x2="579.50" y1="472.00" y2="472.00" stroke="black" stroke-width="1"  />
+      <rect x="588.99" y="468.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="589.57" y="468.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="618.11" y="468.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="623.82" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="661.50" y="468.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="668.93" y="468.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="677.49" y="468.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="679.77" y="468.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="683.20" y="468.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="689.48" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="693.48" y="468.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="707.75" y="468.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="708.32" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.51" y="468.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="472.00" y2="472.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="468.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="468.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="468.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="468.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="468.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="468.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="468.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="468.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="472.00" y2="472.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="468.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="468.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1348.56" y="468.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="472.00" y2="472.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="468.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="468.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="472.00" y2="472.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="468.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1728.23" y="468.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="472.00" y2="472.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="468.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="468.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="468.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="468.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="468.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 715.386811304596 478 L 2000.0 478 L 2000.0 486 L 715.386811304596 486 L 711.386811304596 482.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/5178442/ccs12" />
+      <rect x="714.39" y="478.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="736.51" y="478.00" width="331.14" height="8.00" fill="white" stroke="none" />
+      <line x1="736.51" x2="1067.66" y1="482.00" y2="482.00" stroke="black" stroke-width="1"  />
+      <rect x="1068.01" y="478.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1074.29" y="478.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1079.43" y="478.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1083.43" y="478.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1084.57" y="478.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1085.14" y="478.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1107.41" y="478.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="478.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="478.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="478.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="478.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="482.00" y2="482.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="478.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="478.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="478.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="478.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1348.56" y="478.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="482.00" y2="482.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="478.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="478.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="478.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="482.00" y2="482.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="478.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1728.23" y="478.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="482.00" y2="482.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="478.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="478.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="478.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="478.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="478.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="478.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="478.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 1085.926348843848 488 L 2000.0 488 L 2000.0 496 L 1085.926348843848 496 L 1081.926348843848 492.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/160694460/ccs13" />
+      <rect x="1084.93" y="488.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="1107.41" y="488.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1163.36" y="488.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="488.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="488.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="488.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="492.00" y2="492.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="488.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="488.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="488.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="488.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1348.56" y="488.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="492.00" y2="492.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="488.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="488.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="488.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="492.00" y2="492.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="488.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1728.23" y="488.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="492.00" y2="492.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="488.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="488.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="488.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="488.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="488.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="488.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="488.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 1120.1827005423922 498 L 2000.0 498 L 2000.0 506 L 1120.1827005423922 506 L 1116.1827005423922 502.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/93520583/ccs14" />
+      <rect x="1119.18" y="498.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="1163.36" y="498.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1174.21" y="498.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1186.20" y="498.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1224.66" y="498.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="502.00" y2="502.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="498.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="498.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="498.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="498.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1348.56" y="498.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="502.00" y2="502.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="498.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="498.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="498.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="502.00" y2="502.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="498.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1728.23" y="498.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="502.00" y2="502.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="498.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="498.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="498.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="498.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="498.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="498.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="498.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 1193.2629174992862 508 L 2000.0 508 L 2004.0 512.0 L 2000.0 516 L 1193.2629174992862 516 z" stroke="none" fill="lightgray" id="m64139_220127_180020/41354883/ccs15" />
+      <rect x="1192.26" y="508.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="1224.66" y="508.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="512.00" y2="512.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="508.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="508.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="508.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="508.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1349.70" y="508.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="512.00" y2="512.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="508.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="508.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1618.40" y="508.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1620.90" y="508.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="512.00" y2="512.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="508.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1729.37" y="508.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="512.00" y2="512.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="508.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="508.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="508.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="508.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="508.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="508.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="508.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 1193.2629174992862 518 L 2000.0 518 L 2004.0 522.0 L 2000.0 526 L 1193.2629174992862 526 z" stroke="none" fill="lightgray" id="m64139_220127_180020/101779455/ccs16" />
+      <rect x="1192.26" y="518.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="1224.66" y="518.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="522.00" y2="522.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="518.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="518.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="518.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="518.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1349.70" y="518.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1349.70" x2="1602.63" y1="522.00" y2="522.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="518.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="518.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="518.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="522.00" y2="522.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="518.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1729.37" y="518.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="522.00" y2="522.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="518.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="518.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="518.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="518.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="518.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="518.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="518.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 1193.2629174992862 528 L 2000.0 528 L 2000.0 536 L 1193.2629174992862 536 L 1189.2629174992862 532.0 z" stroke="none" fill="lightgray" id="m64139_220127_180020/5113760/ccs17" />
+      <rect x="1192.26" y="528.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="1224.66" y="528.00" width="58.81" height="8.00" fill="white" stroke="none" />
+      <line x1="1224.66" x2="1283.47" y1="532.00" y2="532.00" stroke="black" stroke-width="1"  />
+      <rect x="1284.40" y="528.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1314.66" y="528.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1323.22" y="528.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="1334.64" y="528.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1348.56" y="528.00" width="252.93" height="8.00" fill="white" stroke="none" />
+      <line x1="1348.56" x2="1601.48" y1="532.00" y2="532.00" stroke="black" stroke-width="1"  />
+      <rect x="1610.98" y="528.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1613.26" y="528.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1620.90" y="528.00" width="81.64" height="8.00" fill="white" stroke="none" />
+      <line x1="1620.90" x2="1702.54" y1="532.00" y2="532.00" stroke="black" stroke-width="1"  />
+      <rect x="1716.60" y="528.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1728.23" y="528.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1728.23" x2="1825.29" y1="532.00" y2="532.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="528.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="528.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="528.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="528.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="528.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="528.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="528.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <path d="M 1701.9697402226661 538 L 2000.0 538 L 2004.0 542.0 L 2000.0 546 L 1701.9697402226661 546 z" stroke="none" fill="lightgray" id="m64139_220127_180020/42338120/ccs18" />
+      <rect x="1700.97" y="538.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <rect x="1716.60" y="538.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="1729.37" y="538.00" width="97.06" height="8.00" fill="white" stroke="none" />
+      <line x1="1729.37" x2="1826.43" y1="542.00" y2="542.00" stroke="black" stroke-width="1"  />
+      <rect x="1847.34" y="538.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1891.88" y="538.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1909.01" y="538.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1940.98" y="538.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1971.24" y="538.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="1989.51" y="538.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="1999.00" y="538.00" width="2.00" height="8.00" fill="cyan" stroke="none" />
+      <defs>
+          <filter x="0" y="0" width="1" height="1" id="solid5">
+              <feFlood flood-opacity="0.9" flood-color="white"/>
+              <feComposite in="SourceGraphic"/>
+          </filter>
+      </defs>
+      <text x="5.00" y="352.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="white" filter="url(#solid5)" >RNA reads from Haplotype 2</text>
+      <text x="5.00" y="352.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="black" >RNA reads from Haplotype 2</text>
+   </g>
+   <!-- Isoform assembled from haplotype 2  -->
+   <clipPath id="clip_path_6"><rect x="0" y="548" width="2000" height="28" /></clipPath>
+   <g clip-path="url(#clip_path_6)">
+      <line x1="212.96" x2="287.18" y1="573.50" y2="573.50" stroke="#8C8FCE"  />
+      <path d="M 222.20721920893203 571.5 L 220.20721920893203 573.5 L 222.20721920893203 575.5" stroke="#8C8FCE" fill="transparent" xcenter="221.20721920893203" stroke-width="0.75" />
+      <path d="M 230.45411869191486 571.5 L 228.45411869191486 573.5 L 230.45411869191486 575.5" stroke="#8C8FCE" fill="transparent" xcenter="229.45411869191486" stroke-width="0.75" />
+      <path d="M 238.7010181748977 571.5 L 236.7010181748977 573.5 L 238.7010181748977 575.5" stroke="#8C8FCE" fill="transparent" xcenter="237.7010181748977" stroke-width="0.75" />
+      <path d="M 246.94791765788054 571.5 L 244.94791765788054 573.5 L 246.94791765788054 575.5" stroke="#8C8FCE" fill="transparent" xcenter="245.94791765788054" stroke-width="0.75" />
+      <path d="M 255.1948171408634 571.5 L 253.1948171408634 573.5 L 255.1948171408634 575.5" stroke="#8C8FCE" fill="transparent" xcenter="254.1948171408634" stroke-width="0.75" />
+      <path d="M 263.4417166238462 571.5 L 261.4417166238462 573.5 L 263.4417166238462 575.5" stroke="#8C8FCE" fill="transparent" xcenter="262.4417166238462" stroke-width="0.75" />
+      <path d="M 271.68861610682904 571.5 L 269.68861610682904 573.5 L 271.68861610682904 575.5" stroke="#8C8FCE" fill="transparent" xcenter="270.68861610682904" stroke-width="0.75" />
+      <path d="M 279.9355155898119 571.5 L 277.9355155898119 573.5 L 279.9355155898119 575.5" stroke="#8C8FCE" fill="transparent" xcenter="278.9355155898119" stroke-width="0.75" />
+      <line x1="441.34" x2="578.93" y1="573.50" y2="573.50" stroke="#8C8FCE"  />
+      <path d="M 450.9357693405652 571.5 L 448.9357693405652 573.5 L 450.9357693405652 575.5" stroke="#8C8FCE" fill="transparent" xcenter="449.9357693405652" stroke-width="0.75" />
+      <path d="M 459.5355409648872 571.5 L 457.5355409648872 573.5 L 459.5355409648872 575.5" stroke="#8C8FCE" fill="transparent" xcenter="458.5355409648872" stroke-width="0.75" />
+      <path d="M 468.1353125892092 571.5 L 466.1353125892092 573.5 L 468.1353125892092 575.5" stroke="#8C8FCE" fill="transparent" xcenter="467.1353125892092" stroke-width="0.75" />
+      <path d="M 476.73508421353125 571.5 L 474.73508421353125 573.5 L 476.73508421353125 575.5" stroke="#8C8FCE" fill="transparent" xcenter="475.73508421353125" stroke-width="0.75" />
+      <path d="M 485.33485583785324 571.5 L 483.33485583785324 573.5 L 485.33485583785324 575.5" stroke="#8C8FCE" fill="transparent" xcenter="484.33485583785324" stroke-width="0.75" />
+      <path d="M 493.9346274621753 571.5 L 491.9346274621753 573.5 L 493.9346274621753 575.5" stroke="#8C8FCE" fill="transparent" xcenter="492.9346274621753" stroke-width="0.75" />
+      <path d="M 502.5343990864973 571.5 L 500.5343990864973 573.5 L 502.5343990864973 575.5" stroke="#8C8FCE" fill="transparent" xcenter="501.5343990864973" stroke-width="0.75" />
+      <path d="M 511.13417071081926 571.5 L 509.13417071081926 573.5 L 511.13417071081926 575.5" stroke="#8C8FCE" fill="transparent" xcenter="510.13417071081926" stroke-width="0.75" />
+      <path d="M 519.7339423351414 571.5 L 517.7339423351414 573.5 L 519.7339423351414 575.5" stroke="#8C8FCE" fill="transparent" xcenter="518.7339423351414" stroke-width="0.75" />
+      <path d="M 528.3337139594634 571.5 L 526.3337139594634 573.5 L 528.3337139594634 575.5" stroke="#8C8FCE" fill="transparent" xcenter="527.3337139594634" stroke-width="0.75" />
+      <path d="M 536.9334855837853 571.5 L 534.9334855837853 573.5 L 536.9334855837853 575.5" stroke="#8C8FCE" fill="transparent" xcenter="535.9334855837853" stroke-width="0.75" />
+      <path d="M 545.5332572081073 571.5 L 543.5332572081073 573.5 L 545.5332572081073 575.5" stroke="#8C8FCE" fill="transparent" xcenter="544.5332572081073" stroke-width="0.75" />
+      <path d="M 554.1330288324293 571.5 L 552.1330288324293 573.5 L 554.1330288324293 575.5" stroke="#8C8FCE" fill="transparent" xcenter="553.1330288324293" stroke-width="0.75" />
+      <path d="M 562.7328004567514 571.5 L 560.7328004567514 573.5 L 562.7328004567514 575.5" stroke="#8C8FCE" fill="transparent" xcenter="561.7328004567514" stroke-width="0.75" />
+      <path d="M 571.3325720810734 571.5 L 569.3325720810734 573.5 L 571.3325720810734 575.5" stroke="#8C8FCE" fill="transparent" xcenter="570.3325720810734" stroke-width="0.75" />
+      <line x1="736.51" x2="1067.09" y1="573.50" y2="573.50" stroke="#8C8FCE"  />
+      <path d="M 746.2108718842496 571.5 L 744.2108718842496 573.5 L 746.2108718842496 575.5" stroke="#8C8FCE" fill="transparent" xcenter="745.2108718842496" stroke-width="0.75" />
+      <path d="M 754.910182249801 571.5 L 752.910182249801 573.5 L 754.910182249801 575.5" stroke="#8C8FCE" fill="transparent" xcenter="753.910182249801" stroke-width="0.75" />
+      <path d="M 763.6094926153522 571.5 L 761.6094926153522 573.5 L 763.6094926153522 575.5" stroke="#8C8FCE" fill="transparent" xcenter="762.6094926153522" stroke-width="0.75" />
+      <path d="M 772.3088029809036 571.5 L 770.3088029809036 573.5 L 772.3088029809036 575.5" stroke="#8C8FCE" fill="transparent" xcenter="771.3088029809036" stroke-width="0.75" />
+      <path d="M 781.0081133464549 571.5 L 779.0081133464549 573.5 L 781.0081133464549 575.5" stroke="#8C8FCE" fill="transparent" xcenter="780.0081133464549" stroke-width="0.75" />
+      <path d="M 789.7074237120063 571.5 L 787.7074237120063 573.5 L 789.7074237120063 575.5" stroke="#8C8FCE" fill="transparent" xcenter="788.7074237120063" stroke-width="0.75" />
+      <path d="M 798.4067340775575 571.5 L 796.4067340775575 573.5 L 798.4067340775575 575.5" stroke="#8C8FCE" fill="transparent" xcenter="797.4067340775575" stroke-width="0.75" />
+      <path d="M 807.1060444431089 571.5 L 805.1060444431089 573.5 L 807.1060444431089 575.5" stroke="#8C8FCE" fill="transparent" xcenter="806.1060444431089" stroke-width="0.75" />
+      <path d="M 815.8053548086602 571.5 L 813.8053548086602 573.5 L 815.8053548086602 575.5" stroke="#8C8FCE" fill="transparent" xcenter="814.8053548086602" stroke-width="0.75" />
+      <path d="M 824.5046651742116 571.5 L 822.5046651742116 573.5 L 824.5046651742116 575.5" stroke="#8C8FCE" fill="transparent" xcenter="823.5046651742116" stroke-width="0.75" />
+      <path d="M 833.203975539763 571.5 L 831.203975539763 573.5 L 833.203975539763 575.5" stroke="#8C8FCE" fill="transparent" xcenter="832.203975539763" stroke-width="0.75" />
+      <path d="M 841.9032859053142 571.5 L 839.9032859053142 573.5 L 841.9032859053142 575.5" stroke="#8C8FCE" fill="transparent" xcenter="840.9032859053142" stroke-width="0.75" />
+      <path d="M 850.6025962708655 571.5 L 848.6025962708655 573.5 L 850.6025962708655 575.5" stroke="#8C8FCE" fill="transparent" xcenter="849.6025962708655" stroke-width="0.75" />
+      <path d="M 859.3019066364169 571.5 L 857.3019066364169 573.5 L 859.3019066364169 575.5" stroke="#8C8FCE" fill="transparent" xcenter="858.3019066364169" stroke-width="0.75" />
+      <path d="M 868.0012170019683 571.5 L 866.0012170019683 573.5 L 868.0012170019683 575.5" stroke="#8C8FCE" fill="transparent" xcenter="867.0012170019683" stroke-width="0.75" />
+      <path d="M 876.7005273675195 571.5 L 874.7005273675195 573.5 L 876.7005273675195 575.5" stroke="#8C8FCE" fill="transparent" xcenter="875.7005273675195" stroke-width="0.75" />
+      <path d="M 885.3998377330709 571.5 L 883.3998377330709 573.5 L 885.3998377330709 575.5" stroke="#8C8FCE" fill="transparent" xcenter="884.3998377330709" stroke-width="0.75" />
+      <path d="M 894.0991480986222 571.5 L 892.0991480986222 573.5 L 894.0991480986222 575.5" stroke="#8C8FCE" fill="transparent" xcenter="893.0991480986222" stroke-width="0.75" />
+      <path d="M 902.7984584641736 571.5 L 900.7984584641736 573.5 L 902.7984584641736 575.5" stroke="#8C8FCE" fill="transparent" xcenter="901.7984584641736" stroke-width="0.75" />
+      <path d="M 911.4977688297249 571.5 L 909.4977688297249 573.5 L 911.4977688297249 575.5" stroke="#8C8FCE" fill="transparent" xcenter="910.4977688297249" stroke-width="0.75" />
+      <path d="M 920.1970791952763 571.5 L 918.1970791952763 573.5 L 920.1970791952763 575.5" stroke="#8C8FCE" fill="transparent" xcenter="919.1970791952763" stroke-width="0.75" />
+      <path d="M 928.8963895608276 571.5 L 926.8963895608276 573.5 L 928.8963895608276 575.5" stroke="#8C8FCE" fill="transparent" xcenter="927.8963895608276" stroke-width="0.75" />
+      <path d="M 937.5956999263789 571.5 L 935.5956999263789 573.5 L 937.5956999263789 575.5" stroke="#8C8FCE" fill="transparent" xcenter="936.5956999263789" stroke-width="0.75" />
+      <path d="M 946.2950102919302 571.5 L 944.2950102919302 573.5 L 946.2950102919302 575.5" stroke="#8C8FCE" fill="transparent" xcenter="945.2950102919302" stroke-width="0.75" />
+      <path d="M 954.9943206574816 571.5 L 952.9943206574816 573.5 L 954.9943206574816 575.5" stroke="#8C8FCE" fill="transparent" xcenter="953.9943206574816" stroke-width="0.75" />
+      <path d="M 963.6936310230328 571.5 L 961.6936310230328 573.5 L 963.6936310230328 575.5" stroke="#8C8FCE" fill="transparent" xcenter="962.6936310230328" stroke-width="0.75" />
+      <path d="M 972.3929413885842 571.5 L 970.3929413885842 573.5 L 972.3929413885842 575.5" stroke="#8C8FCE" fill="transparent" xcenter="971.3929413885842" stroke-width="0.75" />
+      <path d="M 981.0922517541355 571.5 L 979.0922517541355 573.5 L 981.0922517541355 575.5" stroke="#8C8FCE" fill="transparent" xcenter="980.0922517541355" stroke-width="0.75" />
+      <path d="M 989.7915621196869 571.5 L 987.7915621196869 573.5 L 989.7915621196869 575.5" stroke="#8C8FCE" fill="transparent" xcenter="988.7915621196869" stroke-width="0.75" />
+      <path d="M 998.4908724852382 571.5 L 996.4908724852382 573.5 L 998.4908724852382 575.5" stroke="#8C8FCE" fill="transparent" xcenter="997.4908724852382" stroke-width="0.75" />
+      <path d="M 1007.1901828507896 571.5 L 1005.1901828507896 573.5 L 1007.1901828507896 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1006.1901828507896" stroke-width="0.75" />
+      <path d="M 1015.8894932163408 571.5 L 1013.8894932163408 573.5 L 1015.8894932163408 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1014.8894932163408" stroke-width="0.75" />
+      <path d="M 1024.588803581892 571.5 L 1022.5888035818922 573.5 L 1024.588803581892 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1023.5888035818922" stroke-width="0.75" />
+      <path d="M 1033.2881139474434 571.5 L 1031.2881139474434 573.5 L 1033.2881139474434 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1032.2881139474434" stroke-width="0.75" />
+      <path d="M 1041.9874243129948 571.5 L 1039.9874243129948 573.5 L 1041.9874243129948 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1040.9874243129948" stroke-width="0.75" />
+      <path d="M 1050.6867346785461 571.5 L 1048.6867346785461 573.5 L 1050.6867346785461 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1049.6867346785461" stroke-width="0.75" />
+      <path d="M 1059.3860450440975 571.5 L 1057.3860450440975 573.5 L 1059.3860450440975 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1058.3860450440975" stroke-width="0.75" />
+      <line x1="1224.66" x2="1282.90" y1="573.50" y2="573.50" stroke="#8C8FCE"  />
+      <path d="M 1233.9839729211697 571.5 L 1231.9839729211697 573.5 L 1233.9839729211697 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1232.9839729211697" stroke-width="0.75" />
+      <path d="M 1242.3033726193873 571.5 L 1240.3033726193873 573.5 L 1242.3033726193873 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1241.3033726193873" stroke-width="0.75" />
+      <path d="M 1250.6227723176053 571.5 L 1248.6227723176053 573.5 L 1250.6227723176053 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1249.6227723176053" stroke-width="0.75" />
+      <path d="M 1258.9421720158232 571.5 L 1256.9421720158232 573.5 L 1258.9421720158232 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1257.9421720158232" stroke-width="0.75" />
+      <path d="M 1267.261571714041 571.5 L 1265.261571714041 573.5 L 1267.261571714041 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1266.261571714041" stroke-width="0.75" />
+      <path d="M 1275.5809714122588 571.5 L 1273.5809714122588 573.5 L 1275.5809714122588 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1274.5809714122588" stroke-width="0.75" />
+      <line x1="1348.56" x2="1600.91" y1="573.50" y2="573.50" stroke="#8C8FCE"  />
+      <path d="M 1358.2602793664544 571.5 L 1356.2602793664544 573.5 L 1358.2602793664544 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1357.2602793664544" stroke-width="0.75" />
+      <path d="M 1366.9621802002225 571.5 L 1364.9621802002225 573.5 L 1366.9621802002225 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1365.9621802002225" stroke-width="0.75" />
+      <path d="M 1375.6640810339904 571.5 L 1373.6640810339904 573.5 L 1375.6640810339904 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1374.6640810339904" stroke-width="0.75" />
+      <path d="M 1384.3659818677586 571.5 L 1382.3659818677586 573.5 L 1384.3659818677586 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1383.3659818677586" stroke-width="0.75" />
+      <path d="M 1393.0678827015267 571.5 L 1391.0678827015267 573.5 L 1393.0678827015267 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1392.0678827015267" stroke-width="0.75" />
+      <path d="M 1401.769783535295 571.5 L 1399.769783535295 573.5 L 1401.769783535295 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1400.769783535295" stroke-width="0.75" />
+      <path d="M 1410.471684369063 571.5 L 1408.471684369063 573.5 L 1410.471684369063 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1409.471684369063" stroke-width="0.75" />
+      <path d="M 1419.173585202831 571.5 L 1417.173585202831 573.5 L 1419.173585202831 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1418.173585202831" stroke-width="0.75" />
+      <path d="M 1427.875486036599 571.5 L 1425.875486036599 573.5 L 1427.875486036599 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1426.875486036599" stroke-width="0.75" />
+      <path d="M 1436.5773868703673 571.5 L 1434.5773868703673 573.5 L 1436.5773868703673 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1435.5773868703673" stroke-width="0.75" />
+      <path d="M 1445.2792877041354 571.5 L 1443.2792877041354 573.5 L 1445.2792877041354 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1444.2792877041354" stroke-width="0.75" />
+      <path d="M 1453.9811885379036 571.5 L 1451.9811885379036 573.5 L 1453.9811885379036 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1452.9811885379036" stroke-width="0.75" />
+      <path d="M 1462.6830893716715 571.5 L 1460.6830893716715 573.5 L 1462.6830893716715 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1461.6830893716715" stroke-width="0.75" />
+      <path d="M 1471.3849902054396 571.5 L 1469.3849902054396 573.5 L 1471.3849902054396 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1470.3849902054396" stroke-width="0.75" />
+      <path d="M 1480.0868910392078 571.5 L 1478.0868910392078 573.5 L 1480.0868910392078 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1479.0868910392078" stroke-width="0.75" />
+      <path d="M 1488.788791872976 571.5 L 1486.788791872976 573.5 L 1488.788791872976 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1487.788791872976" stroke-width="0.75" />
+      <path d="M 1497.4906927067439 571.5 L 1495.4906927067439 573.5 L 1497.4906927067439 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1496.4906927067439" stroke-width="0.75" />
+      <path d="M 1506.192593540512 571.5 L 1504.192593540512 573.5 L 1506.192593540512 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1505.192593540512" stroke-width="0.75" />
+      <path d="M 1514.8944943742802 571.5 L 1512.8944943742802 573.5 L 1514.8944943742802 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1513.8944943742802" stroke-width="0.75" />
+      <path d="M 1523.5963952080483 571.5 L 1521.5963952080483 573.5 L 1523.5963952080483 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1522.5963952080483" stroke-width="0.75" />
+      <path d="M 1532.2982960418165 571.5 L 1530.2982960418165 573.5 L 1532.2982960418165 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1531.2982960418165" stroke-width="0.75" />
+      <path d="M 1541.0001968755844 571.5 L 1539.0001968755844 573.5 L 1541.0001968755844 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1540.0001968755844" stroke-width="0.75" />
+      <path d="M 1549.7020977093525 571.5 L 1547.7020977093525 573.5 L 1549.7020977093525 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1548.7020977093525" stroke-width="0.75" />
+      <path d="M 1558.4039985431207 571.5 L 1556.4039985431207 573.5 L 1558.4039985431207 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1557.4039985431207" stroke-width="0.75" />
+      <path d="M 1567.1058993768888 571.5 L 1565.1058993768888 573.5 L 1567.1058993768888 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1566.1058993768888" stroke-width="0.75" />
+      <path d="M 1575.807800210657 571.5 L 1573.807800210657 573.5 L 1575.807800210657 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1574.807800210657" stroke-width="0.75" />
+      <path d="M 1584.509701044425 571.5 L 1582.509701044425 573.5 L 1584.509701044425 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1583.509701044425" stroke-width="0.75" />
+      <path d="M 1593.211601878193 571.5 L 1591.211601878193 573.5 L 1593.211601878193 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1592.211601878193" stroke-width="0.75" />
+      <line x1="1620.90" x2="1701.97" y1="573.50" y2="573.50" stroke="#8C8FCE"  />
+      <path d="M 1630.0037111047673 571.5 L 1628.0037111047673 573.5 L 1630.0037111047673 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1629.0037111047673" stroke-width="0.75" />
+      <path d="M 1638.1110476734227 571.5 L 1636.1110476734227 573.5 L 1638.1110476734227 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1637.1110476734227" stroke-width="0.75" />
+      <path d="M 1646.2183842420782 571.5 L 1644.2183842420782 573.5 L 1646.2183842420782 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1645.2183842420782" stroke-width="0.75" />
+      <path d="M 1654.3257208107336 571.5 L 1652.3257208107336 573.5 L 1654.3257208107336 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1653.3257208107336" stroke-width="0.75" />
+      <path d="M 1662.433057379389 571.5 L 1660.433057379389 573.5 L 1662.433057379389 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1661.433057379389" stroke-width="0.75" />
+      <path d="M 1670.5403939480443 571.5 L 1668.5403939480443 573.5 L 1670.5403939480443 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1669.5403939480443" stroke-width="0.75" />
+      <path d="M 1678.6477305166998 571.5 L 1676.6477305166998 573.5 L 1678.6477305166998 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1677.6477305166998" stroke-width="0.75" />
+      <path d="M 1686.7550670853552 571.5 L 1684.7550670853552 573.5 L 1686.7550670853552 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1685.7550670853552" stroke-width="0.75" />
+      <path d="M 1694.8624036540107 571.5 L 1692.8624036540107 573.5 L 1694.8624036540107 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1693.8624036540107" stroke-width="0.75" />
+      <line x1="1728.23" x2="1824.72" y1="573.50" y2="573.50" stroke="#8C8FCE"  />
+      <path d="M 1737.2736701874583 571.5 L 1735.2736701874583 573.5 L 1737.2736701874583 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1736.2736701874583" stroke-width="0.75" />
+      <path d="M 1745.3143971833665 571.5 L 1743.3143971833665 573.5 L 1745.3143971833665 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1744.3143971833665" stroke-width="0.75" />
+      <path d="M 1753.3551241792748 571.5 L 1751.3551241792748 573.5 L 1753.3551241792748 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1752.3551241792748" stroke-width="0.75" />
+      <path d="M 1761.395851175183 571.5 L 1759.395851175183 573.5 L 1761.395851175183 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1760.395851175183" stroke-width="0.75" />
+      <path d="M 1769.4365781710912 571.5 L 1767.4365781710912 573.5 L 1769.4365781710912 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1768.4365781710912" stroke-width="0.75" />
+      <path d="M 1777.4773051669995 571.5 L 1775.4773051669995 573.5 L 1777.4773051669995 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1776.4773051669995" stroke-width="0.75" />
+      <path d="M 1785.518032162908 571.5 L 1783.518032162908 573.5 L 1785.518032162908 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1784.518032162908" stroke-width="0.75" />
+      <path d="M 1793.5587591588162 571.5 L 1791.5587591588162 573.5 L 1793.5587591588162 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1792.5587591588162" stroke-width="0.75" />
+      <path d="M 1801.5994861547244 571.5 L 1799.5994861547244 573.5 L 1801.5994861547244 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1800.5994861547244" stroke-width="0.75" />
+      <path d="M 1809.6402131506327 571.5 L 1807.6402131506327 573.5 L 1809.6402131506327 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1808.6402131506327" stroke-width="0.75" />
+      <path d="M 1817.680940146541 571.5 L 1815.680940146541 573.5 L 1817.680940146541 575.5" stroke="#8C8FCE" fill="transparent" xcenter="1816.680940146541" stroke-width="0.75" />
+      <rect x="128.46" y="571.50" width="84.50" height="5.00" fill="#8C8FCE" stroke="none" id="STRG.1.1" />
+      <rect x="1824.72" y="571.50" width="175.28" height="5.00" fill="#8C8FCE" stroke="none" id="STRG.1.1" />
+      <rect x="128.46" y="568.00" width="84.50" height="12.00" fill="#8C8FCE" stroke="none" id="STRG.1.1" />
+      <rect x="287.18" y="568.00" width="154.15" height="12.00" fill="#8C8FCE" stroke="none" id="STRG.1.1" />
+      <rect x="578.93" y="568.00" width="157.58" height="12.00" fill="#8C8FCE" stroke="none" id="STRG.1.1" />
+      <rect x="1067.09" y="568.00" width="157.58" height="12.00" fill="#8C8FCE" stroke="none" id="STRG.1.1" />
+      <rect x="1282.90" y="568.00" width="65.66" height="12.00" fill="#8C8FCE" stroke="none" id="STRG.1.1" />
+      <rect x="1600.91" y="568.00" width="19.98" height="12.00" fill="#8C8FCE" stroke="none" id="STRG.1.1" />
+      <rect x="1701.97" y="568.00" width="26.26" height="12.00" fill="#8C8FCE" stroke="none" id="STRG.1.1" />
+      <rect x="1824.72" y="568.00" width="175.28" height="12.00" fill="#8C8FCE" stroke="none" id="STRG.1.1" />
+      <text x="2003.00" y="578.00" font-size="10" font-family="Helvetica" text-anchor="start" >STRG.1.1</text>
+      <defs>
+          <filter x="0" y="0" width="1" height="1" id="solid6">
+              <feFlood flood-opacity="0.9" flood-color="white"/>
+              <feComposite in="SourceGraphic"/>
+          </filter>
+      </defs>
+      <text x="5.00" y="562.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="white" filter="url(#solid6)" >Isoform assembled from haplotype 2 </text>
+      <text x="5.00" y="562.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="black" >Isoform assembled from haplotype 2 </text>
+   </g>
+   <!-- None -->
+   <clipPath id="clip_path_7"><rect x="0" y="586" width="2000" height="50" /></clipPath>
+   <g clip-path="url(#clip_path_7)">
+      <line x1="0.00" x2="2000.00" y1="591.00" y2="591.00" stroke="black"  />
+      <line x1="0.00" x2="0.00" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="0.00" y="621.00" font-size="16" font-family="Helvetica" text-anchor="start" >0</text>
+      <line x1="71.37" x2="71.37" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="71.37" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >125</text>
+      <line x1="142.73" x2="142.73" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="142.73" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >250</text>
+      <line x1="214.10" x2="214.10" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="214.10" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >375</text>
+      <line x1="285.47" x2="285.47" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="285.47" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >500</text>
+      <line x1="356.84" x2="356.84" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="356.84" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >625</text>
+      <line x1="428.20" x2="428.20" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="428.20" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >750</text>
+      <line x1="499.57" x2="499.57" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="499.57" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >875</text>
+      <line x1="570.94" x2="570.94" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="570.94" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >1,000</text>
+      <line x1="642.31" x2="642.31" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="642.31" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >1,125</text>
+      <line x1="713.67" x2="713.67" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="713.67" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >1,250</text>
+      <line x1="785.04" x2="785.04" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="785.04" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >1,375</text>
+      <line x1="856.41" x2="856.41" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="856.41" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >1,500</text>
+      <line x1="927.78" x2="927.78" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="927.78" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >1,625</text>
+      <line x1="999.14" x2="999.14" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="999.14" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >1,750</text>
+      <line x1="1070.51" x2="1070.51" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1070.51" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >1,875</text>
+      <line x1="1141.88" x2="1141.88" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1141.88" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >2,000</text>
+      <line x1="1213.25" x2="1213.25" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1213.25" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >2,125</text>
+      <line x1="1284.61" x2="1284.61" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1284.61" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >2,250</text>
+      <line x1="1355.98" x2="1355.98" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1355.98" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >2,375</text>
+      <line x1="1427.35" x2="1427.35" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1427.35" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >2,500</text>
+      <line x1="1498.72" x2="1498.72" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1498.72" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >2,625</text>
+      <line x1="1570.08" x2="1570.08" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1570.08" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >2,750</text>
+      <line x1="1641.45" x2="1641.45" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1641.45" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >2,875</text>
+      <line x1="1712.82" x2="1712.82" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1712.82" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >3,000</text>
+      <line x1="1784.18" x2="1784.18" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1784.18" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >3,125</text>
+      <line x1="1855.55" x2="1855.55" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1855.55" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >3,250</text>
+      <line x1="1926.92" x2="1926.92" y1="586.00" y2="606.00" stroke="black"  />
+      <text x="1926.92" y="621.00" font-size="16" font-family="Helvetica" text-anchor="middle" >3,375</text>
+      <line x1="1998.29" x2="1998.29" y1="586.00" y2="606.00" stroke="black"  />
+   </g>
+</g>
+</svg>

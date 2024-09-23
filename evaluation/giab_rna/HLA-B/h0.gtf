@@ -1,0 +1,11 @@
+# stringtie test_HLA_merged_pacbio_splice_hom/test/Genes_step2//HLA-B_work/h0.bam -o test_HLA_merged_pacbio_splice_hom/test/Genes_step2//HLA-B_work/h0.gtf -c 10
+# StringTie version 2.2.3
+HLA-B	StringTie	transcript	215	3577	1000	-	.	gene_id "STRG.1"; transcript_id "STRG.1.1"; cov "1424.452393"; FPKM "605694.750000"; TPM "1000000.000000";
+HLA-B	StringTie	exon	215	357	1000	-	.	gene_id "STRG.1"; transcript_id "STRG.1.1"; exon_number "1"; cov "670.790222";
+HLA-B	StringTie	exon	486	755	1000	-	.	gene_id "STRG.1"; transcript_id "STRG.1.1"; exon_number "2"; cov "1123.963013";
+HLA-B	StringTie	exon	1001	1273	1000	-	.	gene_id "STRG.1"; transcript_id "STRG.1.1"; exon_number "3"; cov "1273.479858";
+HLA-B	StringTie	exon	1848	2126	1000	-	.	gene_id "STRG.1"; transcript_id "STRG.1.1"; exon_number "4"; cov "1594.254517";
+HLA-B	StringTie	exon	2220	2334	1000	-	.	gene_id "STRG.1"; transcript_id "STRG.1.1"; exon_number "5"; cov "1689.895630";
+HLA-B	StringTie	exon	2776	2809	1000	-	.	gene_id "STRG.1"; transcript_id "STRG.1.1"; exon_number "6"; cov "1673.147095";
+HLA-B	StringTie	exon	2912	2964	1000	-	.	gene_id "STRG.1"; transcript_id "STRG.1.1"; exon_number "7"; cov "1660.245239";
+HLA-B	StringTie	exon	3147	3577	1000	-	.	gene_id "STRG.1"; transcript_id "STRG.1.1"; exon_number "8"; cov "1729.018555";

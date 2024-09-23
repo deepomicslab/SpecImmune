@@ -244,11 +244,24 @@ fi
 if [[ "$data_type" =~ ^(traditional|2D|Direct|SIRV)$ ]]; then
 
     # assemble hap0 and hap1
-    stringtie $gene_work_dir/h0.bam -o $gene_work_dir/h0.gtf -c 10
-    stringtie $gene_work_dir/h1.bam -o $gene_work_dir/h1.gtf -c 10
+    # if no het variants, bam use $fixed_bam, else h0.bam and h1.bam; use bcftools view -g
+    if [ $(bcftools view -H $snv_vcf -g het | wc -l) -eq 0 ]; then
+         echo "no het variants in $snv_vcf"
+         samtools index $fixed_bam
+         stringtie $fixed_bam -o $gene_work_dir/h0_g1_mixed.gtf -c 10
+         python $get_intron_script $gene_work_dir/h0_g1_mixed.gtf $hla_ref $gene_work_dir/h0_g1_mixed.intron.bed
+        samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $gene_work_dir/h0_g1_mixed.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
+        samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $gene_work_dir/h0_g1_mixed.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
+         # else use h0.bam and h1.bam
+    else
+        stringtie $gene_work_dir/h0.bam -o $gene_work_dir/h0.gtf -c 10
+        stringtie $gene_work_dir/h1.bam -o $gene_work_dir/h1.gtf -c 10
 
-    python $get_intron_script $gene_work_dir/h0.gtf $hla_ref $gene_work_dir/h0.intron.bed
-    python $get_intron_script $gene_work_dir/h1.gtf $hla_ref $gene_work_dir/h1.intron.bed
+        python $get_intron_script $gene_work_dir/h0.gtf $hla_ref $gene_work_dir/h0.intron.bed
+        python $get_intron_script $gene_work_dir/h1.gtf $hla_ref $gene_work_dir/h1.intron.bed
+        samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $gene_work_dir/h0.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
+        samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $gene_work_dir/h1.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
+    fi
 
     # echo "masking low depth region for $sample !"
     # avg_depth=$(samtools depth  $gene_work_dir/h0.bam | awk '{sum+=$3} END {print sum/NR}')
@@ -268,8 +281,7 @@ if [[ "$data_type" =~ ^(traditional|2D|Direct|SIRV)$ ]]; then
     # samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $gene_work_dir/h0.low_depth.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
     # samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $gene_work_dir/h1.low_depth.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
 
-    samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $gene_work_dir/h0.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
-    samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $gene_work_dir/h1.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
+    
 else
     echo "gene : $hla"
     echo "file : $sorted_snv_sv_merged"

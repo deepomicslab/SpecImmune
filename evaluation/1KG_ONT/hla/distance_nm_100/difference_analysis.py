@@ -28,7 +28,7 @@ for index, row in data.iterrows():
     superpop2 = sample_to_superpop.get(sample2)
     
     # 提取基因距离（从第3列开始）
-    gene_distance = np.median(row[2:]) # 假设基因距离列是从第3列开始的，取均值
+    gene_distance = np.median(row[11:12]) # 假设基因距离列是从第3列开始的，取均值
     
     # 将距离归类到相同或不同 Superpopulation 组
     if superpop1 == superpop2:
@@ -53,7 +53,7 @@ plt.legend(loc='upper right')
 plt.tight_layout()
 # save
 # plt.savefig('distance_distribution.svg', format='svg', bbox_inches='tight', dpi=600)
-plt.savefig('distance_distribution.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig('distance_distribution_DQA2.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 plt.show()
 

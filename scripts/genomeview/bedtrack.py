@@ -15,6 +15,7 @@ DEFAULT_FIELD_DEFS = {
     "coding_end":7,
     "exon_lengths":10,
     "exon_starts":11,
+    "color":12
 }
 
 class Transcript:
@@ -48,6 +49,8 @@ def tx_from_bedfields(bedfields, field_defs=None):
     create a Transcript instance from bed fields (ie the result of
     bed_line.strip().split())
     """
+
+    print(field_defs)
 
     if field_defs is None:
         field_defs = DEFAULT_FIELD_DEFS
@@ -83,14 +86,14 @@ def fetch(path, chrom, start, end, field_defs=None):
     except:
         pass
 
-    try:
-        yield from fetch_from_bigbed(path, chrom, start, end, field_defs=field_defs)
-        return
-    except ImportError:
-        logging.warn("Unable to import pyBigWig")
-    except:
-        raise
-        pass
+    # try:
+    #     yield from fetch_from_bigbed(path, chrom, start, end, field_defs=field_defs)
+    #     return
+    # except ImportError:
+    #     logging.warn("Unable to import pyBigWig")
+    # except:
+    #     raise
+    #     pass
 
     try:
         yield from fetch_from_plainbed(path, chrom, start, end, field_defs=field_defs)

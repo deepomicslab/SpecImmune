@@ -1,0 +1,6 @@
+HLA-A	StringTie	exon	244	373	1000.00	+	.	transcript_id "STRG.1.1"; gene_id "STRG.1";
+HLA-A	StringTie	exon	504	1290	1000.00	+	.	transcript_id "STRG.1.1"; gene_id "STRG.1";
+HLA-A	StringTie	exon	1870	2145	1000.00	+	.	transcript_id "STRG.1.1"; gene_id "STRG.1";
+HLA-A	StringTie	exon	2248	2364	1000.00	+	.	transcript_id "STRG.1.1"; gene_id "STRG.1";
+HLA-A	StringTie	exon	2807	3029	1000.00	+	.	transcript_id "STRG.1.1"; gene_id "STRG.1";
+HLA-A	StringTie	exon	3199	3503	1000.00	+	.	transcript_id "STRG.1.1"; gene_id "STRG.1";
