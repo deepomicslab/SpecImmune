@@ -77,7 +77,7 @@ if __name__ == "__main__":
         result_file = f'{sum_result_file[:-4]}_field{field}_result.csv'
         depth_dict = cal_total_accuracy(result_file)
         for cutoff in depth_dict:
-            data.append([cutoff, depth_dict[cutoff][0], depth_dict[cutoff][1], depth_dict[cutoff][2], 'HGSCV2 HiFi', field])
+            data.append([cutoff, depth_dict[cutoff][0], depth_dict[cutoff][1], depth_dict[cutoff][2], 'HGSVC HiFi', field])
 
         sum_result_file = benchmark_result_dir + "HPRC_ont.csv"
         result_file = f'{sum_result_file[:-4]}_field{field}_result.csv'
@@ -89,7 +89,7 @@ if __name__ == "__main__":
         result_file = f'{sum_result_file[:-4]}_field{field}_result.csv'
         depth_dict = cal_total_accuracy(result_file)
         for cutoff in depth_dict:
-            data.append([cutoff, depth_dict[cutoff][0], depth_dict[cutoff][1], depth_dict[cutoff][2], 'HGSCV2 CLR', field])
+            data.append([cutoff, depth_dict[cutoff][0], depth_dict[cutoff][1], depth_dict[cutoff][2], 'HGSVC CLR', field])
 
 
 

@@ -11,7 +11,7 @@ p1<- ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
   geom_point()+
   xlab("Depth")+
   ylim(c(0.85,1))+
-  ggtitle('HGSCV2 HiFi')+
+  ggtitle('HGSVC HiFi')+
   ylab("Accuracy")+theme_classic()+scale_color_brewer(palette="Dark2")
 
 
@@ -21,7 +21,7 @@ p2<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
   geom_point()+
   xlab("Depth")+
   ylim(c(0.85,1))+
-  ggtitle('HGSCV2 PacBio CLR')+
+  ggtitle('HGSVC CLR')+
   ylab("Accuracy")+theme_classic()+scale_color_brewer(palette="Dark2")
 
 df<-read.table("HPRC_hifi_chain.csv", sep=",", header=TRUE)
