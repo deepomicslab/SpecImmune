@@ -10,8 +10,8 @@ library(aplot)
 # pdf(file="figures/hla_LD_heatmap.pdf", width=6, height=5, onefile=FALSE)
 # df<-read.table("hla_LD_values.csv", sep=",", header=TRUE)
 
-pdf(file="figures/hla_kir_LD_heatmap.pdf", width=9, height=8, onefile=FALSE)
-df<-read.table("hla_kir_LD_values.csv", sep=",", header=TRUE)
+pdf(file="figures/hla_kir_cyp_vdj_LD_heatmap.pdf", width=18, height=17, onefile=FALSE)
+df<-read.table("hla_kir_cyp_vdj_LD_values.csv", sep=",", header=TRUE)
 
 
 
@@ -53,7 +53,7 @@ p1<-ggplot(data = df, aes(x=gene1, y=gene2, fill=D)) +
 
 p1
 
-df2<-read.csv("gene_type.csv",header=T, sep=",")
+df2<-read.csv("vdj_gene_type.csv",header=T, sep=",")
 df2$y <- factor(df2$y, levels = hc$labels[hc$order])
 
 p2<-ggplot(df2,aes(x=x,y=y))+
