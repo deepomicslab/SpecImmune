@@ -14,7 +14,7 @@ p1 <- ggplot(df1, aes(x=Gene,y=Hete_freq,fill=Gene_Group)) +
   theme_classic()+
    theme(axis.text.x = element_text(size = 4))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
-  ylab("hete freq")+scale_fill_brewer(palette="Dark2")+xlab('')
+  ylab("Heterozygous Frequency")+scale_fill_brewer(palette="Dark2")+xlab('')
 
 
 df1<-filter(df, Gene_Group2 == "TR")
@@ -23,7 +23,7 @@ p2 <- ggplot(df1, aes(x=Gene,y=Hete_freq,fill=Gene_Group)) +
   theme_classic()+
    theme(axis.text.x = element_text(size = 4))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
-  ylab("hete freq")+scale_fill_brewer(palette="Dark2")+xlab('')
+  ylab("Heterozygous Frequency")+scale_fill_brewer(palette="Dark2")+xlab('')
 
 prow <- plot_grid(
   p1 + theme(legend.position="top"),
