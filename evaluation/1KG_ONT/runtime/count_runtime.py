@@ -45,22 +45,34 @@ def for_each_file(time_file):
     mem = extract_mem(time_file)
     return time, wall_clock_time, mem
 
-
-def count_cyp():
+def batch_count(folder, output):
     data = []
-    folder = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k_all/"
+    folder = "/home/wangshuai/00.hla/long/experiments/vdj/vdj_results/hprc_hifi/"
     for subfolder in os.listdir(folder):
         if os.path.isdir(folder+subfolder):
-            time_file = folder+subfolder+f"/{subfolder}.time"
+            time_file = folder+f"/{subfolder}.time"
             time, wall_clock_time, mem = for_each_file(time_file)
             print(subfolder, time, wall_clock_time, mem)
             data.append([subfolder, time, wall_clock_time, mem])
     df = pd.DataFrame(data, columns = ['sample', 'time', 'wall_clock_time', 'mem'])
-    df.to_csv("cyp_time.csv", index=False)
+    df.to_csv(output, index=False)
 
 
 if __name__ == '__main__':
     # time_file = '/mnt/d/HLAPro_backup/Nanopore_optimize/test.time'
     # time, wall_clock_time, mem = for_each_file(time_file)
     # print(time, wall_clock_time, mem)
-    count_cyp()
+
+    folder = "/home/wangshuai/00.hla/long/experiments/vdj/vdj_results/hprc_hifi/"
+    output = "vdj_time.csv"
+    batch_count(folder, output)
+
+    folder = "/home/wangshuai/00.hla/long/experiments/kir/kir_results/hprc_hifi2/"
+    output = "kir_time.csv"
+    batch_count(folder, output)
+
+    folder = "/disk2/workspace/wangshuai/03.hla/cyp_results/spec_hprc_time/"
+    output = "cyp_time.csv"
+    batch_count(folder, output)
+
+
