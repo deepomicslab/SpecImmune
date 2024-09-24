@@ -568,6 +568,9 @@ alleles_sample_dict = {}
 for sample in alleles_sample_dict_kir:
     if sample in alleles_sample_dict_hla and sample in alleles_sample_dict_kir and sample in alleles_sample_dict_cyp and sample in alleles_sample_dict_vdj:
         alleles_sample_dict[sample] = alleles_sample_dict_kir[sample] + alleles_sample_dict_hla[sample]+ alleles_sample_dict_cyp[sample]+ alleles_sample_dict_vdj[sample]
+
+
+
 LD_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD"
 LD_analysis(alleles_gene_dict, alleles_sample_dict,LD_dir)
 

@@ -27,7 +27,7 @@ p2 <- ggplot(data = df, aes(x = gene, y = read_num)) +
   theme(legend.position = "none", axis.text.x = element_text(size = 10)) +
   scale_x_discrete(guide = guide_axis(angle = 90)) +
   xlab("") +
-  ggtitle('HGSCV CLR') +
+  ggtitle('HGSVC CLR') +
   ylab("No. of reads") 
 
   df<-read.table("HPRC_hifi_read_num.csv", sep=",", header=TRUE)
@@ -50,7 +50,7 @@ p4 <- ggplot(data = df, aes(x = gene, y = read_num)) +
   theme(legend.position = "none", axis.text.x = element_text(size = 10)) +
   scale_x_discrete(guide = guide_axis(angle = 90)) +
   xlab("") +
-  ggtitle('HGSCV HiFi') +
+  ggtitle('HGSVC HiFi') +
   ylab("No. of reads") 
 
 

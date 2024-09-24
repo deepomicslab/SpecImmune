@@ -42,7 +42,7 @@ p2<- ggplot(data=df2, aes(x=gene, y=count, fill=type)) +
    theme(legend.position = "none", axis.text.x = element_text(size = 10))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
-  ggtitle('HGSCV HiFi')+
+  ggtitle('HGSVC HiFi')+
   ylab("Count")+scale_fill_brewer(palette="Dark2")
 
 p3<- ggplot(data=df3, aes(x=gene, y=count, fill=type)) +
@@ -62,7 +62,7 @@ theme_classic()+
   theme(legend.position = "none", axis.text.x = element_text(size = 10))+
   scale_x_discrete(guide = guide_axis(angle = 90))+
 xlab("")+
- ggtitle('HGSCV CLR')+
+ ggtitle('HGSVC CLR')+
 ylab("Count")+scale_fill_brewer(palette="Dark2")
 
 
