@@ -47,7 +47,7 @@ def for_each_file(time_file):
 
 def batch_count(folder, output):
     data = []
-    folder = "/home/wangshuai/00.hla/long/experiments/vdj/vdj_results/hprc_hifi/"
+    # folder = "/home/wangshuai/00.hla/long/experiments/vdj/vdj_results/hprc_hifi/"
     for subfolder in os.listdir(folder):
         if os.path.isdir(folder+subfolder):
             time_file = folder+f"/{subfolder}.time"
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     output = "vdj_time.csv"
     batch_count(folder, output)
 
-    folder = "/home/wangshuai/00.hla/long/experiments/kir/kir_results/hprc_hifi2/"
+    folder = "/home/wangshuai/00.hla/long/experiments/kir/kir_results/hprc_hifi_time/"
     output = "kir_time.csv"
     batch_count(folder, output)
 
