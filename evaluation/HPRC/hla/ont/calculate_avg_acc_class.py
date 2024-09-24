@@ -14,7 +14,7 @@ df_names = ['HLA*LA', 'SpecHLA', 'SpecLong']  # Updated labels for DataFrames
 # Step 2: Define the genes to consider for each software
 genes_for_hlala = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRA', 'DRB1', 'E', 'F', 'G', 'H', 'K', 'V', 'DRB3', 'DRB4']
 genes_for_spechla = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
-genes_for_speclong = [gene for gene in pd.concat([df1['Gene'], df2['Gene'], df3['Gene']]).unique() if gene not in ['HFE', 'MICA', 'DPA2', 'MICB', 'DOA']]
+genes_for_speclong = [gene for gene in pd.concat([df1['Gene'], df2['Gene'], df3['Gene']]).unique() if gene not in ['HFE']]
 
 # Step 3: Filter the gene read counts to only include relevant genes for each software
 gene_reads_df = pd.read_csv('read_depth.csv', index_col=0)
@@ -41,7 +41,7 @@ gene_classes = {
 }
 
 # Step 4: Set the chosen depth
-chosen_depth = 0  # This can be changed to any value you want to set as the threshold
+chosen_depth = 10  # This can be changed to any value you want to set as the threshold
 
 # Step 5: Initialize a dictionary to store accuracy results for plotting
 plot_data = {f'<{chosen_depth}': {df_name: [] for df_name in df_names},

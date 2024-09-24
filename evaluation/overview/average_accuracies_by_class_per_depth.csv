@@ -238,7 +238,7 @@ hgsvc2_hifi,SpecHLA,Non-HLA Genes,50,,
 hgsvc2_hifi,SpecLong,Class I Genes,50,1.0,1.0
 hgsvc2_hifi,SpecLong,Class I Pseudogenes,50,0.9500000000000001,0.875
 hgsvc2_hifi,SpecLong,Class II Genes,50,0.9393229166666667,1.0
-hgsvc2_hifi,SpecLong,Non-HLA Genes,50,0.8472222222222222,1.0
+hgsvc2_hifi,SpecLong,Non-HLA Genes,50,0.8472222222222222,
 hprc_hifi,HLA*LA,Class I Genes,5,,0.9416666666666668
 hprc_hifi,HLA*LA,Class I Pseudogenes,5,1.0,0.8585507246376811
 hprc_hifi,HLA*LA,Class II Genes,5,,0.837797619047619

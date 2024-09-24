@@ -1,5 +1,5 @@
 # 读取 PCA 结果
-pca_data <- read.table("pca_out.eigenvec", header=FALSE)
+pca_data <- read.table("pca_out_bcftools_DQB1.eigenvec", header=FALSE)
 colnames(pca_data) <- c("FID", "IID", paste0("PC", 1:(ncol(pca_data)-2)))
 
 # 读取群体信息
