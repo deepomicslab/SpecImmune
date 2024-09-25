@@ -14,7 +14,7 @@ df_names = ['HLA*LA', 'SpecHLA', 'SpecLong']  # Updated labels for DataFrames
 # Step 2: Define the genes to consider for each software
 genes_for_hlala = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRA', 'DRB1', 'E', 'F', 'G', 'H', 'K', 'V', 'DRB3', 'DRB4']
 genes_for_spechla = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
-genes_for_speclong = [gene for gene in pd.concat([df1['Gene'], df2['Gene'], df3['Gene']]).unique() if gene not in ['HFE', 'MICA', 'DPA2', 'MICB', 'DOA']]
+genes_for_speclong = [gene for gene in pd.concat([df1['Gene'], df2['Gene'], df3['Gene']]).unique() if gene not in ['HFE']]
 
 # Step 3: Filter the gene read counts to only include relevant genes for each software
 gene_reads_df = pd.read_csv('read_depth.csv', index_col=0)
