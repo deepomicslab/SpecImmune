@@ -13,8 +13,9 @@ ggplot(df, aes(x=time, y=mem)) +
   ggtitle("IG+TCR")
   # + 
   # geom_text(label=df$Allele,size=2)
-## count mean value of time and mem
-print(paste("mean time: ", mean(df$time)))
-print(paste("mean mem: ", mean(df$mem)))
+## count mean value of time and mem, and wall_clock_time
+print(paste("mean time: ", mean(df$time), median(df$time)))
+print(paste("mean mem: ", mean(df$mem), median(df$mem)))
+print(paste("mean wall_clock_time: ", mean(df$wall_clock_time), median(df$wall_clock_time)))
 
 dev.off()
