@@ -23,7 +23,7 @@ gene_reads_df = gene_reads_df[genes_in_dfs]
 genes_in_dfs.sort()
 
 # Step 3: Set the chosen depth
-chosen_depth = 15  # This can be changed to any value you want to set as the threshold
+chosen_depth = 10  # This can be changed to any value you want to set as the threshold
 
 # Step 4: Initialize a dictionary to store accuracy results for plotting
 plot_data = {f'<{chosen_depth}': {df_name: [] for df_name in df_names},
@@ -49,10 +49,17 @@ for df, df_name in zip(dfs, df_names):
             total_total_lt_chosen = filtered_df_lt_chosen['Total'].sum()
             accuracy_lt_chosen = total_match_lt_chosen / total_total_lt_chosen if total_total_lt_chosen > 0 else None
         else:
+            total_match_lt_chosen = None
+            total_total_lt_chosen = None
             accuracy_lt_chosen = None
             
         # Store the result in the plot_data dictionary for < chosen_depth
-        plot_data[f'<{chosen_depth}'][df_name].append({'Gene': gene, 'Accuracy': accuracy_lt_chosen})
+        plot_data[f'<{chosen_depth}'][df_name].append({
+            'Gene': gene, 
+            'Accuracy': accuracy_lt_chosen,
+            'Match': total_match_lt_chosen,
+            'Total': total_total_lt_chosen
+        })
 
         # Calculate accuracy for samples with read depth >= chosen_depth
         if not filtered_df_ge_chosen.empty:
@@ -60,10 +67,17 @@ for df, df_name in zip(dfs, df_names):
             total_total_ge_chosen = filtered_df_ge_chosen['Total'].sum()
             accuracy_ge_chosen = total_match_ge_chosen / total_total_ge_chosen if total_total_ge_chosen > 0 else None
         else:
+            total_match_ge_chosen = None
+            total_total_ge_chosen = None
             accuracy_ge_chosen = None
             
         # Store the result in the plot_data dictionary for >= chosen_depth
-        plot_data[f'>={chosen_depth}'][df_name].append({'Gene': gene, 'Accuracy': accuracy_ge_chosen})
+        plot_data[f'>={chosen_depth}'][df_name].append({
+            'Gene': gene, 
+            'Accuracy': accuracy_ge_chosen,
+            'Match': total_match_ge_chosen,
+            'Total': total_total_ge_chosen
+        })
 
 # Step 6: Print the gene-level results and the average accuracy for each software
 for depth_category in plot_data:
@@ -74,11 +88,16 @@ for depth_category in plot_data:
         for entry in plot_data[depth_category][df_name]:
             gene = entry['Gene']
             accuracy = entry['Accuracy']
+            total_match = entry['Match']
+            total_total = entry['Total']
+
             accuracies.append(accuracy)
+            
+            # Print match and total counts along with accuracy
             if accuracy is not None:
-                print(f"  Gene: {gene}, Accuracy: {accuracy:.2f}")
+                print(f"  Gene: {gene}, Accuracy: {accuracy:.2f}, Match: {total_match}, Total: {total_total}")
             else:
-                print(f"  Gene: {gene}, Accuracy: No valid data")
+                print(f"  Gene: {gene}, Accuracy: No valid data, Match: {total_match}, Total: {total_total}")
         
         # Calculate and print the average accuracy for this software
         valid_accuracies = [acc for acc in accuracies if acc is not None]

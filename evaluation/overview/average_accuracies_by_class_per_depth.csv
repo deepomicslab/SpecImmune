@@ -1,481 +1,481 @@
-Dataset,Software,Class,Depth Cutoff,Average Accuracy < Depth,Average Accuracy >= Depth
-hgsvc2_clr,HLA*LA,Class I Genes,5,,0.14473684210526314
-hgsvc2_clr,HLA*LA,Class I Pseudogenes,5,0.21428571428571427,0.15773809523809523
-hgsvc2_clr,HLA*LA,Class II Genes,5,,0.17763157894736842
-hgsvc2_clr,HLA*LA,Non-HLA Genes,5,,
-hgsvc2_clr,SpecHLA,Class I Genes,5,,0.9649122807017543
-hgsvc2_clr,SpecHLA,Class I Pseudogenes,5,,
-hgsvc2_clr,SpecHLA,Class II Genes,5,,0.7897660818713451
-hgsvc2_clr,SpecHLA,Non-HLA Genes,5,,
-hgsvc2_clr,SpecLong,Class I Genes,5,,0.9912280701754387
-hgsvc2_clr,SpecLong,Class I Pseudogenes,5,0.8728991596638656,0.9421801284839563
-hgsvc2_clr,SpecLong,Class II Genes,5,,0.9295880632954936
-hgsvc2_clr,SpecLong,Non-HLA Genes,5,,0.8461257309941521
-hgsvc2_clr,HLA*LA,Class I Genes,10,,0.14473684210526314
-hgsvc2_clr,HLA*LA,Class I Pseudogenes,10,0.17857142857142858,0.2619047619047619
-hgsvc2_clr,HLA*LA,Class II Genes,10,,0.17763157894736842
-hgsvc2_clr,HLA*LA,Non-HLA Genes,10,,
-hgsvc2_clr,SpecHLA,Class I Genes,10,,0.9649122807017543
-hgsvc2_clr,SpecHLA,Class I Pseudogenes,10,,
-hgsvc2_clr,SpecHLA,Class II Genes,10,,0.7897660818713451
-hgsvc2_clr,SpecHLA,Non-HLA Genes,10,,
-hgsvc2_clr,SpecLong,Class I Genes,10,,0.9912280701754387
-hgsvc2_clr,SpecLong,Class I Pseudogenes,10,0.8740601503759398,0.9084979348137243
-hgsvc2_clr,SpecLong,Class II Genes,10,,0.9295880632954936
-hgsvc2_clr,SpecLong,Non-HLA Genes,10,,0.8461257309941521
-hgsvc2_clr,HLA*LA,Class I Genes,15,,0.14473684210526314
-hgsvc2_clr,HLA*LA,Class I Pseudogenes,15,0.17857142857142858,0.2619047619047619
-hgsvc2_clr,HLA*LA,Class II Genes,15,,0.17763157894736842
-hgsvc2_clr,HLA*LA,Non-HLA Genes,15,,
-hgsvc2_clr,SpecHLA,Class I Genes,15,,0.9649122807017543
-hgsvc2_clr,SpecHLA,Class I Pseudogenes,15,,
-hgsvc2_clr,SpecHLA,Class II Genes,15,,0.7897660818713451
-hgsvc2_clr,SpecHLA,Non-HLA Genes,15,,
-hgsvc2_clr,SpecLong,Class I Genes,15,,0.9912280701754387
-hgsvc2_clr,SpecLong,Class I Pseudogenes,15,0.8327067669172932,0.9217555105713
-hgsvc2_clr,SpecLong,Class II Genes,15,,0.9295880632954936
-hgsvc2_clr,SpecLong,Non-HLA Genes,15,,0.8461257309941521
-hgsvc2_clr,HLA*LA,Class I Genes,20,,0.14473684210526314
-hgsvc2_clr,HLA*LA,Class I Pseudogenes,20,0.17857142857142858,0.2619047619047619
-hgsvc2_clr,HLA*LA,Class II Genes,20,0.0,0.17763157894736842
-hgsvc2_clr,HLA*LA,Non-HLA Genes,20,,
-hgsvc2_clr,SpecHLA,Class I Genes,20,,0.9649122807017543
-hgsvc2_clr,SpecHLA,Class I Pseudogenes,20,,
-hgsvc2_clr,SpecHLA,Class II Genes,20,,0.7897660818713451
-hgsvc2_clr,SpecHLA,Non-HLA Genes,20,,
-hgsvc2_clr,SpecLong,Class I Genes,20,,0.9912280701754387
-hgsvc2_clr,SpecLong,Class I Pseudogenes,20,0.8566058002148227,0.9206871345029239
-hgsvc2_clr,SpecLong,Class II Genes,20,1.0,0.9295880632954936
-hgsvc2_clr,SpecLong,Non-HLA Genes,20,,0.8461257309941521
-hgsvc2_clr,HLA*LA,Class I Genes,25,,0.14473684210526314
-hgsvc2_clr,HLA*LA,Class I Pseudogenes,25,0.2142857142857143,0.2638888888888889
-hgsvc2_clr,HLA*LA,Class II Genes,25,0.0,0.17763157894736842
-hgsvc2_clr,HLA*LA,Non-HLA Genes,25,,
-hgsvc2_clr,SpecHLA,Class I Genes,25,,0.9649122807017543
-hgsvc2_clr,SpecHLA,Class I Pseudogenes,25,,
-hgsvc2_clr,SpecHLA,Class II Genes,25,,0.7897660818713451
-hgsvc2_clr,SpecHLA,Non-HLA Genes,25,,
-hgsvc2_clr,SpecLong,Class I Genes,25,,0.9912280701754387
-hgsvc2_clr,SpecLong,Class I Pseudogenes,25,0.8953634085213033,0.9248538011695907
-hgsvc2_clr,SpecLong,Class II Genes,25,1.0,0.9289000687994495
-hgsvc2_clr,SpecLong,Non-HLA Genes,25,,0.8461257309941521
-hgsvc2_clr,HLA*LA,Class I Genes,30,0.0,0.14473684210526314
-hgsvc2_clr,HLA*LA,Class I Pseudogenes,30,0.14285714285714288,0.2638888888888889
-hgsvc2_clr,HLA*LA,Class II Genes,30,0.16666666666666666,0.17708333333333334
-hgsvc2_clr,HLA*LA,Non-HLA Genes,30,,
-hgsvc2_clr,SpecHLA,Class I Genes,30,1.0,0.960233918128655
-hgsvc2_clr,SpecHLA,Class I Pseudogenes,30,,
-hgsvc2_clr,SpecHLA,Class II Genes,30,1.0,0.7897660818713451
-hgsvc2_clr,SpecHLA,Non-HLA Genes,30,,
-hgsvc2_clr,SpecLong,Class I Genes,30,1.0,0.9900584795321637
-hgsvc2_clr,SpecLong,Class I Pseudogenes,30,0.9246240601503759,0.9248538011695907
-hgsvc2_clr,SpecLong,Class II Genes,30,1.0,0.9289000687994495
-hgsvc2_clr,SpecLong,Non-HLA Genes,30,1.0,0.843266253869969
-hgsvc2_clr,HLA*LA,Class I Genes,35,0.1,0.14842047930283225
-hgsvc2_clr,HLA*LA,Class I Pseudogenes,35,0.14285714285714288,0.2638888888888889
-hgsvc2_clr,HLA*LA,Class II Genes,35,0.3,0.1764705882352941
-hgsvc2_clr,HLA*LA,Non-HLA Genes,35,,
-hgsvc2_clr,SpecHLA,Class I Genes,35,0.8958333333333334,0.9750445632798574
-hgsvc2_clr,SpecHLA,Class I Pseudogenes,35,,
-hgsvc2_clr,SpecHLA,Class II Genes,35,1.0,0.7897660818713451
-hgsvc2_clr,SpecHLA,Non-HLA Genes,35,,
-hgsvc2_clr,SpecLong,Class I Genes,35,0.9375,1.0
-hgsvc2_clr,SpecLong,Class I Pseudogenes,35,0.9225232502744465,0.9252819548872181
-hgsvc2_clr,SpecLong,Class II Genes,35,0.9285714285714286,0.9323199868182568
-hgsvc2_clr,SpecLong,Non-HLA Genes,35,0.8333333333333333,0.8547794117647058
-hgsvc2_clr,HLA*LA,Class I Genes,40,0.15,0.148109243697479
-hgsvc2_clr,HLA*LA,Class I Pseudogenes,40,0.15,0.16666666666666666
-hgsvc2_clr,HLA*LA,Class II Genes,40,0.21428571428571427,0.175
-hgsvc2_clr,HLA*LA,Non-HLA Genes,40,,
-hgsvc2_clr,SpecHLA,Class I Genes,40,0.9458333333333333,0.972943722943723
-hgsvc2_clr,SpecHLA,Class I Pseudogenes,40,,
-hgsvc2_clr,SpecHLA,Class II Genes,40,0.9166666666666666,0.7794444444444444
-hgsvc2_clr,SpecHLA,Non-HLA Genes,40,,
-hgsvc2_clr,SpecLong,Class I Genes,40,0.9675,1.0
-hgsvc2_clr,SpecLong,Class I Pseudogenes,40,0.9194929472441434,0.9860365198711064
-hgsvc2_clr,SpecLong,Class II Genes,40,0.93125,0.9323354341736695
-hgsvc2_clr,SpecLong,Non-HLA Genes,40,0.8333333333333334,0.8517857142857143
-hgsvc2_clr,HLA*LA,Class I Genes,45,0.1388888888888889,0.14703525641025642
-hgsvc2_clr,HLA*LA,Class I Pseudogenes,45,0.15,0.1875
-hgsvc2_clr,HLA*LA,Class II Genes,45,0.17857142857142858,0.17708333333333334
-hgsvc2_clr,HLA*LA,Non-HLA Genes,45,,
-hgsvc2_clr,SpecHLA,Class I Genes,45,0.9465811965811967,0.9871794871794872
-hgsvc2_clr,SpecHLA,Class I Pseudogenes,45,,
-hgsvc2_clr,SpecHLA,Class II Genes,45,0.7833333333333333,0.7897134238310709
-hgsvc2_clr,SpecHLA,Non-HLA Genes,45,,
-hgsvc2_clr,SpecLong,Class I Genes,45,0.9797008547008547,1.0
-hgsvc2_clr,SpecLong,Class I Pseudogenes,45,0.9281859952912584,0.9838935574229692
-hgsvc2_clr,SpecLong,Class II Genes,45,0.9303921568627451,0.9297311684854938
-hgsvc2_clr,SpecLong,Non-HLA Genes,45,0.8541666666666667,0.8442307692307692
-hgsvc2_clr,HLA*LA,Class I Genes,50,0.13333333333333333,0.15043290043290042
-hgsvc2_clr,HLA*LA,Class I Pseudogenes,50,0.15,0.25
-hgsvc2_clr,HLA*LA,Class II Genes,50,0.1796875,0.17613636363636365
-hgsvc2_clr,HLA*LA,Non-HLA Genes,50,,
-hgsvc2_clr,SpecHLA,Class I Genes,50,0.9553571428571429,0.9848484848484849
-hgsvc2_clr,SpecHLA,Class I Pseudogenes,50,,
-hgsvc2_clr,SpecHLA,Class II Genes,50,0.7833333333333333,0.7894230769230769
-hgsvc2_clr,SpecHLA,Non-HLA Genes,50,,
-hgsvc2_clr,SpecLong,Class I Genes,50,0.9836309523809524,1.0
-hgsvc2_clr,SpecLong,Class I Pseudogenes,50,0.9262018683071315,0.9955357142857143
-hgsvc2_clr,SpecLong,Class II Genes,50,0.9254901960784314,0.9239972267316017
-hgsvc2_clr,SpecLong,Non-HLA Genes,50,0.8125,0.8616071428571428
-hgsvc2_hifi,HLA*LA,Class I Genes,5,,0.9444444444444443
-hgsvc2_hifi,HLA*LA,Class I Pseudogenes,5,1.0,0.8650793650793651
-hgsvc2_hifi,HLA*LA,Class II Genes,5,,0.8313492063492063
-hgsvc2_hifi,HLA*LA,Non-HLA Genes,5,,
-hgsvc2_hifi,SpecHLA,Class I Genes,5,,0.9814814814814815
-hgsvc2_hifi,SpecHLA,Class I Pseudogenes,5,,
-hgsvc2_hifi,SpecHLA,Class II Genes,5,,0.8
-hgsvc2_hifi,SpecHLA,Non-HLA Genes,5,,
-hgsvc2_hifi,SpecLong,Class I Genes,5,,1.0
-hgsvc2_hifi,SpecLong,Class I Pseudogenes,5,0.875,0.9852272727272727
-hgsvc2_hifi,SpecLong,Class II Genes,5,,0.944965277777778
-hgsvc2_hifi,SpecLong,Non-HLA Genes,5,,0.8472222222222222
-hgsvc2_hifi,HLA*LA,Class I Genes,10,,0.9444444444444443
-hgsvc2_hifi,HLA*LA,Class I Pseudogenes,10,1.0,0.7976190476190477
-hgsvc2_hifi,HLA*LA,Class II Genes,10,,0.8313492063492063
-hgsvc2_hifi,HLA*LA,Non-HLA Genes,10,,
-hgsvc2_hifi,SpecHLA,Class I Genes,10,,0.9814814814814815
-hgsvc2_hifi,SpecHLA,Class I Pseudogenes,10,,
-hgsvc2_hifi,SpecHLA,Class II Genes,10,,0.8
-hgsvc2_hifi,SpecHLA,Non-HLA Genes,10,,
-hgsvc2_hifi,SpecLong,Class I Genes,10,,1.0
-hgsvc2_hifi,SpecLong,Class I Pseudogenes,10,0.875,0.9796875
-hgsvc2_hifi,SpecLong,Class II Genes,10,,0.944965277777778
-hgsvc2_hifi,SpecLong,Non-HLA Genes,10,,0.8472222222222222
-hgsvc2_hifi,HLA*LA,Class I Genes,15,,0.9444444444444443
-hgsvc2_hifi,HLA*LA,Class I Pseudogenes,15,1.0,0.7976190476190477
-hgsvc2_hifi,HLA*LA,Class II Genes,15,,0.8313492063492063
-hgsvc2_hifi,HLA*LA,Non-HLA Genes,15,,
-hgsvc2_hifi,SpecHLA,Class I Genes,15,,0.9814814814814815
-hgsvc2_hifi,SpecHLA,Class I Pseudogenes,15,,
-hgsvc2_hifi,SpecHLA,Class II Genes,15,,0.8
-hgsvc2_hifi,SpecHLA,Non-HLA Genes,15,,
-hgsvc2_hifi,SpecLong,Class I Genes,15,,1.0
-hgsvc2_hifi,SpecLong,Class I Pseudogenes,15,0.9,0.9796875
-hgsvc2_hifi,SpecLong,Class II Genes,15,1.0,0.9440972222222224
-hgsvc2_hifi,SpecLong,Non-HLA Genes,15,,0.8472222222222222
-hgsvc2_hifi,HLA*LA,Class I Genes,20,1.0,0.9444444444444443
-hgsvc2_hifi,HLA*LA,Class I Pseudogenes,20,0.9166666666666666,0.7708333333333333
-hgsvc2_hifi,HLA*LA,Class II Genes,20,1.0,0.8313492063492063
-hgsvc2_hifi,HLA*LA,Non-HLA Genes,20,,
-hgsvc2_hifi,SpecHLA,Class I Genes,20,,0.9814814814814815
-hgsvc2_hifi,SpecHLA,Class I Pseudogenes,20,,
-hgsvc2_hifi,SpecHLA,Class II Genes,20,1.0,0.8
-hgsvc2_hifi,SpecHLA,Non-HLA Genes,20,,
-hgsvc2_hifi,SpecLong,Class I Genes,20,1.0,1.0
-hgsvc2_hifi,SpecLong,Class I Pseudogenes,20,0.9444444444444444,0.9796875
-hgsvc2_hifi,SpecLong,Class II Genes,20,1.0,0.9403703703703705
-hgsvc2_hifi,SpecLong,Non-HLA Genes,20,0.5,0.8489583333333334
-hgsvc2_hifi,HLA*LA,Class I Genes,25,1.0,0.9285714285714285
-hgsvc2_hifi,HLA*LA,Class I Pseudogenes,25,0.9166666666666666,0.6875
-hgsvc2_hifi,HLA*LA,Class II Genes,25,0.9166666666666666,0.8313492063492063
-hgsvc2_hifi,HLA*LA,Non-HLA Genes,25,,
-hgsvc2_hifi,SpecHLA,Class I Genes,25,0.9444444444444445,1.0
-hgsvc2_hifi,SpecHLA,Class I Pseudogenes,25,,
-hgsvc2_hifi,SpecHLA,Class II Genes,25,1.0,0.8
-hgsvc2_hifi,SpecHLA,Non-HLA Genes,25,,
-hgsvc2_hifi,SpecLong,Class I Genes,25,1.0,1.0
-hgsvc2_hifi,SpecLong,Class I Pseudogenes,25,0.95,0.9738095238095239
-hgsvc2_hifi,SpecLong,Class II Genes,25,1.0,0.9371957671957674
-hgsvc2_hifi,SpecLong,Non-HLA Genes,25,0.75,0.8616071428571428
-hgsvc2_hifi,HLA*LA,Class I Genes,30,0.9791666666666666,0.9166666666666666
-hgsvc2_hifi,HLA*LA,Class I Pseudogenes,30,0.9166666666666666,0.6666666666666667
-hgsvc2_hifi,HLA*LA,Class II Genes,30,0.8095238095238094,0.8452380952380951
-hgsvc2_hifi,HLA*LA,Non-HLA Genes,30,,
-hgsvc2_hifi,SpecHLA,Class I Genes,30,0.9666666666666667,1.0
-hgsvc2_hifi,SpecHLA,Class I Pseudogenes,30,,
-hgsvc2_hifi,SpecHLA,Class II Genes,30,0.9,0.7857142857142857
-hgsvc2_hifi,SpecHLA,Non-HLA Genes,30,,
-hgsvc2_hifi,SpecLong,Class I Genes,30,1.0,1.0
-hgsvc2_hifi,SpecLong,Class I Pseudogenes,30,0.9375,0.9857142857142858
-hgsvc2_hifi,SpecLong,Class II Genes,30,0.90625,0.9662698412698413
-hgsvc2_hifi,SpecLong,Non-HLA Genes,30,0.8333333333333334,0.8645833333333334
-hgsvc2_hifi,HLA*LA,Class I Genes,35,0.9479166666666666,0.9166666666666666
-hgsvc2_hifi,HLA*LA,Class I Pseudogenes,35,0.8428571428571429,1.0
-hgsvc2_hifi,HLA*LA,Class II Genes,35,0.8282312925170068,0.826530612244898
-hgsvc2_hifi,HLA*LA,Non-HLA Genes,35,,
-hgsvc2_hifi,SpecHLA,Class I Genes,35,0.9722222222222222,1.0
-hgsvc2_hifi,SpecHLA,Class I Pseudogenes,35,,
-hgsvc2_hifi,SpecHLA,Class II Genes,35,0.875,0.7857142857142857
-hgsvc2_hifi,SpecHLA,Non-HLA Genes,35,,
-hgsvc2_hifi,SpecLong,Class I Genes,35,1.0,1.0
-hgsvc2_hifi,SpecLong,Class I Pseudogenes,35,0.9375,0.9722222222222223
-hgsvc2_hifi,SpecLong,Class II Genes,35,0.9244791666666665,0.9793650793650794
-hgsvc2_hifi,SpecLong,Non-HLA Genes,35,0.85,0.875
-hgsvc2_hifi,HLA*LA,Class I Genes,40,0.9479166666666666,0.9
-hgsvc2_hifi,HLA*LA,Class I Pseudogenes,40,0.8428571428571429,1.0
-hgsvc2_hifi,HLA*LA,Class II Genes,40,0.8244047619047619,0.7976190476190476
-hgsvc2_hifi,HLA*LA,Non-HLA Genes,40,,
-hgsvc2_hifi,SpecHLA,Class I Genes,40,0.9761904761904763,1.0
-hgsvc2_hifi,SpecHLA,Class I Pseudogenes,40,,
-hgsvc2_hifi,SpecHLA,Class II Genes,40,0.8800000000000001,0.7321428571428571
-hgsvc2_hifi,SpecHLA,Non-HLA Genes,40,,
-hgsvc2_hifi,SpecLong,Class I Genes,40,1.0,1.0
-hgsvc2_hifi,SpecLong,Class I Pseudogenes,40,0.9479166666666666,0.9583333333333334
-hgsvc2_hifi,SpecLong,Class II Genes,40,0.9383928571428573,0.9880952380952381
-hgsvc2_hifi,SpecLong,Non-HLA Genes,40,0.8420138888888888,1.0
-hgsvc2_hifi,HLA*LA,Class I Genes,45,0.9444444444444443,1.0
-hgsvc2_hifi,HLA*LA,Class I Pseudogenes,45,0.8428571428571429,1.0
-hgsvc2_hifi,HLA*LA,Class II Genes,45,0.8333333333333331,0.8125
-hgsvc2_hifi,HLA*LA,Non-HLA Genes,45,,
-hgsvc2_hifi,SpecHLA,Class I Genes,45,0.9814814814814815,1.0
-hgsvc2_hifi,SpecHLA,Class I Pseudogenes,45,,
-hgsvc2_hifi,SpecHLA,Class II Genes,45,0.819047619047619,0.6666666666666666
-hgsvc2_hifi,SpecHLA,Non-HLA Genes,45,,
-hgsvc2_hifi,SpecLong,Class I Genes,45,1.0,1.0
-hgsvc2_hifi,SpecLong,Class I Pseudogenes,45,0.9479166666666666,0.9375
-hgsvc2_hifi,SpecLong,Class II Genes,45,0.9450272817460318,0.9814814814814815
-hgsvc2_hifi,SpecLong,Non-HLA Genes,45,0.8472222222222222,1.0
-hgsvc2_hifi,HLA*LA,Class I Genes,50,0.9444444444444443,1.0
-hgsvc2_hifi,HLA*LA,Class I Pseudogenes,50,0.8650793650793651,
-hgsvc2_hifi,HLA*LA,Class II Genes,50,0.8154761904761905,0.75
-hgsvc2_hifi,HLA*LA,Non-HLA Genes,50,,
-hgsvc2_hifi,SpecHLA,Class I Genes,50,0.9814814814814815,
-hgsvc2_hifi,SpecHLA,Class I Pseudogenes,50,,
-hgsvc2_hifi,SpecHLA,Class II Genes,50,0.7722222222222223,0.9166666666666667
-hgsvc2_hifi,SpecHLA,Non-HLA Genes,50,,
-hgsvc2_hifi,SpecLong,Class I Genes,50,1.0,1.0
-hgsvc2_hifi,SpecLong,Class I Pseudogenes,50,0.9500000000000001,0.875
-hgsvc2_hifi,SpecLong,Class II Genes,50,0.9393229166666667,1.0
-hgsvc2_hifi,SpecLong,Non-HLA Genes,50,0.8472222222222222,
-hprc_hifi,HLA*LA,Class I Genes,5,,0.9416666666666668
-hprc_hifi,HLA*LA,Class I Pseudogenes,5,1.0,0.8585507246376811
-hprc_hifi,HLA*LA,Class II Genes,5,,0.837797619047619
-hprc_hifi,HLA*LA,Non-HLA Genes,5,,
-hprc_hifi,SpecHLA,Class I Genes,5,,0.9277777777777777
-hprc_hifi,SpecHLA,Class I Pseudogenes,5,,
-hprc_hifi,SpecHLA,Class II Genes,5,,0.8300000000000001
-hprc_hifi,SpecHLA,Non-HLA Genes,5,,
-hprc_hifi,SpecLong,Class I Genes,5,,0.9972222222222222
-hprc_hifi,SpecLong,Class I Pseudogenes,5,0.6689205653021442,0.9434782608695652
-hprc_hifi,SpecLong,Class II Genes,5,,0.9352678571428572
-hprc_hifi,SpecLong,Non-HLA Genes,5,,0.8226190476190476
-hprc_hifi,HLA*LA,Class I Genes,10,,0.9416666666666668
-hprc_hifi,HLA*LA,Class I Pseudogenes,10,1.0,0.7878260869565217
-hprc_hifi,HLA*LA,Class II Genes,10,,0.837797619047619
-hprc_hifi,HLA*LA,Non-HLA Genes,10,,
-hprc_hifi,SpecHLA,Class I Genes,10,,0.9277777777777777
-hprc_hifi,SpecHLA,Class I Pseudogenes,10,,
-hprc_hifi,SpecHLA,Class II Genes,10,,0.8300000000000001
-hprc_hifi,SpecHLA,Non-HLA Genes,10,,
-hprc_hifi,SpecLong,Class I Genes,10,,0.9972222222222222
-hprc_hifi,SpecLong,Class I Pseudogenes,10,0.6802083333333333,0.9326992753623189
-hprc_hifi,SpecLong,Class II Genes,10,,0.9352678571428572
-hprc_hifi,SpecLong,Non-HLA Genes,10,,0.8226190476190476
-hprc_hifi,HLA*LA,Class I Genes,15,1.0,0.9414750957854405
-hprc_hifi,HLA*LA,Class I Pseudogenes,15,1.0,0.7878260869565217
-hprc_hifi,HLA*LA,Class II Genes,15,1.0,0.837797619047619
-hprc_hifi,HLA*LA,Non-HLA Genes,15,,
-hprc_hifi,SpecHLA,Class I Genes,15,0.0,0.9381226053639846
-hprc_hifi,SpecHLA,Class I Pseudogenes,15,,
-hprc_hifi,SpecHLA,Class II Genes,15,0.5,0.8302298850574713
-hprc_hifi,SpecHLA,Non-HLA Genes,15,,
-hprc_hifi,SpecLong,Class I Genes,15,1.0,0.9971264367816092
-hprc_hifi,SpecLong,Class I Pseudogenes,15,0.6201388888888889,0.9361714975845411
-hprc_hifi,SpecLong,Class II Genes,15,1.0,0.9352678571428572
-hprc_hifi,SpecLong,Non-HLA Genes,15,,0.8226190476190476
-hprc_hifi,HLA*LA,Class I Genes,20,0.6666666666666666,0.9452639421030226
-hprc_hifi,HLA*LA,Class I Pseudogenes,20,0.5,0.8036363636363637
-hprc_hifi,HLA*LA,Class II Genes,20,1.0,0.837797619047619
-hprc_hifi,HLA*LA,Non-HLA Genes,20,,
-hprc_hifi,SpecHLA,Class I Genes,20,0.8333333333333333,0.9362281822051938
-hprc_hifi,SpecHLA,Class I Pseudogenes,20,,
-hprc_hifi,SpecHLA,Class II Genes,20,0.5,0.8335632183908046
-hprc_hifi,SpecHLA,Non-HLA Genes,20,,
-hprc_hifi,SpecLong,Class I Genes,20,0.9444444444444445,1.0
-hprc_hifi,SpecLong,Class I Pseudogenes,20,0.7029761904761905,0.942153056874924
-hprc_hifi,SpecLong,Class II Genes,20,1.0,0.9352678571428572
-hprc_hifi,SpecLong,Non-HLA Genes,20,1.0,0.8189814814814815
-hprc_hifi,HLA*LA,Class I Genes,25,0.8194444444444443,0.9476772030651341
-hprc_hifi,HLA*LA,Class I Pseudogenes,25,0.625,0.8041125541125541
-hprc_hifi,HLA*LA,Class II Genes,25,1.0,0.837797619047619
-hprc_hifi,HLA*LA,Non-HLA Genes,25,,
-hprc_hifi,SpecHLA,Class I Genes,25,0.9444444444444445,0.9319923371647509
-hprc_hifi,SpecHLA,Class I Pseudogenes,25,,
-hprc_hifi,SpecHLA,Class II Genes,25,0.7,0.8335632183908046
-hprc_hifi,SpecHLA,Non-HLA Genes,25,,
-hprc_hifi,SpecLong,Class I Genes,25,0.986111111111111,1.0
-hprc_hifi,SpecLong,Class I Pseudogenes,25,0.8204861111111111,0.9556573275862069
-hprc_hifi,SpecLong,Class II Genes,25,1.0,0.934563720124065
-hprc_hifi,SpecLong,Non-HLA Genes,25,1.0,0.8189814814814815
-hprc_hifi,HLA*LA,Class I Genes,30,0.9090909090909092,0.9430778032036614
-hprc_hifi,HLA*LA,Class I Pseudogenes,30,0.7777777777777778,0.8223684210526316
-hprc_hifi,HLA*LA,Class II Genes,30,0.9666666666666668,0.8343584656084655
-hprc_hifi,HLA*LA,Non-HLA Genes,30,,
-hprc_hifi,SpecHLA,Class I Genes,30,0.9155844155844157,0.9402718753405251
-hprc_hifi,SpecHLA,Class I Pseudogenes,30,,
-hprc_hifi,SpecHLA,Class II Genes,30,0.859375,0.8328489326765188
-hprc_hifi,SpecHLA,Non-HLA Genes,30,,
-hprc_hifi,SpecLong,Class I Genes,30,0.9924242424242425,1.0
-hprc_hifi,SpecLong,Class I Pseudogenes,30,0.829513888888889,0.9584962406015037
-hprc_hifi,SpecLong,Class II Genes,30,1.0,0.9344040777230433
-hprc_hifi,SpecLong,Non-HLA Genes,30,0.8125,0.8247053872053872
-hprc_hifi,HLA*LA,Class I Genes,35,0.923941798941799,0.9443236714975846
-hprc_hifi,HLA*LA,Class I Pseudogenes,35,0.8446969696969697,0.7952380952380952
-hprc_hifi,HLA*LA,Class II Genes,35,0.986111111111111,0.8204545454545454
-hprc_hifi,HLA*LA,Non-HLA Genes,35,,
-hprc_hifi,SpecHLA,Class I Genes,35,0.9058201058201059,0.9388888888888888
-hprc_hifi,SpecHLA,Class I Pseudogenes,35,,
-hprc_hifi,SpecHLA,Class II Genes,35,0.8341346153846154,0.8408168642951253
-hprc_hifi,SpecHLA,Non-HLA Genes,35,,
-hprc_hifi,SpecLong,Class I Genes,35,0.9953703703703703,1.0
-hprc_hifi,SpecLong,Class I Pseudogenes,35,0.840162037037037,0.9621263586956521
-hprc_hifi,SpecLong,Class II Genes,35,0.9611111111111111,0.9308531746031746
-hprc_hifi,SpecLong,Non-HLA Genes,35,0.8107142857142857,0.8266908212560387
-hprc_hifi,HLA*LA,Class I Genes,40,0.9385869565217391,0.9472222222222223
-hprc_hifi,HLA*LA,Class I Pseudogenes,40,0.8273809523809524,0.8611111111111112
-hprc_hifi,HLA*LA,Class II Genes,40,0.9573412698412698,0.8136284722222221
-hprc_hifi,HLA*LA,Non-HLA Genes,40,,
-hprc_hifi,SpecHLA,Class I Genes,40,0.9092995169082125,0.9666666666666667
-hprc_hifi,SpecHLA,Class I Pseudogenes,40,,
-hprc_hifi,SpecHLA,Class II Genes,40,0.8561507936507936,0.8373611111111112
-hprc_hifi,SpecHLA,Non-HLA Genes,40,,
-hprc_hifi,SpecLong,Class I Genes,40,0.9963768115942028,1.0
-hprc_hifi,SpecLong,Class I Pseudogenes,40,0.8505751203990367,0.9547619047619048
-hprc_hifi,SpecLong,Class II Genes,40,0.9732142857142857,0.9265485739750445
-hprc_hifi,SpecLong,Non-HLA Genes,40,0.8192307692307692,0.825
-hprc_hifi,HLA*LA,Class I Genes,45,0.9376256913021619,0.9476495726495727
-hprc_hifi,HLA*LA,Class I Pseudogenes,45,0.8462823725981621,0.875
-hprc_hifi,HLA*LA,Class II Genes,45,0.7875939849624061,0.795141065830721
-hprc_hifi,HLA*LA,Non-HLA Genes,45,,
-hprc_hifi,SpecHLA,Class I Genes,45,0.9239567621920562,0.9444444444444445
-hprc_hifi,SpecHLA,Class I Pseudogenes,45,,
-hprc_hifi,SpecHLA,Class II Genes,45,0.884766081871345,0.8428160919540229
-hprc_hifi,SpecHLA,Non-HLA Genes,45,,
-hprc_hifi,SpecLong,Class I Genes,45,0.9967948717948718,1.0
-hprc_hifi,SpecLong,Class I Pseudogenes,45,0.8517361111111111,0.9837962962962963
-hprc_hifi,SpecLong,Class II Genes,45,0.976099339257234,0.9055667305236271
-hprc_hifi,SpecLong,Non-HLA Genes,45,0.8100328947368421,0.8472222222222222
-hprc_hifi,HLA*LA,Class I Genes,50,0.941515353434394,0.9523809523809524
-hprc_hifi,HLA*LA,Class I Pseudogenes,50,0.8551587301587302,0.875
-hprc_hifi,HLA*LA,Class II Genes,50,0.850203804347826,0.8090659340659341
-hprc_hifi,HLA*LA,Non-HLA Genes,50,,
-hprc_hifi,SpecHLA,Class I Genes,50,0.9212338275306791,1.0
-hprc_hifi,SpecHLA,Class I Pseudogenes,50,,
-hprc_hifi,SpecHLA,Class II Genes,50,0.7875,0.8673076923076923
-hprc_hifi,SpecHLA,Non-HLA Genes,50,,
-hprc_hifi,SpecLong,Class I Genes,50,0.9971264367816092,1.0
-hprc_hifi,SpecLong,Class I Pseudogenes,50,0.8517361111111111,0.9675
-hprc_hifi,SpecLong,Class II Genes,50,0.9563093102073366,0.8936896436896438
-hprc_hifi,SpecLong,Non-HLA Genes,50,0.8134057971014492,0.8444444444444444
-hprc_ont,HLA*LA,Class I Genes,5,1.0,0.9154761904761904
-hprc_ont,HLA*LA,Class I Pseudogenes,5,0.9444444444444445,0.8560606060606061
-hprc_ont,HLA*LA,Class II Genes,5,0.5,0.8257286535303776
-hprc_ont,HLA*LA,Non-HLA Genes,5,,
-hprc_ont,SpecHLA,Class I Genes,5,0.0,0.6396825396825396
-hprc_ont,SpecHLA,Class I Pseudogenes,5,,
-hprc_ont,SpecHLA,Class II Genes,5,0.0,0.6435632183908045
-hprc_ont,SpecHLA,Non-HLA Genes,5,,
-hprc_ont,SpecLong,Class I Genes,5,0.9166666666666666,0.9970238095238096
-hprc_ont,SpecLong,Class I Pseudogenes,5,0.742547476261869,0.9503908796199985
-hprc_ont,SpecLong,Class II Genes,5,0.875,0.9222649835796386
-hprc_ont,SpecLong,Non-HLA Genes,5,,0.7907738095238095
-hprc_ont,HLA*LA,Class I Genes,10,0.8630952380952381,0.9203761214630779
-hprc_ont,HLA*LA,Class I Pseudogenes,10,0.8272727272727273,0.8041666666666667
-hprc_ont,HLA*LA,Class II Genes,10,0.7875,0.8278507483895414
-hprc_ont,HLA*LA,Non-HLA Genes,10,,
-hprc_ont,SpecHLA,Class I Genes,10,0.08333333333333333,0.7143048845947396
-hprc_ont,SpecHLA,Class I Pseudogenes,10,,
-hprc_ont,SpecHLA,Class II Genes,10,0.30333333333333334,0.6754549071618038
-hprc_ont,SpecHLA,Non-HLA Genes,10,,
-hprc_ont,SpecLong,Class I Genes,10,0.9761904761904763,1.0
-hprc_ont,SpecLong,Class I Pseudogenes,10,0.8523760330578513,0.9537563131313131
-hprc_ont,SpecLong,Class II Genes,10,0.9170138888888889,0.925712786973563
-hprc_ont,SpecLong,Non-HLA Genes,10,0.9166666666666666,0.78505291005291
-hprc_ont,HLA*LA,Class I Genes,15,0.8963293650793651,0.9264520202020202
-hprc_ont,HLA*LA,Class I Pseudogenes,15,0.8341346153846154,0.8511904761904762
-hprc_ont,HLA*LA,Class II Genes,15,0.7877344877344877,0.823515820802005
-hprc_ont,HLA*LA,Non-HLA Genes,15,,
-hprc_ont,SpecHLA,Class I Genes,15,0.19146825396825395,0.819128787878788
-hprc_ont,SpecHLA,Class I Pseudogenes,15,,
-hprc_ont,SpecHLA,Class II Genes,15,0.4695959595959597,0.7183333333333333
-hprc_ont,SpecHLA,Non-HLA Genes,15,,
-hprc_ont,SpecLong,Class I Genes,15,0.9880952380952381,1.0
-hprc_ont,SpecLong,Class I Pseudogenes,15,0.8592548076923077,0.955816084270699
-hprc_ont,SpecLong,Class II Genes,15,0.8875517075517074,0.9415584415584417
-hprc_ont,SpecLong,Non-HLA Genes,15,0.765625,0.7964015151515151
-hprc_ont,HLA*LA,Class I Genes,20,0.8875291375291375,0.948529411764706
-hprc_ont,HLA*LA,Class I Pseudogenes,20,0.8457172342621259,0.84375
-hprc_ont,HLA*LA,Class II Genes,20,0.7979166666666666,0.8519345238095237
-hprc_ont,HLA*LA,Non-HLA Genes,20,,
-hprc_ont,SpecHLA,Class I Genes,20,0.3785936285936286,0.9127178649237472
-hprc_ont,SpecHLA,Class I Pseudogenes,20,,
-hprc_ont,SpecHLA,Class II Genes,20,0.5584722222222223,0.7352380952380952
-hprc_ont,SpecHLA,Non-HLA Genes,20,,
-hprc_ont,SpecLong,Class I Genes,20,0.9924242424242425,1.0
-hprc_ont,SpecLong,Class I Pseudogenes,20,0.8654401014791882,0.9572124304267161
-hprc_ont,SpecLong,Class II Genes,20,0.8986698813795853,0.9394070696460403
-hprc_ont,SpecLong,Non-HLA Genes,20,0.7916666666666667,0.7886363636363636
-hprc_ont,HLA*LA,Class I Genes,25,0.893552559912854,0.9578754578754579
-hprc_ont,HLA*LA,Class I Pseudogenes,25,0.8636363636363636,0.6666666666666667
-hprc_ont,HLA*LA,Class II Genes,25,0.7956357048748354,0.8545634920634919
-hprc_ont,HLA*LA,Non-HLA Genes,25,,
-hprc_ont,SpecHLA,Class I Genes,25,0.491285403050109,0.9395604395604397
-hprc_ont,SpecHLA,Class I Pseudogenes,25,,
-hprc_ont,SpecHLA,Class II Genes,25,0.5711198945981555,0.7664682539682539
-hprc_ont,SpecHLA,Non-HLA Genes,25,,
-hprc_ont,SpecLong,Class I Genes,25,0.9938271604938271,1.0
-hprc_ont,SpecLong,Class I Pseudogenes,25,0.8617017211589579,0.9952380952380953
-hprc_ont,SpecLong,Class II Genes,25,0.9071454731610982,0.924074074074074
-hprc_ont,SpecLong,Non-HLA Genes,25,0.7798076923076923,0.7941176470588236
-hprc_ont,HLA*LA,Class I Genes,30,0.9108730158730158,0.9574074074074074
-hprc_ont,HLA*LA,Class I Pseudogenes,30,0.8568840579710145,1.0
-hprc_ont,HLA*LA,Class II Genes,30,0.8103382803790412,0.8326530612244899
-hprc_ont,HLA*LA,Non-HLA Genes,30,,
-hprc_ont,SpecHLA,Class I Genes,30,0.5611111111111111,0.9814814814814815
-hprc_ont,SpecHLA,Class I Pseudogenes,30,,
-hprc_ont,SpecHLA,Class II Genes,30,0.615267558528428,0.7471428571428571
-hprc_ont,SpecHLA,Non-HLA Genes,30,,
-hprc_ont,SpecLong,Class I Genes,30,0.9940476190476191,1.0
-hprc_ont,SpecLong,Class I Pseudogenes,30,0.8661213032759507,0.9930555555555557
-hprc_ont,SpecLong,Class II Genes,30,0.9127781753507644,0.932962962962963
-hprc_ont,SpecLong,Non-HLA Genes,30,0.7794117647058824,0.8076923076923077
-hprc_ont,HLA*LA,Class I Genes,35,0.9138854972188306,0.9444444444444443
-hprc_ont,HLA*LA,Class I Pseudogenes,35,0.8585507246376811,
-hprc_ont,HLA*LA,Class II Genes,35,0.8114634208384208,0.8769841269841271
-hprc_ont,HLA*LA,Non-HLA Genes,35,,
-hprc_ont,SpecHLA,Class I Genes,35,0.5889974223307557,1.0
-hprc_ont,SpecHLA,Class I Pseudogenes,35,,
-hprc_ont,SpecHLA,Class II Genes,35,0.626129426129426,0.75
-hprc_ont,SpecHLA,Non-HLA Genes,35,,
-hprc_ont,SpecLong,Class I Genes,35,0.9940476190476191,1.0
-hprc_ont,SpecLong,Class I Pseudogenes,35,0.8672348510342353,0.9666666666666667
-hprc_ont,SpecLong,Class II Genes,35,0.9155668905569345,0.9412698412698414
-hprc_ont,SpecLong,Non-HLA Genes,35,0.7721861471861472,0.8415178571428572
-hprc_ont,HLA*LA,Class I Genes,40,0.9156719717064545,0.9166666666666666
-hprc_ont,HLA*LA,Class I Pseudogenes,40,0.8585507246376811,
-hprc_ont,HLA*LA,Class II Genes,40,0.8128279610194902,0.8826530612244898
-hprc_ont,HLA*LA,Non-HLA Genes,40,,
-hprc_ont,SpecHLA,Class I Genes,40,0.6036693191865606,1.0
-hprc_ont,SpecHLA,Class I Pseudogenes,40,,
-hprc_ont,SpecHLA,Class II Genes,40,0.6388252302420219,0.6642857142857144
-hprc_ont,SpecHLA,Non-HLA Genes,40,,
-hprc_ont,SpecLong,Class I Genes,40,0.9942528735632185,1.0
-hprc_ont,SpecLong,Class I Pseudogenes,40,0.8677918920324527,0.9666666666666667
-hprc_ont,SpecLong,Class II Genes,40,0.9172727531323625,0.9319727891156464
-hprc_ont,SpecLong,Non-HLA Genes,40,0.7854267310789049,0.85
-hprc_ont,HLA*LA,Class I Genes,45,0.9172413793103448,0.875
-hprc_ont,HLA*LA,Class I Pseudogenes,45,0.8585507246376811,
-hprc_ont,HLA*LA,Class II Genes,45,0.8148906449553002,0.875
-hprc_ont,HLA*LA,Non-HLA Genes,45,,
-hprc_ont,SpecHLA,Class I Genes,45,0.6206896551724138,1.0
-hprc_ont,SpecHLA,Class I Pseudogenes,45,,
-hprc_ont,SpecHLA,Class II Genes,45,0.633552271483306,0.75
-hprc_ont,SpecHLA,Non-HLA Genes,45,,
-hprc_ont,SpecLong,Class I Genes,45,0.9944444444444445,1.0
-hprc_ont,SpecLong,Class I Pseudogenes,45,0.8677918920324527,0.9583333333333334
-hprc_ont,SpecLong,Class II Genes,45,0.9154524621151143,0.9666666666666668
-hprc_ont,SpecLong,Non-HLA Genes,45,0.7846840659340659,0.875
-hprc_ont,HLA*LA,Class I Genes,50,0.9166666666666666,1.0
-hprc_ont,HLA*LA,Class I Pseudogenes,50,0.8585507246376811,
-hprc_ont,HLA*LA,Class II Genes,50,0.8217261904761904,0.5
-hprc_ont,HLA*LA,Non-HLA Genes,50,,
-hprc_ont,SpecHLA,Class I Genes,50,0.6277777777777778,
-hprc_ont,SpecHLA,Class I Pseudogenes,50,,
-hprc_ont,SpecHLA,Class II Genes,50,0.6369047619047619,0.0
-hprc_ont,SpecHLA,Non-HLA Genes,50,,
-hprc_ont,SpecLong,Class I Genes,50,0.9944444444444445,1.0
-hprc_ont,SpecLong,Class I Pseudogenes,50,0.8678742372234937,0.875
-hprc_ont,SpecLong,Class II Genes,50,0.9206884477929103,0.875
-hprc_ont,SpecLong,Non-HLA Genes,50,0.7878352490421456,0.875
+Dataset,Software,Class,Depth Cutoff,Average Accuracy < Depth,Match < Depth,Total < Depth,Average Accuracy >= Depth,Match >= Depth,Total >= Depth
+hgsvc2_clr,HLA*LA,Class I Genes,5,,0,0,0.14473684210526314,33,228
+hgsvc2_clr,HLA*LA,Class I Pseudogenes,5,0.21428571428571427,3,14,0.15773809523809523,11,76
+hgsvc2_clr,HLA*LA,Class II Genes,5,,0,0,0.17763157894736842,54,252
+hgsvc2_clr,HLA*LA,Non-HLA Genes,5,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class I Genes,5,,0,0,0.9649122807017543,110,114
+hgsvc2_clr,SpecHLA,Class I Pseudogenes,5,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class II Genes,5,,0,0,0.7897660818713451,147,186
+hgsvc2_clr,SpecHLA,Non-HLA Genes,5,,0,0,,0,0
+hgsvc2_clr,SpecLong,Class I Genes,5,,0,0,0.9912280701754387,226,228
+hgsvc2_clr,SpecLong,Class I Pseudogenes,5,0.8728991596638656,83,96,0.9421801284839563,262,272
+hgsvc2_clr,SpecLong,Class II Genes,5,,0,0,0.9295880632954936,508,546
+hgsvc2_clr,SpecLong,Non-HLA Genes,5,,0,0,0.8461257309941521,121,144
+hgsvc2_clr,HLA*LA,Class I Genes,10,,0,0,0.14473684210526314,33,228
+hgsvc2_clr,HLA*LA,Class I Pseudogenes,10,0.17857142857142858,5,28,0.2619047619047619,9,62
+hgsvc2_clr,HLA*LA,Class II Genes,10,,0,0,0.17763157894736842,54,252
+hgsvc2_clr,HLA*LA,Non-HLA Genes,10,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class I Genes,10,,0,0,0.9649122807017543,110,114
+hgsvc2_clr,SpecHLA,Class I Pseudogenes,10,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class II Genes,10,,0,0,0.7897660818713451,147,186
+hgsvc2_clr,SpecHLA,Non-HLA Genes,10,,0,0,,0,0
+hgsvc2_clr,SpecLong,Class I Genes,10,,0,0,0.9912280701754387,226,228
+hgsvc2_clr,SpecLong,Class I Pseudogenes,10,0.8740601503759398,104,118,0.9084979348137243,241,250
+hgsvc2_clr,SpecLong,Class II Genes,10,,0,0,0.9295880632954936,508,546
+hgsvc2_clr,SpecLong,Non-HLA Genes,10,,0,0,0.8461257309941521,121,144
+hgsvc2_clr,HLA*LA,Class I Genes,15,,0,0,0.14473684210526314,33,228
+hgsvc2_clr,HLA*LA,Class I Pseudogenes,15,0.17857142857142858,5,28,0.2619047619047619,9,62
+hgsvc2_clr,HLA*LA,Class II Genes,15,,0,0,0.17763157894736842,54,252
+hgsvc2_clr,HLA*LA,Non-HLA Genes,15,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class I Genes,15,,0,0,0.9649122807017543,110,114
+hgsvc2_clr,SpecHLA,Class I Pseudogenes,15,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class II Genes,15,,0,0,0.7897660818713451,147,186
+hgsvc2_clr,SpecHLA,Non-HLA Genes,15,,0,0,,0,0
+hgsvc2_clr,SpecLong,Class I Genes,15,,0,0,0.9912280701754387,226,228
+hgsvc2_clr,SpecLong,Class I Pseudogenes,15,0.8327067669172932,109,126,0.9217555105713,236,242
+hgsvc2_clr,SpecLong,Class II Genes,15,,0,0,0.9295880632954936,508,546
+hgsvc2_clr,SpecLong,Non-HLA Genes,15,,0,0,0.8461257309941521,121,144
+hgsvc2_clr,HLA*LA,Class I Genes,20,,0,0,0.14473684210526314,33,228
+hgsvc2_clr,HLA*LA,Class I Pseudogenes,20,0.17857142857142858,5,28,0.2619047619047619,9,62
+hgsvc2_clr,HLA*LA,Class II Genes,20,0.0,0,2,0.17763157894736842,54,250
+hgsvc2_clr,HLA*LA,Non-HLA Genes,20,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class I Genes,20,,0,0,0.9649122807017543,110,114
+hgsvc2_clr,SpecHLA,Class I Pseudogenes,20,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class II Genes,20,,0,0,0.7897660818713451,147,186
+hgsvc2_clr,SpecHLA,Non-HLA Genes,20,,0,0,,0,0
+hgsvc2_clr,SpecLong,Class I Genes,20,,0,0,0.9912280701754387,226,228
+hgsvc2_clr,SpecLong,Class I Pseudogenes,20,0.8566058002148227,111,128,0.9206871345029239,234,240
+hgsvc2_clr,SpecLong,Class II Genes,20,1.0,2,2,0.9295880632954936,506,544
+hgsvc2_clr,SpecLong,Non-HLA Genes,20,,0,0,0.8461257309941521,121,144
+hgsvc2_clr,HLA*LA,Class I Genes,25,,0,0,0.14473684210526314,33,228
+hgsvc2_clr,HLA*LA,Class I Pseudogenes,25,0.2142857142857143,6,32,0.2638888888888889,8,58
+hgsvc2_clr,HLA*LA,Class II Genes,25,0.0,0,4,0.17763157894736842,54,248
+hgsvc2_clr,HLA*LA,Non-HLA Genes,25,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class I Genes,25,,0,0,0.9649122807017543,110,114
+hgsvc2_clr,SpecHLA,Class I Pseudogenes,25,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class II Genes,25,,0,0,0.7897660818713451,147,186
+hgsvc2_clr,SpecHLA,Non-HLA Genes,25,,0,0,,0,0
+hgsvc2_clr,SpecLong,Class I Genes,25,,0,0,0.9912280701754387,226,228
+hgsvc2_clr,SpecLong,Class I Pseudogenes,25,0.8953634085213033,132,150,0.9248538011695907,213,218
+hgsvc2_clr,SpecLong,Class II Genes,25,1.0,10,10,0.9289000687994495,498,536
+hgsvc2_clr,SpecLong,Non-HLA Genes,25,,0,0,0.8461257309941521,121,144
+hgsvc2_clr,HLA*LA,Class I Genes,30,0.0,0,8,0.14473684210526314,33,220
+hgsvc2_clr,HLA*LA,Class I Pseudogenes,30,0.14285714285714288,6,34,0.2638888888888889,8,56
+hgsvc2_clr,HLA*LA,Class II Genes,30,0.16666666666666666,1,8,0.17708333333333334,53,244
+hgsvc2_clr,HLA*LA,Non-HLA Genes,30,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class I Genes,30,1.0,8,8,0.960233918128655,102,106
+hgsvc2_clr,SpecHLA,Class I Pseudogenes,30,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class II Genes,30,1.0,4,4,0.7897660818713451,143,182
+hgsvc2_clr,SpecHLA,Non-HLA Genes,30,,0,0,,0,0
+hgsvc2_clr,SpecLong,Class I Genes,30,1.0,8,8,0.9900584795321637,218,220
+hgsvc2_clr,SpecLong,Class I Pseudogenes,30,0.9246240601503759,142,160,0.9248538011695907,203,208
+hgsvc2_clr,SpecLong,Class II Genes,30,1.0,16,16,0.9289000687994495,492,530
+hgsvc2_clr,SpecLong,Non-HLA Genes,30,1.0,4,4,0.843266253869969,117,140
+hgsvc2_clr,HLA*LA,Class I Genes,35,0.1,1,28,0.14842047930283225,32,200
+hgsvc2_clr,HLA*LA,Class I Pseudogenes,35,0.14285714285714288,6,36,0.2638888888888889,8,54
+hgsvc2_clr,HLA*LA,Class II Genes,35,0.3,4,16,0.1764705882352941,50,236
+hgsvc2_clr,HLA*LA,Non-HLA Genes,35,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class I Genes,35,0.8958333333333334,22,24,0.9750445632798574,88,90
+hgsvc2_clr,SpecHLA,Class I Pseudogenes,35,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class II Genes,35,1.0,6,6,0.7897660818713451,141,180
+hgsvc2_clr,SpecHLA,Non-HLA Genes,35,,0,0,,0,0
+hgsvc2_clr,SpecLong,Class I Genes,35,0.9375,26,28,1.0,200,200
+hgsvc2_clr,SpecLong,Class I Pseudogenes,35,0.9225232502744465,162,182,0.9252819548872181,183,186
+hgsvc2_clr,SpecLong,Class II Genes,35,0.9285714285714286,46,48,0.9323199868182568,462,498
+hgsvc2_clr,SpecLong,Non-HLA Genes,35,0.8333333333333333,10,14,0.8547794117647058,111,130
+hgsvc2_clr,HLA*LA,Class I Genes,40,0.15,3,40,0.148109243697479,30,188
+hgsvc2_clr,HLA*LA,Class I Pseudogenes,40,0.15,10,54,0.16666666666666666,4,36
+hgsvc2_clr,HLA*LA,Class II Genes,40,0.21428571428571427,6,40,0.175,48,212
+hgsvc2_clr,HLA*LA,Non-HLA Genes,40,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class I Genes,40,0.9458333333333333,28,30,0.972943722943723,82,84
+hgsvc2_clr,SpecHLA,Class I Pseudogenes,40,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class II Genes,40,0.9166666666666666,26,28,0.7794444444444444,121,158
+hgsvc2_clr,SpecHLA,Non-HLA Genes,40,,0,0,,0,0
+hgsvc2_clr,SpecLong,Class I Genes,40,0.9675,38,40,1.0,188,188
+hgsvc2_clr,SpecLong,Class I Pseudogenes,40,0.9194929472441434,187,208,0.9860365198711064,158,160
+hgsvc2_clr,SpecLong,Class II Genes,40,0.93125,91,94,0.9323354341736695,417,452
+hgsvc2_clr,SpecLong,Non-HLA Genes,40,0.8333333333333334,22,28,0.8517857142857143,99,116
+hgsvc2_clr,HLA*LA,Class I Genes,45,0.1388888888888889,5,62,0.14703525641025642,28,166
+hgsvc2_clr,HLA*LA,Class I Pseudogenes,45,0.15,11,64,0.1875,3,26
+hgsvc2_clr,HLA*LA,Class II Genes,45,0.17857142857142858,10,60,0.17708333333333334,44,192
+hgsvc2_clr,HLA*LA,Non-HLA Genes,45,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class I Genes,45,0.9465811965811967,41,44,0.9871794871794872,69,70
+hgsvc2_clr,SpecHLA,Class I Pseudogenes,45,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class II Genes,45,0.7833333333333333,38,46,0.7897134238310709,109,140
+hgsvc2_clr,SpecHLA,Non-HLA Genes,45,,0,0,,0,0
+hgsvc2_clr,SpecLong,Class I Genes,45,0.9797008547008547,60,62,1.0,166,166
+hgsvc2_clr,SpecLong,Class I Pseudogenes,45,0.9281859952912584,209,230,0.9838935574229692,136,138
+hgsvc2_clr,SpecLong,Class II Genes,45,0.9303921568627451,130,134,0.9297311684854938,378,412
+hgsvc2_clr,SpecLong,Non-HLA Genes,45,0.8541666666666667,28,34,0.8442307692307692,93,110
+hgsvc2_clr,HLA*LA,Class I Genes,50,0.13333333333333333,8,84,0.15043290043290042,25,144
+hgsvc2_clr,HLA*LA,Class I Pseudogenes,50,0.15,12,68,0.25,2,22
+hgsvc2_clr,HLA*LA,Class II Genes,50,0.1796875,11,68,0.17613636363636365,43,184
+hgsvc2_clr,HLA*LA,Non-HLA Genes,50,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class I Genes,50,0.9553571428571429,53,56,0.9848484848484849,57,58
+hgsvc2_clr,SpecHLA,Class I Pseudogenes,50,,0,0,,0,0
+hgsvc2_clr,SpecHLA,Class II Genes,50,0.7833333333333333,45,54,0.7894230769230769,102,132
+hgsvc2_clr,SpecHLA,Non-HLA Genes,50,,0,0,,0,0
+hgsvc2_clr,SpecLong,Class I Genes,50,0.9836309523809524,82,84,1.0,144,144
+hgsvc2_clr,SpecLong,Class I Pseudogenes,50,0.9262018683071315,224,246,0.9955357142857143,121,122
+hgsvc2_clr,SpecLong,Class II Genes,50,0.9254901960784314,170,176,0.9239972267316017,338,370
+hgsvc2_clr,SpecLong,Non-HLA Genes,50,0.8125,35,44,0.8616071428571428,86,100
+hgsvc2_hifi,HLA*LA,Class I Genes,5,,0,0,0.9444444444444443,102,108
+hgsvc2_hifi,HLA*LA,Class I Pseudogenes,5,1.0,10,10,0.8650793650793651,25,30
+hgsvc2_hifi,HLA*LA,Class II Genes,5,,0,0,0.8313492063492063,94,114
+hgsvc2_hifi,HLA*LA,Non-HLA Genes,5,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class I Genes,5,,0,0,0.9814814814814815,53,54
+hgsvc2_hifi,SpecHLA,Class I Pseudogenes,5,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class II Genes,5,,0,0,0.8,70,88
+hgsvc2_hifi,SpecHLA,Non-HLA Genes,5,,0,0,,0,0
+hgsvc2_hifi,SpecLong,Class I Genes,5,,0,0,1.0,108,108
+hgsvc2_hifi,SpecLong,Class I Pseudogenes,5,0.875,39,42,0.9852272727272727,120,122
+hgsvc2_hifi,SpecLong,Class II Genes,5,,0,0,0.944965277777778,243,256
+hgsvc2_hifi,SpecLong,Non-HLA Genes,5,,0,0,0.8472222222222222,61,72
+hgsvc2_hifi,HLA*LA,Class I Genes,10,,0,0,0.9444444444444443,102,108
+hgsvc2_hifi,HLA*LA,Class I Pseudogenes,10,1.0,14,14,0.7976190476190477,21,26
+hgsvc2_hifi,HLA*LA,Class II Genes,10,,0,0,0.8313492063492063,94,114
+hgsvc2_hifi,HLA*LA,Non-HLA Genes,10,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class I Genes,10,,0,0,0.9814814814814815,53,54
+hgsvc2_hifi,SpecHLA,Class I Pseudogenes,10,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class II Genes,10,,0,0,0.8,70,88
+hgsvc2_hifi,SpecHLA,Non-HLA Genes,10,,0,0,,0,0
+hgsvc2_hifi,SpecLong,Class I Genes,10,,0,0,1.0,108,108
+hgsvc2_hifi,SpecLong,Class I Pseudogenes,10,0.875,53,56,0.9796875,106,108
+hgsvc2_hifi,SpecLong,Class II Genes,10,,0,0,0.944965277777778,243,256
+hgsvc2_hifi,SpecLong,Non-HLA Genes,10,,0,0,0.8472222222222222,61,72
+hgsvc2_hifi,HLA*LA,Class I Genes,15,,0,0,0.9444444444444443,102,108
+hgsvc2_hifi,HLA*LA,Class I Pseudogenes,15,1.0,14,14,0.7976190476190477,21,26
+hgsvc2_hifi,HLA*LA,Class II Genes,15,,0,0,0.8313492063492063,94,114
+hgsvc2_hifi,HLA*LA,Non-HLA Genes,15,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class I Genes,15,,0,0,0.9814814814814815,53,54
+hgsvc2_hifi,SpecHLA,Class I Pseudogenes,15,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class II Genes,15,,0,0,0.8,70,88
+hgsvc2_hifi,SpecHLA,Non-HLA Genes,15,,0,0,,0,0
+hgsvc2_hifi,SpecLong,Class I Genes,15,,0,0,1.0,108,108
+hgsvc2_hifi,SpecLong,Class I Pseudogenes,15,0.9,55,58,0.9796875,104,106
+hgsvc2_hifi,SpecLong,Class II Genes,15,1.0,2,2,0.9440972222222224,241,254
+hgsvc2_hifi,SpecLong,Non-HLA Genes,15,,0,0,0.8472222222222222,61,72
+hgsvc2_hifi,HLA*LA,Class I Genes,20,1.0,6,6,0.9444444444444443,96,102
+hgsvc2_hifi,HLA*LA,Class I Pseudogenes,20,0.9166666666666666,19,20,0.7708333333333333,16,20
+hgsvc2_hifi,HLA*LA,Class II Genes,20,1.0,4,4,0.8313492063492063,90,110
+hgsvc2_hifi,HLA*LA,Non-HLA Genes,20,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class I Genes,20,,0,0,0.9814814814814815,53,54
+hgsvc2_hifi,SpecHLA,Class I Pseudogenes,20,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class II Genes,20,1.0,2,2,0.8,68,86
+hgsvc2_hifi,SpecHLA,Non-HLA Genes,20,,0,0,,0,0
+hgsvc2_hifi,SpecLong,Class I Genes,20,1.0,6,6,1.0,102,102
+hgsvc2_hifi,SpecLong,Class I Pseudogenes,20,0.9444444444444444,69,72,0.9796875,90,92
+hgsvc2_hifi,SpecLong,Class II Genes,20,1.0,14,14,0.9403703703703705,229,242
+hgsvc2_hifi,SpecLong,Non-HLA Genes,20,0.5,1,2,0.8489583333333334,60,70
+hgsvc2_hifi,HLA*LA,Class I Genes,25,1.0,26,26,0.9285714285714285,76,82
+hgsvc2_hifi,HLA*LA,Class I Pseudogenes,25,0.9166666666666666,26,28,0.6875,9,12
+hgsvc2_hifi,HLA*LA,Class II Genes,25,0.9166666666666666,14,16,0.8313492063492063,80,98
+hgsvc2_hifi,HLA*LA,Non-HLA Genes,25,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class I Genes,25,0.9444444444444445,13,14,1.0,40,40
+hgsvc2_hifi,SpecHLA,Class I Pseudogenes,25,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class II Genes,25,1.0,12,12,0.8,58,76
+hgsvc2_hifi,SpecHLA,Non-HLA Genes,25,,0,0,,0,0
+hgsvc2_hifi,SpecLong,Class I Genes,25,1.0,26,26,1.0,82,82
+hgsvc2_hifi,SpecLong,Class I Pseudogenes,25,0.95,87,90,0.9738095238095239,72,74
+hgsvc2_hifi,SpecLong,Class II Genes,25,1.0,44,44,0.9371957671957674,199,212
+hgsvc2_hifi,SpecLong,Non-HLA Genes,25,0.75,9,12,0.8616071428571428,52,60
+hgsvc2_hifi,HLA*LA,Class I Genes,30,0.9791666666666666,55,56,0.9166666666666666,47,52
+hgsvc2_hifi,HLA*LA,Class I Pseudogenes,30,0.9166666666666666,28,30,0.6666666666666667,7,10
+hgsvc2_hifi,HLA*LA,Class II Genes,30,0.8095238095238094,32,36,0.8452380952380951,62,78
+hgsvc2_hifi,HLA*LA,Non-HLA Genes,30,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class I Genes,30,0.9666666666666667,27,28,1.0,26,26
+hgsvc2_hifi,SpecHLA,Class I Pseudogenes,30,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class II Genes,30,0.9,24,26,0.7857142857142857,46,62
+hgsvc2_hifi,SpecHLA,Non-HLA Genes,30,,0,0,,0,0
+hgsvc2_hifi,SpecLong,Class I Genes,30,1.0,56,56,1.0,52,52
+hgsvc2_hifi,SpecLong,Class I Pseudogenes,30,0.9375,110,114,0.9857142857142858,49,50
+hgsvc2_hifi,SpecLong,Class II Genes,30,0.90625,86,92,0.9662698412698413,157,164
+hgsvc2_hifi,SpecLong,Non-HLA Genes,30,0.8333333333333334,24,30,0.8645833333333334,37,42
+hgsvc2_hifi,HLA*LA,Class I Genes,35,0.9479166666666666,79,84,0.9166666666666666,23,24
+hgsvc2_hifi,HLA*LA,Class I Pseudogenes,35,0.8428571428571429,33,38,1.0,2,2
+hgsvc2_hifi,HLA*LA,Class II Genes,35,0.8282312925170068,60,68,0.826530612244898,34,46
+hgsvc2_hifi,HLA*LA,Non-HLA Genes,35,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class I Genes,35,0.9722222222222222,43,44,1.0,10,10
+hgsvc2_hifi,SpecHLA,Class I Pseudogenes,35,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class II Genes,35,0.875,45,50,0.7857142857142857,25,38
+hgsvc2_hifi,SpecHLA,Non-HLA Genes,35,,0,0,,0,0
+hgsvc2_hifi,SpecLong,Class I Genes,35,1.0,84,84,1.0,24,24
+hgsvc2_hifi,SpecLong,Class I Pseudogenes,35,0.9375,134,138,0.9722222222222223,25,26
+hgsvc2_hifi,SpecLong,Class II Genes,35,0.9244791666666665,143,152,0.9793650793650794,100,104
+hgsvc2_hifi,SpecLong,Non-HLA Genes,35,0.85,42,50,0.875,19,22
+hgsvc2_hifi,HLA*LA,Class I Genes,40,0.9479166666666666,87,92,0.9,15,16
+hgsvc2_hifi,HLA*LA,Class I Pseudogenes,40,0.8428571428571429,33,38,1.0,2,2
+hgsvc2_hifi,HLA*LA,Class II Genes,40,0.8244047619047619,71,80,0.7976190476190476,23,34
+hgsvc2_hifi,HLA*LA,Non-HLA Genes,40,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class I Genes,40,0.9761904761904763,45,46,1.0,8,8
+hgsvc2_hifi,SpecHLA,Class I Pseudogenes,40,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class II Genes,40,0.8800000000000001,54,60,0.7321428571428571,16,28
+hgsvc2_hifi,SpecHLA,Non-HLA Genes,40,,0,0,,0,0
+hgsvc2_hifi,SpecLong,Class I Genes,40,1.0,92,92,1.0,16,16
+hgsvc2_hifi,SpecLong,Class I Pseudogenes,40,0.9479166666666666,148,152,0.9583333333333334,11,12
+hgsvc2_hifi,SpecLong,Class II Genes,40,0.9383928571428573,185,196,0.9880952380952381,58,60
+hgsvc2_hifi,SpecLong,Non-HLA Genes,40,0.8420138888888888,55,66,1.0,6,6
+hgsvc2_hifi,HLA*LA,Class I Genes,45,0.9444444444444443,94,100,1.0,8,8
+hgsvc2_hifi,HLA*LA,Class I Pseudogenes,45,0.8428571428571429,33,38,1.0,2,2
+hgsvc2_hifi,HLA*LA,Class II Genes,45,0.8333333333333331,83,94,0.8125,11,20
+hgsvc2_hifi,HLA*LA,Non-HLA Genes,45,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class I Genes,45,0.9814814814814815,51,52,1.0,2,2
+hgsvc2_hifi,SpecHLA,Class I Pseudogenes,45,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class II Genes,45,0.819047619047619,60,70,0.6666666666666666,10,18
+hgsvc2_hifi,SpecHLA,Non-HLA Genes,45,,0,0,,0,0
+hgsvc2_hifi,SpecLong,Class I Genes,45,1.0,100,100,1.0,8,8
+hgsvc2_hifi,SpecLong,Class I Pseudogenes,45,0.9479166666666666,150,154,0.9375,9,10
+hgsvc2_hifi,SpecLong,Class II Genes,45,0.9450272817460318,213,224,0.9814814814814815,30,32
+hgsvc2_hifi,SpecLong,Non-HLA Genes,45,0.8472222222222222,59,70,1.0,2,2
+hgsvc2_hifi,HLA*LA,Class I Genes,50,0.9444444444444443,98,104,1.0,4,4
+hgsvc2_hifi,HLA*LA,Class I Pseudogenes,50,0.8650793650793651,35,40,,0,0
+hgsvc2_hifi,HLA*LA,Class II Genes,50,0.8154761904761905,89,106,0.75,5,8
+hgsvc2_hifi,HLA*LA,Non-HLA Genes,50,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class I Genes,50,0.9814814814814815,53,54,,0,0
+hgsvc2_hifi,SpecHLA,Class I Pseudogenes,50,,0,0,,0,0
+hgsvc2_hifi,SpecHLA,Class II Genes,50,0.7722222222222223,63,80,0.9166666666666667,7,8
+hgsvc2_hifi,SpecHLA,Non-HLA Genes,50,,0,0,,0,0
+hgsvc2_hifi,SpecLong,Class I Genes,50,1.0,104,104,1.0,4,4
+hgsvc2_hifi,SpecLong,Class I Pseudogenes,50,0.9500000000000001,154,158,0.875,5,6
+hgsvc2_hifi,SpecLong,Class II Genes,50,0.9393229166666667,231,244,1.0,12,12
+hgsvc2_hifi,SpecLong,Non-HLA Genes,50,0.8472222222222222,61,72,,0,0
+hprc_hifi,HLA*LA,Class I Genes,5,,0,0,0.9416666666666668,339,360
+hprc_hifi,HLA*LA,Class I Pseudogenes,5,1.0,38,38,0.8585507246376811,86,106
+hprc_hifi,HLA*LA,Class II Genes,5,,0,0,0.837797619047619,312,380
+hprc_hifi,HLA*LA,Non-HLA Genes,5,,0,0,,0,0
+hprc_hifi,SpecHLA,Class I Genes,5,,0,0,0.9277777777777777,167,180
+hprc_hifi,SpecHLA,Class I Pseudogenes,5,,0,0,,0,0
+hprc_hifi,SpecHLA,Class II Genes,5,,0,0,0.8300000000000001,249,300
+hprc_hifi,SpecHLA,Non-HLA Genes,5,,0,0,,0,0
+hprc_hifi,SpecLong,Class I Genes,5,,0,0,0.9972222222222222,359,360
+hprc_hifi,SpecLong,Class I Pseudogenes,5,0.6689205653021442,125,146,0.9434782608695652,394,416
+hprc_hifi,SpecLong,Class II Genes,5,,0,0,0.9352678571428572,778,830
+hprc_hifi,SpecLong,Non-HLA Genes,5,,0,0,0.8226190476190476,195,236
+hprc_hifi,HLA*LA,Class I Genes,10,,0,0,0.9416666666666668,339,360
+hprc_hifi,HLA*LA,Class I Pseudogenes,10,1.0,48,48,0.7878260869565217,76,96
+hprc_hifi,HLA*LA,Class II Genes,10,,0,0,0.837797619047619,312,380
+hprc_hifi,HLA*LA,Non-HLA Genes,10,,0,0,,0,0
+hprc_hifi,SpecHLA,Class I Genes,10,,0,0,0.9277777777777777,167,180
+hprc_hifi,SpecHLA,Class I Pseudogenes,10,,0,0,,0,0
+hprc_hifi,SpecHLA,Class II Genes,10,,0,0,0.8300000000000001,249,300
+hprc_hifi,SpecHLA,Non-HLA Genes,10,,0,0,,0,0
+hprc_hifi,SpecLong,Class I Genes,10,,0,0,0.9972222222222222,359,360
+hprc_hifi,SpecLong,Class I Pseudogenes,10,0.6802083333333333,152,174,0.9326992753623189,367,388
+hprc_hifi,SpecLong,Class II Genes,10,,0,0,0.9352678571428572,778,830
+hprc_hifi,SpecLong,Non-HLA Genes,10,,0,0,0.8226190476190476,195,236
+hprc_hifi,HLA*LA,Class I Genes,15,1.0,2,2,0.9414750957854405,337,358
+hprc_hifi,HLA*LA,Class I Pseudogenes,15,1.0,48,48,0.7878260869565217,76,96
+hprc_hifi,HLA*LA,Class II Genes,15,1.0,2,2,0.837797619047619,310,378
+hprc_hifi,HLA*LA,Non-HLA Genes,15,,0,0,,0,0
+hprc_hifi,SpecHLA,Class I Genes,15,0.0,0,2,0.9381226053639846,167,178
+hprc_hifi,SpecHLA,Class I Pseudogenes,15,,0,0,,0,0
+hprc_hifi,SpecHLA,Class II Genes,15,0.5,1,2,0.8302298850574713,248,298
+hprc_hifi,SpecHLA,Non-HLA Genes,15,,0,0,,0,0
+hprc_hifi,SpecLong,Class I Genes,15,1.0,2,2,0.9971264367816092,357,358
+hprc_hifi,SpecLong,Class I Pseudogenes,15,0.6201388888888889,154,178,0.9361714975845411,365,384
+hprc_hifi,SpecLong,Class II Genes,15,1.0,2,2,0.9352678571428572,776,828
+hprc_hifi,SpecLong,Non-HLA Genes,15,,0,0,0.8226190476190476,195,236
+hprc_hifi,HLA*LA,Class I Genes,20,0.6666666666666666,10,12,0.9452639421030226,329,348
+hprc_hifi,HLA*LA,Class I Pseudogenes,20,0.5,48,50,0.8036363636363637,76,94
+hprc_hifi,HLA*LA,Class II Genes,20,1.0,4,4,0.837797619047619,308,376
+hprc_hifi,HLA*LA,Non-HLA Genes,20,,0,0,,0,0
+hprc_hifi,SpecHLA,Class I Genes,20,0.8333333333333333,6,8,0.9362281822051938,161,172
+hprc_hifi,SpecHLA,Class I Pseudogenes,20,,0,0,,0,0
+hprc_hifi,SpecHLA,Class II Genes,20,0.5,2,4,0.8335632183908046,247,296
+hprc_hifi,SpecHLA,Non-HLA Genes,20,,0,0,,0,0
+hprc_hifi,SpecLong,Class I Genes,20,0.9444444444444445,11,12,1.0,348,348
+hprc_hifi,SpecLong,Class I Pseudogenes,20,0.7029761904761905,163,190,0.942153056874924,356,372
+hprc_hifi,SpecLong,Class II Genes,20,1.0,4,4,0.9352678571428572,774,826
+hprc_hifi,SpecLong,Non-HLA Genes,20,1.0,4,4,0.8189814814814815,191,232
+hprc_hifi,HLA*LA,Class I Genes,25,0.8194444444444443,25,28,0.9476772030651341,314,332
+hprc_hifi,HLA*LA,Class I Pseudogenes,25,0.625,55,58,0.8041125541125541,69,86
+hprc_hifi,HLA*LA,Class II Genes,25,1.0,14,14,0.837797619047619,298,366
+hprc_hifi,HLA*LA,Non-HLA Genes,25,,0,0,,0,0
+hprc_hifi,SpecHLA,Class I Genes,25,0.9444444444444445,14,16,0.9319923371647509,153,164
+hprc_hifi,SpecHLA,Class I Pseudogenes,25,,0,0,,0,0
+hprc_hifi,SpecHLA,Class II Genes,25,0.7,10,12,0.8335632183908046,239,288
+hprc_hifi,SpecHLA,Non-HLA Genes,25,,0,0,,0,0
+hprc_hifi,SpecLong,Class I Genes,25,0.986111111111111,27,28,1.0,332,332
+hprc_hifi,SpecLong,Class I Pseudogenes,25,0.8204861111111111,197,228,0.9556573275862069,322,334
+hprc_hifi,SpecLong,Class II Genes,25,1.0,32,32,0.934563720124065,746,798
+hprc_hifi,SpecLong,Non-HLA Genes,25,1.0,8,8,0.8189814814814815,187,228
+hprc_hifi,HLA*LA,Class I Genes,30,0.9090909090909092,57,60,0.9430778032036614,282,300
+hprc_hifi,HLA*LA,Class I Pseudogenes,30,0.7777777777777778,63,70,0.8223684210526316,61,74
+hprc_hifi,HLA*LA,Class II Genes,30,0.9666666666666668,39,40,0.8343584656084655,273,340
+hprc_hifi,HLA*LA,Non-HLA Genes,30,,0,0,,0,0
+hprc_hifi,SpecHLA,Class I Genes,30,0.9155844155844157,35,40,0.9402718753405251,132,140
+hprc_hifi,SpecHLA,Class I Pseudogenes,30,,0,0,,0,0
+hprc_hifi,SpecHLA,Class II Genes,30,0.859375,26,28,0.8328489326765188,223,272
+hprc_hifi,SpecHLA,Non-HLA Genes,30,,0,0,,0,0
+hprc_hifi,SpecLong,Class I Genes,30,0.9924242424242425,59,60,1.0,300,300
+hprc_hifi,SpecLong,Class I Pseudogenes,30,0.829513888888889,235,268,0.9584962406015037,284,294
+hprc_hifi,SpecLong,Class II Genes,30,1.0,86,86,0.9344040777230433,692,744
+hprc_hifi,SpecLong,Non-HLA Genes,30,0.8125,27,34,0.8247053872053872,168,202
+hprc_hifi,HLA*LA,Class I Genes,35,0.923941798941799,107,114,0.9443236714975846,232,246
+hprc_hifi,HLA*LA,Class I Pseudogenes,35,0.8446969696969697,78,86,0.7952380952380952,46,58
+hprc_hifi,HLA*LA,Class II Genes,35,0.986111111111111,89,90,0.8204545454545454,223,290
+hprc_hifi,HLA*LA,Non-HLA Genes,35,,0,0,,0,0
+hprc_hifi,SpecHLA,Class I Genes,35,0.9058201058201059,63,70,0.9388888888888888,104,110
+hprc_hifi,SpecHLA,Class I Pseudogenes,35,,0,0,,0,0
+hprc_hifi,SpecHLA,Class II Genes,35,0.8341346153846154,58,68,0.8408168642951253,191,232
+hprc_hifi,SpecHLA,Non-HLA Genes,35,,0,0,,0,0
+hprc_hifi,SpecLong,Class I Genes,35,0.9953703703703703,113,114,1.0,246,246
+hprc_hifi,SpecLong,Class I Pseudogenes,35,0.840162037037037,294,330,0.9621263586956521,225,232
+hprc_hifi,SpecLong,Class II Genes,35,0.9611111111111111,193,198,0.9308531746031746,585,632
+hprc_hifi,SpecLong,Non-HLA Genes,35,0.8107142857142857,59,72,0.8266908212560387,136,164
+hprc_hifi,HLA*LA,Class I Genes,40,0.9385869565217391,176,186,0.9472222222222223,163,174
+hprc_hifi,HLA*LA,Class I Pseudogenes,40,0.8273809523809524,93,108,0.8611111111111112,31,36
+hprc_hifi,HLA*LA,Class II Genes,40,0.9573412698412698,143,150,0.8136284722222221,169,230
+hprc_hifi,HLA*LA,Non-HLA Genes,40,,0,0,,0,0
+hprc_hifi,SpecHLA,Class I Genes,40,0.9092995169082125,90,100,0.9666666666666667,77,80
+hprc_hifi,SpecHLA,Class I Pseudogenes,40,,0,0,,0,0
+hprc_hifi,SpecHLA,Class II Genes,40,0.8561507936507936,100,116,0.8373611111111112,149,184
+hprc_hifi,SpecHLA,Non-HLA Genes,40,,0,0,,0,0
+hprc_hifi,SpecLong,Class I Genes,40,0.9963768115942028,185,186,1.0,174,174
+hprc_hifi,SpecLong,Class I Pseudogenes,40,0.8505751203990367,362,402,0.9547619047619048,157,160
+hprc_hifi,SpecLong,Class II Genes,40,0.9732142857142857,349,358,0.9265485739750445,429,472
+hprc_hifi,SpecLong,Non-HLA Genes,40,0.8192307692307692,100,120,0.825,95,116
+hprc_hifi,HLA*LA,Class I Genes,45,0.9376256913021619,244,258,0.9476495726495727,95,102
+hprc_hifi,HLA*LA,Class I Pseudogenes,45,0.8462823725981621,110,128,0.875,14,16
+hprc_hifi,HLA*LA,Class II Genes,45,0.7875939849624061,194,206,0.795141065830721,118,174
+hprc_hifi,HLA*LA,Non-HLA Genes,45,,0,0,,0,0
+hprc_hifi,SpecHLA,Class I Genes,45,0.9239567621920562,123,134,0.9444444444444445,44,46
+hprc_hifi,SpecHLA,Class I Pseudogenes,45,,0,0,,0,0
+hprc_hifi,SpecHLA,Class II Genes,45,0.884766081871345,133,154,0.8428160919540229,116,146
+hprc_hifi,SpecHLA,Non-HLA Genes,45,,0,0,,0,0
+hprc_hifi,SpecLong,Class I Genes,45,0.9967948717948718,257,258,1.0,102,102
+hprc_hifi,SpecLong,Class I Pseudogenes,45,0.8517361111111111,419,460,0.9837962962962963,100,102
+hprc_hifi,SpecLong,Class II Genes,45,0.976099339257234,486,500,0.9055667305236271,292,330
+hprc_hifi,SpecLong,Non-HLA Genes,45,0.8100328947368421,154,186,0.8472222222222222,41,50
+hprc_hifi,HLA*LA,Class I Genes,50,0.941515353434394,287,304,0.9523809523809524,52,56
+hprc_hifi,HLA*LA,Class I Pseudogenes,50,0.8551587301587302,119,138,0.875,5,6
+hprc_hifi,HLA*LA,Class II Genes,50,0.850203804347826,251,274,0.8090659340659341,61,106
+hprc_hifi,HLA*LA,Non-HLA Genes,50,,0,0,,0,0
+hprc_hifi,SpecHLA,Class I Genes,50,0.9212338275306791,145,158,1.0,22,22
+hprc_hifi,SpecHLA,Class I Pseudogenes,50,,0,0,,0,0
+hprc_hifi,SpecHLA,Class II Genes,50,0.7875,173,206,0.8673076923076923,76,94
+hprc_hifi,SpecHLA,Non-HLA Genes,50,,0,0,,0,0
+hprc_hifi,SpecLong,Class I Genes,50,0.9971264367816092,303,304,1.0,56,56
+hprc_hifi,SpecLong,Class I Pseudogenes,50,0.8517361111111111,467,508,0.9675,52,54
+hprc_hifi,SpecLong,Class II Genes,50,0.9563093102073366,626,650,0.8936896436896438,152,180
+hprc_hifi,SpecLong,Non-HLA Genes,50,0.8134057971014492,175,212,0.8444444444444444,20,24
+hprc_ont,HLA*LA,Class I Genes,5,1.0,10,10,0.9154761904761904,320,350
+hprc_ont,HLA*LA,Class I Pseudogenes,5,0.9444444444444445,53,54,0.8560606060606061,71,90
+hprc_ont,HLA*LA,Class II Genes,5,0.5,2,4,0.8257286535303776,303,376
+hprc_ont,HLA*LA,Non-HLA Genes,5,,0,0,,0,0
+hprc_ont,SpecHLA,Class I Genes,5,0.0,0,4,0.6396825396825396,113,176
+hprc_ont,SpecHLA,Class I Pseudogenes,5,,0,0,,0,0
+hprc_ont,SpecHLA,Class II Genes,5,0.0,0,4,0.6435632183908045,190,296
+hprc_ont,SpecHLA,Non-HLA Genes,5,,0,0,,0,0
+hprc_ont,SpecLong,Class I Genes,5,0.9166666666666666,9,10,0.9970238095238096,349,350
+hprc_ont,SpecLong,Class I Pseudogenes,5,0.742547476261869,134,188,0.9503908796199985,355,374
+hprc_ont,SpecLong,Class II Genes,5,0.875,14,16,0.9222649835796386,760,814
+hprc_ont,SpecLong,Non-HLA Genes,5,,0,0,0.7907738095238095,188,236
+hprc_ont,HLA*LA,Class I Genes,10,0.8630952380952381,41,46,0.9203761214630779,289,314
+hprc_ont,HLA*LA,Class I Pseudogenes,10,0.8272727272727273,71,80,0.8041666666666667,53,64
+hprc_ont,HLA*LA,Class II Genes,10,0.7875,32,40,0.8278507483895414,273,340
+hprc_ont,HLA*LA,Non-HLA Genes,10,,0,0,,0,0
+hprc_ont,SpecHLA,Class I Genes,10,0.08333333333333333,1,24,0.7143048845947396,112,156
+hprc_ont,SpecHLA,Class I Pseudogenes,10,,0,0,,0,0
+hprc_ont,SpecHLA,Class II Genes,10,0.30333333333333334,16,36,0.6754549071618038,174,264
+hprc_ont,SpecHLA,Non-HLA Genes,10,,0,0,,0,0
+hprc_ont,SpecLong,Class I Genes,10,0.9761904761904763,44,46,1.0,314,314
+hprc_ont,SpecLong,Class I Pseudogenes,10,0.8523760330578513,183,244,0.9537563131313131,306,318
+hprc_ont,SpecLong,Class II Genes,10,0.9170138888888889,101,112,0.925712786973563,673,718
+hprc_ont,SpecLong,Non-HLA Genes,10,0.9166666666666666,13,14,0.78505291005291,175,222
+hprc_ont,HLA*LA,Class I Genes,15,0.8963293650793651,96,106,0.9264520202020202,234,254
+hprc_ont,HLA*LA,Class I Pseudogenes,15,0.8341346153846154,91,106,0.8511904761904762,33,38
+hprc_ont,HLA*LA,Class II Genes,15,0.7877344877344877,94,116,0.823515820802005,211,264
+hprc_ont,HLA*LA,Non-HLA Genes,15,,0,0,,0,0
+hprc_ont,SpecHLA,Class I Genes,15,0.19146825396825395,11,56,0.819128787878788,102,124
+hprc_ont,SpecHLA,Class I Pseudogenes,15,,0,0,,0,0
+hprc_ont,SpecHLA,Class II Genes,15,0.4695959595959597,47,94,0.7183333333333333,143,206
+hprc_ont,SpecHLA,Non-HLA Genes,15,,0,0,,0,0
+hprc_ont,SpecLong,Class I Genes,15,0.9880952380952381,104,106,1.0,254,254
+hprc_ont,SpecLong,Class I Pseudogenes,15,0.8592548076923077,271,336,0.955816084270699,218,226
+hprc_ont,SpecLong,Class II Genes,15,0.8875517075517074,270,298,0.9415584415584417,504,532
+hprc_ont,SpecLong,Non-HLA Genes,15,0.765625,46,56,0.7964015151515151,142,180
+hprc_ont,HLA*LA,Class I Genes,20,0.8875291375291375,163,182,0.948529411764706,167,178
+hprc_ont,HLA*LA,Class I Pseudogenes,20,0.8457172342621259,103,120,0.84375,21,24
+hprc_ont,HLA*LA,Class II Genes,20,0.7979166666666666,157,196,0.8519345238095237,148,184
+hprc_ont,HLA*LA,Non-HLA Genes,20,,0,0,,0,0
+hprc_ont,SpecHLA,Class I Genes,20,0.3785936285936286,35,94,0.9127178649237472,78,86
+hprc_ont,SpecHLA,Class I Pseudogenes,20,,0,0,,0,0
+hprc_ont,SpecHLA,Class II Genes,20,0.5584722222222223,97,162,0.7352380952380952,93,138
+hprc_ont,SpecHLA,Non-HLA Genes,20,,0,0,,0,0
+hprc_ont,SpecLong,Class I Genes,20,0.9924242424242425,180,182,1.0,178,178
+hprc_ont,SpecLong,Class I Pseudogenes,20,0.8654401014791882,334,402,0.9572124304267161,155,160
+hprc_ont,SpecLong,Class II Genes,20,0.8986698813795853,432,466,0.9394070696460403,342,364
+hprc_ont,SpecLong,Non-HLA Genes,20,0.7916666666666667,82,94,0.7886363636363636,106,142
+hprc_ont,HLA*LA,Class I Genes,25,0.893552559912854,211,234,0.9578754578754579,119,126
+hprc_ont,HLA*LA,Class I Pseudogenes,25,0.8636363636363636,118,136,0.6666666666666667,6,8
+hprc_ont,HLA*LA,Class II Genes,25,0.7956357048748354,199,246,0.8545634920634919,106,134
+hprc_ont,HLA*LA,Non-HLA Genes,25,,0,0,,0,0
+hprc_ont,SpecHLA,Class I Genes,25,0.491285403050109,58,120,0.9395604395604397,55,60
+hprc_ont,SpecHLA,Class I Pseudogenes,25,,0,0,,0,0
+hprc_ont,SpecHLA,Class II Genes,25,0.5711198945981555,120,198,0.7664682539682539,70,102
+hprc_ont,SpecHLA,Non-HLA Genes,25,,0,0,,0,0
+hprc_ont,SpecLong,Class I Genes,25,0.9938271604938271,232,234,1.0,126,126
+hprc_ont,SpecLong,Class I Pseudogenes,25,0.8617017211589579,398,470,0.9952380952380953,91,92
+hprc_ont,SpecLong,Class II Genes,25,0.9071454731610982,564,606,0.924074074074074,210,224
+hprc_ont,SpecLong,Non-HLA Genes,25,0.7798076923076923,119,138,0.7941176470588236,69,98
+hprc_ont,HLA*LA,Class I Genes,30,0.9108730158730158,257,284,0.9574074074074074,73,76
+hprc_ont,HLA*LA,Class I Pseudogenes,30,0.8568840579710145,122,142,1.0,2,2
+hprc_ont,HLA*LA,Class II Genes,30,0.8103382803790412,240,292,0.8326530612244899,65,88
+hprc_ont,HLA*LA,Non-HLA Genes,30,,0,0,,0,0
+hprc_ont,SpecHLA,Class I Genes,30,0.5611111111111111,82,148,0.9814814814814815,31,32
+hprc_ont,SpecHLA,Class I Pseudogenes,30,,0,0,,0,0
+hprc_ont,SpecHLA,Class II Genes,30,0.615267558528428,147,228,0.7471428571428571,43,72
+hprc_ont,SpecHLA,Non-HLA Genes,30,,0,0,,0,0
+hprc_ont,SpecLong,Class I Genes,30,0.9940476190476191,282,284,1.0,76,76
+hprc_ont,SpecLong,Class I Pseudogenes,30,0.8661213032759507,430,502,0.9930555555555557,59,60
+hprc_ont,SpecLong,Class II Genes,30,0.9127781753507644,635,682,0.932962962962963,139,148
+hprc_ont,SpecLong,Non-HLA Genes,30,0.7794117647058824,138,168,0.8076923076923077,50,68
+hprc_ont,HLA*LA,Class I Genes,35,0.9138854972188306,292,320,0.9444444444444443,38,40
+hprc_ont,HLA*LA,Class I Pseudogenes,35,0.8585507246376811,124,144,,0,0
+hprc_ont,HLA*LA,Class II Genes,35,0.8114634208384208,266,328,0.8769841269841271,39,52
+hprc_ont,HLA*LA,Non-HLA Genes,35,,0,0,,0,0
+hprc_ont,SpecHLA,Class I Genes,35,0.5889974223307557,95,162,1.0,18,18
+hprc_ont,SpecHLA,Class I Pseudogenes,35,,0,0,,0,0
+hprc_ont,SpecHLA,Class II Genes,35,0.626129426129426,165,258,0.75,25,42
+hprc_ont,SpecHLA,Non-HLA Genes,35,,0,0,,0,0
+hprc_ont,SpecLong,Class I Genes,35,0.9940476190476191,318,320,1.0,40,40
+hprc_ont,SpecLong,Class I Pseudogenes,35,0.8672348510342353,460,532,0.9666666666666667,29,30
+hprc_ont,SpecLong,Class II Genes,35,0.9155668905569345,696,746,0.9412698412698414,78,84
+hprc_ont,SpecLong,Non-HLA Genes,35,0.7721861471861472,159,198,0.8415178571428572,29,38
+hprc_ont,HLA*LA,Class I Genes,40,0.9156719717064545,309,338,0.9166666666666666,21,22
+hprc_ont,HLA*LA,Class I Pseudogenes,40,0.8585507246376811,124,144,,0,0
+hprc_ont,HLA*LA,Class II Genes,40,0.8128279610194902,280,346,0.8826530612244898,25,34
+hprc_ont,HLA*LA,Non-HLA Genes,40,,0,0,,0,0
+hprc_ont,SpecHLA,Class I Genes,40,0.6036693191865606,101,168,1.0,12,12
+hprc_ont,SpecHLA,Class I Pseudogenes,40,,0,0,,0,0
+hprc_ont,SpecHLA,Class II Genes,40,0.6388252302420219,177,272,0.6642857142857144,13,28
+hprc_ont,SpecHLA,Non-HLA Genes,40,,0,0,,0,0
+hprc_ont,SpecLong,Class I Genes,40,0.9942528735632185,336,338,1.0,22,22
+hprc_ont,SpecLong,Class I Pseudogenes,40,0.8677918920324527,476,548,0.9666666666666667,13,14
+hprc_ont,SpecLong,Class II Genes,40,0.9172727531323625,728,778,0.9319727891156464,46,52
+hprc_ont,SpecLong,Non-HLA Genes,40,0.7854267310789049,172,214,0.85,16,22
+hprc_ont,HLA*LA,Class I Genes,45,0.9172413793103448,323,352,0.875,7,8
+hprc_ont,HLA*LA,Class I Pseudogenes,45,0.8585507246376811,124,144,,0,0
+hprc_ont,HLA*LA,Class II Genes,45,0.8148906449553002,289,360,0.875,16,20
+hprc_ont,HLA*LA,Non-HLA Genes,45,,0,0,,0,0
+hprc_ont,SpecHLA,Class I Genes,45,0.6206896551724138,109,176,1.0,4,4
+hprc_ont,SpecHLA,Class I Pseudogenes,45,,0,0,,0,0
+hprc_ont,SpecHLA,Class II Genes,45,0.633552271483306,182,286,0.75,8,14
+hprc_ont,SpecHLA,Non-HLA Genes,45,,0,0,,0,0
+hprc_ont,SpecLong,Class I Genes,45,0.9944444444444445,350,352,1.0,8,8
+hprc_ont,SpecLong,Class I Pseudogenes,45,0.8677918920324527,478,550,0.9583333333333334,11,12
+hprc_ont,SpecLong,Class II Genes,45,0.9154524621151143,748,802,0.9666666666666668,26,28
+hprc_ont,SpecLong,Non-HLA Genes,45,0.7846840659340659,178,224,0.875,10,12
+hprc_ont,HLA*LA,Class I Genes,50,0.9166666666666666,328,358,1.0,2,2
+hprc_ont,HLA*LA,Class I Pseudogenes,50,0.8585507246376811,124,144,,0,0
+hprc_ont,HLA*LA,Class II Genes,50,0.8217261904761904,303,376,0.5,2,4
+hprc_ont,HLA*LA,Non-HLA Genes,50,,0,0,,0,0
+hprc_ont,SpecHLA,Class I Genes,50,0.6277777777777778,113,180,,0,0
+hprc_ont,SpecHLA,Class I Pseudogenes,50,,0,0,,0,0
+hprc_ont,SpecHLA,Class II Genes,50,0.6369047619047619,190,296,0.0,0,4
+hprc_ont,SpecHLA,Non-HLA Genes,50,,0,0,,0,0
+hprc_ont,SpecLong,Class I Genes,50,0.9944444444444445,356,358,1.0,2,2
+hprc_ont,SpecLong,Class I Pseudogenes,50,0.8678742372234937,484,556,0.875,5,6
+hprc_ont,SpecLong,Class II Genes,50,0.9206884477929103,766,820,0.875,8,10
+hprc_ont,SpecLong,Non-HLA Genes,50,0.7878352490421456,181,228,0.875,7,8
