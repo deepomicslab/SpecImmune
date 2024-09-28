@@ -193,7 +193,7 @@ def main(args):
         
 if __name__ == "__main__":   
 
-    parser = argparse.ArgumentParser(description="HLA Typing with only long-read data.", add_help=False, \
+    parser = argparse.ArgumentParser(description="Typing with only long-read data.", add_help=False, \
     usage="python3 %(prog)s -h", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     required = parser.add_argument_group("Required arguments")
     optional = parser.add_argument_group("Optional arguments")
