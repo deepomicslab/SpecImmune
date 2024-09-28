@@ -525,6 +525,7 @@ if __name__ == "__main__":
     optional.add_argument("--HLA_exon_fa", help="hla_exon_gene")
     optional.add_argument("--KIR_fa", help="kir_gene")
     optional.add_argument("--CYP_fa", help="cyp_gene")
+    optional.add_argument("--IG_TR_fa", help="IG_TR_gene")
     args = parser.parse_args()
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
