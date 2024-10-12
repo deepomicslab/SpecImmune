@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3  CMakeFiles/bDistance.dir/utils/bDistance.cpp.o -o bDistance  -lhts 
