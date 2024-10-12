@@ -392,7 +392,7 @@ def generate_seg_fasta(segs_list):
         print(result.stdout)
         out_fa.write('{}'.format(result.stdout))
         # print(result.stdout)
-        print(result.stderr)
+        # print(result.stderr)
 
 def cal_copy_number():
     f = open(args.depth_file, 'r')
