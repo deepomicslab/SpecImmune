@@ -1,0 +1,9 @@
+SEG A 1 1
+SEG B 1 1
+SEG C 1 1
+SEG D 1 1
+SEG E 1 1
+JUNC A + B + 1
+JUNC B + C + 2
+JUNC C + D + 3
+JUNC D + E + 4

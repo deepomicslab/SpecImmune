@@ -33,6 +33,7 @@ gene_classes = {
 # 计算基因类别的准确率
 def calculate_accuracies_by_class(df, gene_reads_df, software_genes, chosen_depth):
     class_level_data = {class_name: {'<': [], '>=': []} for class_name in gene_classes}
+    match_totals = {class_name: {'<': {'Match': 0, 'Total': 0}, '>=': {'Match': 0, 'Total': 0}} for class_name in gene_classes}
 
     relevant_genes = software_genes
     df = df[df['Gene'].isin(relevant_genes)]
@@ -50,6 +51,8 @@ def calculate_accuracies_by_class(df, gene_reads_df, software_genes, chosen_dept
             total_total_lt_chosen = filtered_df_lt_chosen['Total'].sum()
             accuracy_lt_chosen = total_match_lt_chosen / total_total_lt_chosen if total_total_lt_chosen > 0 else None
         else:
+            total_match_lt_chosen = 0
+            total_total_lt_chosen = 0
             accuracy_lt_chosen = None
 
         # 计算 >=chosen_depth 的准确率
@@ -58,15 +61,21 @@ def calculate_accuracies_by_class(df, gene_reads_df, software_genes, chosen_dept
             total_total_ge_chosen = filtered_df_ge_chosen['Total'].sum()
             accuracy_ge_chosen = total_match_ge_chosen / total_total_ge_chosen if total_total_ge_chosen > 0 else None
         else:
+            total_match_ge_chosen = 0
+            total_total_ge_chosen = 0
             accuracy_ge_chosen = None
 
-        # 按基因类别保存准确率
+        # 按基因类别保存准确率和匹配/总数
         for class_name, class_genes in gene_classes.items():
             if gene in class_genes:
                 class_level_data[class_name]['<'].append(accuracy_lt_chosen)
                 class_level_data[class_name]['>='].append(accuracy_ge_chosen)
+                match_totals[class_name]['<']['Match'] += total_match_lt_chosen
+                match_totals[class_name]['<']['Total'] += total_total_lt_chosen
+                match_totals[class_name]['>=']['Match'] += total_match_ge_chosen
+                match_totals[class_name]['>=']['Total'] += total_total_ge_chosen
 
-    return class_level_data
+    return class_level_data, match_totals
 
 # 用于保存输出到 CSV 的数据
 csv_data = []
@@ -101,16 +110,22 @@ for dataset_name, dataset_dir in dataset_dirs.items():
         print(f"\nDepth cutoff: {chosen_depth}")
 
         for df, df_name in zip(dfs, df_names):
-            # 计算每个基因类别的准确率
-            class_level_data = calculate_accuracies_by_class(df, gene_reads_df, software_genes[df_name], chosen_depth)
+            # 计算每个基因类别的准确率和匹配/总数
+            class_level_data, match_totals = calculate_accuracies_by_class(df, gene_reads_df, software_genes[df_name], chosen_depth)
 
-            # 计算并收集每个基因类别的平均准确率
+            # 计算并收集每个基因类别的平均准确率和匹配/总数
             for class_name, accuracies in class_level_data.items():
                 accuracies_lt_chosen = [acc for acc in accuracies['<'] if acc is not None]
                 accuracies_ge_chosen = [acc for acc in accuracies['>='] if acc is not None]
 
                 average_accuracy_lt_chosen = sum(accuracies_lt_chosen) / len(accuracies_lt_chosen) if accuracies_lt_chosen else None
                 average_accuracy_ge_chosen = sum(accuracies_ge_chosen) / len(accuracies_ge_chosen) if accuracies_ge_chosen else None
+
+                # 获取匹配/总数
+                total_match_lt = match_totals[class_name]['<']['Match']
+                total_total_lt = match_totals[class_name]['<']['Total']
+                total_match_ge = match_totals[class_name]['>=']['Match']
+                total_total_ge = match_totals[class_name]['>=']['Total']
 
                 # 保存数据到列表
                 csv_data.append({
@@ -119,7 +134,11 @@ for dataset_name, dataset_dir in dataset_dirs.items():
                     'Class': class_name,
                     'Depth Cutoff': chosen_depth,
                     'Average Accuracy < Depth': average_accuracy_lt_chosen,
-                    'Average Accuracy >= Depth': average_accuracy_ge_chosen
+                    'Match < Depth': total_match_lt,
+                    'Total < Depth': total_total_lt,
+                    'Average Accuracy >= Depth': average_accuracy_ge_chosen,
+                    'Match >= Depth': total_match_ge,
+                    'Total >= Depth': total_total_ge
                 })
 
 # 将数据转换为 DataFrame

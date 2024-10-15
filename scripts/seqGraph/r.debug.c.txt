@@ -1,0 +1,10 @@
+iter 0,graph2
+EDGE_73998_length_1048_cov_276.856999+	EDGE_68670_length_2755_cov_8.786667+	
+iter 0,graph2
+EDGE_69240_length_94_cov_142.358974+	EDGE_73998_length_1048_cov_276.856999-	
+iter 0,graph9
+EDGE_14890_length_366_cov_9.012862+	EDGE_73740_length_256_cov_15.611940-	EDGE_68768_length_366_cov_5.967846+	EDGE_74024_length_1142_cov_17.652254+	
+iter 0,graph16
+EDGE_71686_length_2167_cov_7.162405+	EDGE_11270_length_87_cov_13.750000+	
+self loop: 
+EDGE_73162_length_4143_cov_433.265656+

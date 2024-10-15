@@ -118,7 +118,7 @@ for i, (class_name, genes) in enumerate(gene_classes.items(), 1):
     plt.legend(title="", fontsize=8, frameon=False)
 
 plt.tight_layout(pad=1)  # Adjust padding for better spacing
-plt.savefig("HPRC_HIFI_performance_by_class_and_cutoff.svg", bbox_inches='tight', format="svg", dpi=600)  # Save the plot as a PDF
+plt.savefig("HPRC_HIFI_performance_by_class_and_cutoff.pdf", bbox_inches='tight', format="pdf", dpi=600)  # Save the plot as a PDF
 
 # Figure 2: Individual gene plots grouped by class, with 4 subplots per row
 for class_name, genes in gene_classes.items():
@@ -151,7 +151,7 @@ for class_name, genes in gene_classes.items():
         plt.legend(title="Methods", fontsize=8, frameon=False, loc="lower left")
 
     plt.tight_layout(pad=1)  # Adjust padding for better spacing
-    plt.savefig(f"HPRC_HIFI_performance_by_gene_and_cutoff_{class_name}.svg", bbox_inches='tight', format="svg", dpi=600)  # Save the plot as a PDF
+    plt.savefig(f"HPRC_HIFI_performance_by_gene_and_cutoff_{class_name}.pdf", bbox_inches='tight', format="pdf", dpi=600)  # Save the plot as a PDF
 
 # Uncomment the line below if you want to display the plot interactively
 # plt.show()

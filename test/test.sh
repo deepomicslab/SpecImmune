@@ -1,9 +1,5 @@
 db=../db/
 
-# python ../scripts/main_test.py -r test.fastq.gz -j 15 -i HLA -n test_HLA -o test --db $db
-python ../scripts/main.py -r HLA/test_HLA_lite.fastq.gz -j 15 -i HLA -n test_HLA2 -o test 
-
-
-# python3 ../evaluation/assess_typing.py -i HLA --true test.HLA.hap.alleles.txt --infer test/test_HLA/test_HLA.HLA.type.result.txt 
-
-# python3 ../evaluation/assess_typing.py -i HLA --true test.HLA.hap.alleles.txt --infer test/test_HLA//hlala.like.results.txt
+python ../scripts/main.py -r HLA/test_HLA_lite.fastq.gz -j 15 -i HLA -n test_HLA -o test --align_method_1 minimap2 -y pacbio
+python ../scripts/main.py -r KIR/KIR_dp50_acc98_1.fastq.gz -j 15 -i KIR -n test_KIR -o test --hete_p 0.2 --align_method_1 minimap2 -y pacbio
+python ../scripts/main.py -r KIR/HG03579.CYP.fastq.0.1.fq.gz -j 15 -i KIR -n test_CYP -o test -y pacbio

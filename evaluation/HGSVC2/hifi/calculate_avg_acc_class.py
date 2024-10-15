@@ -41,7 +41,7 @@ gene_classes = {
 }
 
 # Step 4: Set the chosen depth
-chosen_depth = 0  # This can be changed to any value you want to set as the threshold
+chosen_depth = 10  # This can be changed to any value you want to set as the threshold
 
 # Step 5: Initialize a dictionary to store accuracy results for plotting
 plot_data = {f'<{chosen_depth}': {df_name: [] for df_name in df_names},
@@ -69,6 +69,12 @@ for df, df_name in zip(dfs, df_names):
         # Filter the current DataFrame to consider only the valid samples for this gene with read depth >= chosen_depth
         filtered_df_ge_chosen = df[(df['Gene'] == gene) & (df['Sample'].isin(samples_ge_chosen))]
         
+        # Initialize the match and total variables
+        total_match_lt_chosen = 0
+        total_total_lt_chosen = 0
+        total_match_ge_chosen = 0
+        total_total_ge_chosen = 0
+        
         # Calculate accuracy for samples with read depth < chosen_depth
         if not filtered_df_lt_chosen.empty:
             total_match_lt_chosen = filtered_df_lt_chosen['Match'].sum()
@@ -78,8 +84,8 @@ for df, df_name in zip(dfs, df_names):
             accuracy_lt_chosen = None
             
         # Store the result in the plot_data dictionary for < chosen_depth
-        plot_data[f'<{chosen_depth}'][df_name].append({'Gene': gene, 'Accuracy': accuracy_lt_chosen})
-
+        plot_data[f'<{chosen_depth}'][df_name].append({'Gene': gene, 'Accuracy': accuracy_lt_chosen, 'Matches': total_match_lt_chosen, 'Total': total_total_lt_chosen})
+        
         # Calculate accuracy for samples with read depth >= chosen_depth
         if not filtered_df_ge_chosen.empty:
             total_match_ge_chosen = filtered_df_ge_chosen['Match'].sum()
@@ -89,34 +95,40 @@ for df, df_name in zip(dfs, df_names):
             accuracy_ge_chosen = None
             
         # Store the result in the plot_data dictionary for >= chosen_depth
-        plot_data[f'>={chosen_depth}'][df_name].append({'Gene': gene, 'Accuracy': accuracy_ge_chosen})
+        plot_data[f'>={chosen_depth}'][df_name].append({'Gene': gene, 'Accuracy': accuracy_ge_chosen, 'Matches': total_match_ge_chosen, 'Total': total_total_ge_chosen})
 
         # Accumulate class-level data
         for class_name, class_genes in gene_classes.items():
             if gene in class_genes:
-                class_level_data[f'<{chosen_depth}'][df_name][class_name].append(accuracy_lt_chosen)
-                class_level_data[f'>={chosen_depth}'][df_name][class_name].append(accuracy_ge_chosen)
-
+                class_level_data[f'<{chosen_depth}'][df_name][class_name].append((total_match_lt_chosen, total_total_lt_chosen))
+                class_level_data[f'>={chosen_depth}'][df_name][class_name].append((total_match_ge_chosen, total_total_ge_chosen))
 # Step 7: Print the gene-level results and the average accuracy for each software
 for depth_category in plot_data:
     print(f"\nResults for depth category: {depth_category}")
     for df_name in df_names:
         print(f"\nSoftware: {df_name}")
         accuracies = []
+        total_matches = 0
+        total_total = 0
+        
         for entry in plot_data[depth_category][df_name]:
             gene = entry['Gene']
             accuracy = entry['Accuracy']
+            matches = entry['Matches']
+            total = entry['Total']
+            if matches is not None and total is not None:
+                total_matches += matches
+                total_total += total
             accuracies.append(accuracy)
             if accuracy is not None:
-                print(f"  Gene: {gene}, Accuracy: {accuracy:.2f}")
+                print(f"  Gene: {gene}, Accuracy: {accuracy:.2f} ({matches}/{total})")
             else:
                 print(f"  Gene: {gene}, Accuracy: No valid data")
         
         # Calculate and print the average accuracy for this software
-        valid_accuracies = [acc for acc in accuracies if acc is not None]
-        if valid_accuracies:
-            average_accuracy = sum(valid_accuracies) / len(valid_accuracies)
-            print(f"\n  Average Accuracy for {df_name}: {average_accuracy:.2f}")
+        if total_total > 0:
+            average_accuracy = total_matches / total_total
+            print(f"\n  Average Accuracy for {df_name}: {average_accuracy:.2f} ({total_matches}/{total_total})")
         else:
             print(f"\n  Average Accuracy for {df_name}: No valid data")
 
@@ -125,10 +137,16 @@ for depth_category in class_level_data:
     print(f"\nClass-Level Results for depth category: {depth_category}")
     for df_name in df_names:
         print(f"\nSoftware: {df_name}")
-        for class_name, accuracies in class_level_data[depth_category][df_name].items():
-            valid_accuracies = [acc for acc in accuracies if acc is not None]
-            if valid_accuracies:
-                average_class_accuracy = sum(valid_accuracies) / len(valid_accuracies)
-                print(f"  {class_name}: Average Accuracy = {average_class_accuracy:.2f}")
+        for class_name, matches_totals_list in class_level_data[depth_category][df_name].items():
+            total_class_matches = 0
+            total_class_total = 0
+            for matches, total in matches_totals_list:
+                if matches is not None and total is not None:
+                    total_class_matches += matches
+                    total_class_total += total
+                    
+            if total_class_total > 0:
+                average_class_accuracy = total_class_matches / total_class_total
+                print(f"  {class_name}: Average Accuracy = {average_class_accuracy:.2f} ({total_class_matches}/{total_class_total})")
             else:
                 print(f"  {class_name}: No valid data")

@@ -28,7 +28,7 @@ software_genes = {
 }
 
 # Step 4: Set the chosen depth
-chosen_depth = 0  # This can be changed to any value you want to set as the threshold
+chosen_depth = 10  # This can be changed to any value you want to set as the threshold
 
 # Step 5: Initialize a dictionary to store accuracy results for plotting
 plot_data = {f'<{chosen_depth}': {df_name: [] for df_name in df_names},
@@ -81,12 +81,26 @@ for depth_category in plot_data:
     for df_name in df_names:
         print(f"\nSoftware: {df_name}")
         accuracies = []
+        total_matches_sum = 0  # To count the total number of correct alleles for the software
+        total_alleles_sum = 0  # To count the total number of alleles processed for the software
+        
         for entry in plot_data[depth_category][df_name]:
             gene = entry['Gene']
             accuracy = entry['Accuracy']
             accuracies.append(accuracy)
+            
+            # Get the total matches (correct alleles) and total alleles processed for the gene
+            df_gene = dfs[df_names.index(df_name)]
+            gene_data = df_gene[df_gene['Gene'] == gene]
+            total_matches_gene = gene_data['Match'].sum()  # Correct alleles
+            total_alleles_gene = gene_data['Total'].sum()  # Total alleles processed
+            
+            # Accumulate for the software-level totals
+            total_matches_sum += total_matches_gene
+            total_alleles_sum += total_alleles_gene
+            
             if accuracy is not None:
-                print(f"  Gene: {gene}, Accuracy: {accuracy:.2f}")
+                print(f"  Gene: {gene}, Accuracy: {accuracy:.2f}, Correct Alleles: {total_matches_gene}, Total Alleles: {total_alleles_gene}")
             else:
                 print(f"  Gene: {gene}, Accuracy: No valid data")
         
@@ -94,6 +108,7 @@ for depth_category in plot_data:
         valid_accuracies = [acc for acc in accuracies if acc is not None]
         if valid_accuracies:
             average_accuracy = sum(valid_accuracies) / len(valid_accuracies)
-            print(f"\n  Average Accuracy for {df_name}: {average_accuracy:.2f}")
+            print(f"\n  Total Correct Alleles: {total_matches_sum}, Total Processed Alleles: {total_alleles_sum}")
+            print(f"  Average Accuracy for {df_name}: {average_accuracy:.2f}")
         else:
             print(f"\n  Average Accuracy for {df_name}: No valid data")

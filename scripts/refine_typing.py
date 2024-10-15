@@ -343,6 +343,8 @@ if __name__ == "__main__":
     required.add_argument("-i", type=str, help="HLA,KIR,CYP",metavar="\b", default="HLA")
     optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")
     optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon|rna].", metavar="\b", default="wgs")
+    optional.add_argument("--iteration", type=int, help="iteration count", metavar="\b", default=1)
+
 
     
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
@@ -364,7 +366,7 @@ if __name__ == "__main__":
     gene_list = get_folder_list(db_folder)
     
     # result_file = result_path + "/" + "hlala.like.results.txt"
-    result_file = f"{my_folder.sample_prefix}.{args['i']}.final.type.result.txt"
+    result_file = f"{my_folder.sample_prefix}.{args['i']}.final.type.{args['iteration']}.result.txt"
     step1_result = f"{my_folder.sample_prefix}.{args['i']}.type.result.txt"
 
     record_best_match, record_one_allele = {}, {}

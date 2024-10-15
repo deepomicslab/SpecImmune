@@ -124,10 +124,12 @@ samtools depth -aa $gene_work_dir/h0.bam > $gene_work_dir/h0.depth
 samtools depth -aa $gene_work_dir/h1.bam > $gene_work_dir/h1.depth
 # whatshap split --output-h1 $outdir/h0_untag.bam --output-h2 $gene_work_dir/h1_untag.bam $gene_work_dir/haplotagged.bam $gene_work_dir/hap.untag.tsv --add-untagged
 
-# samtools index $gene_work_dir/h0.bam
-# samtools index $gene_work_dir/h1.bam
+samtools index $gene_work_dir/h0.bam
+samtools index $gene_work_dir/h1.bam
 # samtools index $gene_work_dir/h0_untag.bam
 # samtools index $gene_work_dir/h1_untag.bam
+h0_bam=$gene_work_dir/h0.bam
+h1_bam=$gene_work_dir/h1.bam
 
 
 samtools index $gene_work_dir/haplotagged.$hla.bam
@@ -145,6 +147,7 @@ $longphase phase -s $snv_vcf \
 echo "filtering for $sample !"
 bcftools view -i 'GT!="0/0" && GT!="." && GT!="./." && INFO/PRECISE=1' $gene_work_dir/longphase_SV.vcf -o $filtered_sv
 
+# phased sv
 fmt_sv=$gene_work_dir/HLA_$hla.snisv.filtered.fmt.vcf
 python $scripts_dir/vcf2seq.py $filtered_sv $hla_ref $fmt_sv
 snv_sv_merged=$gene_work_dir/$sample.$hla.snv_sv.merged.vcf.gz
@@ -153,94 +156,11 @@ sorted_snv_sv_merged=$gene_work_dir/$sample.$hla.snv_sv.merged.sorted.vcf.gz
 bcftools sort $snv_sv_merged -Oz -o $sorted_snv_sv_merged
 tabix -f $sorted_snv_sv_merged
 
-if [[ "$hla" =~ ^(HLA-A|HLA-B|HLA-C)$ ]]; then
-    sorted_snv_sv_merged=$snv_vcf
-else
-    sorted_snv_sv_merged=$gene_work_dir/$sample.$hla.snv_sv.merged.sorted.vcf.gz
-    # sorted_snv_sv_merged=$snv_vcf
-fi
-
-# matching step
-
-# python $current_dir/parsesv2seg_new.py \
-#     -sv $outdir/all_phased_sv.s.f.merge.vcf \
-#     -p $hap1_dir/hap1 \
-#     -hid 1 \
-#     -ob $raw_bam \
-#     -h0b $h0_bam \
-#     -h1b $h1_bam \
-#     -r $ref \
-#     -snp $outdir/all_snp.s.vcf.gz
-
-# ############################################################################ matching
-# echo "matching for $sample !"
-# h0_g=$hap0_dir/hap0_graph.txt
-# h0_path=$hap0_dir/hap0_path.txt
-# h0_c_path=$hap0_dir/hap0_c_path.txt
-# h0_new_g=$hap0_dir/hap0_new_graph.txt
-
-# # check
-# sv_flag_file=$hap0_dir/hap0_nosv.flag
-# if [ -s "$sv_flag_file" ]; then
-#     echo "$sv_flag_file exists and is not empty."
-#     cp $hap0_dir/hap0_seg.fa $hap0_dir/hap0_asm.fa
-#     sed -i '1c\>mhc_hap_0' $hap0_dir/hap0_asm.fa
-# else
-#     echo "$sv_flag_file does not exist or is empty."
-#     /home/gzpan2/scratch/virus/wxd/app/seqGraph/build2/matching \
-#     -b \
-#     --model 1 \
-#     -v 1 \
-#     -g $h0_g \
-#     -r $h0_path \
-#     -c $h0_c_path \
-#     -m $h0_new_g \
-#     --break_c
-#     # make fasta for hap0
-#     samtools faidx $hap0_dir/hap0_seg.fa
-#     python $current_dir/make_fa_from_path.py \
-#         $h0_path \
-#         $hap0_dir/hap0_seg.txt \
-#         $hap0_dir/hap0_seg.fa \
-#         $hap0_dir/hap0_asm.fa \
-#         0 
-# fi
 
 
 
-# h1_g=$hap1_dir/hap1_graph.txt
-# h1_path=$hap1_dir/hap1_path.txt
-# h1_c_path=$hap1_dir/hap1_c_path.txt
-# h1_new_g=$hap1_dir/hap1_new_graph.txt
 
-# # check
-# sv_flag_file=$hap1_dir/hap1_nosv.flag
-# if [ -s "$sv_flag_file" ]; then
-#     echo "$sv_flag_file exists and is not empty."
-#     cp $hap1_dir/hap1_seg.fa $hap1_dir/hap1_asm.fa
-#     sed -i '1c\>mhc_hap_1' $hap1_dir/hap1_asm.fa
-# else
-#     echo "$sv_flag_file does not exist or is empty."
-#     /home/gzpan2/scratch/virus/wxd/app/seqGraph/build2/matching \
-#     -b \
-#     --model 1 \
-#     -v 1 \
-#     -g $h1_g \
-#     -r $h1_path \
-#     -c $h1_c_path \
-#     -m $h1_new_g \
-#     --break_c
-#     # make fasta for hap1
-#     samtools faidx $hap1_dir/hap1_seg.fa
-#     python $current_dir/make_fa_from_path.py \
-#         $h1_path \
-#         $hap1_dir/hap1_seg.txt \
-#         $hap1_dir/hap1_seg.fa \
-#         $hap1_dir/hap1_asm.fa \
-#         1 
-# fi
-
-# if seq_type == traditional or 2D or Direct or SIRV, generate low depth file for hap0 and hap1
+# if seq_type == traditional or 2D or Direct or SIRV, generate low depth file for hap0 and hap1, no matching
 if [[ "$data_type" =~ ^(traditional|2D|Direct|SIRV)$ ]]; then
 
     # assemble hap0 and hap1
@@ -250,8 +170,8 @@ if [[ "$data_type" =~ ^(traditional|2D|Direct|SIRV)$ ]]; then
          samtools index $fixed_bam
          stringtie $fixed_bam -o $gene_work_dir/h0_g1_mixed.gtf -c 10
          python $get_intron_script $gene_work_dir/h0_g1_mixed.gtf $hla_ref $gene_work_dir/h0_g1_mixed.intron.bed
-        samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $gene_work_dir/h0_g1_mixed.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
-        samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $gene_work_dir/h0_g1_mixed.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
+        samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $gene_work_dir/h0_g1_mixed.intron.bed $snv_vcf > $gene_work_dir/$hla.1.raw.fa
+        samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $gene_work_dir/h0_g1_mixed.intron.bed $snv_vcf > $gene_work_dir/$hla.2.raw.fa
          # else use h0.bam and h1.bam
     else
         stringtie $gene_work_dir/h0.bam -o $gene_work_dir/h0.gtf -c 10
@@ -259,8 +179,8 @@ if [[ "$data_type" =~ ^(traditional|2D|Direct|SIRV)$ ]]; then
 
         python $get_intron_script $gene_work_dir/h0.gtf $hla_ref $gene_work_dir/h0.intron.bed
         python $get_intron_script $gene_work_dir/h1.gtf $hla_ref $gene_work_dir/h1.intron.bed
-        samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $gene_work_dir/h0.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
-        samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $gene_work_dir/h1.intron.bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
+        samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $gene_work_dir/h0.intron.bed $snv_vcf > $gene_work_dir/$hla.1.raw.fa
+        samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $gene_work_dir/h1.intron.bed $snv_vcf > $gene_work_dir/$hla.2.raw.fa
     fi
 
     # echo "masking low depth region for $sample !"
@@ -283,10 +203,141 @@ if [[ "$data_type" =~ ^(traditional|2D|Direct|SIRV)$ ]]; then
 
     
 else
+
+
+
+    # generate hap0 and hap1 sequence at first, no matter what gene it is
     echo "gene : $hla"
     echo "file : $sorted_snv_sv_merged"
     samtools faidx $hla_ref $interval | bcftools consensus -H 1 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.1.raw.fa
     samtools faidx $hla_ref $interval | bcftools consensus -H 2 --mask $mask_bed $sorted_snv_sv_merged > $gene_work_dir/$hla.2.raw.fa
+
+    if [[ "$hla" =~ ^(HLA-A|HLA-B|HLA-C)$ ]]; then
+        sorted_snv_sv_merged=$snv_vcf
+        exit 0
+    else
+        sorted_snv_sv_merged=$gene_work_dir/$sample.$hla.snv_sv.merged.sorted.vcf.gz
+        # sorted_snv_sv_merged=$snv_vcf
+    fi
+
+
+
+    # matching step
+    hap0_dir=$gene_work_dir/hap0
+    if [ ! -d $hap0_dir ]; then
+        mkdir -p $hap0_dir
+    fi
+    python $scripts_dir/parsesv2seg_speclong.py \
+        -sv $fmt_sv \
+        -p $hap0_dir/hap0 \
+        -hid 0 \
+        -ob $fixed_bam \
+        -h0b $h0_bam \
+        -h1b $h1_bam \
+        -r $gene_work_dir/$hla.1.raw.fa
+    echo """
+    python $scripts_dir/parsesv2seg_speclong.py \
+        -sv $fmt_sv \
+        -p $hap0_dir/hap0 \
+        -hid 0 \
+        -ob $fixed_bam \
+        -h0b $h0_bam \
+        -h1b $h1_bam \
+        -r $gene_work_dir/$hla.1.raw.fa
+    
+    """
+
+
+    hap1_dir=$gene_work_dir/hap1
+    if [ ! -d $hap1_dir ]; then
+        mkdir -p $hap1_dir
+    fi
+    python $scripts_dir/parsesv2seg_speclong.py \
+        -sv $fmt_sv \
+        -p $hap1_dir/hap1 \
+        -hid 1 \
+        -ob $fixed_bam \
+        -h0b $h0_bam \
+        -h1b $h1_bam \
+        -r $gene_work_dir/$hla.2.raw.fa
+
+# ############################################################################ matching
+echo "matching for $sample !"
+h0_g=$hap0_dir/hap0_graph.txt
+h0_path=$hap0_dir/hap0_path.txt
+h0_c_path=$hap0_dir/hap0_c_path.txt
+h0_new_g=$hap0_dir/hap0_new_graph.txt
+
+    # check
+    sv_flag_file=$hap0_dir/hap0_nosv.flag
+    if [ -s "$sv_flag_file" ]; then
+        echo "$sv_flag_file exists and is not empty."
+        # cp $hap0_dir/hap0_seg.fa $hap0_dir/hap0_asm.fa
+        # sed -i '1c\>mhc_hap_0' $hap0_dir/hap0_asm.fa
+    else
+        echo "$sv_flag_file does not exist or is empty."
+        /gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/seqGraph/build3/matching \
+        -b \
+        --model 1 \
+        -v 1 \
+        -g $h0_g \
+        -r $h0_path \
+        -c $h0_c_path \
+        -m $h0_new_g \
+        --break_c
+        # make fasta for hap0
+        samtools faidx $hap0_dir/hap0_seg.fa
+
+        echo """
+            python $scripts_dir/make_fa_from_path.py \
+            $h0_path \
+            $hap0_dir/hap0_seg.txt \
+            $hap0_dir/hap0_seg.fa \
+            $hap0_dir/hap0_asm.fa \
+            0 
+        """
+
+        python $scripts_dir/make_fa_from_path.py \
+            $h0_path \
+            $hap0_dir/hap0_seg.txt \
+            $hap0_dir/hap0_seg.fa \
+            $hap0_dir/hap0_asm.fa \
+            0 
+
+        mv -f $hap0_dir/hap0_asm.fa $gene_work_dir/$hla.1.raw.fa
+    fi
+    h1_g=$hap1_dir/hap1_graph.txt
+    h1_path=$hap1_dir/hap1_path.txt
+    h1_c_path=$hap1_dir/hap1_c_path.txt
+    h1_new_g=$hap1_dir/hap1_new_graph.txt
+
+    # check
+    sv_flag_file=$hap1_dir/hap1_nosv.flag
+    if [ -s "$sv_flag_file" ]; then
+        echo "$sv_flag_file exists and is not empty."
+        # cp $hap1_dir/hap1_seg.fa $hap1_dir/hap1_asm.fa
+        # sed -i '1c\>mhc_hap_1' $hap1_dir/hap1_asm.fa
+    else
+        echo "$sv_flag_file does not exist or is empty."
+        /gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/seqGraph/build3/matching \
+        -b \
+        --model 1 \
+        -v 1 \
+        -g $h1_g \
+        -r $h1_path \
+        -c $h1_c_path \
+        -m $h1_new_g \
+        --break_c
+        # make fasta for hap1
+        samtools faidx $hap1_dir/hap1_seg.fa
+        python $scripts_dir/make_fa_from_path.py \
+            $h1_path \
+            $hap1_dir/hap1_seg.txt \
+            $hap1_dir/hap1_seg.fa \
+            $hap1_dir/hap1_asm.fa \
+            1 
+        mv -f $hap1_dir/hap1_asm.fa $gene_work_dir/$hla.2.raw.fa
+    fi
 fi
 
 

@@ -1,69 +1,331 @@
-# SpecLong
+# SpecLong: A Tool for Accurate Typing of Diverse Immune-Related Gene Families from Long-Read Sequencing Data
 
-## install
+**SpecLong** is a bioinformatics software tool designed to accurately type five key immune-related gene families—**HLA, KIR, IG, TCR, and CYP**—from long-read sequencing data. These genes are critical for human immune functions and drug metabolism, but their genetic complexity makes them difficult to decode using traditional short-read sequencing methods. SpecLong leverages the advantages of long-read sequencing technologies, such as **Nanopore** and **PacBio**, to provide highly accurate genotyping of these gene families.
+
+### Key features of **SpecLong** include:
+
+1. **Accurate Typing of Immune-Related Genes**  
+   SpecLong can type **HLA, KIR, IG, TCR, and CYP** genes with high accuracy by categorizing long reads to specific loci and selecting the best-matching alleles from a reference database.
+
+2. **Broad Compatibility**  
+   It supports whole-genome sequencing (WGS) and targeted amplicon sequencing data from various long-read sequencing platforms like ONT and PacBio.
+
+3. **Superior Performance**  
+   SpecLong outperforms existing tools such as **SpecLong**, **HLA*LA**, and **Pangu** in typing accuracy, particularly for **HLA** and **CYP2D6** genes. It is also the only tool capable of typing **KIR** and **IG/TCR** from long-read data.
+
+4. **Consensus Sequence Reconstruction**  
+   It bins reads to alleles and reconstructs consensus sequences, ensuring high-quality haplotype sequences for each typed gene.
+
+5. **Visualization of Results**  
+   SpecLong provides visual reports in an **IGV-like report**, allowing users to observe novel variants and the confidence of typing results, making it easier to interpret and validate findings.
+
+6. **Efficient and User-Friendly**  
+   SpecLong is computationally efficient, making it suitable for use on personal computers, enabling convenient use in clinical settings.
+
+
+## Install  
+First, create the env with conda or mamba, and activate the env. 
+
+**Use conda**
+```
+git clone git@github.com:deepomicslab/SpecLong.git
+cd SpecLong/
+conda env create --prefix=./speclong_env -f environment.yml
+conda activate ./speclong_env
 
 ```
-conda env create --name speclong -f environment.yml
+
+**For faster installation and environment management, we recommend using mamba.**
+
+```
+git clone git@github.com:deepomicslab/SpecLong.git
+cd SpecLong/
+mamba env create --prefix=./speclong_env -f environment.yml
+mamba activate ./speclong_env
+
 ```
 
-## extract reads from WGS data
-run.extract.reads.sh
 
-## run
-python3 main.py
+Second, make the softwares in bin/ executable.
+```
+chmod +x -R bin/*
+```
+Third, build the database. You can build a database for all gene families, or just the ones you need.
+```
+python scripts/make_db.py -o ./db  -i HLA
 
+python scripts/make_db.py -o ./db  -i KIR
+
+python scripts/make_db.py -o ./db  -i CYP
+
+python scripts/make_db.py -o ./db  -i IG_TR
+```
+Perform SpecLong with
+```
+python3 script/main.py -h
+```
+
+Note:
+
+
+- SpecLong now supports Linux and Windows WSL systems.
+
+
+
+
+## Test
+Please go to the `example/` folder, run SpecLong with given scripts, and find results in the `output/`.
+
+## Basic Usage  
+
+### Main functions
+| Scripts | Description |
+| --- | --- |
+|script/ExtractReads.sh| Extract gene-related reads from enrichment-free data.|
+|script/main.py| Typing with naopore or pacbio data  |
+
+
+
+### Extract gene-related reads
+First extract gene reads with enrichment-free data. Otherwise, Gnene typing would be slow. Map reads to `hg19` or `hg38`, then use `script/ExtracReads.sh` to extract gene-related reads. We use the script of [Kourami](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-018-1388-2) with minor revision for this step. 
+Extract gene-related reads by
+```
+usage() {
+  echo "Usage: $0 -s <sample_id> -i <input_bam_or_cram> -g <gene_class> -o <output_directory> [-r <reference>]"
+  echo "  -s  Sample ID or gene ID (required)"
+  echo "  -i  Input BAM or CRAM file mapped to hg38 (required)"
+  echo "  -g  Gene class, one of: HLA, KIR, CYP, IG_TR (required)"
+  echo "  -o  Output directory (required)"
+  echo "  -r  Reference file (required if input is CRAM)"
+  exit 1
+}
+```
+
+## Gene Typing 
+Full-resolution gene typing using SpecLong. We strongly recommend utilizing only gene-related reads. Specifically, for enrichment-free data, we recommend first performing the aforementioned step.
+
+### HLA Typing
+
+Perform full-resolution HLA typing with WGS or amplicon nanopore reads by
+```
+python3 SpecLong/main.py \
+        -r <fastq> \
+        -j <threads> \
+        -i HLA \
+        -n <sample_id> \
+        -o <outdir> \
+        --db SpecLong/db \
+        -y nanopore \
+        --align_method_1 minimap2
+```
+Perform full-resolution HLA typing with WGS or amplicon pacbio hifi reads by
+```
+python3 SpecLong/main.py \
+        -r <fastq> \
+        -j <threads> \
+        -i HLA \
+        -n <sample_id> \
+        -o <outdir> \
+        --db SpecLong/db \
+        -y pacbio-hifi \
+        --align_method_1 minimap2
+```
+Perform full-resolution HLA typing with WGS or amplicon pacbio clr reads by
+```
+python3 SpecLong/main.py \
+        -r <fastq> \
+        -j <threads> \
+        -i HLA \
+        -n <sample_id> \
+        -o <outdir> \
+        --db SpecLong/db \
+        -y pacbio \
+        --align_method_1 minimap2
+```
+Perform full-resolution HLA typing with PacBio PacBio Iso-seq/traditional cDNA long reads
+```
+python /scratch/project/cs_shuaicli/wxd/app/SpecLong/scripts/main.py \
+        -r <fastq> \
+        -j <threads> \
+        -i HLA \
+        -n <sample_id> \
+        -o <outdir> \
+        --db SpecLong/db  \
+        --seq_tech rna \
+        --RNA_type traditional
+```
+Perform full-resolution HLA typing with Nanopore Direct RNA-seq long reads
+```
+python /scratch/project/cs_shuaicli/wxd/app/SpecLong/scripts/main.py \
+        -r <fastq> \
+        -j <threads> \
+        -i HLA \
+        -n <sample_id> \
+        -o <outdir> \
+        --db SpecLong/db  \
+        --seq_tech rna \
+        --RNA_type Direct
+```
+Perform full-resolution HLA typing with Nanopore 2D cDNA-seq
+```
+python /scratch/project/cs_shuaicli/wxd/app/SpecLong/scripts/main.py \
+        -r <fastq> \
+        -j <threads> \
+        -i HLA \
+        -n <sample_id> \
+        -o <outdir> \
+        --db SpecLong/db  \
+        --seq_tech rna \
+        --RNA_type 2D
+```
+### KIR Typing
+```
+python3 SpecLong/main.py \
+        -r <fastq> \
+        -j <threads> \
+        -i KIR \
+        -n <sample_id> \
+        -o <outdir> \
+        --db SpecLong/db \
+        -y <datatype> \
+        --align_method_1 minimap2 \
+        --hete_p 0.2
+```
+
+### CYP2D6 Typing
+```
+python3 SpecLong/main.py \
+        -r <fastq> \
+        -j <threads> \
+        -i CYP \
+        -n <sample_id> \
+        -o <outdir> \
+        --db SpecLong/db \
+        -y <datatype>
+```
+
+### IG&TCR Typing
+```
+python3 SpecLong/main.py \
+        -r <fastq> \
+        -j <threads> \
+        -i CYP \
+        -n <sample_id> \
+        -o <outdir> \
+        --db SpecLong/db \
+        -y <datatype> \
+        -hg38 <no_alt_ref>
+```
+
+
+Full arguments can be seen in
 ```
 usage: python3 main.py -h
 
-HLA Typing with only long-read data.
+Typing with only long-read data.
 
 Required arguments:
-  -r                 Long-read fastq file. PacBio or Nanopore. (default: None)
-  -n                 Sample ID (default: None)
-  -o                 The output folder to store the typing results. (default: ./output)
-  -i                 HLA,KIR,CYP,IG_TR (default: HLA)
+  -r                  Long-read fastq file. PacBio or Nanopore. (default: None)
+  -n                  Sample ID (default: None)
+  -o                  The output folder to store the typing results. (default: ./output)
+  -i                  HLA,KIR,CYP,IG_TR (default: HLA)
 
 Optional arguments:
-  -j                 Number of threads. (default: 5)
-  -k                 The mean depth in a window lower than this value will be masked by N, set 0 to avoid
-                       masking (default: 5)
-  -y                 Read type, [nanopore|pacbio]. (default: pacbio)
-  --db               db dir. (default: /home/wangshuai/softwares/SpecLong/scripts/../db/)
-  -f, --first_run  set False for rerun (default: True)
+  -j                  Number of threads. (default: 5)
+  --mode              4 represents all steps, 3 skip first, 2 skip two, 3, skipt three (default: 4)
+  --analyze_method    phase/assembly (default: phase)
+  -k                  The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking (default: 5)
+  -y                  Read type, [nanopore|pacbio|pacbio-hifi]. (default: pacbio)
+  --db                db dir. (default: /run/media/wangxuedong/One Touch/speclong_latest/SpecLong/scripts/../db/)
+  --hg38              referece fasta file, used by IG_TR typing, generated by extract_VDJ_segments_from_hg38.py (default: /run/media/wangxuedong/One Touch/speclong_latest/SpecLong/scripts/../VDJ_ref/IG_TR.segment.fa)
+  -f, --first_run   set False for rerun (default: True)
+  --min_identity      Minimum identity to assign a read. (default: 0.85)
+  --hete_p            Hete pvalue. (default: 0.3)
+  --candidate_allele_num 
+                        Maintain this number of alleles for ILP step. (default: 200)
+  --min_read_num      min support read number for each locus. (default: 2)
+  --max_read_num      max support read number for each locus. (default: 500)
+  -rt, --RNA_type   traditional,2D,Direct,SIRV (default: traditional)
+  --seq_tech          Amplicon sequencing or WGS sequencing [wgs|amplicon]. (default: wgs)
+  --align_method_1    align method in read binning, bwa or minimap2 (default: bwa)
+  --align_method_2    align method in typing, bwa or minimap2 (default: minimap2)
+  -v, --version         Display the version number (default: False)
   -h, --help
 ```
 
-## output
-HLA,KIR,CYP: `HG00514.HLA.type.result.txt`, `HG00514.KIR.type.result.txt`, `HG00514.CYP.type.result.txt`
+
+
+
+## Interpret output
+In the denoted outdir, the results of each sample are saved in a folder named as the sample ID.  
+
+In the directory of one specific sample, you will find the below files:
+| Output | Description |
+| --- | --- |
+| sample_id.GENE.final.type.result.formatted.txt | GENE-typing results for all alleles |
+| sample_id.pdf | Visualization report of the sample |
+| Sequences/*fasta | Reconstructed allele sequences (the low-depth region is masked by N) |
+| Genes_step2/*phased.vcf.gz | Phased vcf file for each gene  |
+
+
+If you performed RNA-Seq typing, GENE-typing result file is formated as follow:
+| Output | Description |
+| --- | --- |
+| sample_id.GENE.final.rna.type.result.txt | Typing results for RNA-Seq reads |
+| sample_id.GENE.final.rna.type.result.g.txt | Typing results at G group resolution for RNA-Seq reads|
+
+
+1. **An example for `sample_id.GENE.final.type.result.formatted.txt is as below:** 
 ```
-Locus   Chromosome      Allele  Reads_num
-HLA-A   1       HLA-A*02:01:01:01;HLA-A*01:01:01:01;HLA-A*01:01:01:02N;HLA-A*01:01:01:03;HLA-A*01:01:01:04;HLA-A*01:01:01:05;HLA-A*01:01:01:06;HLA-A*01:01:01:07;HLA-A*01:01:01:08;HLA-A*01:01:01:09;HLA-A*01:01:01:10;HLA-A*01:01:01:11;HLA-A*01:01:01:12;HLA-A*01:01:01:13;HLA-A*01:01:01:14;HLA-A*01:01:01:16;HLA-A*01:01:01:17;HLA-A*01:01:01:18;HLA-A*01:01:01:19;HLA-A*01:01:01:20;HLA-A*01:01:01:21;HLA-A*01:01:01:22;HLA-A*01:01:01:23;HLA-A*01:01:01:24;HLA-A*01:01:01:25;HLA-A*01:01:01:26;HLA-A*01:01:01:27;HLA-A*01:01:01:28;HLA-A*01:01:01:29;HLA-A*01:01:01:30    15
-HLA-A   2       HLA-A*02:01:01:01;HLA-A*01:01:01:01;HLA-A*01:01:01:02N;HLA-A*01:01:01:03;HLA-A*01:01:01:04;HLA-A*01:01:01:05;HLA-A*01:01:01:06;HLA-A*01:01:01:07;HLA-A*01:01:01:08;HLA-A*01:01:01:09;HLA-A*01:01:01:10;HLA-A*01:01:01:11;HLA-A*01:01:01:12;HLA-A*01:01:01:13;HLA-A*01:01:01:14;HLA-A*01:01:01:16;HLA-A*01:01:01:17;HLA-A*01:01:01:18;HLA-A*01:01:01:19;HLA-A*01:01:01:20;HLA-A*01:01:01:21;HLA-A*01:01:01:22;HLA-A*01:01:01:23;HLA-A*01:01:01:24;HLA-A*01:01:01:25;HLA-A*01:01:01:26;HLA-A*01:01:01:27;HLA-A*01:01:01:28;HLA-A*01:01:01:29;HLA-A*01:01:01:30    15
-HLA-B   1       HLA-B*40:01:02:04;HLA-B*40:01:02:31     27
-HLA-B   2       HLA-B*46:01:01:01       27
-HLA-C   1       HLA-C*01:02:01:01       30
-HLA-C   2       HLA-C*03:04:01:12;HLA-C*03:04:01:02     30
-HLA-DMA 1       HLA-DMA*01:01:01:02     56
+# version: IPD-IMGT/HLA 3.56.0
+Locus	Chromosome	Genotype	Match_info	Reads_num	Step1_type	One_guess
+HLA-A	1	HLA-A*02:151	HLA-A*02:151|3516|1.0	25	HLA-A*02:151	HLA-A*02:151
+HLA-A	2	HLA-A*03:01:01:01 HLA-A*03:01:01:01|3516|1.0	HLA-A*03:01:01:01	HLA-A*03:01:01:01
+HLA-U	1	HLA-U*01:04	HLA-U*01:04|730|1.0	27	HLA-U*01:04	HLA-U*01:04
+HLA-U	2	HLA-U*01:03	HLA-U*01:03|732|1.0	27	HLA-U*01:03	HLA-U*01:03
+HLA-DMA	1	HLA-DMA*01:01:01:04	HLA-DMA*01:01:01:04|5013|1.0	37	HLA-DMA*01:01:01:04	HLA-DMA*01:01:01:04
+HLA-DMA	2	HLA-DMA*01:01:01:02	HLA-DMA*01:01:01:02|5013|1.0	37	HLA-DMA*01:01:01:02 HLA-DMA*01:01:01:02
+HLA-J	1	HLA-J*01:01:01:05	HLA-J*01:01:01:05|3544|1.0	51	HLA-J*01:01:01:05	HLA-J*01:01:01:05
+HLA-J	2	HLA-J*01:01:01:04	HLA-J*01:01:01:04|3544|1.0	51	HLA-J*01:01:01:04	HLA-J*01:01:01:04
+HLA-DPA1	1	HLA-DPA1*01:03:01:02	HLA-DPA1*01:03:01:02|9775|1.0	56	HLA-DPA1*01:03:01:02;HLA-DPA1*01:03:01:30;HLA-DPA1*01:03:17;HLA-DPA1*01:03:01:03;HLA-DPA1*01:03:01:32	HLA-DPA1*01:03:01:02
+HLA-DPA1	2	HLA-DPA1*01:03:01:05;HLA-DPA1*01:03:01:15;HLA-DPA1*01:03:01:74	HLA-DPA1*01:03:01:05|9757|1.0;HLA-DPA1*01:03:01:15|9756|1.0;HLA-DPA1*01:03:01:74|9718|1.0	56	HLA-DPA1*01:03:01:05;HLA-DPA1*01:03:01:15	HLA-DPA1*01:03:01:05
+HLA-DQA1	1	HLA-DQA1*01:03:01:02	HLA-DQA1*01:03:01:02|6492|1.0	58	HLA-DQA1*01:03:01:02 HLA-DQA1*01:03:01:02
+HLA-DQA1	2	HLA-DQA1*01:05:01:01	HLA-DQA1*01:05:01:01|6485|1.0	58	HLA-DQA1*01:05:01:01	HLA-DQA1*01:05:01:01
+HLA-DPA2	1	HLA-DPA2*01:01:01:01	HLA-DPA2*01:01:01:01|6743|1.0	46	HLA-DPA2*01:01:01:01	HLA-DPA2*01:01:01:01
+HLA-DPA2	2	HLA-DPA2*01:01:01:02	HLA-DPA2*01:01:01:02|6743|1.0	46	HLA-DPA2*01:01:01:02	HLA-DPA2*01:01:01:02
+HLA-G	1	HLA-G*01:01:01:01	HLA-G*01:01:01:01|3138|1.0	45	HLA-G*01:01:01:01	HLA-G*01:01:01:01
+HLA-G	2	HLA-G*01:01:01:05	HLA-G*01:01:01:05|3138|1.0	45	HLA-G*01:01:01:05	HLA-G*01:01:01:05
+HLA-P	1	HLA-P*02:01:01:01	HLA-P*02:01:01:01|2931|1.0	39	HLA-P*02:01:01:01	HLA-P*02:01:01:01
+...
 ```
 
-IG_TR: `HG00514_IG.IG.TR.allele.txt`:
-```
-sample  gene    allele  score   len     start   end     chr     hap
-HG00514_IG      IGHD2-15        IGHD2-15*01     100.000 31      39027   39057   chr14_igh       hap1
-HG00514_IG      IGHD2-21        IGHD2-21*01     100.000 28      29648   29675   chr14_igh       hap1
-HG00514_IG      IGHD2-8 IGHD2-8*02      100.000 31      48281   48311   chr14_igh       hap1
-HG00514_IG      IGHD2/OR15-2a   IGHD2/OR15-2a*01        100.000 31      57895   57925   chr14_igh       hap1
-HG00514_IG      IGHD3-22        IGHD3-22*01     100.000 31      27176   27206   chr14_igh       hap1
-HG00514_IG      IGHD3-9 IGHD3-9*01      100.000 31      45751   45781   chr14_igh       hap1
-HG00514_IG      IGHD3/OR15-3a   IGHD3/OR15-3a*01        100.000 31      55428   55458   chr14_igh       hap1
-HG00514_IG      IGHJ1   IGHJ1*01        100.000 52      6964    7015    chr14_igh       hap1
-HG00514_IG      IGHJ2   IGHJ2*01        100.000 53      6756    6808    chr14_igh       hap1
-HG00514_IG      IGHJ3   IGHJ3*02        100.000 50      6144    6193    chr14_igh       hap1
-HG00514_IG      IGHJ4   IGHJ4*02        100.000 48      5772    5819    chr14_igh       hap1
-HG00514_IG      IGHJ5   IGHJ5*02        100.000 51      5371    5421    chr14_igh       hap1
-HG00514_IG      IGHJ6   IGHJ6*02        100.000 62      4756    4817    chr14_igh       hap1
-HG00514_IG      IGHV1-18        IGHV1-18*01     100.000 296     311366  311661  chr14_igh       hap1
-HG00514_IG      IGHV1-2 IGHV1-2*04      100.000 296     112598  112893  chr14_igh       hap1
-HG00514_IG      IGHV1-24        IGHV1-24*01     100.000 296     402977  403272  chr14_igh       hap1
-HG00514_IG      IGHV1-3 IGHV1-3*01      100.000 296     131126  131421  chr14_igh       hap1
-```
+
+Interpret each column in the annotation line as
+|Column| Description |
+| --- | --- |
+|1st| gene name|
+|  2nd |  1 for haplotype 1, 2 for haplotype 2 |
+| 3rd  | The best matched IMGT allele, i.e., the typing result  |
+|  4th | Matched alleles with their length and align ratio |
+|  5th | Support reads count  |
+|  6th | Step 1 allele result |
+|  7th | One guess allele result  |
+
+
+
+
+
+## Dependencies 
+
+### Systematic requirement
+SpecLong requires `conda 4.12.0+`, `cmake 3.16.3+`, and `GCC 9.4.0+` for environment construction and software installation.
+
+### Programming 
+* python=3.8.12 or above  
+
+### Third party packages
+SpecLong enables automatic installation of these third party packages using `conda` or `mamba`. 
+
+
+## Getting help
+Should you have any queries, please feel free to contact us, we will reply as soon as possible (swang66-c@my.cityu.edu.hk).

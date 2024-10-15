@@ -48,82 +48,86 @@ def main(args):
 
         # build individual ref when first run
         my_db = My_db(args)
-
+        # iteration step
         db = my_db.full_db
-        command = f"""
-        ## third: build individual reference for each HLA locus, two ref version
-        python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} {args["i"]} \
-            {args["seq_tech"]} {args["RNA_type"]}
-        """
-        if args["mode"] >=1:
-            os.system(command)
-
-        if args["analyze_method"] == "phase":
+        for iteration in range(1, args["iteration"]+1):
+            print(f"iteration {iteration}", flush=True)
             command = f"""
-            ## forth: call & phasing variant & typing
-            python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} \
-                -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]}
-
+            ## third: build individual reference for each HLA locus, two ref version
+            python3 {sys.path[0]}/get_2ref_align.py {args["n"]} {db} {my_db.individual_ref_dir} {args["o"]} {args["y"]} {args["j"]} {args["i"]} \
+                {args["seq_tech"]} {args["RNA_type"]}
             """
             if args["mode"] >=1:
                 os.system(command)
 
-        elif args["analyze_method"] == "assembly":
-            command = f"""
-            ## forth: assembly
-            python3 {sys.path[0]}/assembly.py -i {args["i"]} -o {args["o"]} -n {args["n"]} -j {args["j"]} -y {args["y"]}
-            """
-            if args["mode"] >= 1:
-                os.system(command)
-        else:
-            print("Please choose phase or assembly as analyze method.", flush=True)
-            return
+            if args["analyze_method"] == "phase":
+                command = f"""
+                ## forth: call & phasing variant & typing
+                python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} \
+                    -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]} --iteration {iteration}
+
+                """
+                if args["mode"] >=0:
+                    os.system(command)
+
+            elif args["analyze_method"] == "assembly":
+                command = f"""
+                ## forth: assembly
+                python3 {sys.path[0]}/assembly.py -i {args["i"]} -o {args["o"]} -n {args["n"]} -j {args["j"]} -y {args["y"]}
+                """
+                if args["mode"] >= 1:
+                    os.system(command)
+            else:
+                print("Please choose phase or assembly as analyze method.", flush=True)
+                return
         
         # format result file
         command = f"""
-        python3 {sys.path[0]}/format_result.py {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.txt {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.formatted.txt
+        python3 {sys.path[0]}/format_result.py {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.{iteration}.result.txt {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.formatted.txt
         """
         if args["seq_tech"] != "rna":
             os.system(command)
+            for i in range(1, args["iteration"]):
+                os.system(f"rm {args['o']}/{args['n']}/{args['n']}.{args['i']}.final.type.{i}.result.txt")
 
         
 
         
         # remap reads for viz
-        # if args["mode"] >=0:
-        #     # map to step 2 alleles (if it's calssified as het in step 1, use split reads to map to step 2 alleles. else, use all reads to map to step 2 alleles)
-        #     command = f"""
-        #     python3 {sys.path[0]}/remap.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
-        #     """
-        #     print(command, flush=True)
-        #     os.system(command)
+    #     if args["mode"] >=0:
+    #         # map to step 2 alleles (if it's calssified as het in step 1, use split reads to map to step 2 alleles. else, use all reads to map to step 2 alleles)
+    #         command = f"""
+    #         python3 {sys.path[0]}/remap.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
+    #         """
+    #         print(command, flush=True)
+    #         os.system(command)
             
-        # # remap allele for viz
-        # if args["mode"] >=-1:
-        #     command = f"""
-        #     python3 {sys.path[0]}/remap_allele.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
-        #     """
-        #     print(command, flush=True)
-        #     os.system(command)
+    #     # remap allele for viz
+    #     if args["mode"] >=-1:
+    #         command = f"""
+    #         python3 {sys.path[0]}/remap_allele.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
+    #         """
+    #         print(command, flush=True)
+    #         os.system(command)
 
-        # # visualization 
-        # if args["mode"] >=-2:
-        #     command = f"""
-        #     python3 {sys.path[0]}/visualization.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
-        #     """
-        #     print(command, flush=True)
-        #     os.system(command)
+    #     # visualization 
+    #     if args["mode"] >=-2:
+    #         command = f"""
+    #         python3 {sys.path[0]}/visualization.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
+    #         """
+    #         print(command, flush=True)
+    #         os.system(command)
    
-    elif args['i'] == "IG_TR":
-        my_db = My_db(args)
-        command = f"""
-        bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
-        python3 {sys.path[0]}/get_IG_TR_depth.py --lite 0 -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
-        """
-        os.system(command)
-    else:
-        print("Please choose HLA, KIR, CYP or IG_TR as analyze method.", flush=True)
-        return
+    # elif args['i'] == "IG_TR":
+    #     my_db = My_db(args)
+    #     command = f"""
+    #     bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
+    #     python3 {sys.path[0]}/get_IG_TR_depth.py --lite 0 -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
+    #     """
+    #     os.system(command)
+    # else:
+    #     print("Please choose HLA, KIR, CYP or IG_TR as analyze method.", flush=True)
+    #     return
     
 
     if args['i'] == "CYP" :
@@ -193,7 +197,7 @@ def main(args):
         
 if __name__ == "__main__":   
 
-    parser = argparse.ArgumentParser(description="HLA Typing with only long-read data.", add_help=False, \
+    parser = argparse.ArgumentParser(description="Typing with only long-read data.", add_help=False, \
     usage="python3 %(prog)s -h", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     required = parser.add_argument_group("Required arguments")
     optional = parser.add_argument_group("Optional arguments")
@@ -221,6 +225,7 @@ if __name__ == "__main__":
     optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon].", metavar="\b", default="wgs")
     optional.add_argument("--align_method_1", type=str, help="align method in read binning, bwa or minimap2", metavar="\b", default='bwa')
     optional.add_argument("--align_method_2", type=str, help="align method in typing, bwa or minimap2", metavar="\b", default='minimap2')
+    optional.add_argument("--iteration", type=int, help="iteration count", metavar="\b", default=1)
 
     optional.add_argument('-v', '--version', action='store_true', help='Display the version number')
     optional.add_argument("-h", "--help", action="help")
