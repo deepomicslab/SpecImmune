@@ -99,9 +99,9 @@ dendro_plot <- ggdendrogram(dendro_data, rotate = TRUE) +
 # combined_plot <- plot_grid(dendro_data, p1, p2, ncol = 1, rel_heights = c(0.2, 0.8, 0.05))
 # combined_plot
 
-# p1%>%
-#   insert_left(p2,width = 0.05)
+p1%>%
+  insert_left(p2,width = 0.05)
 
-dendro_plot
+# dendro_plot
 
 dev.off()
