@@ -10,13 +10,13 @@ df<-read.table("cyp_activity.csv", sep=",", header=TRUE)
   
   p1<-ggplot(df, aes(x=Super_Pop, y = Activity_score, fill=Super_Pop)) +
     geom_boxplot()  +
-    stat_summary(fun=mean, geom="point", shape=20, size=5, color="yellow", fill="yellow") +
+    stat_summary(fun=mean, geom="point", shape=20, size=5, color="skyblue", fill="skyblue") +
     theme_classic()+
     xlab('')+
     ylab('CYP2D6 Activity Score')+
   theme(legend.position = "none")
 
-  p1+scale_fill_brewer(palette="Dark2")
+  p1+scale_fill_manual(values = c("#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"))
   
 
 df1<-filter(df, Super_Pop == "EAS")

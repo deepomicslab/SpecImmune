@@ -6,18 +6,18 @@ library(cowplot)
 library(ggpubr)
 # library(ggstance)
 
-df<-read.table("vdj_compare_hete_num_EAS.csv", sep=",", header=TRUE)
+df<-read.table("vdj_compare_hete_num_AFR.csv", sep=",", header=TRUE)
 
 
 df <- filter(df, p.adj < 0.05)
 
-pdf(file="vdj_comp_hete_enriched_EAS.pdf", width=6, height=6, onefile=FALSE)
+pdf(file="vdj_comp_hete_enriched_AFR.pdf", width=6, height=10, onefile=FALSE)
 
 
 # Create the plot
 h1<-ggplot(df, aes(x = Gene, y = fold_change)) +
   geom_point(aes(size = total, color =  log10(p.adj))) +
-  scale_color_gradient(low = "red", high = "blue") +
+  scale_color_gradient(low ="#2a347a", high = "#d6d69b") +
   theme_bw()+
   coord_flip()+
   xlab("Gene")+

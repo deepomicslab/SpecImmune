@@ -42,7 +42,8 @@ p2<-ggplot(df2,aes(x=x,y=y))+
         axis.title = element_blank(),
         axis.text = element_blank(),
         legend.position = "left",
-        legend.title = element_blank())
+        legend.title = element_blank())+
+  scale_fill_manual(values = c("#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"))
 #         +
 #   scale_fill_manual(values = c("green","blue","red"))
 df3<-read.csv("cyp_hap_count.csv",header=T, sep=",")

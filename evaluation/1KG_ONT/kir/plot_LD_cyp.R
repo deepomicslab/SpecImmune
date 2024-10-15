@@ -8,7 +8,7 @@ library(reshape2)
 library(ggdendro)
 library(cowplot)
 
-# pdf(file="figures/hla_kir_cyp_vdj_LD_heatmap.pdf", width=18, height=17, onefile=FALSE)
+# pdf(file="figures/hla_kir_cyp_vdj_LD_heatmap.pdf", width=20, height=19, onefile=FALSE)
 # df<-read.table("hla_kir_cyp_vdj_LD_values.csv", sep=",", header=TRUE)
 # df2<-read.csv("vdj_gene_type.csv",header=T, sep=",")
 
@@ -87,17 +87,8 @@ p2<-ggplot(df2,aes(x=x,y=y))+
   scale_fill_manual(values = c("#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"))
 
 
-# Create the dendrogram plot
-dendro_data <- as.dendrogram(hc)
-dendro_plot <- ggdendrogram(dendro_data, rotate = TRUE) +
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.title.x = element_blank(),
-        axis.title.y = element_blank())
 
-# Combine the dendrogram, heatmap, and annotation plot
-# combined_plot <- plot_grid(dendro_data, p1, p2, ncol = 1, rel_heights = c(0.2, 0.8, 0.05))
-# combined_plot
+
 
 p1%>%
   insert_left(p2,width = 0.05)
@@ -105,3 +96,17 @@ p1%>%
 # dendro_plot
 
 dev.off()
+
+
+# pdf(file="figures/hla_kir_cyp_vdj_LD_tree.pdf", width=10, height=25, onefile=FALSE)
+# # Create the dendrogram plot
+# dendro_data <- as.dendrogram(hc)
+# dendro_plot <- ggdendrogram(dendro_data, rotate = TRUE) +
+#   theme(
+#         axis.title.x = element_blank(),
+#         axis.title.y = element_blank())
+
+# dendro_plot%>%
+#   insert_left(p2,width = 0.05)
+
+# dev.off()
