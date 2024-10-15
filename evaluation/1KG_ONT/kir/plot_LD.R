@@ -13,11 +13,14 @@ library(aplot)
 pdf(file="figures/hla_kir_LD_heatmap.pdf", width=9, height=8, onefile=FALSE)
 df<-read.table("hla_kir_LD_values.csv", sep=",", header=TRUE)
 
-
+# df <- df[df$sample_num >100,]
+## filter NA
+df <- df[!is.na(df$Wn),]
 
 
 # Create a matrix for clustering
-df_matrix <- reshape2::acast(df, gene1 ~ gene2, value.var = "D", fill = 0)
+df_matrix <- reshape2::acast(df, gene1 ~ gene2, value.var = "Wn", fill = 0)
+# df_matrix <- reshape2::acast(df, gene1 ~ gene2, value.var = "D", fill = 0)
 
 # Compute the distance matrix
 dist_matrix <- dist(df_matrix)
@@ -33,14 +36,14 @@ df$gene2 <- factor(df$gene2, levels = hc$labels[hc$order])
 # Filter the data to include only the lower triangular part
 # df <- df[df$gene1 <= df$gene2, ]
 
-p1<-ggplot(data = df, aes(x=gene1, y=gene2, fill=D)) + 
+p1<-ggplot(data = df, aes(x=gene1, y=gene2, fill=Wn)) + 
   geom_tile()+
    theme(axis.text.x = element_text())+  #size = 8
    scale_x_discrete(guide = guide_axis(angle = 90))+
  geom_tile(color = "white")+
- scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0.6,
+ scale_fill_gradient2(low = "blue", high = "red", mid = "yellow", midpoint = 0.6,
     space = "Lab",   #midpoint = 0.3, limit = c(0,0.5),
-    name="D'") +
+    name="Wn") +
 #   theme_classic()
 
     theme(
