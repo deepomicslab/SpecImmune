@@ -6,31 +6,33 @@ library(cowplot)
 # library(grid)
 
 
-pdf(file="figures/tcr11.pdf", width=12, height=6, onefile=FALSE)
+pdf(file="figures/tcr11.pdf", width=13, height=6, onefile=FALSE)
 
 
 df<-read.table("tcr_11.csv", sep=",", header=TRUE)
 
 df$gene <- factor(df$gene, levels=df$gene)
 
-p1<-ggplot(data=df, aes(x=gene, y=accuracy, fill=subclass)) +
+p1<-ggplot(data=df, aes(x=gene, y=accuracy, fill=class)) +
   geom_bar(stat="identity", width=0.5)+
   # theme_minimal()+
   theme_classic()+
    theme(legend.position = "none", axis.text.x = element_text(size = 5))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
-  ylab("Accuracy")+scale_fill_brewer(palette="Dark2")
+  ylab("Accuracy")+
+  scale_fill_manual(values = c("#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"))
 # p1
 
-p2<-ggplot(data=df, aes(x=gene, y=total, fill=subclass)) +
+p2<-ggplot(data=df, aes(x=gene, y=total, fill=class)) +
   geom_bar(stat="identity", width=0.5)+ #"#E69F00"
   # theme_minimal()+
   theme_classic()+
    theme(legend.position = "none", axis.text.x = element_text(size = 5))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("TCR Loci")+
-  ylab("No. of alleles")+scale_fill_brewer(palette="Dark2")
+  ylab("No. of alleles")+
+  scale_fill_manual(values = c("#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"))
 # p1
 
 prow <- plot_grid(
@@ -41,7 +43,7 @@ prow <- plot_grid(
   nrow = 2
 )
 
-plot_grid(prow, legend, ncol = 1, rel_heights = c(1, .1))
+plot_grid(prow, ncol = 1, rel_heights = c(1, .1))
 
 
 # df <- arrange(df, desc(fold))

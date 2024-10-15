@@ -14,7 +14,7 @@ p1<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = method)) +
   xlab("No. of reads")+
   ylab("Accuracy")+
   ggtitle('1kGP') +
-  scale_color_manual(values = c("slateblue1", "tomato"))+theme_classic()
+  scale_color_manual(values = c("#9fc3d5","#2a347a"))+theme_classic()
 
 
 
@@ -25,7 +25,7 @@ p2<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = method)) +
   xlab("No. of reads")+
   ylab("Accuracy")+
   ggtitle('HPRC HiFi') +
-  scale_color_manual(values = c("slateblue1", "tomato"))+theme_classic()
+  scale_color_manual(values = c("#9fc3d5","#2a347a"))+theme_classic()
 
 
 
@@ -36,7 +36,7 @@ p3<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = method)) +
   xlab("No. of reads")+
   ylab("Accuracy")+
   ggtitle('HPRC ONT') +
-  scale_color_manual(values = c("slateblue1", "tomato"))+theme_classic()
+  scale_color_manual(values = c("#9fc3d5","#2a347a"))+theme_classic()
 
 
 prow <- plot_grid(

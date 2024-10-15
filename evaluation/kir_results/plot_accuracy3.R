@@ -22,14 +22,19 @@ df$accuracy <- as.numeric(as.character(df$accuracy))
 df1 <- dplyr::filter(df, field == 1)
 
 p1<-ggplot(df1, aes(x=dataset, y=accuracy, fill=dataset)) +
-  geom_bar(stat="identity")+theme_classic()+scale_fill_brewer(palette="Dark2")+ coord_cartesian(ylim=c(0.85,0.95))+ 
-   theme(axis.text.x = element_text(size = 8))+
-   scale_x_discrete(guide = guide_axis(angle = 90))+ggtitle('1-field')+xlab('')
+  geom_bar(stat="identity") +
+  theme_classic() +
+  scale_fill_manual(values = c("#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b")) +
+  coord_cartesian(ylim = c(0.85, 0.95)) +
+  theme(axis.text.x = element_text(size = 8)) +
+  scale_x_discrete(guide = guide_axis(angle = 90)) +
+  ggtitle('1-field') +
+  xlab('')
 
 df2 <- dplyr::filter(df, field == 2)
 
 p2<-ggplot(df2, aes(x=dataset, y=accuracy, fill=dataset)) +
-  geom_bar(stat="identity")+theme_classic()+scale_fill_brewer(palette="Dark2")+ coord_cartesian(ylim=c(0.85,0.95))+ 
+  geom_bar(stat="identity")+theme_classic()+scale_fill_manual(values = c("#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"))+ coord_cartesian(ylim=c(0.85,0.95))+ 
    theme(axis.text.x = element_text(size = 8))+
    scale_x_discrete(guide = guide_axis(angle = 90))+ggtitle('2-field')+xlab('')
 
@@ -37,7 +42,7 @@ p2<-ggplot(df2, aes(x=dataset, y=accuracy, fill=dataset)) +
 df3 <- dplyr::filter(df, field == 3)
 
 p3<-ggplot(df3, aes(x=dataset, y=accuracy, fill=dataset)) +
-  geom_bar(stat="identity")+theme_classic()+scale_fill_brewer(palette="Dark2")+ coord_cartesian(ylim=c(0.85,0.95))+ 
+  geom_bar(stat="identity")+theme_classic()+scale_fill_manual(values = c("#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"))+ coord_cartesian(ylim=c(0.85,0.95))+ 
    theme(axis.text.x = element_text(size = 8))+
    scale_x_discrete(guide = guide_axis(angle = 90))+ggtitle('3-field')+xlab('')
 
