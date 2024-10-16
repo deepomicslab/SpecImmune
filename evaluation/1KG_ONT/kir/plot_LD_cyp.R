@@ -7,14 +7,23 @@ library(aplot)
 library(reshape2)
 library(ggdendro)
 library(cowplot)
+library(ape)
 
-# pdf(file="figures/hla_kir_cyp_vdj_LD_heatmap.pdf", width=20, height=19, onefile=FALSE)
-# df<-read.table("hla_kir_cyp_vdj_LD_values.csv", sep=",", header=TRUE)
-# df2<-read.csv("vdj_gene_type.csv",header=T, sep=",")
 
-pdf(file="figures/hla_kir_cyp_LD_heatmap.pdf", width=9, height=8, onefile=FALSE)
-df<-read.table("hla_kir_cyp_LD_values.csv", sep=",", header=TRUE)
-df2<-read.csv("cyp_gene_type.csv",header=T, sep=",")
+# pdf(file="figures/hla_kir_LD_heatmap.pdf", width=9, height=8, onefile=FALSE)
+# df<-read.table("hla_kir_LD_values.csv", sep=",", header=TRUE)
+# df2<-read.csv("gene_type.csv",header=T, sep=",")
+# tree_file <- "tree/hla_kir_tree.nwk"
+
+pdf(file="figures/hla_kir_cyp_vdj_LD_heatmap.pdf", width=20, height=19, onefile=FALSE)
+df<-read.table("hla_kir_cyp_vdj_LD_values.csv", sep=",", header=TRUE)
+df2<-read.csv("vdj_gene_type.csv",header=T, sep=",")
+tree_file <- "tree/all_tree.nwk"
+
+# pdf(file="figures/hla_kir_cyp_LD_heatmap.pdf", width=9, height=8, onefile=FALSE)
+# df<-read.table("hla_kir_cyp_LD_values.csv", sep=",", header=TRUE)
+# df2<-read.csv("cyp_gene_type.csv",header=T, sep=",")
+# tree_file <- "tree/all_cyp_tree.nwk"
 
 ### remove the elements with Wn is NAN or Inf, use filter
 df <- df[df$Wn != "Inf",]
@@ -42,6 +51,10 @@ dist_matrix <- dist(df_matrix)
 # Perform hierarchical clustering
 hc <- hclust(dist_matrix)
 
+# Output the tree in nwk format
+tree <- as.phylo(hc)
+write.tree(tree, file = tree_file)
+
 # Reorder the data based on clustering
 df$gene1 <- factor(df$gene1, levels = hc$labels[hc$order])
 df$gene2 <- factor(df$gene2, levels = hc$labels[hc$order])
@@ -50,7 +63,7 @@ df$gene2 <- factor(df$gene2, levels = hc$labels[hc$order])
 # Filter the data to include only the lower triangular part
 # df <- df[df$gene1 <= df$gene2, ]
 
-p1<-ggplot(data = df, aes(x=gene1, y=gene2, fill=Wn)) + 
+p1<-ggplot(data = df, aes(x=gene1, y=gene2, fill=Wab)) + 
   geom_tile()+
    theme(axis.text.x = element_text())+  #size = 8
    scale_x_discrete(guide = guide_axis(angle = 90))+

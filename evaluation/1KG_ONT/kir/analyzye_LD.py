@@ -24,6 +24,10 @@ def read_LD_values(raw_dir, indir,outfile):
                         D = line.strip().replace('"', '')
                     if i == 2:
                         Wn = line.strip().replace('"', '')
+                    if i == 3:
+                        Wab = line.strip().replace('"', '')
+                    if i == 4:
+                        Wba = line.strip().replace('"', '')
                     if i == 5:
                         hap_num = line.strip().replace('"', '')
                     i += 1
@@ -33,16 +37,17 @@ def read_LD_values(raw_dir, indir,outfile):
             field = file.split("_") 
             gene1 = field[0]
             gene2 = field[1]
-            data.append([gene1, gene2, D, Wn, hap_num, sample_num])
-            data.append([gene2, gene1, D, Wn, hap_num, sample_num])
+            min_w = min(float(Wab), float(Wba))
+            data.append([gene1, gene2, D, Wn, hap_num, sample_num, Wab, min_w])
+            data.append([gene2, gene1, D, Wn, hap_num, sample_num, Wba, min_w])
             gene_set.add(gene1)
             gene_set.add(gene2)
 
             # print (gene1, gene2, D, Wn)
             # break
     for gene in gene_set:
-        data.append([gene, gene, 1, 1, 1000, 1000])
-    df = pd.DataFrame(data, columns = ['gene1', 'gene2', 'D', 'Wn', 'hap_num','sample_num'])
+        data.append([gene, gene, 1, 1, 1000, 1000, 1, 1])
+    df = pd.DataFrame(data, columns = ['gene1', 'gene2', 'D', 'Wn', 'hap_num','sample_num','Wab', 'min_w'])
     df.to_csv(outfile, index = False)
 
 # indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/kir_LD_result/"
