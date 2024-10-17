@@ -32,8 +32,9 @@ p1<-ggplot(data = df, aes(x=Group1, y=Group2, fill=JSD)) +
    theme(axis.text.x = element_text(size = 8))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
  geom_tile(color = "white")+
- scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0.6,
-# scale_fill_gradientn(colors = c("#d93f49", "#e28187", "#ebbfc2", "#d5e1e3", "#afc9cf","#8fb4be"), values = c(0, 0.4, 0.45, 0.5,0.55, 0.6),
+#  scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0.6,
+scale_fill_gradient2(low = "#8fb4be", high = "#d93f49", mid = "white", midpoint = 0.5,
+# scale_fill_gradientn(colors = c("#d93f49", "#e28187", "#ebbfc2", "#d5e1e3", "#afc9cf","#8fb4be"), values = c(0, 0.3, 0.6, 0.62,0.64, 0.66),
     space = "Lab",   #midpoint = 0.3, limit = c(0,0.5),
     name="JSD") +
 #   theme_classic()

@@ -15,12 +15,12 @@ library(ape)
 # df2<-read.csv("gene_type.csv",header=T, sep=",")
 # tree_file <- "tree/hla_kir_tree.nwk"
 
-# pdf(file="figures/hla_kir_cyp_vdj_LD_heatmap.pdf", width=25, height=22, onefile=FALSE)
+# pdf(file="figures/hla_kir_cyp_vdj_LD_heatmap.pdf", width=20, height=19, onefile=FALSE)
 # df<-read.table("hla_kir_cyp_vdj_LD_values.csv", sep=",", header=TRUE)
 # df2<-read.csv("vdj_gene_type.csv",header=T, sep=",")
 # tree_file <- "tree/all_tree.nwk"
 
-pdf(file="figures/hla_kir_cyp_LD_heatmap.pdf", width=9, height=8, onefile=FALSE)
+pdf(file="figures/hla_kir_cyp_LD_heatmap2.pdf", width=9, height=8, onefile=FALSE)
 df<-read.table("hla_kir_cyp_LD_values.csv", sep=",", header=TRUE)
 df2<-read.csv("cyp_gene_type.csv",header=T, sep=",")
 tree_file <- "tree/all_cyp_tree.nwk"
@@ -28,7 +28,7 @@ tree_file <- "tree/all_cyp_tree.nwk"
 ### remove the elements with Wn is NAN or Inf, use filter
 df <- df[df$Wn != "Inf",]
 df <- df[df$Wn != "NaN",]
-# df <- df[df$sample_num >300,]
+# df <- df[df$sample_num >100,]
 ## filter NA
 df <- df[!is.na(df$Wn),]
 head(df)
@@ -63,13 +63,13 @@ df$gene2 <- factor(df$gene2, levels = hc$labels[hc$order])
 # Filter the data to include only the lower triangular part
 # df <- df[df$gene1 <= df$gene2, ]
 
-p1<-ggplot(data = df, aes(x=gene1, y=gene2, fill=Wab)) + 
+p1<-ggplot(data = df, aes(x=gene1, y=gene2, fill=Wn)) + 
   geom_tile()+
    theme(axis.text.x = element_text())+  #size = 8
    scale_x_discrete(guide = guide_axis(angle = 90))+
  geom_tile(color = "white")+
 scale_fill_gradientn(colors = c("#7eced6", "#d4edee", "#f4dedc", "#f7b8b7", "#f39289"), values = c(0, 0.25, 0.5, 0.75, 1),
-       space = "Lab", name = "Wa/b") +
+       space = "Lab", name = "Wn") +
     theme(
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),

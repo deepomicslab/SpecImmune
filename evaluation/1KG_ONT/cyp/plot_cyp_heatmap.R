@@ -19,7 +19,7 @@ p1<-ggplot(data = df, aes(x=Allele, y=Pop, fill=Frequency)) +
    theme(axis.text.x = element_text(size = 8))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
  geom_tile(color = "white")+
- scale_fill_gradient2(low = "blue", high = "red", mid = "white",midpoint = 0.05,
+ scale_fill_gradient2(low = "#8fb4be", high = "#d93f49", mid = "white",midpoint = 0.1,
     space = "Lab",   #midpoint = 0.3, limit = c(0,0.5),
     name="Freq") +
 #   theme_classic()

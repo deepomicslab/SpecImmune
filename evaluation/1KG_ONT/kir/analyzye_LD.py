@@ -8,7 +8,7 @@ def count_line_number_of_file(file):
             i += 1
     return i 
 
-def read_LD_values(raw_dir, indir,outfile):
+def read_LD_values(raw_dir, indir,outfile, sample_num_threshold=500):
     ## for each file in the indir
     ## read the LD values and store them in a df
     ## return the df
@@ -32,6 +32,8 @@ def read_LD_values(raw_dir, indir,outfile):
                         hap_num = line.strip().replace('"', '')
                     i += 1
             sample_num = count_line_number_of_file(raw_dir + file) -1
+            if sample_num < sample_num_threshold:
+                continue
             if Wn == "Inf" or Wn == "NaN":
                 continue
             field = file.split("_") 
@@ -63,12 +65,12 @@ def read_LD_values(raw_dir, indir,outfile):
 # outfile = "hla_kir_LD_values.csv"
 # read_LD_values(raw_dir, indir,outfile)
 
-# raw_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_LD/"
-# indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_LD_result/"
-# outfile = "hla_kir_cyp_LD_values.csv"
-# read_LD_values(raw_dir, indir,outfile)
+raw_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_LD/"
+indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_LD_result/"
+outfile = "hla_kir_cyp_LD_values.csv"
+read_LD_values(raw_dir, indir,outfile)
 
-
+print ("#####################")
 raw_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD/"
 indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD_result/"
 outfile = "hla_kir_cyp_vdj_LD_values.csv"
