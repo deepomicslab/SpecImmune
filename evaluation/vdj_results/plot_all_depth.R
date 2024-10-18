@@ -5,7 +5,7 @@ library(cowplot)
 pdf(file="figures/all_depth.pdf", width=4, height=2, onefile=FALSE)
 df<-read.table("all_loci_depth.csv", sep=",", header=TRUE)
 ggplot(data=df, aes(x=depth, y=accuracy, color=dataset)) +
-  geom_line()+
+  geom_line(size=1)+
   geom_point()+
   xlab("Depth")+
   ylim(c(0.95,1))+
