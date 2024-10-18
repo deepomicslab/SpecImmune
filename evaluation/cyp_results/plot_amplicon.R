@@ -3,14 +3,14 @@ library(ggplot2)
 df <- data.frame(method=c("pangu", "SpecLong"),
                  Accuracy=c(0, 0.95))
 
-pdf("figures/cyp_amplicon.pdf", width=2.2, height=4)
+pdf("figures/cyp_amplicon.pdf", width=2, height=3)
 # df$Group <- factor(df$Group, levels=c("Thomas-Abun", "Hybrid"))
-
+df$method <- gsub("SpecLong", "SpecImmune", df$method)
 
  p <- ggplot(data=df, aes(x=method, y=Accuracy, fill=method))+
    geom_bar(stat="identity", color="black", position=position_dodge(), width=0.6)+
    theme_classic()+
-   scale_x_discrete(guide = guide_axis(angle = 30))+
+  #  scale_x_discrete(guide = guide_axis(angle = 30))+
    coord_cartesian(ylim=c(0,1))+
    xlab("")+
    theme(legend.position = "none")+

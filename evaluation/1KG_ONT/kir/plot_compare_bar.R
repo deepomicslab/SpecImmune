@@ -1,7 +1,7 @@
 library(ggplot2)
 library(ggpubr)
 
-pdf(file="figures/hla_class_kir.pdf", width=3, height=6, onefile=FALSE)
+pdf(file="figures/hla_class_kir.pdf", width=4, height=3, onefile=FALSE)
 df<-read.table("tree/hla_class_kir.csv", sep=",", header=TRUE)
 
 ## maintain the order of the genes
@@ -23,7 +23,7 @@ vysg<-ggplot(data=df, aes(x=KIR, y=ALD)) +
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")
 
-vysg<-vysg+facet_wrap( ~ gene , ncol = 2)+
+vysg<-vysg+facet_wrap( ~ gene , ncol = 3)+
 xlab('')+
 ylab('minALD')+
   theme(legend.position = "none")

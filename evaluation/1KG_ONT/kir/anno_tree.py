@@ -271,6 +271,34 @@ def compare5():
         print (gene_class, len(count_dict[gene_class]))
 
 
+def compare6():
+    df = pd.read_csv("hla_kir_cyp_vdj_LD_values.csv")
+    # enumerate the df
+    data = []
+    count_dict = {}
+    save_past = {}
+    for index, row in df.iterrows():
+        
+        gene1_t  = classify_genes(row['gene1'])
+        gene2_t  = classify_genes(row['gene2'])
+
+        if row['gene1'] == row['gene2']:
+            continue
+        if gene1_t == gene2_t:
+            continue
+        gene_pair = "&".join([gene1_t, gene2_t])
+
+        if gene_pair not in save_past:
+            save_past[gene_pair] = 0
+        if row['min_w'] > save_past[gene_pair]:
+            save_past[gene_pair] = row['min_w']
+    for gene_pair in save_past:
+        class_list = gene_pair.split("&")
+        data.append(class_list+[save_past[gene_pair]])
+            
+    df = pd.DataFrame(data, columns = ['Class1', 'Class2', 'ALD'])
+    df.to_csv("tree/vdj_cyp_hla_kir_max.csv", index=False)
+
 def just_count():
     df = pd.read_csv("hla_kir_cyp_vdj_LD_values.csv")
     # enumerate the df
@@ -297,4 +325,5 @@ compare2()
 compare3()
 compare4()
 compare5()
-just_count()
+# just_count()
+compare6()

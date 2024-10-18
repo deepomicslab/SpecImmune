@@ -8,6 +8,8 @@ pdf(file="figures/cyp_depth.pdf", width=10, height=3, onefile=FALSE)
 
 
 df<-read.table("cyp_depth_cutoff.csv", sep=",", header=TRUE)
+## in relace the specLong to spec in the df
+# df$method <- gsub("SpecLong", "SpecImmune", df$method)
 p1<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = method)) +
   geom_line()+
   geom_point()+
