@@ -15,15 +15,15 @@ library(ape)
 # df2<-read.csv("gene_type.csv",header=T, sep=",")
 # tree_file <- "tree/hla_kir_tree.nwk"
 
-# pdf(file="figures/hla_kir_cyp_vdj_LD_heatmap.pdf", width=25, height=22, onefile=FALSE)
-# df<-read.table("hla_kir_cyp_vdj_LD_values.csv", sep=",", header=TRUE)
-# df2<-read.csv("vdj_gene_type.csv",header=T, sep=",")
-# tree_file <- "tree/all_tree.nwk"
+pdf(file="figures/hla_kir_cyp_vdj_LD_heatmap.pdf", width=25, height=22, onefile=FALSE)
+df<-read.table("hla_kir_cyp_vdj_LD_values.csv", sep=",", header=TRUE)
+df2<-read.csv("vdj_gene_type.csv",header=T, sep=",")
+tree_file <- "tree/all_tree.nwk"
 
-pdf(file="figures/hla_kir_cyp_LD_heatmap.pdf", width=9, height=8, onefile=FALSE)
-df<-read.table("hla_kir_cyp_LD_values.csv", sep=",", header=TRUE)
-df2<-read.csv("cyp_gene_type.csv",header=T, sep=",")
-tree_file <- "tree/all_cyp_tree.nwk"
+# pdf(file="figures/hla_kir_cyp_LD_heatmap.pdf", width=9, height=8, onefile=FALSE)
+# df<-read.table("hla_kir_cyp_LD_values.csv", sep=",", header=TRUE)
+# df2<-read.csv("cyp_gene_type.csv",header=T, sep=",")
+# tree_file <- "tree/all_cyp_tree.nwk"
 
 ### remove the elements with Wn is NAN or Inf, use filter
 df <- df[df$Wn != "Inf",]

@@ -591,6 +591,15 @@ for sample in alleles_sample_dict_hla:
         alleles_sample_dict[sample] += alleles_sample_dict_vdj[sample]
 print ("final sample num", len(alleles_sample_dict))
 
+####### output the type of all loci of each sample
+# sample_type_result = '../chromoMap/sample_all_loci_type.csv'
+# f_out = open(sample_type_result, 'w')
+# for sample in alleles_sample_dict:
+#     sample_alleles = [sample] + alleles_sample_dict[sample]
+#     # print (sample, alleles_sample_dict[sample])
+#     print (",".join(sample_alleles), file=f_out)
+# f_out.close()
+
 LD_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD"
 LD_analysis(alleles_gene_dict, alleles_sample_dict,LD_dir)
 
