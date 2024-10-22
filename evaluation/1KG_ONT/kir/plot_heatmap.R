@@ -1,6 +1,7 @@
 ## load the csv file as a matrix
 library(ggplot2)
 library(aplot)
+library(ggpubr)
 
 
 pdf(file="figures/fst_heatmap.pdf", width=6, height=5, onefile=FALSE)
@@ -66,6 +67,8 @@ p2<-ggplot(df2,aes(x=x,y=y))+
 #   scale_fill_manual(values = c("green","blue","red"))
 p1%>%
   insert_left(p2,width = 0.05)
+dev.off()
+
 
 ## remove the df with compare2 is "same"
 df3 <- df[df$Group1 != df$Group2,]
@@ -73,5 +76,20 @@ df3 <- df[df$Group1 != df$Group2,]
 ttest <- t.test(df3$JSD[df3$compare == "intra"], df3$JSD[df3$compare == "inter"])
 ttest
 
+pdf(file="figures/JSD_compare.pdf", width=3, height=3, onefile=FALSE)
 
+vysg <- ggplot(df3, aes(x=compare,y=JSD,fill=compare)) + 
+          geom_boxplot() + 
+        theme_classic()+
+  scale_fill_manual(values = c("#9fc3d5", "#2a347a"))+
+xlab('')+
+  theme(legend.position = "none")
+
+
+vysg+ stat_compare_means(method = "t.test")
 dev.off()
+
+
+
+
+

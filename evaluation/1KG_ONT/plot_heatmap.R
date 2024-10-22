@@ -1,6 +1,7 @@
 ## load the csv file as a matrix
 library(ggplot2)
 library(aplot)
+library(ggpubr)
 
 
 pdf(file="hla/fst_heatmap.pdf", width=6, height=5, onefile=FALSE)
@@ -72,5 +73,18 @@ df3 <- df[df$Group1 != df$Group2,]
 ## compare the value with compare of intra and inter using t-test
 ttest <- t.test(df3$JSD[df3$compare == "intra"], df3$JSD[df3$compare == "inter"])
 ttest
+
+pdf(file="hla/JSD_compare.pdf", width=3, height=3, onefile=FALSE)
+
+vysg <- ggplot(df3, aes(x=compare,y=JSD,fill=compare)) + 
+          geom_boxplot() + 
+        theme_classic()+
+  scale_fill_manual(values = c("#9fc3d5", "#2a347a"))+
+xlab('')+
+  theme(legend.position = "none")
+
+
+vysg+ stat_compare_means(method = "t.test")
+dev.off()
 
 dev.off()
