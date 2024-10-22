@@ -281,8 +281,12 @@ def Fst_analysis(alleles_dict, fst_file):
             result = scipy.stats.pearsonr(allele_freq[i], allele_freq[j])
             jsd = distance.jensenshannon(allele_freq[i], allele_freq[j])
             print(f"Fst value between {group_names[i]} and {group_names[j]}: {jsd}")
-            data.append([group_names[i], group_names[j], jsd])
-    df = pd.DataFrame(data, columns=['Group1', 'Group2', 'JSD'])
+            if super_pop_dict[group_names[i]] == super_pop_dict[group_names[j]]:
+                compare = 'intra'
+            else:
+                compare = 'inter'
+            data.append([group_names[i], group_names[j], jsd, compare])
+    df = pd.DataFrame(data, columns=['Group1', 'Group2', 'JSD', 'compare'])
     df.to_csv(fst_file, index=False)
 
 def sort_pop(super_pop_dict, color_file):
@@ -329,8 +333,8 @@ alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict = read_all
 
 # cumulative_analysis(alleles_sample_dict, super_pop_dict, cumulative_file)
 
-# Fst_analysis(pop_alleles_dict, fst_file)
-sort_pop(super_pop_dict, color_file)
+Fst_analysis(pop_alleles_dict, fst_file)
+# sort_pop(super_pop_dict, color_file)
 
 
 

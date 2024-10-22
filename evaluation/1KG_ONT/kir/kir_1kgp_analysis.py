@@ -406,8 +406,12 @@ def Fst_analysis(alleles_dict, fst_file):
             result = scipy.stats.pearsonr(allele_freq[i], allele_freq[j])
             jsd = distance.jensenshannon(allele_freq[i], allele_freq[j])
             print(f"Fst value between {group_names[i]} and {group_names[j]}: {jsd}")
-            data.append([group_names[i], group_names[j], jsd])
-    df = pd.DataFrame(data, columns=['Group1', 'Group2', 'JSD'])
+            if super_pop_dict[group_names[i]] == super_pop_dict[group_names[j]]:
+                compare = 'intra'
+            else:
+                compare = 'inter'
+            data.append([group_names[i], group_names[j], jsd, compare])
+    df = pd.DataFrame(data, columns=['Group1', 'Group2', 'JSD', 'compare'])
     df.to_csv(fst_file, index=False)
 
 def sort_pop(super_pop_dict, color_file):
@@ -479,7 +483,7 @@ fst_file = "./kir_fst.csv"
 color_file = "./kir_color.csv"
 super_pop_dict = get_super_pop(super_pop_file)
 sample_pop_dict = get_sample_pop(sample_pop_file)
-# alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict,pop_sample_num = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 8)
+alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict,pop_sample_num = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 8)
 
 
 # count_alleles(alleles_dict, freq_file)
@@ -492,7 +496,7 @@ sample_pop_dict = get_sample_pop(sample_pop_file)
 
 # cumulative_analysis(alleles_sample_dict, super_pop_dict, cumulative_file)
 
-# Fst_analysis(pop_alleles_dict, fst_file)
+Fst_analysis(pop_alleles_dict, fst_file)
 # sort_pop(super_pop_dict, color_file)
 
 # LD_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/kir_LD"
@@ -562,34 +566,34 @@ LD_analysis(alleles_gene_dict, alleles_sample_dict,LD_dir)
 
 
 
-# """
-##### HLA CYP KIR VDJ
-alleles_dict, alleles_gene_dict_kir, alleles_sample_dict_kir,pop_alleles_dict,pop_sample_num = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 8)
-alleles_dict, alleles_gene_dict_hla, alleles_sample_dict_hla,pop_alleles_dict,pop_sample_num = read_alleles("../hla/speclong_res_merged_samples.csv", super_pop_dict, sample_pop_dict, 10, 8)
-alleles_dict, alleles_gene_dict_cyp, alleles_sample_dict_cyp,pop_alleles_dict,sample_phenotype_dict = read_alleles_cyp("../cyp/cyp_1k_all.csv", super_pop_dict, sample_pop_dict, 10, 8)
-alleles_dict, alleles_gene_dict_vdj, alleles_sample_dict_vdj,pop_alleles_dict,sample_gene_dict = read_alleles_vdj("../ig_tr/merged_samples.ig_tr.csv", super_pop_dict, sample_pop_dict, 10, 99)
-# print (alleles_sample_dict_cyp)
-# merge the two gene dict
-alleles_gene_dict_cyp = {"CYP2D6":1}
-alleles_gene_dict = {**alleles_gene_dict_kir, **alleles_gene_dict_hla, **alleles_gene_dict_cyp, **alleles_gene_dict_vdj}
+# # """
+# ##### HLA CYP KIR VDJ
+# alleles_dict, alleles_gene_dict_kir, alleles_sample_dict_kir,pop_alleles_dict,pop_sample_num = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 8)
+# alleles_dict, alleles_gene_dict_hla, alleles_sample_dict_hla,pop_alleles_dict,pop_sample_num = read_alleles("../hla/speclong_res_merged_samples.csv", super_pop_dict, sample_pop_dict, 10, 8)
+# alleles_dict, alleles_gene_dict_cyp, alleles_sample_dict_cyp,pop_alleles_dict,sample_phenotype_dict = read_alleles_cyp("../cyp/cyp_1k_all.csv", super_pop_dict, sample_pop_dict, 10, 8)
+# alleles_dict, alleles_gene_dict_vdj, alleles_sample_dict_vdj,pop_alleles_dict,sample_gene_dict = read_alleles_vdj("../ig_tr/merged_samples.ig_tr.csv", super_pop_dict, sample_pop_dict, 10, 99)
+# # print (alleles_sample_dict_cyp)
+# # merge the two gene dict
+# alleles_gene_dict_cyp = {"CYP2D6":1}
+# alleles_gene_dict = {**alleles_gene_dict_kir, **alleles_gene_dict_hla, **alleles_gene_dict_cyp, **alleles_gene_dict_vdj}
+
+# # alleles_sample_dict = {}
+# # for sample in alleles_sample_dict_kir:
+# #     if sample in alleles_sample_dict_hla and sample in alleles_sample_dict_kir and sample in alleles_sample_dict_cyp and sample in alleles_sample_dict_vdj:
+# #         alleles_sample_dict[sample] = alleles_sample_dict_kir[sample] + alleles_sample_dict_hla[sample]+ alleles_sample_dict_cyp[sample]+ alleles_sample_dict_vdj[sample]
 
 # alleles_sample_dict = {}
-# for sample in alleles_sample_dict_kir:
-#     if sample in alleles_sample_dict_hla and sample in alleles_sample_dict_kir and sample in alleles_sample_dict_cyp and sample in alleles_sample_dict_vdj:
-#         alleles_sample_dict[sample] = alleles_sample_dict_kir[sample] + alleles_sample_dict_hla[sample]+ alleles_sample_dict_cyp[sample]+ alleles_sample_dict_vdj[sample]
-
-alleles_sample_dict = {}
-for sample in alleles_sample_dict_hla:
-    alleles_sample_dict[sample] = []
-    if sample in alleles_sample_dict_hla:
-        alleles_sample_dict[sample] += alleles_sample_dict_hla[sample]
-    if sample in alleles_sample_dict_kir:
-        alleles_sample_dict[sample] += alleles_sample_dict_kir[sample]
-    if sample in alleles_sample_dict_cyp:
-        alleles_sample_dict[sample] += alleles_sample_dict_cyp[sample]
-    if sample in alleles_sample_dict_vdj:
-        alleles_sample_dict[sample] += alleles_sample_dict_vdj[sample]
-print ("final sample num", len(alleles_sample_dict))
+# for sample in alleles_sample_dict_hla:
+#     alleles_sample_dict[sample] = []
+#     if sample in alleles_sample_dict_hla:
+#         alleles_sample_dict[sample] += alleles_sample_dict_hla[sample]
+#     if sample in alleles_sample_dict_kir:
+#         alleles_sample_dict[sample] += alleles_sample_dict_kir[sample]
+#     if sample in alleles_sample_dict_cyp:
+#         alleles_sample_dict[sample] += alleles_sample_dict_cyp[sample]
+#     if sample in alleles_sample_dict_vdj:
+#         alleles_sample_dict[sample] += alleles_sample_dict_vdj[sample]
+# print ("final sample num", len(alleles_sample_dict))
 
 ####### output the type of all loci of each sample
 # sample_type_result = '../chromoMap/sample_all_loci_type.csv'
@@ -600,18 +604,18 @@ print ("final sample num", len(alleles_sample_dict))
 #     print (",".join(sample_alleles), file=f_out)
 # f_out.close()
 
-LD_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD"
-LD_analysis(alleles_gene_dict, alleles_sample_dict,LD_dir)
+# LD_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD"
+# LD_analysis(alleles_gene_dict, alleles_sample_dict,LD_dir)
 
-data = [['CYP2D6', 1, "CYP"]]
-for gene in alleles_gene_dict_kir:
-    data.append([gene, 1, "KIR"])
-for gene in alleles_gene_dict_hla:
-    data.append([gene, 1, "HLA"])
-for gene in alleles_gene_dict_vdj:
-    data.append([gene, 1, "VDJ"])
-df = pd.DataFrame(data, columns=['y', 'x', 'Type'])
-df.to_csv("vdj_gene_type.csv", index=False)
-# """
+# data = [['CYP2D6', 1, "CYP"]]
+# for gene in alleles_gene_dict_kir:
+#     data.append([gene, 1, "KIR"])
+# for gene in alleles_gene_dict_hla:
+#     data.append([gene, 1, "HLA"])
+# for gene in alleles_gene_dict_vdj:
+#     data.append([gene, 1, "VDJ"])
+# df = pd.DataFrame(data, columns=['y', 'x', 'Type'])
+# df.to_csv("vdj_gene_type.csv", index=False)
+# # """
 
 

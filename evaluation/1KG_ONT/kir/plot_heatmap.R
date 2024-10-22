@@ -67,4 +67,11 @@ p2<-ggplot(df2,aes(x=x,y=y))+
 p1%>%
   insert_left(p2,width = 0.05)
 
+## remove the df with compare2 is "same"
+df3 <- df[df$Group1 != df$Group2,]
+## compare the value with compare of intra and inter using t-test
+ttest <- t.test(df3$JSD[df3$compare == "intra"], df3$JSD[df3$compare == "inter"])
+ttest
+
+
 dev.off()
