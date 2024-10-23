@@ -18,6 +18,8 @@ df<-read.table("tree/vdj_cyp_hla_kir_max.csv", sep=",", header=TRUE)
   ## transform df to matrix
   # Transform df to matrix
 df_matrix <- acast(df, Class1 ~ Class2, value.var = "ALD")
+df_matrix
+
 df <- get_lower_tri(df_matrix)
 df
 df <- melt(df, na.rm = TRUE)
