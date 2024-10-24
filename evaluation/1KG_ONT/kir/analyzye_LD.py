@@ -52,6 +52,46 @@ def read_LD_values(raw_dir, indir,outfile, sample_num_threshold=500):
     df = pd.DataFrame(data, columns = ['gene1', 'gene2', 'D', 'Wn', 'hap_num','sample_num','Wab', 'min_w'])
     df.to_csv(outfile, index = False)
 
+
+def graph(outfile):
+    # df3 <- df[df$min_w > 0.2,]
+    # ## covert df3 to a matrix
+
+    # df_matrix3 <- reshape2::acast(df3, gene1 ~ gene2, value.var = "min_w", fill = "min_w")
+    # ### save the matrix to csv file
+    # write.csv(df_matrix3, "minALD_matrix.tsv")
+    ## use network x read the graph
+    import networkx as nx
+    import numpy as np
+    import pandas as pd
+
+    ## read the csv
+    df = pd.read_csv(outfile)
+    df3 = df[df['min_w'] > 0.2]
+    ## fill the matrix with zero is NA
+    df_matrix3 = df3.pivot(index='gene1', columns='gene2', values='min_w')
+    ## convert NaN to 0
+    df_matrix3 = df_matrix3.fillna(0)
+    print (df_matrix3)
+    ## output the matrix to a tsv file
+    df_matrix3.to_csv("tree/minALD_matrix.tsv", sep = "\t")
+    ## load the matrix to a graph using networkx
+    G = nx.from_pandas_adjacency(df_matrix3)
+    ## compute the importance of centrality of each node, and sort the node by centrality, and output to a csv file
+    centrality = nx.eigenvector_centrality(G)
+    centrality = sorted(centrality.items(), key=lambda x:x[1], reverse=True)
+    with open("tree/centrality.tsv", 'w') as f:
+        for node in centrality:
+            print (node[0], node[1], file = f)
+    ## compute page rank score of each node, and sort the node by score, and output to a csv file
+    page_rank = nx.pagerank(G)
+    page_rank = sorted(page_rank.items(), key=lambda x:x[1], reverse=True)
+    with open("tree/page_rank.tsv", 'w') as f:
+        for node in page_rank:
+            print (node[0], node[1], file = f)
+
+
+
 # indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/kir_LD_result/"
 # outfile = "kir_LD_values.csv"
 # read_LD_values(indir,outfile)
@@ -65,13 +105,15 @@ def read_LD_values(raw_dir, indir,outfile, sample_num_threshold=500):
 # outfile = "hla_kir_LD_values.csv"
 # read_LD_values(raw_dir, indir,outfile)
 
-raw_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_LD/"
-indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_LD_result/"
-outfile = "hla_kir_cyp_LD_values.csv"
-read_LD_values(raw_dir, indir,outfile)
+# raw_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_LD/"
+# indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_LD_result/"
+# outfile = "hla_kir_cyp_LD_values.csv"
+# read_LD_values(raw_dir, indir,outfile)
 
-print ("#####################")
-raw_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD/"
-indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD_result/"
+# print ("#####################")
+# raw_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD/"
+# indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD_result/"
 outfile = "hla_kir_cyp_vdj_LD_values.csv"
-read_LD_values(raw_dir, indir,outfile)
+# read_LD_values(raw_dir, indir,outfile)
+
+graph(outfile)

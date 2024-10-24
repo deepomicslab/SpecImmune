@@ -252,7 +252,7 @@ def split_alleles(alleles):
         gene_result[gene].append(geno_list)
     return gene_result
 
-def check_consistent(child_gene_result, father_gene_result, mother_gene_result):
+def check_consistent(trio_id, child_gene_result, father_gene_result, mother_gene_result):
     all_allele_num = 0
     all_consistent_num = 0
     for locus in child_gene_result:
@@ -274,6 +274,8 @@ def check_consistent(child_gene_result, father_gene_result, mother_gene_result):
             sec += 1  
         
         consistent_num = max(fir, sec)
+        if consistent_num != 2:
+            print (trio_id, locus, child_gene_result[locus], father_gene_result[locus], mother_gene_result[locus], consistent_num)
         all_consistent_num += consistent_num
         all_allele_num += 2
     print ("consistent_num", all_consistent_num, "allele_num", all_allele_num)
@@ -290,7 +292,7 @@ def each_trio(alleles_sample_dict):
         child_gene_result = split_alleles(alleles_sample_dict[child])
         father_gene_result = split_alleles(alleles_sample_dict[father])
         mother_gene_result = split_alleles(alleles_sample_dict[mother])
-        all_consistent_num, all_allele_num = check_consistent(child_gene_result, father_gene_result, mother_gene_result)
+        all_consistent_num, all_allele_num = check_consistent(trio_id, child_gene_result, father_gene_result, mother_gene_result)
         total_all_consistent_num += all_consistent_num
         total_all_allele_num += all_allele_num
         # break

@@ -40,7 +40,12 @@ head(df)
 # df1 <- df[df$Wn == 1,]
 # head(df1)
 
+# df3 <- df[df$min_w > 0.2,]
+# ## covert df3 to a matrix
 
+# df_matrix3 <- reshape2::acast(df3, gene1 ~ gene2, value.var = "min_w", fill = "min_w")
+# ### save the matrix to csv file
+# write.csv(df_matrix3, "minALD_matrix.tsv")
 
 # Create a matrix for clustering
 df_matrix <- reshape2::acast(df, gene1 ~ gene2, value.var = "Wn", fill = 0)
@@ -69,6 +74,7 @@ p1<-ggplot(data = df, aes(x=gene1, y=gene2, fill=Wab)) +
    scale_x_discrete(guide = guide_axis(angle = 90))+
  geom_tile(color = "white")+
 scale_fill_gradientn(colors = c("#7eced6", "#d4edee", "#f4dedc", "#f7b8b7", "#f39289"), values = c(0, 0.25, 0.5, 0.75, 1),
+# scale_fill_gradientn(colors = c("#7eced6", "#d4edee", "#f4dedc", "#f7b8b7", "#f39289"), values = c(0, 0.1, 0.2, 0.6, 1),
        space = "Lab", name = "Wa/b") +
     theme(
     axis.title.x = element_blank(),
