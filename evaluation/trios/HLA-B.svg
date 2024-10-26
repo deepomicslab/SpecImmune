@@ -1,0 +1,215 @@
+<svg version="1.1" baseProfile="full" width="1000" height="225" xmlns="http://www.w3.org/2000/svg">
+<!-- None -->
+<clipPath id="clip_path_0"><rect x="0" y="0" width="1000" height="220" /></clipPath>
+<g clip-path="url(#clip_path_0)">
+   <!-- variants -->
+   <clipPath id="clip_path_1"><rect x="0" y="0" width="1000" height="100" /></clipPath>
+   <g clip-path="url(#clip_path_1)">
+      <rect x="4.14" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="5.61" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="46.74" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="47.23" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="63.87" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="78.56" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="79.54" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="80.27" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="80.52" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="90.55" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="104.51" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="105.00" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="134.62" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="134.86" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="140.49" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="150.04" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="150.29" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="150.53" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="152.24" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="154.45" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="166.69" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="174.03" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="176.23" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="176.72" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="176.97" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="177.70" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="178.19" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="188.23" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="206.59" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="212.71" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="238.41" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="242.33" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="246.74" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="246.98" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="247.23" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="247.47" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="248.69" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="250.41" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="260.93" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="262.65" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="266.56" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="279.05" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="302.79" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="365.46" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="366.44" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="428.38" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="456.53" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="460.44" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="485.90" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="527.03" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="540.74" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="618.34" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="620.54" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="628.38" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="653.59" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="662.65" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="671.22" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="734.37" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="736.58" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="738.05" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="740.00" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="781.86" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="798.51" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="816.87" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="848.94" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="865.34" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="866.32" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="880.52" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="891.53" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="891.78" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="895.21" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="896.18" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="898.14" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="904.75" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <rect x="910.38" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="915.77" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="928.99" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="933.39" y="30.00" width="2.00" height="25.00" fill="blue" stroke="none" />
+      <rect x="952.98" y="30.00" width="2.00" height="25.00" fill="black" stroke="none" />
+      <rect x="974.76" y="30.00" width="2.00" height="25.00" fill="orange" stroke="none" />
+      <rect x="987.98" y="30.00" width="2.00" height="25.00" fill="green" stroke="none" />
+      <defs>
+          <filter x="0" y="0" width="1" height="1" id="solid1">
+              <feFlood flood-opacity="0.9" flood-color="white"/>
+              <feComposite in="SourceGraphic"/>
+          </filter>
+      </defs>
+      <text x="5.00" y="14.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="white" filter="url(#solid1)" >variants</text>
+      <text x="5.00" y="14.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="black" >variants</text>
+   </g>
+   <!-- Bam coverage -->
+   <clipPath id="clip_path_2"><rect x="0" y="110" width="1000" height="70" /></clipPath>
+   <g clip-path="url(#clip_path_2)">
+      <polygon points="0.00,135.00 738.07,135.00 738.31,195.00 738.56,195.00 738.80,135.00 999.76,135.00 1000.00,195.00 1000.00,180.00 0.00,180.00" fill="#8f96bd" stroke="none"  />
+      <line x1="0.00" x2="1.00" y1="195.00" y2="141.00" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <line x1="0.00" x2="10.00" y1="195.00" y2="195.00" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="195.00" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >0</text>
+      <line x1="0.00" x2="10.00" y1="177.00" y2="177.00" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="177.00" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >0</text>
+      <line x1="0.00" x2="10.00" y1="159.00" y2="159.00" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="159.00" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >1</text>
+      <line x1="0.00" x2="10.00" y1="141.00" y2="141.00" stroke="gray" stroke-width="2" stroke-linecap="square"  />
+      <text x="14.00" y="141.00" font-size="10" font-family="Helvetica" text-anchor="start" fill="gray" >1</text>
+      <defs>
+          <filter x="0" y="0" width="1" height="1" id="solid2">
+              <feFlood flood-opacity="0.9" flood-color="white"/>
+              <feComposite in="SourceGraphic"/>
+          </filter>
+      </defs>
+      <text x="5.00" y="124.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="white" filter="url(#solid2)" >Bam coverage</text>
+      <text x="5.00" y="124.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="black" >Bam coverage</text>
+   </g>
+   <!-- RNA reads from Haplotype 1 -->
+   <clipPath id="clip_path_3"><rect x="0" y="190" width="1000" height="20" /></clipPath>
+   <g clip-path="url(#clip_path_3)">
+      <path d="M 0.0 210 L 1000.0 210 L 1004.0 214.0 L 1000.0 218 L 0.0 218 z" stroke="none" fill="lightgray" id="HLA-B_00" />
+      <rect x="4.52" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="5.99" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="47.11" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="47.60" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="64.25" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="78.94" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="79.92" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="80.65" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="80.90" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="90.93" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="104.89" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="105.38" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="135.00" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="135.24" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="140.87" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="150.42" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="150.66" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="150.91" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="152.62" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="154.82" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="167.06" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="174.41" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="176.61" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="177.10" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="177.35" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="178.08" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="178.57" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="188.61" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="206.97" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="213.09" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="238.79" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="242.71" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="247.11" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="247.36" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="247.60" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="247.85" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="249.07" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="250.79" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="261.31" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="263.03" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="266.94" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="279.43" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="303.17" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="365.84" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="366.82" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="428.75" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="456.91" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="460.82" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="486.28" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="527.41" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="541.12" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="618.72" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="620.92" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="628.75" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="653.97" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="663.03" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="671.59" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="734.75" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="736.95" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="738.42" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="740.38" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="782.24" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="798.89" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="817.25" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="849.32" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="865.72" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="866.70" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="880.90" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="891.91" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="892.16" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="895.58" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="896.56" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="898.52" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="905.13" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <rect x="910.76" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="916.15" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="929.37" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="933.77" y="210.00" width="1.00" height="8.00" fill="blue" stroke="none" />
+      <rect x="953.36" y="210.00" width="1.00" height="8.00" fill="black" stroke="none" />
+      <rect x="975.14" y="210.00" width="1.00" height="8.00" fill="orange" stroke="none" />
+      <rect x="988.36" y="210.00" width="1.00" height="8.00" fill="green" stroke="none" />
+      <defs>
+          <filter x="0" y="0" width="1" height="1" id="solid3">
+              <feFlood flood-opacity="0.9" flood-color="white"/>
+              <feComposite in="SourceGraphic"/>
+          </filter>
+      </defs>
+      <text x="5.00" y="204.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="white" filter="url(#solid3)" >RNA reads from Haplotype 1</text>
+      <text x="5.00" y="204.00" font-size="18" font-family="Helvetica" text-anchor="start" fill="black" >RNA reads from Haplotype 1</text>
+   </g>
+</g>
+</svg>
