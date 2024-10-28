@@ -13,12 +13,21 @@ def get_fa_name_and_length(fa_file):
 
 
 
+<<<<<<< HEAD
+fa_allele_dir="c_HG00420/alleles/fa_alleles/"
+ma_allele_dir="c_HG00420/alleles/ma_alleles/"
+
+bam_dir="c_HG00420/remap/"
+vcf_dir="c_HG00420/remap/"
+outdir="c_HG00420/viz/"
+=======
 fa_allele_dir="c_NA19828/alleles/fa_alleles/"
 ma_allele_dir="c_NA19828/alleles/ma_alleles/"
 
 bam_dir="c_NA19828/remap/"
 vcf_dir="c_NA19828/remap/"
 outdir="c_NA19828/viz/"
+>>>>>>> 332fc61c7a58d91ab791aa4db2429f96e21f3c2c
 if not os.path.exists(outdir):
     os.makedirs(outdir)
 
@@ -77,7 +86,11 @@ for gene in gene_list:
     bam_track.color_fn = lambda x: "lightgray"
     bam_track.min_indel_size = 20
     bam_track.min_cigar_line_width = 1
+<<<<<<< HEAD
+    # bam_track.height = 70
+=======
     bam_track.height = 70
+>>>>>>> 332fc61c7a58d91ab791aa4db2429f96e21f3c2c
     view.add_track(bam_track)
 
     fa_allele2=f"{fa_allele_dir}/HLA.allele.2.{gene}.fasta"
@@ -101,7 +114,11 @@ for gene in gene_list:
 
     cov=BAMCoverageTrack(f"{c_reads_map_fa_allele2_bam}", name="Bam coverage")
     view.add_track(cov)
+<<<<<<< HEAD
+    # cov.height = 70
+=======
     cov.height = 70
+>>>>>>> 332fc61c7a58d91ab791aa4db2429f96e21f3c2c
 
     bam_track = SingleEndBAMTrack(f"{c_reads_map_fa_allele2_bam}", name="Child reads align to father allele2", bam_type="normal")
     bam_track.draw_mismatches = True
@@ -123,7 +140,11 @@ for gene in gene_list:
     bam_track.color_fn = lambda x: "lightgray"
     bam_track.min_indel_size = 20
     bam_track.min_cigar_line_width = 1
+<<<<<<< HEAD
+    # bam_track.height = 70
+=======
     bam_track.height = 70
+>>>>>>> 332fc61c7a58d91ab791aa4db2429f96e21f3c2c
     view.add_track(bam_track)
 
 
@@ -171,7 +192,11 @@ for gene in gene_list:
     bam_track.color_fn = lambda x: "lightgray"
     bam_track.min_indel_size = 20
     bam_track.min_cigar_line_width = 1
+<<<<<<< HEAD
+    # bam_track.height = 70
+=======
     bam_track.height = 70
+>>>>>>> 332fc61c7a58d91ab791aa4db2429f96e21f3c2c
     view.add_track(bam_track)
 
     ma_allele2=f"{ma_allele_dir}/HLA.allele.2.{gene}.fasta"
@@ -195,7 +220,11 @@ for gene in gene_list:
     
     cov=BAMCoverageTrack(f"{c_reads_map_ma_allele2_bam}", name="Bam coverage")
     view.add_track(cov)
+<<<<<<< HEAD
+    # cov.height = 70
+=======
     cov.height = 70
+>>>>>>> 332fc61c7a58d91ab791aa4db2429f96e21f3c2c
 
     bam_track = SingleEndBAMTrack(f"{c_reads_map_ma_allele2_bam}", name="Child reads align to mother allele2", bam_type="normal")
     bam_track.draw_mismatches = True
@@ -217,7 +246,11 @@ for gene in gene_list:
     bam_track.color_fn = lambda x: "lightgray"
     bam_track.min_indel_size = 20
     bam_track.min_cigar_line_width = 1
+<<<<<<< HEAD
+    # bam_track.height = 70
+=======
     bam_track.height = 70
+>>>>>>> 332fc61c7a58d91ab791aa4db2429f96e21f3c2c
     view.add_track(bam_track)
 
 
