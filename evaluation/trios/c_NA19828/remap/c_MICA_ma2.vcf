@@ -1,0 +1,79 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##samtoolsVersion=1.12+htslib-1.12
+##samtoolsCommand=samtools mpileup -u -f /scratch/project/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun//NA19819/NA19819/Sequences/HLA.allele.2.MICA.fasta /scratch/project/cs_shuaicli/wxd/1KGP_ONT/allele_remap_trio//NA19828/c_MICA_ma2.bam
+##reference=file:///scratch/project/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun//NA19819/NA19819/Sequences/HLA.allele.2.MICA.fasta
+##contig=<ID=MICA_1,length=12827>
+##ALT=<ID=*,Description="Represents allele(s) other than observed.">
+##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
+##INFO=<ID=IDV,Number=1,Type=Integer,Description="Maximum number of reads supporting an indel">
+##INFO=<ID=IMF,Number=1,Type=Float,Description="Maximum fraction of reads supporting an indel">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw read depth">
+##INFO=<ID=VDB,Number=1,Type=Float,Description="Variant Distance Bias for filtering splice-site artefacts in RNA-seq data (bigger is better)",Version="3">
+##INFO=<ID=RPB,Number=1,Type=Float,Description="Mann-Whitney U test of Read Position Bias (bigger is better)">
+##INFO=<ID=MQB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality Bias (bigger is better)">
+##INFO=<ID=BQB,Number=1,Type=Float,Description="Mann-Whitney U test of Base Quality Bias (bigger is better)">
+##INFO=<ID=MQSB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality vs Strand Bias (bigger is better)">
+##INFO=<ID=SGB,Number=1,Type=Float,Description="Segregation based metric.">
+##INFO=<ID=MQ0F,Number=1,Type=Float,Description="Fraction of MQ0 reads (smaller is better)">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
+##INFO=<ID=MQ,Number=1,Type=Integer,Description="Average mapping quality">
+##bcftools_callVersion=1.17+htslib-1.17
+##bcftools_callCommand=call -mv -Ov --ploidy 2 -o /scratch/project/cs_shuaicli/wxd/1KGP_ONT/allele_remap_trio//NA19828/c_MICA_ma2.vcf; Date=Sat Oct 26 19:42:40 2024
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	/scratch/project/cs_shuaicli/wxd/1KGP_ONT/allele_remap_trio//NA19828/c_MICA_ma2.bam
+MICA_1	221	.	G	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	697	.	G	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	707	.	C	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	1594	.	G	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4164	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4182	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4185	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4191	.	T	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4196	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4210	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4219	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4288	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4289	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4290	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4291	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4314	.	G	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4330	.	A	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4332	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4347	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	4851	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	6168	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	6239	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	6865	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	7012	.	T	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	7240	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	7429	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	7500	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	7579	.	T	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	7731	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	8186	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	8389	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	8645	.	A	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	9936	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	9950	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	9992	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	10940	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	10997	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	11086	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	11893	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12212	.	C	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12348	.	A	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12427	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12513	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12566	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12701	.	G	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12705	.	G	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12711	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12726	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12756	.	A	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12777	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12788	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+MICA_1	12795	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0

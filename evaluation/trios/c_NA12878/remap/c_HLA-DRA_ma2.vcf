@@ -1,0 +1,78 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##samtoolsVersion=1.12+htslib-1.12
+##samtoolsCommand=samtools mpileup -u -f /scratch/project/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun//NA12892/NA12892/Sequences/HLA.allele.2.HLA-DRA.fasta /scratch/project/cs_shuaicli/wxd/1KGP_ONT/allele_remap_trio//NA12878/c_HLA-DRA_ma2.bam
+##reference=file:///scratch/project/cs_shuaicli/wxd/1KGP_ONT/speclong_out_rerun//NA12892/NA12892/Sequences/HLA.allele.2.HLA-DRA.fasta
+##contig=<ID=HLA-DRA_1,length=8835>
+##ALT=<ID=*,Description="Represents allele(s) other than observed.">
+##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
+##INFO=<ID=IDV,Number=1,Type=Integer,Description="Maximum number of reads supporting an indel">
+##INFO=<ID=IMF,Number=1,Type=Float,Description="Maximum fraction of reads supporting an indel">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw read depth">
+##INFO=<ID=VDB,Number=1,Type=Float,Description="Variant Distance Bias for filtering splice-site artefacts in RNA-seq data (bigger is better)",Version="3">
+##INFO=<ID=RPB,Number=1,Type=Float,Description="Mann-Whitney U test of Read Position Bias (bigger is better)">
+##INFO=<ID=MQB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality Bias (bigger is better)">
+##INFO=<ID=BQB,Number=1,Type=Float,Description="Mann-Whitney U test of Base Quality Bias (bigger is better)">
+##INFO=<ID=MQSB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality vs Strand Bias (bigger is better)">
+##INFO=<ID=SGB,Number=1,Type=Float,Description="Segregation based metric.">
+##INFO=<ID=MQ0F,Number=1,Type=Float,Description="Fraction of MQ0 reads (smaller is better)">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
+##INFO=<ID=MQ,Number=1,Type=Integer,Description="Average mapping quality">
+##bcftools_callVersion=1.17+htslib-1.17
+##bcftools_callCommand=call -mv -Ov --ploidy 2 -o /scratch/project/cs_shuaicli/wxd/1KGP_ONT/allele_remap_trio//NA12878/c_HLA-DRA_ma2.vcf; Date=Sat Oct 26 19:44:22 2024
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	/scratch/project/cs_shuaicli/wxd/1KGP_ONT/allele_remap_trio//NA12878/c_HLA-DRA_ma2.bam
+HLA-DRA_1	59	.	G	GA	3.77146	.	INDEL;IDV=1;IMF=0.5;DP=2;VDB=0.02;SGB=-0.379885;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:34,0,32
+HLA-DRA_1	60	.	T	A	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	62	.	C	T	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	277	.	CCACA	CCACACA	11.7078	.	INDEL;IDV=1;IMF=0.5;DP=2;VDB=0.02;SGB=-0.379885;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:44,0,44
+HLA-DRA_1	304	.	C	T	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	305	.	T	C	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	826	.	G	A	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	908	.	T	C	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	1008	.	C	T	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	1060	.	C	T	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	1120	.	GAAAAA	GAAA	3.77163	.	INDEL;IDV=1;IMF=0.5;DP=2;VDB=0.02;SGB=-0.379885;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:34,0,34
+HLA-DRA_1	1127	.	A	G	80.4149	.	DP=2;VDB=0.02;SGB=-0.453602;MQ0F=0;AC=2;AN=2;DP4=0,0,2,0;MQ=60	GT:PL	1/1:110,6,0
+HLA-DRA_1	1191	.	T	C	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	1200	.	AC	ACCTC	21.4353	.	INDEL;IDV=1;IMF=0.5;DP=2;VDB=0.02;SGB=-0.379885;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	1204	.	T	C	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	1267	.	A	T	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	1268	.	A	G	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	1269	.	A	T	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	1271	.	T	C	21.4353	.	DP=2;SGB=-0.379885;RPB=1;MQB=1;BQB=1;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,54
+HLA-DRA_1	1427	.	GGT	GGTGT	21.4135	.	INDEL;IDV=1;IMF=0.5;DP=2;VDB=0.02;SGB=-0.379885;MQ0F=0;AC=1;AN=2;DP4=1,0,1,0;MQ=60	GT:PL	0/1:54,0,46
+HLA-DRA_1	1472	.	A	G	80.4149	.	DP=2;VDB=0.02;SGB=-0.453602;MQ0F=0;AC=2;AN=2;DP4=0,0,2,0;MQ=60	GT:PL	1/1:110,6,0
+HLA-DRA_1	4681	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	4747	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	4752	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	4762	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	4805	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	4816	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	4845	.	G	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	4847	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	5463	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	5838	.	A	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	5914	.	AG	AGG	10.7919	.	INDEL;IDV=1;IMF=1;DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:40,3,0
+HLA-DRA_1	5964	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	5969	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	6445	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	6695	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	6789	.	C	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	7061	.	C	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	7116	.	C	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	7130	.	T	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	7400	.	G	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	7725	.	TGAGTCTAGGGATCTAGAAAATACATTAGAATATGGAGTCTAGGGATCTAGAAAATAC	TGAGTCTAGGGATCTAGAAAATAC	30.4183	.	INDEL;IDV=1;IMF=1;DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	8033	.	GAACTAACT	G	30.4183	.	INDEL;IDV=1;IMF=1;DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	8150	.	A	T	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	8160	.	T	C	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	8197	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	8242	.	A	G	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	8301	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	8328	.	T	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	8354	.	G	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
+HLA-DRA_1	8571	.	T	A	30.4183	.	DP=1;SGB=-0.379885;MQ0F=0;AC=2;AN=2;DP4=0,0,1,0;MQ=60	GT:PL	1/1:60,3,0
