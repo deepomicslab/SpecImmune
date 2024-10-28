@@ -89,6 +89,24 @@ def graph(outfile):
     with open("tree/page_rank.tsv", 'w') as f:
         for node in page_rank:
             print (node[0], node[1], file = f)
+    ### compute the betweeness of each node, and sort the node by betweeness, and print the top 10 nodes    
+    betweeness = nx.betweenness_centrality(G)
+    betweeness = sorted(betweeness.items(), key=lambda x:x[1], reverse=True)
+    # with open("tree/betweeness.tsv", 'w') as f:
+    for node in betweeness[:5]:
+        print ("betweeness", node[0], node[1])
+    ## compute the clustering coefficient of each node, and sort the node by clustering coefficient, and print the top 10 nodes
+    clustering = nx.clustering(G)
+    clustering = sorted(clustering.items(), key=lambda x:x[1], reverse=True)
+    # with open("tree/clustering.tsv", 'w') as f:
+    for node in clustering[:5]:
+        print ("clustering coefficient", node[0], node[1])
+    ## compute the degree of each node, and sort the node by degree, and print the top 10 nodes
+    degree = nx.degree_centrality(G)
+    degree = sorted(degree.items(), key=lambda x:x[1], reverse=True)
+    # with open("tree/degree.tsv", 'w') as f:
+    for node in degree[:5]:
+        print ("degree", node[0], node[1])
 
 
 
