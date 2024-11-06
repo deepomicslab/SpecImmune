@@ -170,7 +170,7 @@ def select_top_alleles(my_match_len_dict, my_identity_dict, gene_class, len_diff
             good_identity_list.append(allele)
     return good_identity_list
 
-def parse_hla_hla_input(input_file):
+def parse_hla_hla_input(input_file, mode='default'):
     genes=[]
     input_dict={}
     with open(input_file, 'r') as f:
@@ -186,7 +186,10 @@ def parse_hla_hla_input(input_file):
                 if gene not in input_dict:
                     input_dict[gene] = []
                 if len(field) >= 3:
-                    input_dict[gene].append(field[2])
+                    if mode == 'default':
+                        input_dict[gene].append(field[2])
+                    else:  ## one_guess
+                        input_dict[gene].append(field[6])
                 else:
                     input_dict[gene].append('')
     return input_dict
@@ -607,6 +610,14 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
                     true_list[i] = convert_kir_field(true_list[i], digit)
                     hla_la_list[i] = convert_kir_field(hla_la_list[i], digit) 
 
+                if gene_class == "CYP":
+                    for j in range(len(true_list[i])):
+                        true_list[i][j] = true_list[i][j].split('.')[0]
+                    for j in range(len(hla_la_list[i])):
+                        hla_la_list[i][j] = hla_la_list[i][j].split('.')[0]
+                    # true_list[i] = list(set(true_list[i]))
+                    # hla_la_list[i] = list(set(hla_la_list[i]))
+
             if gene_class == 'KIR':
                 if hla_la_list[0][0] == 'NA' or hla_la_list[1][0] == 'NA':
                     print ("inferred NA", sample, gene, hla_la_list)
@@ -638,7 +649,8 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
 def for_rev_compare(true_list, hla_la_list, gene_class):
     fir = 0
     sec = 0
-    if gene_class != "CYP":
+    # if gene_class != "CYP":
+    if True:
         if has_intersection(true_list[0], hla_la_list[0]):
             fir += 1
         if has_intersection(true_list[1], hla_la_list[1]):
@@ -743,7 +755,10 @@ def load_vdj_result(raw_result, cutoff=0):
 def assess_sim_module(truth, infer, gene_list, gene_class="HLA"):
     sample_truth_dict = parse_simu_true(truth)
     if gene_class != "IG_TR":
-        sample_infer_dict = parse_hla_hla_input(infer)
+        if gene_class != "CYP":
+            sample_infer_dict = parse_hla_hla_input(infer)
+        else:
+            sample_infer_dict = parse_hla_hla_input(infer, mode="one_guess")
     else:
         sample_infer_dict, sample_infer_depth_dict = load_vdj_result(infer)
     # print (sample_truth_dict)

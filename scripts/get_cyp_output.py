@@ -279,7 +279,7 @@ if __name__ == "__main__":
     tool = 'spec' #spec or star
 
     pangu_result = f"{prefix}_report.json"
-    spec_result_file = f"{prefix}.CYP.final.type.result.txt"
+    spec_result_file = f"{prefix}.CYP.final.type.result.formatted.txt"
     star_result_file = f"{prefix}.Stargazer.type.txt"
     merge_result_file = f"{prefix}.CYP.merge.type.result.txt"
     pangu_result, pangu_alleles = read_pangu_result(pangu_result)
