@@ -120,6 +120,37 @@ def analyze_tree():
         print (f"{node},{pr},label1", file=f)
     f.close()
 
+def compare0():
+    df = pd.read_csv("hla_kir_cyp_LD_values.csv")
+    # enumerate the df
+    data = []
+    count_dict = {}
+    for index, row in df.iterrows():
+        
+
+        gene1_t  = classify_genes(row['gene1'])
+        gene2_t  = classify_genes(row['gene2'])
+
+        if gene1_t not in count_dict:
+            count_dict[gene1_t] = set()
+        count_dict[gene1_t].add(row['gene1'])
+        if gene2_t not in count_dict:
+            count_dict[gene2_t] = set()
+        count_dict[gene2_t].add(row['gene2'])
+
+        if row['gene1'] in ['HLA-DRB1','HLA-DPB1', 'HLA-DQB1'] and gene2_t == "KIR":
+            data.append([row['gene2'], row['gene1'], row['min_w'], "Wab", 'class II'])
+        if row['gene1'] in ['HLA-A','HLA-B', 'HLA-C'] and gene2_t == "KIR":
+            data.append([row['gene2'], row['gene1'], row['min_w'], "Wab", 'class I'])
+
+        # elif gene1_t == "KIR" and gene2_t not in  ["HLA", "KIR"]:
+        #     data.append([gene2_t, row['min_w'], "Wab"])
+    for gene_class in count_dict:
+        print (gene_class, len(count_dict[gene_class]))
+            
+    df = pd.DataFrame(data, columns = ['KIR', 'gene', 'ALD', 'type', 'class'])
+    df.to_csv("tree/kir_class_hla.csv", index=False)
+
 def compare():
     df = pd.read_csv("hla_kir_cyp_vdj_LD_values.csv")
     # enumerate the df
@@ -321,9 +352,10 @@ def just_count():
         print (gene_class, len(count_dict[gene_class]))
 
 # analyze_tree()
-compare2()
-compare3()
-compare4()
-compare5()
-# just_count()
-compare6()
+compare0()
+# compare2()
+# compare3()
+# compare4()
+# compare5()
+# # just_count()
+# compare6()

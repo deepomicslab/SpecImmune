@@ -19,7 +19,7 @@ def evaluate_sim():
         truth = f"{outdir}/{sample}/{sample}.CYP.hap.alleles.txt"
         # infer = f"{resultdir}/{sample}/{sample}.CYP.type.result.txt"
         infer = f"{resultdir}/{sample}/{sample}.CYP.final.type.1.result.txt"
-        spec_gene_accuracy_dict = assess_sim_module(truth, infer, gene_list, 'CYP')
+        spec_gene_accuracy_dict = assess_sim_module(truth, infer, gene_list, 'CYP', mode="one_guess")
         print(spec_gene_accuracy_dict)
         for gene in spec_gene_accuracy_dict:
             if gene not in total_accuracy_dict:
@@ -28,9 +28,16 @@ def evaluate_sim():
             total_accuracy_dict[gene][1] += spec_gene_accuracy_dict[gene][2]
             total[0] += spec_gene_accuracy_dict[gene][1]
             total[1] += spec_gene_accuracy_dict[gene][2]
+    data = []
     for gene in total_accuracy_dict:
-        print(f"{gene}: {total_accuracy_dict[gene][0]/total_accuracy_dict[gene][1]}")
+        accuracy = total_accuracy_dict[gene][0]/total_accuracy_dict[gene][1]
+        print(f"{gene}: {accuracy}")
+        data.append([gene, accuracy, total_accuracy_dict[gene][0], total_accuracy_dict[gene][1]])
     print(f"Total: {total[0]/total[1]}", total)
+    ## convert to df, and save it in a csv file
+    import pandas as pd
+    df = pd.DataFrame(data, columns = ['Gene', 'Accuracy', 'Correct', 'Total'])
+    df.to_csv("cyp_results/sim_all_gene.csv", index=False)
 
 def evaluate_real():
     real_truth = "cyp_results/cyp_all_gene.csv"
@@ -53,12 +60,12 @@ if __name__ == "__main__":
     # result_file = "cyp_results/cyp_depth_cutoff.csv"
     # main_cyp_hprc(pangu_dir, spec_dir, result_file)
 
-    spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k_all2/"
-    result_file = "cyp_results/cyp_all_gene2.csv"
-    main_all_cyp(spec_dir, result_file)
+    # spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k_all2/"
+    # result_file = "cyp_results/cyp_all_gene2.csv"
+    # main_all_cyp(spec_dir, result_file)
 
-    #load_GeT_RM4()
+    # load_GeT_RM4()
 
-    # evaluate_sim()
+    evaluate_sim()
 
 

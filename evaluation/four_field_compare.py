@@ -752,13 +752,13 @@ def load_vdj_result(raw_result, cutoff=0):
     # print (store_alleles_dict[sample])
     return store_alleles_dict[sample], store_depth_dict[sample]
 
-def assess_sim_module(truth, infer, gene_list, gene_class="HLA"):
+def assess_sim_module(truth, infer, gene_list, gene_class="HLA",mode="default"):
     sample_truth_dict = parse_simu_true(truth)
     if gene_class != "IG_TR":
         if gene_class != "CYP":
             sample_infer_dict = parse_hla_hla_input(infer)
         else:
-            sample_infer_dict = parse_hla_hla_input(infer, mode="one_guess")
+            sample_infer_dict = parse_hla_hla_input(infer)
     else:
         sample_infer_dict, sample_infer_depth_dict = load_vdj_result(infer)
     # print (sample_truth_dict)
