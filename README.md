@@ -84,8 +84,6 @@ Note:
 |scripts/ExtractReads.sh| Extract gene-region-related reads from enrichment-free data.|
 |scripts/main.py| Typing with naopore or pacbio data  |
 
-
-
 ### Extract gene-region-related reads
 First extract gene reads with enrichment-free data. Otherwise, Typing would be slow. Map reads onto the `hg38`, then use `ExtracReads.sh` to extract reads by
 ```
@@ -117,12 +115,12 @@ python3 SpecImmune/main.py \
 ```
 Example cmd:
 ```
-xx
+python3 SpecImmune/scripts/main.py -n $sample -o $outdir -j 15 -y pacbio -i HLA -r $fq --db ../db/ 
 ```
 
 Perform full-resolution HLA typing with long-read RNA data
 ```
-python3 /scratch/project/cs_shuaicli/wxd/app/SpecImmune/scripts/main.py \
+python3 SpecImmune/scripts/main.py \
         -r <fastq> \
         -j <threads> \
         -i HLA \
@@ -256,15 +254,6 @@ HLA-DMA	1	HLA-DMA*01:01:01:04	HLA-DMA*01:01:01:04|5013|1.0	37	HLA-DMA*01:01:01:0
 HLA-DMA	2	HLA-DMA*01:01:01:02	HLA-DMA*01:01:01:02|5013|1.0	37	HLA-DMA*01:01:01:02 HLA-DMA*01:01:01:02
 HLA-J	1	HLA-J*01:01:01:05	HLA-J*01:01:01:05|3544|1.0	51	HLA-J*01:01:01:05	HLA-J*01:01:01:05
 HLA-J	2	HLA-J*01:01:01:04	HLA-J*01:01:01:04|3544|1.0	51	HLA-J*01:01:01:04	HLA-J*01:01:01:04
-HLA-DPA1	1	HLA-DPA1*01:03:01:02	HLA-DPA1*01:03:01:02|9775|1.0	56	HLA-DPA1*01:03:01:02;HLA-DPA1*01:03:01:30;HLA-DPA1*01:03:17;HLA-DPA1*01:03:01:03;HLA-DPA1*01:03:01:32	HLA-DPA1*01:03:01:02
-HLA-DPA1	2	HLA-DPA1*01:03:01:05;HLA-DPA1*01:03:01:15;HLA-DPA1*01:03:01:74	HLA-DPA1*01:03:01:05|9757|1.0;HLA-DPA1*01:03:01:15|9756|1.0;HLA-DPA1*01:03:01:74|9718|1.0	56	HLA-DPA1*01:03:01:05;HLA-DPA1*01:03:01:15	HLA-DPA1*01:03:01:05
-HLA-DQA1	1	HLA-DQA1*01:03:01:02	HLA-DQA1*01:03:01:02|6492|1.0	58	HLA-DQA1*01:03:01:02 HLA-DQA1*01:03:01:02
-HLA-DQA1	2	HLA-DQA1*01:05:01:01	HLA-DQA1*01:05:01:01|6485|1.0	58	HLA-DQA1*01:05:01:01	HLA-DQA1*01:05:01:01
-HLA-DPA2	1	HLA-DPA2*01:01:01:01	HLA-DPA2*01:01:01:01|6743|1.0	46	HLA-DPA2*01:01:01:01	HLA-DPA2*01:01:01:01
-HLA-DPA2	2	HLA-DPA2*01:01:01:02	HLA-DPA2*01:01:01:02|6743|1.0	46	HLA-DPA2*01:01:01:02	HLA-DPA2*01:01:01:02
-HLA-G	1	HLA-G*01:01:01:01	HLA-G*01:01:01:01|3138|1.0	45	HLA-G*01:01:01:01	HLA-G*01:01:01:01
-HLA-G	2	HLA-G*01:01:01:05	HLA-G*01:01:01:05|3138|1.0	45	HLA-G*01:01:01:05	HLA-G*01:01:01:05
-HLA-P	1	HLA-P*02:01:01:01	HLA-P*02:01:01:01|2931|1.0	39	HLA-P*02:01:01:01	HLA-P*02:01:01:01
 ...
 ```
 
@@ -293,7 +282,7 @@ NAT2    1       NAT2*7.002      NAT2*7.002|16952|0.999057       25      NAT2*7.0
 NAT2    2       NAT2*4.005      NAT2*4.005|16962|0.999646       25      NAT2*4.005;NAT2*7.002;NAT2*7.003        NAT2*4.005
 ...
 ```
-Top lines with `#` start are the inferred Diplotype and phenotype for **CYP2D6**. Below lines are the typing results of other CYP loci, with format same as the above file.
+Top lines with `#` start are the inferred diplotype and phenotype for **CYP2D6**. Below lines are the typing results of other CYP loci, with format same as the above file.
 
 3. **An example for `sample_id.IG_TR_typing_result.txt` (IG,TCR) is as below:** 
 ```
@@ -313,7 +302,7 @@ Interpret each column in the annotation line as
 |  allele_1/2 | first/second typed allele |
 |  score_1/2 | alignment identity between the typed allele and the personlized haplotype   |
 |  length_1/2 | alignment length between the typed allele and the personlized haplotype  |
-|  hap_1 | locate on the first/second personlized haplotype  |
+|  hap_1/2 | locate on the first/second personlized haplotype  |
 |  hg38_chrom | which chromosome the locus locate on the hg38 reference |
 |  hg38_len | length of this locus on the hg38 reference  |
 |  variant_num | Number of variants detected on this locus |
