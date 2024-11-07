@@ -37,7 +37,7 @@ def read_spec_result(spec_result):
 
                 if gene not in spec_result_dict:
                     spec_result_dict[gene] = []
-                spec_result_dict[gene].append([field])
+                spec_result_dict[gene].append(field)
     # print ("#", pure_diplotype, spec_result_dict)
     diplotype_list = get_standard_diploid(pure_diplotype)
     return diplotype_list, read_num, phenotype, activity, spec_result_dict, spec_gene_depth
@@ -53,6 +53,8 @@ for folder in os.listdir(spec_dir):
         continue
     sample = folder
     spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
+    if not os.path.exists(spec_result):
+        continue
     diplotype_list, read_num, phenotype, activity, spec_result_dict, spec_gene_depth = read_spec_result(spec_result)
     data.append(["CYP2D6", '1', diplotype_list[0], '-', read_num, '-', '-', sample])
     data.append(["CYP2D6", '2', diplotype_list[1], '-', read_num, '-', '-', sample])
@@ -61,6 +63,7 @@ for folder in os.listdir(spec_dir):
             continue
         for i in range(2):
             field = spec_result_dict[gene][i]
+            #print (field)
             array = field[2].split(";")
             for j in range(len(array)):
                 if array[j] == "NA":
