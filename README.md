@@ -22,27 +22,23 @@
 6. **Efficient and User-Friendly**  
    SpecLong is computationally efficient, making it suitable for use on personal computers, enabling convenient use in clinical settings.
 
-
-## Install  
+## Quick start
+### Install  
 First, create the env with conda or mamba, and activate the env. 
 
 **Use conda**
 ```
 git clone git@github.com:deepomicslab/SpecLong.git
 cd SpecLong/
-conda env create --prefix=./speclong_env -f environment.yml
-conda activate ./speclong_env
-
+conda env create -n speclong -f environment.yml
+conda activate speclong
 ```
 
 **For faster installation and environment management, we recommend using mamba.**
 
 ```
-git clone git@github.com:deepomicslab/SpecLong.git
-cd SpecLong/
-mamba env create --prefix=./speclong_env -f environment.yml
-mamba activate ./speclong_env
-
+mamba env create -n speclong -f environment.yml
+mamba activate speclong
 ```
 
 
@@ -50,45 +46,50 @@ Second, make the softwares in bin/ executable.
 ```
 chmod +x -R bin/*
 ```
-Third, build the database. You can build a database for all gene families, or just the ones you need.
+
+### Database construction
+Third, build the allele database. You can build a database for all gene families, or just the ones you need.
+For HLA, KIR, and IG, TCR:
 ```
-python scripts/make_db.py -o ./db  -i HLA
+python scripts/make_db.py -o SpecLong/db  -i HLA
 
-python scripts/make_db.py -o ./db  -i KIR
+python scripts/make_db.py -o SpecLong/db  -i KIR
 
-python scripts/make_db.py -o ./db  -i CYP
 
-python scripts/make_db.py -o ./db  -i IG_TR
+
+python scripts/make_db.py -o SpecLong/db  -i IG_TR
 ```
+For CYP, download the complete pharmvar database at [Pharmvar](https://www.pharmvar.org/download), unzip it, merge the alleles of all CYP loci into a single `fasta` file, and afford the path to the `fasta` file to SpecLong:
+```
+cat pharmvar-6.1.2.1/*/*.haplotypes.fasta >CYP.all.fasta
+python scripts/make_db.py -o SpecLong/db  -i CYP --CYP_fa  CYP.all.fasta
+``` 
+
+
+### Run & test
 Perform SpecLong with
 ```
 python3 script/main.py -h
 ```
+Please go to the `test/` folder, run SpecLong with given scripts, and find results in the `output/`.
 
 Note:
-
-
 - SpecLong now supports Linux and Windows WSL systems.
 
 
-
-
-## Test
-Please go to the `example/` folder, run SpecLong with given scripts, and find results in the `output/`.
 
 ## Basic Usage  
 
 ### Main functions
 | Scripts | Description |
 | --- | --- |
-|script/ExtractReads.sh| Extract gene-related reads from enrichment-free data.|
+|script/ExtractReads.sh| Extract gene-region-related reads from enrichment-free data.|
 |script/main.py| Typing with naopore or pacbio data  |
 
 
 
-### Extract gene-related reads
-First extract gene reads with enrichment-free data. Otherwise, Gnene typing would be slow. Map reads to `hg19` or `hg38`, then use `script/ExtracReads.sh` to extract gene-related reads. We use the script of [Kourami](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-018-1388-2) with minor revision for this step. 
-Extract gene-related reads by
+### Extract gene-region-related reads
+First extract gene reads with enrichment-free data. Otherwise, Typing would be slow. Map reads onto the `hg38`, then use `ExtracReads.sh` to extract reads by
 ```
 usage() {
   echo "Usage: $0 -s <sample_id> -i <input_bam_or_cram> -g <gene_class> -o <output_directory> [-r <reference>]"
@@ -101,12 +102,11 @@ usage() {
 }
 ```
 
-## Gene Typing 
-Full-resolution gene typing using SpecLong. We strongly recommend utilizing only gene-related reads. Specifically, for enrichment-free data, we recommend first performing the aforementioned step.
+## Typing 
 
 ### HLA Typing
 
-Perform full-resolution HLA typing with WGS or amplicon nanopore reads by
+Perform four-field HLA typing by
 ```
 python3 SpecLong/main.py \
         -r <fastq> \
@@ -115,36 +115,16 @@ python3 SpecLong/main.py \
         -n <sample_id> \
         -o <outdir> \
         --db SpecLong/db \
-        -y nanopore \
-        --align_method_1 minimap2
+        -y nanopore 
 ```
-Perform full-resolution HLA typing with WGS or amplicon pacbio hifi reads by
+Example cmd:
 ```
-python3 SpecLong/main.py \
-        -r <fastq> \
-        -j <threads> \
-        -i HLA \
-        -n <sample_id> \
-        -o <outdir> \
-        --db SpecLong/db \
-        -y pacbio-hifi \
-        --align_method_1 minimap2
+xx
 ```
-Perform full-resolution HLA typing with WGS or amplicon pacbio clr reads by
+
+Perform full-resolution HLA typing with long-read RNA data
 ```
-python3 SpecLong/main.py \
-        -r <fastq> \
-        -j <threads> \
-        -i HLA \
-        -n <sample_id> \
-        -o <outdir> \
-        --db SpecLong/db \
-        -y pacbio \
-        --align_method_1 minimap2
-```
-Perform full-resolution HLA typing with PacBio PacBio Iso-seq/traditional cDNA long reads
-```
-python /scratch/project/cs_shuaicli/wxd/app/SpecLong/scripts/main.py \
+python3 /scratch/project/cs_shuaicli/wxd/app/SpecLong/scripts/main.py \
         -r <fastq> \
         -j <threads> \
         -i HLA \
@@ -153,30 +133,6 @@ python /scratch/project/cs_shuaicli/wxd/app/SpecLong/scripts/main.py \
         --db SpecLong/db  \
         --seq_tech rna \
         --RNA_type traditional
-```
-Perform full-resolution HLA typing with Nanopore Direct RNA-seq long reads
-```
-python /scratch/project/cs_shuaicli/wxd/app/SpecLong/scripts/main.py \
-        -r <fastq> \
-        -j <threads> \
-        -i HLA \
-        -n <sample_id> \
-        -o <outdir> \
-        --db SpecLong/db  \
-        --seq_tech rna \
-        --RNA_type Direct
-```
-Perform full-resolution HLA typing with Nanopore 2D cDNA-seq
-```
-python /scratch/project/cs_shuaicli/wxd/app/SpecLong/scripts/main.py \
-        -r <fastq> \
-        -j <threads> \
-        -i HLA \
-        -n <sample_id> \
-        -o <outdir> \
-        --db SpecLong/db  \
-        --seq_tech rna \
-        --RNA_type 2D
 ```
 ### KIR Typing
 ```
@@ -187,12 +143,15 @@ python3 SpecLong/main.py \
         -n <sample_id> \
         -o <outdir> \
         --db SpecLong/db \
-        -y <datatype> \
-        --align_method_1 minimap2 \
-        --hete_p 0.2
+        -y <datatype> 
+
+```
+Example cmd:
+```
+python3 SpecLong/scripts/main.py -n $sample -o $outdir -j 10 -y pacbio -i KIR -r $fq --hete_p 0.2
 ```
 
-### CYP2D6 Typing
+### CYP Typing
 ```
 python3 SpecLong/main.py \
         -r <fastq> \
@@ -200,8 +159,13 @@ python3 SpecLong/main.py \
         -i CYP \
         -n <sample_id> \
         -o <outdir> \
+        -hg38 <no_alt_ref> \
         --db SpecLong/db \
         -y <datatype>
+```
+Example cmd:
+```
+python3 SpecLong/scripts/main.py --hg38 $ref -n $sample -o $outdir -j 10 -y nanopore -i CYP -r $fq --align_method_1 minimap2
 ```
 
 ### IG&TCR Typing
@@ -209,12 +173,16 @@ python3 SpecLong/main.py \
 python3 SpecLong/main.py \
         -r <fastq> \
         -j <threads> \
-        -i CYP \
+        -i IG_TCR \
         -n <sample_id> \
         -o <outdir> \
         --db SpecLong/db \
         -y <datatype> \
         -hg38 <no_alt_ref>
+```
+Example cmd:
+```
+python3 SpecLong/scripts/main.py --hg38 $ref -n $sample -o $outdir -j 10 -y pacbio -i IG_TR -r $fq
 ```
 
 
@@ -305,10 +273,10 @@ Interpret each column in the annotation line as
 | --- | --- |
 |1st| gene name|
 |  2nd |  1 for haplotype 1, 2 for haplotype 2 |
-| 3rd  | The best matched IMGT allele, i.e., the typing result  |
-|  4th | Matched alleles with their length and align ratio |
-|  5th | Support reads count  |
-|  6th | Step 1 allele result |
+| 3rd  | typing result, may contain ambiguity  |
+|  4th | Matched alleles with their length and align ratio, separate by `\|` |
+|  5th | Support reads count on the locus  |
+|  6th | Best-matched allele in the database |
 |  7th | One guess allele result  |
 
 
