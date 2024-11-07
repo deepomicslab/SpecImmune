@@ -10,33 +10,37 @@ def evaluate_sim():
     gene_list, interval_dict =  get_focus_gene({'i':'CYP'})
     outdir="/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/reads/"
     resultdir="/mnt/d/HLAPro_backup/Nanopore_optimize/data/sim_hap/results/"
-    total_accuracy_dict = {}
-    total = [0, 0]
-    for i in range(1, 51):
-        sample = f"CYP_dp50_acc98_{i}"
-
-        
-        truth = f"{outdir}/{sample}/{sample}.CYP.hap.alleles.txt"
-        # infer = f"{resultdir}/{sample}/{sample}.CYP.type.result.txt"
-        infer = f"{resultdir}/{sample}/{sample}.CYP.final.type.1.result.txt"
-        spec_gene_accuracy_dict = assess_sim_module(truth, infer, gene_list, 'CYP', mode="one_guess")
-        print(spec_gene_accuracy_dict)
-        for gene in spec_gene_accuracy_dict:
-            if gene not in total_accuracy_dict:
-                total_accuracy_dict[gene] = [0, 0]
-            total_accuracy_dict[gene][0] += spec_gene_accuracy_dict[gene][1]
-            total_accuracy_dict[gene][1] += spec_gene_accuracy_dict[gene][2]
-            total[0] += spec_gene_accuracy_dict[gene][1]
-            total[1] += spec_gene_accuracy_dict[gene][2]
     data = []
-    for gene in total_accuracy_dict:
-        accuracy = total_accuracy_dict[gene][0]/total_accuracy_dict[gene][1]
-        print(f"{gene}: {accuracy}")
-        data.append([gene, accuracy, total_accuracy_dict[gene][0], total_accuracy_dict[gene][1]])
-    print(f"Total: {total[0]/total[1]}", total)
+    dict = {'90':'90', '98':'95'}
+    for prefix in ['90', '98']:
+        total_accuracy_dict = {}
+        total = [0, 0]
+        for i in range(1, 51):
+            sample = f"CYP_dp50_acc{prefix}_{i}"
+
+            
+            truth = f"{outdir}/{sample}/{sample}.CYP.hap.alleles.txt"
+            # infer = f"{resultdir}/{sample}/{sample}.CYP.type.result.txt"
+            infer = f"{resultdir}/{sample}/{sample}.CYP.final.type.1.result.txt"
+            spec_gene_accuracy_dict = assess_sim_module(truth, infer, gene_list, 'CYP', mode="one_guess")
+            print(spec_gene_accuracy_dict)
+            for gene in spec_gene_accuracy_dict:
+                if gene not in total_accuracy_dict:
+                    total_accuracy_dict[gene] = [0, 0]
+                total_accuracy_dict[gene][0] += spec_gene_accuracy_dict[gene][1]
+                total_accuracy_dict[gene][1] += spec_gene_accuracy_dict[gene][2]
+                total[0] += spec_gene_accuracy_dict[gene][1]
+                total[1] += spec_gene_accuracy_dict[gene][2]
+        
+        for gene in total_accuracy_dict:
+            accuracy = total_accuracy_dict[gene][0]/total_accuracy_dict[gene][1]
+            print(f"{gene}: {accuracy}")
+            data.append([gene, accuracy, total_accuracy_dict[gene][0], total_accuracy_dict[gene][1], dict[prefix]+"%"])
+        print(f"Total: {total[0]/total[1]}", total)
+        break
     ## convert to df, and save it in a csv file
     import pandas as pd
-    df = pd.DataFrame(data, columns = ['Gene', 'Accuracy', 'Correct', 'Total'])
+    df = pd.DataFrame(data, columns = ['Gene', 'Accuracy', 'Correct', 'Total', 'Seq_acc'])
     df.to_csv("cyp_results/sim_all_gene.csv", index=False)
 
 def evaluate_real():
