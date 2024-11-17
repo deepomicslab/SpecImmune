@@ -319,7 +319,7 @@ h0_new_g=$hap0_dir/hap0_new_graph.txt
         # sed -i '1c\>mhc_hap_1' $hap1_dir/hap1_asm.fa
     else
         echo "$sv_flag_file does not exist or is empty."
-        /gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/seqGraph/build3/matching \
+        /home/wangxuedong/seqGraph/build_620/matching \
         -b \
         --model 1 \
         -v 1 \
