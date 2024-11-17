@@ -131,7 +131,13 @@ def graph(outfile):
 # print ("#####################")
 # raw_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD/"
 # indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD_result/"
-outfile = "hla_kir_cyp_vdj_LD_values.csv"
+# outfile = "hla_kir_cyp_vdj_LD_values.csv"
 # read_LD_values(raw_dir, indir,outfile)
 
-graph(outfile)
+# print ("#####################")
+raw_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD2/"
+indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD_result2/"
+outfile = "hla_kir_cyp_vdj_LD_values2.csv"
+read_LD_values(raw_dir, indir,outfile)
+
+# graph(outfile)

@@ -91,6 +91,8 @@ def read_alleles(allele_file, super_pop_dict, sample_pop_dict,read_num_cutoff=10
         ## check if empty
         if row['Genotype'] != "NA" and row['Genotype'] != "" and not pd.isna(row['Genotype']):
             genotype = row['Genotype']
+            if row['Locus'] == "CYP2D6":
+                genotype = "CYP2D6"+genotype
             genotype = genotype.split(";")[0]
             genotype = convert_field([genotype], field)[0]
             alleles_dict[super_pop][row['Locus']].append(genotype)
