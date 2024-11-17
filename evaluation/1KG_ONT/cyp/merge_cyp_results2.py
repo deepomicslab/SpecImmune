@@ -16,6 +16,7 @@ def read_spec_result(spec_result):
     if not os.path.exists(spec_result):
         raise FileNotFoundError(f"{spec_result} does not exist")
     pure_diplotype = 'NA'
+    i = 0
     with open(spec_result, 'r') as f:
         for line in f:
             field = line.strip().split("\t")
@@ -38,9 +39,10 @@ def read_spec_result(spec_result):
                 if gene not in spec_result_dict:
                     spec_result_dict[gene] = []
                 spec_result_dict[gene].append(field)
+            i += 1
     # print ("#", pure_diplotype, spec_result_dict)
     diplotype_list = get_standard_diploid(pure_diplotype)
-    return diplotype_list, read_num, phenotype, activity, spec_result_dict, spec_gene_depth
+    return diplotype_list, spec_gene_depth['CYP2D6'], phenotype, activity, spec_result_dict, spec_gene_depth
     
 
 spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k_all2/"
