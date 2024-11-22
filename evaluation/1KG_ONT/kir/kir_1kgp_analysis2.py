@@ -603,8 +603,24 @@ for sample in alleles_sample_dict:
     print (",".join(sample_alleles), file=f_out)
 f_out.close()
 
-LD_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD2"
-LD_analysis(alleles_gene_dict, alleles_sample_dict,LD_dir)
+# LD_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD2"
+# LD_analysis(alleles_gene_dict, alleles_sample_dict,LD_dir)
+
+data = [['CYP2D6', 1, "CYP", "CYP", "#d9e6eb"]]
+for gene in alleles_gene_dict_cyp:
+    if gene != 'CYP2D6':
+        data.append([gene, 1, "CYP", "CYP", "#d9e6eb"])
+for gene in alleles_gene_dict_kir:
+    data.append([gene, 1, "KIR", "KIR", "#8f96bd"])
+for gene in alleles_gene_dict_hla:
+    data.append([gene, 1, "HLA", "HLA", "#9fc3d5"])
+for gene in alleles_gene_dict_vdj:
+    if gene[:2] == 'IG':
+        data.append([gene, 1, "VDJ", 'IG', "#2a347a"])
+    else:
+        data.append([gene, 1, "VDJ", 'TCR', "#d6d69b"])
+df = pd.DataFrame(data, columns=['y', 'x', 'Type', 'subtype', 'color'])
+df.to_csv("vdj_gene_type2.csv", index=False)
 
 # data = [['CYP2D6', 1, "CYP", "CYP", "#d9e6eb"]]
 # for gene in alleles_gene_dict_kir:
