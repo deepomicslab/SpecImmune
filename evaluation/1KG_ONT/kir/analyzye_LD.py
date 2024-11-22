@@ -67,7 +67,8 @@ def graph(outfile):
 
     ## read the csv
     df = pd.read_csv(outfile)
-    df3 = df[df['min_w'] > 0.2]
+    df3 = df[df['min_w'] > 0]
+    # df3 = df[df['min_w'] > 0.2]
     ## fill the matrix with zero is NA
     df_matrix3 = df3.pivot(index='gene1', columns='gene2', values='min_w')
     ## convert NaN to 0
@@ -138,6 +139,6 @@ def graph(outfile):
 raw_dir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD2/"
 indir = "/mnt/d/HLAPro_backup/Nanopore_optimize/1kgp_analysis/hla_kir_cyp_vdj_LD_result2/"
 outfile = "hla_kir_cyp_vdj_LD_values2.csv"
-read_LD_values(raw_dir, indir,outfile)
+# read_LD_values(raw_dir, indir,outfile)
 
-# graph(outfile)
+graph(outfile)
