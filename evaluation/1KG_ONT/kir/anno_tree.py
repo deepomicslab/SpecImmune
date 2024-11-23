@@ -303,7 +303,7 @@ def compare5():
 
 
 def compare6():
-    df = pd.read_csv("hla_kir_cyp_vdj_LD_values.csv")
+    df = pd.read_csv("hla_kir_cyp_vdj_LD_values2.csv")
     # enumerate the df
     data = []
     count_dict = {}
@@ -358,4 +358,4 @@ compare0()
 # compare4()
 # compare5()
 # # just_count()
-# compare6()
+compare6()
