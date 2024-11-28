@@ -1,0 +1,92 @@
+Allele: CYP2D6*101
+	Drug: dextromethorphan, Level of Evidence: 3, Evidence Score: 0.625, Level Modifiers: Tier 1 VIP
+Allele: CYP2D6*64
+	Drug: n-desmethyltamoxifen, Level of Evidence: 3, Evidence Score: 0.0, Level Modifiers: Tier 1 VIP
+Allele: CYP2D6*100
+	Drug: dextromethorphan, Level of Evidence: 3, Evidence Score: 0.625, Level Modifiers: Tier 1 VIP
+Allele: CYP2D6*56
+	Drug: dextromethorphan, Level of Evidence: 3, Evidence Score: 0.625, Level Modifiers: Tier 1 VIP
+Allele: CYP2D6*72
+	Drug: bufuralol;dextromethorphan, Level of Evidence: 3, Evidence Score: 0.0, Level Modifiers: Tier 1 VIP
+Allele: CYP2D6*52
+	Drug: n-desmethyltamoxifen, Level of Evidence: 3, Evidence Score: 0.0, Level Modifiers: Tier 1 VIP
+Allele: CYP2D6*35
+	Drug: tamoxifen, Level of Evidence: 1A, Evidence Score: 107.9375, Level Modifiers: Tier 1 VIP
+	Drug: doxepin, Level of Evidence: 1A, Evidence Score: 216.125, Level Modifiers: Tier 1 VIP
+	Drug: metoprolol, Level of Evidence: 1A, Evidence Score: 116.4375, Level Modifiers: Tier 1 VIP
+Allele: CYP2D6*4
+	Drug: ondansetron, Level of Evidence: 1A, Evidence Score: 102.25, Level Modifiers: Tier 1 VIP
+	Drug: tamoxifen, Level of Evidence: 1A, Evidence Score: 107.9375, Level Modifiers: Tier 1 VIP
+	Drug: venlafaxine, Level of Evidence: 1A, Evidence Score: 117.5, Level Modifiers: Tier 1 VIP
+	Drug: clomipramine, Level of Evidence: 1A, Evidence Score: 203.8125, Level Modifiers: Tier 1 VIP
+	Drug: doxepin, Level of Evidence: 1A, Evidence Score: 216.125, Level Modifiers: Tier 1 VIP
+	Drug: carvedilol, Level of Evidence: 3, Evidence Score: 7.5, Level Modifiers: Tier 1 VIP
+	Drug: codeine, Level of Evidence: 1A, Evidence Score: 216.0625, Level Modifiers: Tier 1 VIP
+	Drug: imipramine, Level of Evidence: 1A, Evidence Score: 205.8125, Level Modifiers: Tier 1 VIP
+	Drug: zuclopenthixol, Level of Evidence: 1A, Evidence Score: 101.6875, Level Modifiers: Tier 1 VIP
+	Drug: amitriptyline, Level of Evidence: 1A, Evidence Score: 213.0, Level Modifiers: Tier 1 VIP
+	Drug: oxycodone, Level of Evidence: 2A, Evidence Score: 12.4375, Level Modifiers: Tier 1 VIP
+	Drug: tramadol, Level of Evidence: 2A, Evidence Score: 22.875, Level Modifiers: Tier 1 VIP
+	Drug: nortriptyline, Level of Evidence: 1A, Evidence Score: 228.375, Level Modifiers: Tier 1 VIP
+	Drug: Selective serotonin reuptake inhibitors, Level of Evidence: 3, Evidence Score: 2.5, Level Modifiers: Tier 1 VIP
+	Drug: aripiprazole, Level of Evidence: 1A, Evidence Score: 105.875, Level Modifiers: Tier 1 VIP
+	Drug: mirtazapine, Level of Evidence: 2A, Evidence Score: 8.75, Level Modifiers: Tier 1 VIP
+	Drug: citalopram, Level of Evidence: 4, Evidence Score: -2.125, Level Modifiers: Tier 1 VIP
+	Drug: paroxetine, Level of Evidence: 1A, Evidence Score: 220.25, Level Modifiers: Tier 1 VIP
+	Drug: flecainide, Level of Evidence: 1A, Evidence Score: 104.125, Level Modifiers: Tier 1 VIP
+	Drug: trimipramine, Level of Evidence: 1A, Evidence Score: 107.5625, Level Modifiers: Tier 1 VIP
+	Drug: risperidone, Level of Evidence: 1A, Evidence Score: 125.875, Level Modifiers: Tier 1 VIP
+	Drug: desipramine, Level of Evidence: 1A, Evidence Score: 116.625, Level Modifiers: Tier 1 VIP
+	Drug: fluoxetine, Level of Evidence: 3, Evidence Score: 5.0, Level Modifiers: Tier 1 VIP
+	Drug: haloperidol, Level of Evidence: 1A, Evidence Score: 107.4375, Level Modifiers: Tier 1 VIP
+	Drug: atomoxetine, Level of Evidence: 1A, Evidence Score: 210.8125, Level Modifiers: Tier 1 VIP
+	Drug: olanzapine, Level of Evidence: 3, Evidence Score: 2.0, Level Modifiers: Tier 1 VIP
+	Drug: tolterodine, Level of Evidence: 3, Evidence Score: 4.875, Level Modifiers: Tier 1 VIP
+	Drug: timolol, Level of Evidence: 3, Evidence Score: 1.75, Level Modifiers: Tier 1 VIP
+	Drug: fluvoxamine, Level of Evidence: 1A, Evidence Score: 103.4375, Level Modifiers: Tier 1 VIP
+	Drug: donepezil, Level of Evidence: 3, Evidence Score: 3.5, Level Modifiers: Tier 1 VIP
+	Drug: debrisoquine, Level of Evidence: 3, Evidence Score: 0.125, Level Modifiers: Tier 1 VIP
+	Drug: sparteine, Level of Evidence: 3, Evidence Score: 1.25, Level Modifiers: Tier 1 VIP
+	Drug: dextromethorphan, Level of Evidence: 3, Evidence Score: 0.625, Level Modifiers: Tier 1 VIP
+	Drug: debrisoquine;dextromethorphan, Level of Evidence: 3, Evidence Score: 0.125, Level Modifiers: Tier 1 VIP
+	Drug: galantamine, Level of Evidence: 3, Evidence Score: 2.375, Level Modifiers: Tier 1 VIP
+	Drug: vortioxetine, Level of Evidence: 3, Evidence Score: 0.0, Level Modifiers: Tier 1 VIP
+	Drug: maprotiline;opipramol, Level of Evidence: 3, Evidence Score: 6.0, Level Modifiers: Tier 1 VIP
+	Drug: antipsychotics, Level of Evidence: 3, Evidence Score: 0.75, Level Modifiers: Tier 1 VIP
+	Drug: metoprolol, Level of Evidence: 1A, Evidence Score: 116.4375, Level Modifiers: Tier 1 VIP
+	Drug: tolperisone, Level of Evidence: 3, Evidence Score: 1.5, Level Modifiers: Tier 1 VIP
+	Drug: carvedilol, Level of Evidence: 3, Evidence Score: 2.875, Level Modifiers: Tier 1 VIP
+	Drug: metoprolol, Level of Evidence: 1A, Evidence Score: 103.0, Level Modifiers: Tier 1 VIP
+	Drug: tropisetron, Level of Evidence: 1A, Evidence Score: 103.5, Level Modifiers: Tier 1 VIP
+	Drug: hydrocodone, Level of Evidence: 1A, Evidence Score: 101.3125, Level Modifiers: Tier 1 VIP
+	Drug: ethylmorphine, Level of Evidence: 3, Evidence Score: 0.0, Level Modifiers: Tier 1 VIP
+	Drug: hydrocodone, Level of Evidence: 3, Evidence Score: 2.5, Level Modifiers: Tier 1 VIP
+	Drug: codeine, Level of Evidence: 3, Evidence Score: 2.5, Level Modifiers: Tier 1 VIP
+	Drug: oxycodone, Level of Evidence: 3, Evidence Score: 2.5, Level Modifiers: Tier 1 VIP
+	Drug: dihydrocodeine, Level of Evidence: 3, Evidence Score: 0.0, Level Modifiers: Tier 1 VIP
+	Drug: methadone, Level of Evidence: 3, Evidence Score: 2.25, Level Modifiers: Tier 1 VIP
+	Drug: methadone, Level of Evidence: 3, Evidence Score: 1.375, Level Modifiers: Tier 1 VIP
+	Drug: methadone, Level of Evidence: 3, Evidence Score: 1.125, Level Modifiers: Tier 1 VIP
+	Drug: tramadol, Level of Evidence: 1A, Evidence Score: 233.25, Level Modifiers: Tier 1 VIP
+	Drug: tramadol, Level of Evidence: 1A, Evidence Score: 227.1875, Level Modifiers: Tier 1 VIP
+	Drug: ketoprofen;tramadol, Level of Evidence: 3, Evidence Score: 1.75, Level Modifiers: Tier 1 VIP
+	Drug: venlafaxine, Level of Evidence: 1A, Evidence Score: 103.25, Level Modifiers: Tier 1 VIP
+	Drug: amitriptyline, Level of Evidence: 1A, Evidence Score: 211.375, Level Modifiers: Tier 1 VIP
+	Drug: imipramine, Level of Evidence: 1A, Evidence Score: 205.375, Level Modifiers: Tier 1 VIP
+	Drug: imipramine, Level of Evidence: 1A, Evidence Score: 208.125, Level Modifiers: Tier 1 VIP
+	Drug: clomipramine, Level of Evidence: 1A, Evidence Score: 209.375, Level Modifiers: Tier 1 VIP
+	Drug: atomoxetine, Level of Evidence: 1A, Evidence Score: 201.75, Level Modifiers: Tier 1 VIP
+	Drug: tamoxifen, Level of Evidence: 1A, Evidence Score: 226.5625, Level Modifiers: Tier 1 VIP
+	Drug: nortriptyline, Level of Evidence: 1A, Evidence Score: 204.875, Level Modifiers: Tier 1 VIP
+	Drug: codeine, Level of Evidence: 1A, Evidence Score: 210.25, Level Modifiers: Tier 1 VIP
+	Drug: oxycodone, Level of Evidence: 4, Evidence Score: -5.625, Level Modifiers: Tier 1 VIP
+	Drug: oxycodone, Level of Evidence: 4, Evidence Score: -1.625, Level Modifiers: Tier 1 VIP
+	Drug: desipramine, Level of Evidence: 1A, Evidence Score: 102.0, Level Modifiers: Tier 1 VIP
+	Drug: sertraline, Level of Evidence: 3, Evidence Score: 2.5, Level Modifiers: Tier 1 VIP
+	Drug: atorvastatin, Level of Evidence: 3, Evidence Score: 2.25, Level Modifiers: Tier 1 VIP
+	Drug: rosuvastatin, Level of Evidence: 3, Evidence Score: 2.25, Level Modifiers: Tier 1 VIP
+	Drug: simvastatin, Level of Evidence: 3, Evidence Score: 2.0, Level Modifiers: Tier 1 VIP
+	Drug: fluvastatin, Level of Evidence: 3, Evidence Score: 0.25, Level Modifiers: Tier 1 VIP
+	Drug: citalopram, Level of Evidence: 3, Evidence Score: 2.625, Level Modifiers: Tier 1 VIP
+	Drug: citalopram, Level of Evidence: 3, Evidence Score: 2.5, Level Modifiers: Tier 1 VIP
+	Drug: atomoxetine;methylphenidate, Level of Evidence: 3, Evidence Score: 0.125, Level Modifiers: Tier 1 VIP
