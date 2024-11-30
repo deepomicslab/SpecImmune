@@ -121,7 +121,7 @@ def analyze_tree():
     f.close()
 
 def compare0():
-    df = pd.read_csv("hla_kir_cyp_LD_values.csv")
+    df = pd.read_csv("hla_kir_cyp_vdj_LD_values2.csv")
     # enumerate the df
     data = []
     count_dict = {}
@@ -149,7 +149,7 @@ def compare0():
         print (gene_class, len(count_dict[gene_class]))
             
     df = pd.DataFrame(data, columns = ['KIR', 'gene', 'ALD', 'type', 'class'])
-    df.to_csv("tree/kir_class_hla.csv", index=False)
+    df.to_csv("tree/kir_class_hla2.csv", index=False)
 
 def compare():
     df = pd.read_csv("hla_kir_cyp_vdj_LD_values.csv")
@@ -330,8 +330,41 @@ def compare6():
     df = pd.DataFrame(data, columns = ['Class1', 'Class2', 'ALD'])
     df.to_csv("tree/vdj_cyp_hla_kir_max.csv", index=False)
 
+
+def cyp_count():
+    df = pd.read_csv("hla_kir_cyp_vdj_LD_values2.csv")
+    # enumerate the df
+    data = []
+    count_dict = {}
+    save_past = {}
+    for index, row in df.iterrows():
+        
+        gene1_t  = classify_genes(row['gene1'])
+        gene2_t  = classify_genes(row['gene2'])
+
+        if row['gene1'] == row['gene2']:
+            continue
+        if gene1_t == gene2_t:
+            continue
+        if gene1_t == "CYP":
+            if gene2_t not in count_dict:
+                count_dict[gene2_t] = {}
+
+            tag = '&'.join(sorted([row['gene1'], row['gene2']]))
+            count_dict[gene2_t][tag] = row['min_w']
+
+        if gene2_t == "CYP":
+            if gene1_t not in count_dict:
+                count_dict[gene1_t] = {}
+            tag = '&'.join(sorted([row['gene1'], row['gene2']]))
+            count_dict[gene1_t][tag] = row['min_w']
+    for gene_class in count_dict:
+        ## sort the dict by values in reverse manner
+        sorted_dict = sorted(count_dict[gene_class].items(), key=lambda item: item[1], reverse=True)
+        print (gene_class, sorted_dict[:10] )
+        
 def just_count():
-    df = pd.read_csv("hla_kir_cyp_vdj_LD_values.csv")
+    df = pd.read_csv("hla_kir_cyp_vdj_LD_values2.csv")
     # enumerate the df
     data = []
     count_dict = {}
@@ -352,10 +385,11 @@ def just_count():
         print (gene_class, len(count_dict[gene_class]))
 
 # analyze_tree()
-compare0()
+# compare0()
 # compare2()
 # compare3()
 # compare4()
 # compare5()
-# # just_count()
-compare6()
+# just_count()
+cyp_count()
+# compare6()
