@@ -194,6 +194,13 @@ def main(args):
         # python3 {sys.path[0]}/get_cyp_output.py {args["o"]}/{args["n"]}/{args["n"]} {args['seq_tech']}
         # """
         # os.system(command)
+    if args["drug_recommendation"]:
+        drug_out=f"{args['o']}/{args['n']}/{args['n']}.drug_recommendation.txt"
+        command = f"""
+        python3 {sys.path[0]}/drug_recommendation.py -a {args["o"]}/{args["n"]}/{args["n"]}.final.type.result.formatted.txt -d {sys.path[0]}/../drug_db/drug.csv -g {args["i"]} -o {drug_out}
+        """
+        os.system(command)
+
         
 if __name__ == "__main__":   
 
@@ -226,6 +233,7 @@ if __name__ == "__main__":
     optional.add_argument("--align_method_1", type=str, help="align method in read binning, bwa or minimap2", metavar="\b", default='bwa')
     optional.add_argument("--align_method_2", type=str, help="align method in typing, bwa or minimap2", metavar="\b", default='minimap2')
     optional.add_argument("--iteration", type=int, help="iteration count", metavar="\b", default=1)
+    optional.add_argument("--drug_recommendation", type=bool, help="drug recommendation", metavar="\b", default=False)
 
     optional.add_argument('-v', '--version', action='store_true', help='Display the version number')
     optional.add_argument("-h", "--help", action="help")
