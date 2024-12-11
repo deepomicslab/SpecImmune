@@ -58,3 +58,5 @@ gene_list = get_gene_list(file)
 
 read_csv(file, 'HLA-A', 'KIR2DL1')
 read_csv(file, 'HLA-DPB1', 'KIR2DL1')
+read_csv(file, 'CYP2D6', 'KIR2DP1')
+read_csv(file, 'CYP2D6', 'HLA-A')

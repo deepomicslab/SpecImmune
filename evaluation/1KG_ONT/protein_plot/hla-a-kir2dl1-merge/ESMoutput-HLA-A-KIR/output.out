@@ -1,0 +1,17 @@
+# ===========================================================================
+command: prodigy merged.pdb --selection A B --temperature 25.0 --contact_list --pymol_selection
+exit status: 0
+log:
+[+] Reading structure file: /data/runs/woE_3YjmbUi2/merged.pdb
+[+] Parsed structure file merged (2 chains, 713 residues)
+[+] No. of intermolecular contacts: 1215
+[+] No. of charged-charged contacts: 120
+[+] No. of charged-polar contacts: 128
+[+] No. of charged-apolar contacts: 394
+[+] No. of polar-polar contacts: 37
+[+] No. of apolar-polar contacts: 244
+[+] No. of apolar-apolar contacts: 292
+[+] Percentage of apolar NIS residues: 41.38
+[+] Percentage of charged NIS residues: 22.99
+[++] Predicted binding affinity (kcal.mol-1):   -103.9
+[++] Predicted dissociation constant (M) at 25.0˚C:  6.3e-77

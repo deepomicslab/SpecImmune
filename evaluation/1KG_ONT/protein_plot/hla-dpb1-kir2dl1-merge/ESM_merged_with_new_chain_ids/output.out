@@ -1,0 +1,17 @@
+# ===========================================================================
+command: prodigy ESM_merged_with_new_chain_ids.pdb --selection A B --temperature 25.0 --contact_list --pymol_selection
+exit status: 0
+log:
+[+] Reading structure file: /data/runs/woE_3Yjwrt9p/ESM_merged_with_new_chain_ids.pdb
+[+] Parsed structure file ESM_merged_with_new_chain_ids (2 chains, 606 residues)
+[+] No. of intermolecular contacts: 716
+[+] No. of charged-charged contacts: 53
+[+] No. of charged-polar contacts: 88
+[+] No. of charged-apolar contacts: 228
+[+] No. of polar-polar contacts: 26
+[+] No. of apolar-polar contacts: 128
+[+] No. of apolar-apolar contacts: 193
+[+] Percentage of apolar NIS residues: 43.60
+[+] Percentage of charged NIS residues: 21.20
+[++] Predicted binding affinity (kcal.mol-1):    -56.6
+[++] Predicted dissociation constant (M) at 25.0˚C:  2.9e-42
