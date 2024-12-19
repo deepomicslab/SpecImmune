@@ -11,6 +11,7 @@ threads=$7
 sample=$8
 scripts_dir=$(dirname $0)
 longphase=$scripts_dir/../bin/longphase
+matching=$scripts_dir/../bin/matching
 data_type=$9
 
 # mask_low_script=$scripts_dir/mask_low_depth_region.py
@@ -276,7 +277,7 @@ h0_new_g=$hap0_dir/hap0_new_graph.txt
         # sed -i '1c\>mhc_hap_0' $hap0_dir/hap0_asm.fa
     else
         echo "$sv_flag_file does not exist or is empty."
-        /gpfs1/scratch/ResearchGroups/cs_shuaicli/wxd/app/seqGraph/build3/matching \
+        $matching \
         -b \
         --model 1 \
         -v 1 \
@@ -319,7 +320,7 @@ h0_new_g=$hap0_dir/hap0_new_graph.txt
         # sed -i '1c\>mhc_hap_1' $hap1_dir/hap1_asm.fa
     else
         echo "$sv_flag_file does not exist or is empty."
-        /home/wangxuedong/seqGraph/build_620/matching \
+        $matching \
         -b \
         --model 1 \
         -v 1 \
