@@ -341,9 +341,9 @@ def make_HLA_exon_db():
         local_fasta_filename = os.path.join(HLA_exon_dir, "hla_nuc.fasta")
         local_release_version = os.path.join(HLA_exon_dir, "release_version.txt")
         local_g_group_annotation = os.path.join(HLA_exon_dir, "hla_nom_g.txt")
-        download_file(HLA_exon_fasta_url, local_fasta_filename)
-        download_file(release_version, local_release_version)
-        download_file(g_group_annotation, local_g_group_annotation)
+        #download_file(HLA_exon_fasta_url, local_fasta_filename)
+        #download_file(release_version, local_release_version)
+        #download_file(g_group_annotation, local_g_group_annotation)
     else:
         local_fasta_filename = args.HLA_exon_fa
         download_file(release_version, local_release_version)
