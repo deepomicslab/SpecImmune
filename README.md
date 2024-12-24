@@ -88,15 +88,12 @@ Note:
 ### Extract gene-region-related reads
 First extract gene reads with enrichment-free data. Otherwise, Typing would be slow. Map reads onto the `hg38`, then use `ExtracReads.sh` to extract reads by
 ```
-usage() {
-  echo "Usage: $0 -s <sample_id> -i <input_bam_or_cram> -g <gene_class> -o <output_directory> [-r <reference>]"
-  echo "  -s  Sample ID or gene ID (required)"
-  echo "  -i  Input BAM or CRAM file mapped to hg38 (required)"
-  echo "  -g  Gene class, one of: HLA, KIR, CYP, IG_TR (required)"
-  echo "  -o  Output directory (required)"
-  echo "  -r  Reference file (required if input is CRAM)"
-  exit 1
-}
+Usage: ExtractReads.sh -s <sample_id> -i <input_bam_or_cram> -g <gene_class> -o <output_directory> [-r <reference>]
+  -s  Sample ID or gene ID (required)
+  -i  Input BAM or CRAM file mapped to hg38 (required)
+  -g  Gene class, one of: HLA, KIR, CYP, IG_TR (required)
+  -o  Output directory (required)
+  -r  Reference file (required if input is CRAM)
 ```
 
 ## Typing 

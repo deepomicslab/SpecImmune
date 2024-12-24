@@ -12,6 +12,16 @@ usage() {
   exit 1
 }
 
+help() {
+	 sed -rn 's/^### ?//;T;p' "$0"
+}
+
+if [[ $# == 0 ]] || [[ "$1" == "-h" ]]; then
+	usage
+	exit 1
+fi
+
+
 # Parse command line arguments
 sample_id=""
 input_file=""
