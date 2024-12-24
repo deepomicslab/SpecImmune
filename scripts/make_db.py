@@ -292,10 +292,12 @@ def make_HLA_db():
         os.makedirs(HLA_dir)
 
     if not args.HLA_fa:
+        local_fasta_filename_zip = os.path.join(HLA_dir, "hla_gen.fasta.zip")
         local_fasta_filename = os.path.join(HLA_dir, "hla_gen.fasta")
+
         local_release_version = os.path.join(HLA_dir, "release_version.txt")
         local_g_group_annotation = os.path.join(HLA_dir, "hla_nom_g.txt")
-        download_file(HLA_fasta_url, local_fasta_filename)
+        download_file(HLA_fasta_url, local_fasta_filename_zip)
         # unzip the file
         cmd = f"unzip {local_fasta_filename} -d {HLA_dir}"
         os.system(cmd)
