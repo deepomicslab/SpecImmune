@@ -323,4 +323,4 @@ SpecImmune enables automatic installation of these third party packages using `c
 
 
 ## Getting help
-Should you have any queries, please feel free to contact us, we will reply as soon as possible (swang66-c@my.cityu.edu.hk).
+Should you have any queries, please feel free to contact us via opening an issue or sending an email, we will reply as soon as possible (swang66-c@my.cityu.edu.hk).
