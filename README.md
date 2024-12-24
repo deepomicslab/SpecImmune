@@ -181,7 +181,7 @@ Example cmd:
 python3 SpecImmune/scripts/main.py --hg38 $ref -n $sample -o $outdir -j 10 -y pacbio -i IG_TR -r $fq
 ```
 
-
+### Commands
 Full arguments can be seen in
 ```
 usage: python3 main.py -h
