@@ -42,26 +42,27 @@ mamba activate SpecImmune
 ```
 
 
-Second, make the softwares in bin/ executable.
+Second, make the software in bin/ executable.
 ```
 chmod +x -R bin/*
 ```
 
 ### Database construction
 Third, build the allele database. You can build a database for all gene families, or just the ones you need.
-For HLA, KIR, and IG, TCR:
+For HLA, KIR, and IG/TCR:
 ```
-python scripts/make_db.py -o SpecImmune/db  -i HLA
+python scripts/make_db.py -o ./db  -i HLA
 
-python scripts/make_db.py -o SpecImmune/db  -i KIR
+python scripts/make_db.py -o ./db  -i KIR
 
-python scripts/make_db.py -o SpecImmune/db  -i IG_TR
+python scripts/make_db.py -o ./db  -i IG_TR
 ```
 For CYP, download the complete pharmvar database at [Pharmvar](https://www.pharmvar.org/download), unzip it, merge the alleles of all CYP loci into a single `fasta` file, and afford the path to the `fasta` file to SpecImmune:
 ```
 cat pharmvar-6.1.2.1/*/*.haplotypes.fasta >CYP.all.fasta
-python scripts/make_db.py -o SpecImmune/db  -i CYP --CYP_fa  CYP.all.fasta
-``` 
+python scripts/make_db.py -o ./db  -i CYP --CYP_fa  CYP.all.fasta
+```
+While running, denote the path of `db/` to SpecImmune.
 
 
 ### Run & test
