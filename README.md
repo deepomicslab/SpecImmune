@@ -82,7 +82,7 @@ Note:
 | Scripts | Description |
 | --- | --- |
 |scripts/ExtractReads.sh| Extract gene-region-related reads from enrichment-free data.|
-|scripts/main.py| Typing with naopore or pacbio data  |
+|scripts/main.py| Typing with Nanopore or PacBio data  |
 
 ### Extract gene-region-related reads
 First extract gene reads with enrichment-free data. Otherwise, Typing would be slow. Map reads onto the `hg38`, then use `ExtracReads.sh` to extract reads by
