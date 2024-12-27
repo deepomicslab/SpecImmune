@@ -118,7 +118,7 @@ done
 
 
 dir=$(cd `dirname $0`; pwd)
-export LD_LIBRARY_PATH=/home/wangmengyao/SpecHLA/spechla_env/lib/
+# export LD_LIBRARY_PATH=path/to/SpecHLA/spechla_env/lib/:$LD_LIBRARY_PATH
 bin=$dir/bin
 db=$dir/db
 #hlaref=$db/immune.complex.gene.ref.extend.fasta

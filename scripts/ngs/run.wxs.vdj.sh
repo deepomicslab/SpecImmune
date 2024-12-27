@@ -1,8 +1,9 @@
 sample=$1
 fq1=$2
 fq2=$3
+# export LD_LIBRARY_PATH=/home/wangmengyao/SpecHLA/spechla_env/lib/
 
-dir=/home/wangmengyao/SpecComplex/
+dir=$(cd `dirname $0`; pwd)
 db=$dir/db
 bin=$dir/bin
 sdir=$dir/script/vdj
