@@ -16,6 +16,7 @@ Note:
 ---
 
 ### Step 2: Build the Database
+The database files can be obtained from (https://drive.google.com/file/d/1mjivN6CllvO5myTorbQQv8zb-6Bop8tx/view?usp=sharing)
 
 Build the database required by SpecImmune using the `script/makedb.sh` script.
 
