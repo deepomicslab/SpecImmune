@@ -17,12 +17,12 @@ Note:
 
 ### Step 2: Build the Database
 
-Build the database required by SpecImmune using the `db/makedb.sh` script.
+Build the database required by SpecImmune using the `script/makedb.sh` script.
 
 Run the following command:
 
 ```bash
-bash db/makedb.sh
+bash script/makedb.sh
 ```
 
 ### Step 3: Run the Script for Focus Genes
