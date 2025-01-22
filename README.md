@@ -11,7 +11,7 @@
    It supports whole-genome sequencing (WGS) and targeted amplicon sequencing data from various long-read sequencing platforms like ONT and PacBio.
 
 3. **Superior Performance**  
-   SpecImmune outperforms existing tools such as **SpecImmune**, **HLA*LA**, and **Pangu** in typing accuracy, particularly for **HLA** and **CYP2D6** genes. It is also the only tool capable of typing **KIR** and **IG/TCR** from long-read data.
+   SpecImmune outperforms existing tools such as **SpecHLA**, **HLA*LA**, and **Pangu** in typing accuracy, particularly for **HLA** and **CYP2D6** genes. It is also the only tool capable of typing **KIR** and **IG/TCR** from long-read data.
 
 4. **Consensus Sequence Reconstruction**  
    It bins reads to alleles and reconstructs consensus sequences, ensuring high-quality haplotype sequences for each typed gene.
@@ -59,7 +59,7 @@ python scripts/make_db.py -o ./db  -i IG_TR
 ```
 For CYP, download the complete pharmvar database at [Pharmvar](https://www.pharmvar.org/download), unzip it, merge the alleles of all CYP loci into a single `fasta` file, and afford the path to the `fasta` file to SpecImmune:
 ```
-cat pharmvar-6.1.2.1/*/*.haplotypes.fasta >CYP.all.fasta
+cat pharmvar-*.*.*.*/*/*.haplotypes.fasta >CYP.all.fasta (replace it with your local pharmvar file)
 python scripts/make_db.py -o ./db  -i CYP --CYP_fa  CYP.all.fasta
 ```
 While running, denote the path of `db/` to SpecImmune.

@@ -214,7 +214,7 @@ if __name__ == "__main__":
     required.add_argument("-i", type=str, help="HLA,KIR,CYP,IG_TR",metavar="\b", default="HLA")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=5)
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
-    optional.add_argument("--mode", type=int, help="4 represents all steps, 3 skip first, 2 skip two, 3, skipt three", metavar="\b", default=4)
+    optional.add_argument("--mode", type=int, help="4 represents all steps, 3 skip first, 2 skip two, 3, skip three", metavar="\b", default=4)
     optional.add_argument("--analyze_method", type=str, help="phase/assembly", metavar="\b", default="phase")
     optional.add_argument("-k", type=int, help="The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking", metavar="\b", default=5)
     # optional.add_argument("-a", type=str, help="Prefix of filtered fastq file.", metavar="\b", default="long_read")
