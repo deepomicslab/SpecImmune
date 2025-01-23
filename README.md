@@ -64,7 +64,7 @@ python scripts/make_db.py -o ./db  -i CYP --CYP_fa CYP.all.fasta
 ```
 While running, denote the path of `db/` to SpecImmune by the parameter `--db`.
 
-For IG/TCR and CYP typing, the no-alt hg38 reference is needed, this can be downloaded at . 
+For IG/TCR and CYP typing, the no-alt hg38 reference is needed, this can be downloaded at [no_alt_hg38](https://doi.org/10.5281/zenodo.14722796). You can also generate it by yourself.
 
 
 ### Run & test
@@ -327,4 +327,4 @@ SpecImmune enables automatic installation of these third party packages using `c
 
 
 ## Getting help
-Should you have any queries, please feel free to contact us via opening an issue or sending an email, we will reply as soon as possible (swang66-c@my.cityu.edu.hk).
+Should you have any queries, please feel free to contact us via opening an issue or sending an email, we will reply as soon as possible (wshuai294@gmail.com).

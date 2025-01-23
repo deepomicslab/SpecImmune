@@ -368,6 +368,7 @@ if __name__ == "__main__":
     # result_file = result_path + "/" + "hlala.like.results.txt"
     result_file = f"{my_folder.sample_prefix}.{args['i']}.final.type.{args['iteration']}.result.txt"
     step1_result = f"{my_folder.sample_prefix}.{args['i']}.type.result.txt"
+    format_result = f"{my_folder.sample_prefix}.{args['i']}.final.type.result.formatted.txt"
 
     record_best_match, record_one_allele = {}, {}
     record_all_match = defaultdict(dict) ## for output
@@ -389,4 +390,4 @@ if __name__ == "__main__":
     
     read_num_dict = get_read_num_from_step1(step1_result)
     output(record_best_match, record_one_allele, gene_list, result_file, my_db.version_info, record_all_match,read_num_dict)
-    print (f"The refined typing results is in {result_file}")
+    print (f"The refined typing results is in {format_result}")
