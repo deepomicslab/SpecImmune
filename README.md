@@ -59,12 +59,12 @@ python scripts/make_db.py -o ./db  -i IG_TR
 ```
 For CYP, download the complete pharmvar database at [Pharmvar](https://www.pharmvar.org/download), unzip it, merge the alleles of all CYP loci into a single `fasta` file, and afford the path to the `fasta` file to SpecImmune:
 ```
-cat pharmvar-*.*.*.*/*/*.haplotypes.fasta >CYP.all.fasta (replace it with your local pharmvar file)
-python scripts/make_db.py -o ./db  -i CYP --CYP_fa  CYP.all.fasta
+cat pharmvar-*.*.*.*/*/*.haplotypes.fasta >CYP.all.fasta ## replace it with your local pharmvar file
+python scripts/make_db.py -o ./db  -i CYP --CYP_fa CYP.all.fasta
 ```
 While running, denote the path of `db/` to SpecImmune by the parameter `--db`.
 
-For IG/TCR and CYP typing, the no-alt hg38 reference is needed, the 
+For IG/TCR and CYP typing, the no-alt hg38 reference is needed, this can be downloaded at . 
 
 
 ### Run & test
