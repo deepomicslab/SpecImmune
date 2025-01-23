@@ -153,7 +153,7 @@ python3 SpecImmune/main.py \
         -i CYP \
         -n <sample_id> \
         -o <outdir> \
-        -hg38 <no_alt_ref> \
+        --hg38 <no_alt_ref> \
         --db SpecImmune/db \
         -y <datatype>
 ```
@@ -172,7 +172,7 @@ python3 SpecImmune/main.py \
         -o <outdir> \
         --db SpecImmune/db \
         -y <datatype> \
-        -hg38 <no_alt_ref>
+        --hg38 <no_alt_ref>
 ```
 Example cmd:
 ```
