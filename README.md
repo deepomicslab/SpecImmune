@@ -313,6 +313,24 @@ Interpret each column in the annotation line as
 |  hete_variant_num | Number of heterozygous variants detected on this locus  |
 
 
+# Drug Recommendation
+
+
+SpecImmune recommends drugs based on **HLA typing** and **CYP typing** results using annotations from **PharmGKB**. It helps clinicians select effective drugs with fewer side effects by leveraging PharmGKB's clinical and variant annotation scoring system.
+
+## Output
+
+The software generates drug recommendations with the following information:
+
+| **Field**           | **Description**                                                                                      |
+|---------------------|--------------------------------------------------------------------------------------------------|
+| **Drug**            | The name of the recommended drug.                                                                 |
+| **Level of Evidence** | The evidence level supporting the clinical recommendation, as defined by PharmGKB's scoring system. |
+| **Evidence Score**  | The numeric score representing the strength of the evidence.                                       |
+| **Level Modifiers** | Additional information modifying the level of evidence (e.g., population-specific data).           |
+
+
+For more detailed descriptions and scoring ranges, visit [PharmGKB Clinical Annotations](https://www.pharmgkb.org/labelAnnotations)
 
 ## Dependencies 
 
