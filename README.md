@@ -62,7 +62,9 @@ For CYP, download the complete pharmvar database at [Pharmvar](https://www.pharm
 cat pharmvar-*.*.*.*/*/*.haplotypes.fasta >CYP.all.fasta (replace it with your local pharmvar file)
 python scripts/make_db.py -o ./db  -i CYP --CYP_fa  CYP.all.fasta
 ```
-While running, denote the path of `db/` to SpecImmune.
+While running, denote the path of `db/` to SpecImmune by the parameter `--db`.
+
+For IG/TCR and CYP typing, the no-alt hg38 reference is needed, the 
 
 
 ### Run & test
