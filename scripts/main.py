@@ -113,16 +113,16 @@ def main(args):
     #         print(command, flush=True)
     #         os.system(command)
    
-    # elif args['i'] == "IG_TR":
-    #     my_db = My_db(args)
-    #     command = f"""
-    #     bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
-    #     python3 {sys.path[0]}/get_IG_TR_depth.py --lite 0 -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
-    #     """
-    #     os.system(command)
-    # else:
-    #     print("Please choose HLA, KIR, CYP or IG_TR as analyze method.", flush=True)
-    #     return
+    elif args['i'] == "IG_TR":
+        my_db = My_db(args)
+        command = f"""
+        bash {sys.path[0]}/run.phase.IG.TR.sh {args["n"]} {args["r"]} {args["o"]}/{args["n"]} {my_db.full_db} {args["j"]} {args["k"]} {my_db.hg38}
+        python3 {sys.path[0]}/get_IG_TR_depth.py --lite 0 -i {args["i"]} -o {args["o"]} -n {args["n"]} --db {args["db"]} -k {args["k"]} --hg38 {args["hg38"]} -j {args["j"]}
+        """
+        os.system(command)
+    else:
+        print("Please choose HLA, KIR, CYP or IG_TR as analyze method.", flush=True)
+        return
     
 
     if args['i'] == "CYP" :

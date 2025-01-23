@@ -1,0 +1,1 @@
+python ../scripts/main.py -r CYP/HG03579.CYP.fastq.0.1.fq.gz -j 15 -i CYP -n test_CYP -o test -y pacbio --db ../db --hg38 /home/shuaiw/borg/hg38/hg38_no_alt.fa --db /home/shuaiw/methylation/data/spec/dpython3 ../scripts/main.py --hg38 /home/shuaiw/methylation/data/spec/db -n test_IG_TR -o test -j 10 -y nanopore -i IG_TR -r IG_TR/vdj.fq.gz
