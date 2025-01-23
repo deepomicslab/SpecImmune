@@ -101,22 +101,30 @@ def create_KIR_directories_and_save_sequences(fasta_path, output_base_dir, gene_
         description_parts = seq_record.description.split()
         gene_name = description_parts[1].split('*')[0]
         sequence_name = description_parts[1]
-        
+        allele_type= ""
+        # print(seq_record.id)
+        # print(seq_record.name)
+        # print(seq_record.description)
+        # print(gene_name)
+        # print(description_parts[1])
+        if gene_name in gene_list:
+            allele_type = description_parts[1]
+            
+        else:
+            allele_type = f"KIR{description_parts[1]}"
+            gene_name = f"KIR{gene_name}"
+        # print(allele_type)
+    
 
         # Update the sequence ID and name
-        seq_record.id = sequence_name if gene_name in gene_list else f"{sequence_name}"
-        seq_record.name = sequence_name if gene_name in gene_list else f"{sequence_name}"
+        seq_record.id = allele_type
+        seq_record.name = allele_type
         seq_record.description = ""
         # if gene_name.startswith("KIR2DL5"):
-        if False:
-            gene_name = gene_name
-        elif gene_name in gene_list:
-            gene_name = gene_name
-        else:
-            gene_name = f"KIR-{gene_name}"
-
-        print(seq_record.id, seq_record.name, seq_record.description, flush=True)
         
+
+        # print(sequence_name, gene_name, gene_name in gene_list,seq_record.id, seq_record.name, seq_record.description, gene_list, flush=True)
+        # continue        
         if gene_name not in gene_sequences:
             gene_sequences[gene_name] = []
         gene_sequences[gene_name].append(seq_record)
@@ -403,7 +411,8 @@ def make_KIR_db():
     for record in SeqIO.parse(local_fasta_filename, "fasta"):
         description_parts = record.description.split()
         gene_name = description_parts[1].split('*')[0]
-        # gene_name = gene_name if gene_name in gene_list else f"HLA-{gene_name}"
+        gene_name = gene_name if gene_name in gene_list else f"KIR{gene_name}"
+        print(gene_name)
         sequence_name = description_parts[1]
         gene_list.append(gene_name)
     gene_list=list(set(gene_list))
