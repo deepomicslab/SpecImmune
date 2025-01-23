@@ -87,6 +87,8 @@ Note:
 |scripts/ExtractReads.sh| Extract gene-region-related reads from enrichment-free data.|
 |scripts/make_db.py| Construct the dependent database.|
 |scripts/main.py| Typing with Nanopore or PacBio data.  |
+|evaluation/*|Scripts for evaluating the performance and real-data analyses.|
+|simulation/*|Generate simulated data.|
 
 ### Extract gene-region-related reads
 First extract gene reads with enrichment-free data. Otherwise, Typing would be slow. Map reads onto the `hg38`, then use `ExtracReads.sh` to extract reads by
