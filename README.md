@@ -114,7 +114,7 @@ python3 SpecImmune/main.py \
         -n <sample_id> \
         -o <outdir> \
         --db SpecImmune/db \
-        -y nanopore 
+        -y <datatype> 
 ```
 Example cmd:
 ```
