@@ -61,7 +61,7 @@ def main(args):
             command = f"""
             ## forth: call & phasing variant & typing
             python3 {sys.path[0]}/long_read_typing.py -r {args["r"]} -n {args["n"]} -o {args["o"]} -j {args["j"]} -k {args["k"]} -y {args["y"]} --db {args["db"]} \
-                -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]} --iteration {iteration}
+                -i {args["i"]} --seq_tech {args["seq_tech"]} --RNA_type {args["RNA_type"]} --iteration {iteration} --snv_tool {args["snv_tool"]} --dv_sif {args["dv_sif"]} 
 
             """
             os.system(command)
