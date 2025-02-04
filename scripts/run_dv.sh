@@ -57,5 +57,5 @@ singularity run -B /usr/lib/locale/:/usr/lib/locale/ \
   --intermediate_results_dir /out_dir/intermediate_results_dir \
   --num_shards=$threads \
   --sample_name='SAMPLE' \
-  --call_variants_extra_args="allow_empty_examples=true
+  --call_variants_extra_args="allow_empty_examples=true"
 
