@@ -232,6 +232,8 @@ class Fasta():
         if args['seq_tech'] == "rna":
             set_window = 1
 
+        dv_sif=args["dv_sif"]
+
 
         suffix = f".{index}" if index is not None else ""
         call_phase_longshot_cmd = f"""
@@ -255,7 +257,7 @@ class Fasta():
         call_phase_deepvariant_cmd = f"""
         samtools index {bam}
         python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -b {my_folder.step2_genes_dir}/{gene}{suffix}.low_depth.bed -w {set_window} -d {int(set_dp)}
-        bash {sys.path[0]}/run_dv.sh {hla_ref} {bam} {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.dv.vcf {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.dv.g.vcf {parameter.threads} {interval}
+        bash {sys.path[0]}/run_dv.sh {hla_ref} {bam} {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.dv.vcf {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.dv.g.vcf {parameter.threads} {interval} {dv_sif}
         zcat {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.dv.vcf > {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.phased.vcf
         bgzip -f {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.phased.vcf
         tabix -f {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.phased.vcf.gz
