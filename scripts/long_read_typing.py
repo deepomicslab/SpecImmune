@@ -234,7 +234,7 @@ class Fasta():
 
 
         suffix = f".{index}" if index is not None else ""
-        call_phase_cmd = f"""
+        call_phase_longshot_cmd = f"""
         samtools index {bam}
         python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -b {my_folder.step2_genes_dir}/{gene}{suffix}.low_depth.bed -w {set_window} -d {int(set_dp)}
         
@@ -252,7 +252,23 @@ class Fasta():
         bgzip -f {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.phased.vcf
         tabix -f {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.phased.vcf.gz
         """
-        self.run_command(call_phase_cmd, f"call phase for {gene}{suffix}")
+        call_phase_deepvariant_cmd = f"""
+        samtools index {bam}
+        python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -b {my_folder.step2_genes_dir}/{gene}{suffix}.low_depth.bed -w {set_window} -d {int(set_dp)}
+        bash {sys.path[0]}/run_dv.sh {hla_ref} {bam} {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.dv.vcf {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.dv.g.vcf {parameter.threads} {interval}
+        zcat {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.dv.vcf > {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.phased.vcf
+        bgzip -f {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.phased.vcf
+        tabix -f {my_folder.step2_genes_dir}/{sample}.{gene}{suffix}.phased.vcf.gz
+        """
+        if args["snv_tool"] == "longshot":
+            self.run_command(call_phase_longshot_cmd, f"call phase for {gene}{suffix}")
+        elif args["snv_tool"] == "deepvariant":
+            if args["dv_sif"]:
+                self.run_command(call_phase_deepvariant_cmd, f"call phase for {gene}{suffix}")
+            else:
+                print ("Please provide the deepvariant sif file !")
+                sys.exit(1)
+
         mask_bed = f"{my_folder.step2_genes_dir}/{gene}{suffix}.low_depth.bed"
         return mask_bed
 
