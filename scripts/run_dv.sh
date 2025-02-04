@@ -38,6 +38,7 @@ threads: $threads
 region: $region
 data_type: $data_type
 ref: $ref
+sif: $sif
 
 """
 
