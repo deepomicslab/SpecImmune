@@ -56,6 +56,5 @@ singularity run -B /usr/lib/locale/:/usr/lib/locale/ \
   --output_gvcf=/out_dir/$out_gvcf_file \
   --intermediate_results_dir /out_dir/intermediate_results_dir \
   --num_shards=$threads \
-  --sample_name='SAMPLE' \
-  --make_examples_extra_args="--allow_empty_examples=true"
+  --sample_name='SAMPLE' 
 
