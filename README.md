@@ -11,7 +11,7 @@
    It supports whole-genome sequencing (WGS) and targeted amplicon sequencing data from various long-read sequencing platforms like ONT and PacBio.
 
 3. **Superior Performance**  
-   SpecImmune outperforms existing tools such as **SpecHLA**, **HLA*LA**, and **Pangu** in typing accuracy, particularly for **HLA** and **CYP2D6** genes. It is also the only tool capable of typing **KIR** and **IG/TCR** from long-read data.
+   SpecImmune outperforms existing tools such as **SpecHLA**, **HLA*LA**, and **Pangu** in typing accuracy, particularly for **HLA** and **CYP2D6** genes. It is also the only tool capable of typing **KIR** and germline **IG/TCR** from long-read data.
 
 4. **Consensus Sequence Reconstruction**  
    It bins reads to alleles and reconstructs consensus sequences, ensuring high-quality haplotype sequences for each typed gene.
@@ -76,6 +76,7 @@ Please go to the `test/` folder, run SpecImmune with given scripts, and check re
 
 Note:
 - SpecImmune now supports Linux and Windows WSL systems.
+- For short-read data, pls use [SpecHLA](https://github.com/deepomicslab/SpecHLA).
 
 
 
@@ -186,7 +187,7 @@ python3 SpecImmune/scripts/main.py --hg38 $ref -n $sample -o $outdir -j 10 -y pa
 
 ## Using DeepVariant for Small Variant Calling
 
-SpecImmune uses longshot as the default tool for small variant calling. To switch to deepvariant, ensure you have set up the Singularity environment as described above.
+SpecImmune uses longshot as the default tool for small variant calling. To switch to deepvariant, ensure you have set up the Singularity environment as described below.
 
 Add the following options to the command for any module:
 ```
@@ -233,7 +234,7 @@ python3 SpecImmune/main.py \
 
 
 
-### Commands
+## Commands
 Full arguments can be seen in
 ```
 usage: python3 main.py -h
