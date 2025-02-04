@@ -1,7 +1,8 @@
-SpecImmune Docker Setup and Testing Guide
-Place both Dockerfile and .dockerignore in the same directory.
+# SpecImmune Docker Setup and Testing Guide
 
-After completing all make_db operations, move the hg38 files into the /db directory. The directory structure should be:
+Place both `Dockerfile` and `.dockerignore` in the same directory.
+
+After completing all make_db operations, move the hg38 files into the `/db` directory. The directory structure should be:
 ```
 db/
 ├── CYP
@@ -40,6 +41,7 @@ dir_db=/data10/zq123/SpecImmune/db/
 dir_test=/data10/zq123/SpecImmune/test
 ```
 Run Test Cases:
+
 Test Case 1: HLA
 ```
 docker run --rm -v $dir_db:/SpecImmune/db -v $dir_test:/SpecImmune/test \
