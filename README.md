@@ -184,6 +184,55 @@ Example cmd:
 python3 SpecImmune/scripts/main.py --hg38 $ref -n $sample -o $outdir -j 10 -y pacbio -i IG_TR -r $fq
 ```
 
+## Using DeepVariant for Small Variant Calling
+
+SpecImmune uses longshot as the default tool for small variant calling. To switch to deepvariant, ensure you have set up the Singularity environment as described above.
+
+Add the following options to the command for any module:
+```
+--snv_tool deepvariant
+--dv_sif <path_to_deepvariant_sif>
+```
+
+---
+
+### Prerequisites
+
+#### Install Singularity and SquashFS Tools
+To use **deepvariant** for small variant calling, install Singularity and SquashFS tools:
+
+```bash
+conda install -c conda-forge singularity
+conda install -c conda-forge squashfs-tools
+```
+## DeepVariant Setup
+Follow the official DeepVariant instructions to download the desired version of the DeepVariant Singularity image. For example:
+```bash
+# Set the version of DeepVariant
+BIN_VERSION="1.8.0"
+
+# Pull the DeepVariant Singularity image
+singularity pull docker://google/deepvariant:"${BIN_VERSION}"
+```
+This will create a Singularity image file named deepvariant_${BIN_VERSION}.sif.
+
+### Example of using DeepVariant:
+```
+python3 SpecImmune/main.py \
+        -r <fastq> \
+        -j <threads> \
+        -i HLA \
+        -n <name> \
+        -o <outdir> \
+        --align_method_1 minimap2 \
+        -y <datatype> \
+        --db <db> \
+        --snv_tool deepvariant \
+        --dv_sif ../deepvariant_${BIN_VERSION}.sif
+```
+
+
+
 ### Commands
 Full arguments can be seen in
 ```
@@ -201,7 +250,7 @@ Optional arguments:
   -j                  Number of threads. (default: 5)
   -k                  The mean depth in a window lower than this value will be masked by N, set 0 to avoid masking (default: 5)
   -y                  Read type, [nanopore|pacbio|pacbio-hifi]. (default: pacbio)
-  --db                Database folder, which can be obtained by scripts/make_db.py (default: /home/shuaiw/scripts/SpecImmune/scripts/../db/)
+  --db                Database folder, which can be obtained by scripts/make_db.py (default: /data4/wangxuedong/test_specimmune/SpecImmune/scripts/../db/)
   --hg38              No-alt hg38 Referece fasta file, used by IG_TR and CYP typing (default: None)
   -f, --first_run   Set False for rerun (default: True)
   --min_identity      Minimum alignment identity to assign a read to an allele. (default: 0.85)
@@ -215,6 +264,8 @@ Optional arguments:
   --align_method_1    Alignment method in read binning, bwa or minimap2 (default: bwa)
   --align_method_2    Alignment method in typing, bwa or minimap2 (default: minimap2)
   --iteration         Iteration count, this tool iteratively reconstruct haplotype. (default: 1)
+  --dv_sif            DeepVariant sif file (default: None)
+  --snv_tool          longshot or deepvariant (default: longshot)
   --drug_recommendation 
                         Drug recommendation (default: False)
   -v, --version         Display the version of the program (default: False)
