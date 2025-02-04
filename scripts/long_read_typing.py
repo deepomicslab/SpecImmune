@@ -94,7 +94,7 @@ class Fasta():
         # mask_bed=f"{parameter.outdir}/low_depth.bed"
         ovcf=f"{parameter.outdir}/{parameter.sample}.{gene}.dv.vcf"
         ogvcf=f"{parameter.outdir}/{parameter.sample}.{gene}.dv.g.vcf"
-        call_phase_cmd= f"""
+        call_phase_cmd_longshot= f"""
             set_dp={args["k"]}
             avg_depth=$(samtools depth -a {bam} | awk '{awk_script}')
             if (( $(echo "$avg_depth < 5" | bc -l) )) && [ {args['y']} = "pacbio" ]; then
@@ -111,22 +111,49 @@ class Fasta():
             bgzip -f {my_folder.step2_genes_dir}/{parameter.sample}.{gene}.phased.vcf
             tabix -f {my_folder.step2_genes_dir}/{parameter.sample}.{gene}.phased.vcf.gz
 
-            # bash {sys.path[0]}/run_dv.sh {hla_ref} {bam} {ovcf} {ogvcf} {parameter.threads} {interval_dict[gene]}
+            # bash {sys.path[0]}/run_dv.sh {hla_ref} {bam} {ovcf} {ogvcf} {parameter.threads} {interval_dict[gene]} 
         """
-        os.system(call_phase_cmd)
+        # os.system(call_phase_cmd_longshot)
+        call_phase_cmd_dv= f"""
+            set_dp={args["k"]}
+            avg_depth=$(samtools depth -a {bam} | awk '{awk_script}')
+            if (( $(echo "$avg_depth < 5" | bc -l) )) && [ {args['y']} = "pacbio" ]; then
+                set_dp=0
+            else
+                set_dp=5
+            fi
+            python3 {sys.path[0]}/mask_low_depth_region.py -f False -c {depth_file} -b {my_folder.step2_genes_dir}/{gene}.low_depth.bed -w 20 -d 5
+
+
+            bash {sys.path[0]}/run_dv.sh {hla_ref} {bam} {ovcf} {ogvcf} {parameter.threads} {interval_dict[gene]} 
+        """
+        # os.system(call_phase_cmd_dv)
+        if args["snv_tool"] == "longshot":
+            os.system(call_phase_cmd_longshot)
+        elif args["snv_tool"] == "deepvariant":
+            if args["dv_sif"]:
+                os.system(call_phase_cmd_dv)
+            else:
+                print ("Please provide the deepvariant sif file !")
+                sys.exit(1)
 
         print ("call snp done")
         # call sv & phase snv-sv
         gene_work_dir=f"{parameter.outdir}/{gene}_work"
         if not os.path.exists(gene_work_dir):
             os.makedirs(gene_work_dir)
-        sv_cmd = f"""
+        sv_cmd_longshot = f"""
             bash {sys.path[0]}/refine_haplotype_pipe.sh {bam} {hla_ref} {gene} {interval_dict[gene]} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample} 
         """
-        # sv_cmd = f"""
-        #     bash {sys.path[0]}/refine_haplotype_dv_pipe.sh {bam} {hla_ref} {gene} {interval_dict[gene]} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample} 
-        # """
-        os.system(sv_cmd)
+        sv_cmd_dv = f"""
+            bash {sys.path[0]}/refine_haplotype_dv_pipe.sh {bam} {hla_ref} {gene} {interval_dict[gene]} {mask_bed} {gene_work_dir} {parameter.threads} {parameter.sample} 
+        """
+        # os.system(sv_cmd)
+        if args["snv_tool"] == "longshot":
+            os.system(sv_cmd_longshot)
+        elif args["snv_tool"] == "deepvariant":
+            os.system(sv_cmd_dv)
+        print ("call sv done")
         ## reconstruct HLA sequence based on the phased snps & sv
         for index in range(2):
             order = f"""
@@ -509,6 +536,8 @@ if __name__ == "__main__":
     optional.add_argument("-rt", "--RNA_type", type=str, help="traditional,2D,Direct,SIRV",metavar="\b", default="traditional")
     optional.add_argument("--seq_tech", type=str, help="Amplicon sequencing or WGS sequencing [wgs|amplicon|rna].", metavar="\b", default="wgs")
     optional.add_argument("--iteration", type=int, help="Iteration count.", metavar="\b", default=1)
+    optional.add_argument("--dv_sif", type=str, help="DeepVariant sif file", metavar="\b")
+    optional.add_argument("--snv_tool", type=str, help="longshot or deepvariant", metavar="\b", default="longshot")
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
 

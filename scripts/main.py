@@ -228,6 +228,8 @@ if __name__ == "__main__":
     optional.add_argument("--align_method_1", type=str, help="Alignment method in read binning, bwa or minimap2", metavar="\b", default='bwa')
     optional.add_argument("--align_method_2", type=str, help="Alignment method in typing, bwa or minimap2", metavar="\b", default='minimap2')
     optional.add_argument("--iteration", type=int, help="Iteration count, this tool iteratively reconstruct haplotype.", metavar="\b", default=1)
+    optional.add_argument("--dv_sif", type=str, help="DeepVariant sif file", metavar="\b")
+    optional.add_argument("--snv_tool", type=str, help="longshot or deepvariant", metavar="\b", default="longshot")
     optional.add_argument("--drug_recommendation", type=bool, help="Drug recommendation", metavar="\b", default=False)
 
     optional.add_argument('-v', '--version', action='store_true', help='Display the version of the program')
