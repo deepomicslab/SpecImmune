@@ -46,6 +46,9 @@ Second, make the software in bin/ executable.
 ```
 chmod +x -R bin/*
 ```
+**Use Docker**
+
+`cd docker/` and see detailed instructions there.
 
 ### Database construction
 Third, build the allele database. You can build a database for all gene families, or just the ones you need.
