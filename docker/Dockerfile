@@ -1,7 +1,7 @@
-# 使用 Ubuntu 作为基础镜像
+# Use Ubuntu as the base image
 FROM ubuntu:latest
 
-# 安装必要的软件包和依赖
+# Install necessary packages and dependencies
 RUN apt-get update && apt-get install -y \
     wget \
     software-properties-common \
@@ -10,38 +10,38 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# 设置工作目录
+# Set the working directory
 WORKDIR /SpecImmune
 
-# 复制代码和脚本到容器中
+# Copy code and scripts into the container
 COPY . /SpecImmune
 
-# 下载并安装 Miniconda
+# Download and install Miniconda
 RUN wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh \
-    bash /tmp/miniconda.sh -b -p /opt/conda \
+    && bash /tmp/miniconda.sh -b -p /opt/conda \
     && rm /tmp/miniconda.sh
 
-# 将 Conda 添加到 PATH
+# Add Conda to the PATH
 ENV PATH="/opt/conda/bin:$PATH"
 
-# 更新 Conda
+# Update Conda
 RUN conda update -n base -c defaults conda -y
 
-# 安装 mamba
+# Install mamba
 #RUN conda install -n base -c conda-forge mamba -y
 
-# 创建 Conda 环境
+# Create a Conda environment
 RUN conda env create -n SpecImmune -f /SpecImmune/environment.yml
 
-# 初始化 Conda 并激活环境
+# Initialize Conda and activate the environment
 RUN echo "source /opt/conda/bin/activate SpecImmune" >> ~/.bashrc
 
-# 删除不需要的目录, 也可以由 .dockerignore 文件来直接忽略
+# Delete unnecessary directories. You can also directly ignore them using the .dockerignore file.
 #RUN rm -rf /SpecImmune/test \
-#   /SpecImmune/pharmvar-6.2 \
-#   /SpecImmune/simulation \
-#   /SpecImmune/evaluation \
-#   /SpecImmune/SpecImmune
+#    /SpecImmune/pharmvar-6.2 \
+#    /SpecImmune/simulation \
+#    /SpecImmune/evaluation \
+#    /SpecImmune/SpecImmune
 
-# 设置 ENTRYPOINT
+# Set the ENTRYPOINT
 ENTRYPOINT ["/bin/bash", "-c", "echo \"Passed arguments: $@\"; source /opt/conda/bin/activate SpecImmune && exec python /SpecImmune/scripts/main.py \"$@\"", "--"]
