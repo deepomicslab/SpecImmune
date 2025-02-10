@@ -398,7 +398,7 @@ SpecImmune requires `conda 4.12.0+`, `cmake 3.16.3+`, and `GCC 9.4.0+` for envir
 ### Third party packages
 SpecImmune enables automatic installation of these third party packages using `conda` or `mamba`. 
 
-### Citation
+## Citation
 [Shuai Wang, Xuedong Wang, Mengyao Wang, Qian Zhou, Shuaicheng Li
 bioRxiv 2025.02.04.636381; doi: https://doi.org/10.1101/2025.02.04.636381
 ](https://doi.org/10.1101/2025.02.04.636381)
