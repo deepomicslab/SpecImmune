@@ -89,29 +89,29 @@ def main(args):
 
         
         # remap reads for viz
-    #     if args["mode"] >=0:
-    #         # map to step 2 alleles (if it's calssified as het in step 1, use split reads to map to step 2 alleles. else, use all reads to map to step 2 alleles)
-    #         command = f"""
-    #         python3 {sys.path[0]}/remap.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
-    #         """
-    #         print(command, flush=True)
-    #         os.system(command)
+        if args["visualization"]:
+            # map to step 2 alleles (if it's calssified as het in step 1, use split reads to map to step 2 alleles. else, use all reads to map to step 2 alleles)
+            command = f"""
+            python3 {sys.path[0]}/remap.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
+            """
+            print(command, flush=True)
+            os.system(command)
             
-    #     # remap allele for viz
-    #     if args["mode"] >=-1:
-    #         command = f"""
-    #         python3 {sys.path[0]}/remap_allele.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
-    #         """
-    #         print(command, flush=True)
-    #         os.system(command)
+        # remap allele for viz
+        if args["visualization"]:
+            command = f"""
+            python3 {sys.path[0]}/remap_allele.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
+            """
+            print(command, flush=True)
+            os.system(command)
 
-    #     # visualization 
-    #     if args["mode"] >=-2:
-    #         command = f"""
-    #         python3 {sys.path[0]}/visualization.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
-    #         """
-    #         print(command, flush=True)
-    #         os.system(command)
+        # visualization 
+        if args["visualization"]:
+            command = f"""
+            python3 {sys.path[0]}/visualization.py {args["n"]} {args["i"]} {args["o"]} {args["y"]} {args["seq_tech"]} {args["RNA_type"]} {args["j"]} {db}
+            """
+            print(command, flush=True)
+            os.system(command)
    
     elif args['i'] == "IG_TR":
         my_db = My_db(args)
@@ -231,16 +231,20 @@ if __name__ == "__main__":
     optional.add_argument("--dv_sif", type=str, help="DeepVariant sif file", metavar="\b")
     optional.add_argument("--snv_tool", type=str, help="longshot or deepvariant", metavar="\b", default="longshot")
     optional.add_argument("--drug_recommendation", type=bool, help="Drug recommendation", metavar="\b", default=False)
+    optional.add_argument("-viz", "--visualization", type=bool, help="Visualization", metavar="\b", default=True)
 
     optional.add_argument('-v', '--version', action='store_true', help='Display the version of the program')
     optional.add_argument("-h", "--help", action="help")
     args = vars(parser.parse_args()) 
 
     if len(sys.argv) < 2:
+        print(args)
         parser.print_help()
         sys.exit(0)
     
+    print(args)
     main(args)
+
 
 
 

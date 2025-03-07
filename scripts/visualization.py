@@ -363,7 +363,7 @@ if __name__ == "__main__":
     my_folder = My_folder({"o": outdir, "n":sample})
 
     step1_result = f"{my_folder.sample_prefix}.{gene_class}.type.result.txt"
-    step2_result = f"{my_folder.sample_prefix}.{gene_class}.final.type.result.txt"
+    step2_result = f"{my_folder.sample_prefix}.{gene_class}.final.type.result.formatted.txt"
 
 
     remap_allele_dir=my_folder.for_viz_dir + "/remap_allele"
