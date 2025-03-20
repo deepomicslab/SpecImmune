@@ -73,7 +73,7 @@ For IG/TCR and CYP typing, the no-alt hg38 reference is needed, this can be down
 ### Run & test
 Perform SpecImmune with
 ```
-python3 script/main.py -h
+python3 scripts/main.py -h
 ```
 Please go to the `test/` folder, run SpecImmune with given scripts, and check results.
 
@@ -111,7 +111,7 @@ Usage: ExtractReads.sh -s <sample_id> -i <input_bam_or_cram> -g <gene_class> -o 
 
 Perform four-field HLA typing by
 ```
-python3 SpecImmune/main.py \
+python3 SpecImmune/scripts/main.py \
         -r <fastq> \
         -j <threads> \
         -i HLA \
@@ -139,7 +139,7 @@ python3 SpecImmune/scripts/main.py \
 ```
 ### KIR Typing
 ```
-python3 SpecImmune/main.py \
+python3 SpecImmune/scripts/main.py \
         -r <fastq> \
         -j <threads> \
         -i KIR \
@@ -156,7 +156,7 @@ python3 SpecImmune/scripts/main.py -n $sample -o $outdir -j 10 -y pacbio -i KIR 
 
 ### CYP Typing
 ```
-python3 SpecImmune/main.py \
+python3 SpecImmune/scripts/main.py \
         -r <fastq> \
         -j <threads> \
         -i CYP \
@@ -173,7 +173,7 @@ python3 SpecImmune/scripts/main.py --hg38 $ref -n $sample -o $outdir -j 10 -y na
 
 ### IG&TCR Typing
 ```
-python3 SpecImmune/main.py \
+python3 SpecImmune/scripts/main.py \
         -r <fastq> \
         -j <threads> \
         -i IG_TCR \
@@ -222,7 +222,7 @@ This will create a Singularity image file named deepvariant_${BIN_VERSION}.sif.
 
 ### Example of using DeepVariant:
 ```
-python3 SpecImmune/main.py \
+python3 SpecImmune/scripts/main.py \
         -r <fastq> \
         -j <threads> \
         -i HLA \
