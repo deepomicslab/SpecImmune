@@ -5,7 +5,7 @@ import pandas as pd
 import os
 
 def read_hla_file(filename):
-    """Read HLA typing file and extract key information"""
+    """Read the HLA typing file and extract key information."""
     data = []
     with open(filename, 'r') as f:
         for line in f:
@@ -18,40 +18,48 @@ def read_hla_file(filename):
                 one_guess = parts[6]
                 data.append([locus, chromosome, one_guess])
     
-    # Create DataFrame
+    # Create a DataFrame
     df = pd.DataFrame(data, columns=['Locus', 'Chromosome', 'Allele'])
     
-    # Pivot data to wide format, with two alleles per locus (chromosome 1 and 2)
+    # Pivot data to wide format, with two alleles per locus (for each chromosome)
     pivot_df = df.pivot(index='Locus', columns='Chromosome', values='Allele')
     pivot_df.columns = ['Allele_1', 'Allele_2']
     
     return pivot_df.reset_index()
 
 def check_mendelian_inheritance(father_df, mother_df, child_df):
-    """Check if HLA loci follow Mendelian inheritance"""
+    """Evaluate if HLA loci follow Mendelian inheritance and phase alleles consistently.
+
+    The logic is as follows:
+      1. For each locus, determine which child's allele comes from the father and which from the mother by checking against the parent's alleles.
+      2. Regardless of input order, always assign:
+            - Child_Phased_1 as the allele transmitted from the father.
+            - Child_Phased_2 as the allele transmitted from the mother.
+      3. Record the parent's allele that was transmitted to the child.
+    """
+    # Initialize the result DataFrame by copying child data and adding extra columns.
     result_df = child_df.copy()
     result_df['Child_Allele_1'] = result_df['Allele_1']
     result_df['Child_Allele_2'] = result_df['Allele_2']
     
-    # Remove the original columns after copying their values
+    # Keep only locus and allele information while adding more detailed columns.
     result_df = result_df[['Locus', 'Child_Allele_1', 'Child_Allele_2']]
     result_df['Father_Allele_1'] = None
     result_df['Father_Allele_2'] = None
     result_df['Mother_Allele_1'] = None
     result_df['Mother_Allele_2'] = None
     result_df['Mendelian'] = False
-    result_df['Child_Phased_1'] = None
-    result_df['Child_Phased_2'] = None
+    result_df['Child_Phased_1'] = None  # Always stores the allele from the father.
+    result_df['Child_Phased_2'] = None  # Always stores the allele from the mother.
     result_df['Father_Phased_1'] = None
     result_df['Father_Phased_2'] = None
     result_df['Mother_Phased_1'] = None
     result_df['Mother_Phased_2'] = None
-    result_df['Phasing_Pattern'] = None  # Track the inheritance pattern
     
     for i, row in result_df.iterrows():
         locus = row['Locus']
         
-        # Get parents' alleles at this locus
+        # Retrieve the parent's alleles for the locus.
         father_row = father_df[father_df['Locus'] == locus]
         mother_row = mother_df[mother_df['Locus'] == locus]
         
@@ -60,101 +68,91 @@ def check_mendelian_inheritance(father_df, mother_df, child_df):
             mother_alleles = [mother_row['Allele_1'].values[0], mother_row['Allele_2'].values[0]]
             child_alleles = [row['Child_Allele_1'], row['Child_Allele_2']]
             
+            # Save the parent's original allele information.
             result_df.at[i, 'Father_Allele_1'] = father_alleles[0]
             result_df.at[i, 'Father_Allele_2'] = father_alleles[1]
             result_df.at[i, 'Mother_Allele_1'] = mother_alleles[0]
             result_df.at[i, 'Mother_Allele_2'] = mother_alleles[1]
             
-            # Check all possible inheritance patterns
-            inheritance_patterns = []
+            # Check Mendelian inheritance:
+            # Each child's allele should come from one of the parents.
+            mendelian_ok = False
+            child_from_father = None
+            child_from_mother = None
+
+            if (child_alleles[0] in father_alleles) and (child_alleles[1] in mother_alleles):
+                mendelian_ok = True
+                child_from_father = child_alleles[0]
+                child_from_mother = child_alleles[1]
+            elif (child_alleles[0] in mother_alleles) and (child_alleles[1] in father_alleles):
+                mendelian_ok = True
+                # Force assignment: first allele from father, second allele from mother.
+                child_from_father = child_alleles[1]
+                child_from_mother = child_alleles[0]
             
-            # Pattern 1: Child1 from Father, Child2 from Mother
-            if child_alleles[0] in father_alleles and child_alleles[1] in mother_alleles:
-                inheritance_patterns.append("F-M")  # Father-Mother
+            result_df.at[i, 'Mendelian'] = mendelian_ok
             
-            # Pattern 2: Child1 from Mother, Child2 from Father
-            if child_alleles[0] in mother_alleles and child_alleles[1] in father_alleles:
-                inheritance_patterns.append("M-F")  # Mother-Father
-            
-            is_mendelian = len(inheritance_patterns) > 0
-            result_df.at[i, 'Mendelian'] = is_mendelian
-            
-            # Store the pattern for consistent phasing later
-            if is_mendelian:
-                # If both patterns are possible (this happens when parents share alleles),
-                # we'll choose one and maintain consistency later
-                chosen_pattern = inheritance_patterns[0]
-                result_df.at[i, 'Phasing_Pattern'] = chosen_pattern
+            if mendelian_ok:
+                # Always assign the child's phased allele:
+                result_df.at[i, 'Child_Phased_1'] = child_from_father + " (from Father)"
+                result_df.at[i, 'Child_Phased_2'] = child_from_mother + " (from Mother)"
                 
-                # Perform phasing based on the chosen pattern
-                if chosen_pattern == "F-M":  # Child1 from Father, Child2 from Mother
-                    # Find the exact parental alleles
-                    father_match = father_alleles[0] if father_alleles[0] == child_alleles[0] else father_alleles[1]
-                    mother_match = mother_alleles[0] if mother_alleles[0] == child_alleles[1] else mother_alleles[1]
-                    
-                    result_df.at[i, 'Child_Phased_1'] = child_alleles[0] + " (from Father)"
-                    result_df.at[i, 'Child_Phased_2'] = child_alleles[1] + " (from Mother)"
-                    
-                    # Mark parents' phased haplotypes
-                    result_df.at[i, 'Father_Phased_1'] = father_match + " (to Child)"
-                    result_df.at[i, 'Father_Phased_2'] = father_alleles[0] if father_alleles[1] == father_match else father_alleles[1]
-                    
-                    result_df.at[i, 'Mother_Phased_1'] = mother_match + " (to Child)"
-                    result_df.at[i, 'Mother_Phased_2'] = mother_alleles[0] if mother_alleles[1] == mother_match else mother_alleles[1]
-                    
-                elif chosen_pattern == "M-F":  # Child1 from Mother, Child2 from Father
-                    # Find the exact parental alleles
-                    father_match = father_alleles[0] if father_alleles[0] == child_alleles[1] else father_alleles[1]
-                    mother_match = mother_alleles[0] if mother_alleles[0] == child_alleles[0] else mother_alleles[1]
-                    
-                    result_df.at[i, 'Child_Phased_1'] = child_alleles[0] + " (from Mother)"
-                    result_df.at[i, 'Child_Phased_2'] = child_alleles[1] + " (from Father)"
-                    
-                    # Mark parents' phased haplotypes
-                    result_df.at[i, 'Father_Phased_1'] = father_match + " (to Child)"
-                    result_df.at[i, 'Father_Phased_2'] = father_alleles[0] if father_alleles[1] == father_match else father_alleles[1]
-                    
-                    result_df.at[i, 'Mother_Phased_1'] = mother_match + " (to Child)"
-                    result_df.at[i, 'Mother_Phased_2'] = mother_alleles[0] if mother_alleles[1] == mother_match else mother_alleles[1]
+                # For the father, determine the allele not transmitted.
+                if father_alleles[0] == child_from_father:
+                    father_nontransmitted = father_alleles[1]
+                else:
+                    father_nontransmitted = father_alleles[0]
+                result_df.at[i, 'Father_Phased_1'] = child_from_father + " (to Child)"
+                result_df.at[i, 'Father_Phased_2'] = father_nontransmitted
+                
+                # For the mother, determine the allele not transmitted.
+                if mother_alleles[0] == child_from_mother:
+                    mother_nontransmitted = mother_alleles[1]
+                else:
+                    mother_nontransmitted = mother_alleles[0]
+                result_df.at[i, 'Mother_Phased_1'] = child_from_mother + " (to Child)"
+                result_df.at[i, 'Mother_Phased_2'] = mother_nontransmitted
     
     return result_df
 
 def consistent_phasing(results):
-    """Check if phasing is consistent across all loci and perform genome-wide phasing"""
-    # If no loci follow Mendelian inheritance, consistent phasing is not possible
+    """Check if phasing is consistent across all loci and perform genome-wide phasing.
+
+    Since the previous function enforces a consistent order (Child_Phased_1 from Father, 
+    Child_Phased_2 from Mother), this step mainly verifies the consistency. In the rare 
+    event inconsistency is detected, the phased columns are swapped.
+    """
     if not any(results['Mendelian']):
         return results
     
     mendelian_results = results[results['Mendelian']]
     if len(mendelian_results) <= 1:
-        return results  # Only one locus follows Mendelian inheritance, no need to check consistency
+        return results  # Only one Mendelian-locus; no need for consistency check.
     
-    # Determine the majority phasing pattern
-    patterns = mendelian_results['Phasing_Pattern'].value_counts()
-    majority_pattern = patterns.index[0] if not patterns.empty else None
+    # Use the first Mendelian locus as reference and verify that Child_Phased_1 contains "from Father".
+    first_mendelian = mendelian_results.iloc[0]
+    ref_is_father = 'from Father' in first_mendelian['Child_Phased_1']
     
-    if majority_pattern:
-        # Apply the majority pattern to all Mendelian loci for consistency
+    consistent = True
+    for _, row in mendelian_results.iloc[1:].iterrows():
+        current_is_father = 'from Father' in row['Child_Phased_1']
+        if current_is_father != ref_is_father:
+            consistent = False
+            break
+    
+    if not consistent:
+        # If any discrepancies are found, swap the phasing.
         for i, row in results.iterrows():
-            if row['Mendelian'] and row['Phasing_Pattern'] != majority_pattern:
-                # Need to flip this locus to match the majority pattern
-                # Swap child's phased alleles
+            if row['Mendelian']:
                 results.at[i, 'Child_Phased_1'], results.at[i, 'Child_Phased_2'] = \
                     results.at[i, 'Child_Phased_2'], results.at[i, 'Child_Phased_1']
                 
-                # Update parent-of-origin labels
-                if '(from Father)' in results.at[i, 'Child_Phased_1']:
-                    results.at[i, 'Child_Phased_1'] = results.at[i, 'Child_Phased_1'].replace('(from Father)', '(from Mother)')
-                    results.at[i, 'Child_Phased_2'] = results.at[i, 'Child_Phased_2'].replace('(from Mother)', '(from Father)')
-                else:
-                    results.at[i, 'Child_Phased_1'] = results.at[i, 'Child_Phased_1'].replace('(from Mother)', '(from Father)')
-                    results.at[i, 'Child_Phased_2'] = results.at[i, 'Child_Phased_2'].replace('(from Father)', '(from Mother)')
+                results.at[i, 'Father_Phased_1'], results.at[i, 'Father_Phased_2'] = \
+                    results.at[i, 'Father_Phased_2'], results.at[i, 'Father_Phased_1']
                 
-                # Update phasing pattern
-                results.at[i, 'Phasing_Pattern'] = majority_pattern
+                results.at[i, 'Mother_Phased_1'], results.at[i, 'Mother_Phased_2'] = \
+                    results.at[i, 'Mother_Phased_2'], results.at[i, 'Mother_Phased_1']
     
-    # Remove the temporary phasing pattern column before returning
-    results = results.drop(columns=['Phasing_Pattern'])
     return results
 
 def main():
@@ -166,22 +164,22 @@ def main():
     
     args = parser.parse_args()
     
-    # Read input files
+    # Read the input files.
     father_df = read_hla_file(args.father)
     mother_df = read_hla_file(args.mother)
     child_df = read_hla_file(args.child)
     
-    # Check Mendelian inheritance and perform initial phasing
+    # Check for Mendelian inheritance and perform the initial phasing.
     result_df = check_mendelian_inheritance(father_df, mother_df, child_df)
     
-    # Ensure consistent phasing across all loci
+    # Perform a global consistency check for the phased data.
     final_results = consistent_phasing(result_df)
     
-    # Save results
+    # Save the results.
     final_results.to_csv(args.output, index=False, sep='\t')
     print(f"Results saved to {args.output}")
     
-    # Output summary
+    # Print a summary.
     mendelian_count = sum(final_results['Mendelian'])
     total_count = len(final_results)
     print(f"\nSummary:")
@@ -189,7 +187,7 @@ def main():
     print(f"Loci following Mendelian inheritance: {mendelian_count} ({mendelian_count/total_count*100:.1f}%)")
     print(f"Loci with successful phasing: {mendelian_count}")
     
-    # Output loci not following Mendelian inheritance
+    # Report the loci that do not follow Mendelian inheritance.
     if mendelian_count < total_count:
         non_mendelian = final_results[~final_results['Mendelian']]
         print("\nLoci not following Mendelian inheritance:")
