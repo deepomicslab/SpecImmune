@@ -95,7 +95,7 @@ Note:
 |simulation/*|Generate simulated data.|
 
 ### Extract gene-region-related reads
-First extract gene reads with enrichment-free data. Otherwise, Typing would be slow. Map reads onto the `whole hg38` (Chromosome name should be like chr1, chr2..., and should contain alternative alleles), then use `ExtracReads.sh` to extract reads by
+First extract gene reads with enrichment-free data. Otherwise, Typing would be slow. Map reads onto the `whole hg38` (Chromosome name should be like chr1, chr2..., and should contain alternative contigs and alleles), then use `ExtracReads.sh` to extract reads by
 ```
 Usage: ExtractReads.sh -s <sample_id> -i <input_bam_or_cram> -g <gene_class> -o <output_directory> [-r <reference>]
   -s  Sample ID or gene ID (required)
@@ -105,7 +105,7 @@ Usage: ExtractReads.sh -s <sample_id> -i <input_bam_or_cram> -g <gene_class> -o 
   -r  Reference file (required if input is CRAM)
 ```
 Note:
-- `whole hg38` should contain alternative alleles to retail as more reads as possible. For example, it should contain plenty of different HLA alleles.
+- `whole hg38` should contain alternative contigs and alleles to retail as more reads as possible. For example, it should contain plenty of different HLA alleles.
 
 ## Typing 
 
