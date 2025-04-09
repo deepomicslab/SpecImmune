@@ -105,7 +105,7 @@ Usage: ExtractReads.sh -s <sample_id> -i <input_bam_or_cram> -g <gene_class> -o 
   -r  Reference file (required if input is CRAM)
 ```
 Note:
-- `whole hg38` should contain alternative contigs and alleles to retail as more reads as possible. For example, it should contain plenty of different HLA alleles.
+- `whole hg38` should contain alternative contigs and alleles to retain as more reads as possible. For example, it should contain plenty of different HLA alleles.
 
 ## Typing 
 
