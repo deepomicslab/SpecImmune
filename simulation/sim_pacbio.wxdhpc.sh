@@ -19,9 +19,8 @@ fi
 eval "$(conda shell.bash hook)"
 conda activate speclong
 # Error rates from 0.78 to 0.9 with step 0.01
-for err in $(seq 0.78 0.01 0.9); do
-    # Depth from 5 to 50 with step 5
-    for depth in $(seq 5 5 50); do
+for err in $(seq 0.75 0.02 0.99) 1.00; do
+    for depth in $(seq 5 30 500); do
         sample=pacbio_dp${depth}_acc${err}
 
         # Create sample directory
