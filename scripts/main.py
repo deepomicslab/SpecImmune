@@ -7,6 +7,7 @@ import argparse
 from db_objects import My_db
 from folder_objects import My_folder
 import subprocess
+from run_skirt import run_skirt_pre_directly
 
 __version__ = '1.0.0'
 
@@ -87,7 +88,7 @@ def main(args):
         # if gene is kir, make annotation for kir result
         if args["i"] == "KIR":
             command = f"""
-            python3 {sys.path[0]}/kir_annotation.py {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.formatted.txt {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.formatted.anno.txt
+            python3 {sys.path[0]}/kir_annotation.py -i {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.formatted.txt -o {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.formatted.anno.txt
             """
             print(command, flush=True)
             os.system(command)
@@ -101,17 +102,39 @@ def main(args):
             os.system(command)
             # run SKIRT, make output 
             skirt_out = f"{args['o']}/{args['n']}/Sequences/SKIRT"
-            python_path = sys.executable 
-            command = f"""
-            mkdir -p {skirt_out}
-            bash {sys.path[0]}/SKIRT/scripts/miniskirt.sh \\
-            "{args['o']}/{args['n']}/KIR.all.fasta" \\
-            "{skirt_out}" \\
-            "{python_path}"
-            """
-            print(command, flush=True)
-            os.system(command)
-            
+            python_path = sys.executable
+            fasta_path = f"{args['o']}/{args['n']}/KIR.all.fasta"
+
+            paf_path, gen_paf_path = run_skirt_pre_directly(fasta_path, skirt_out, python_path)
+            # 调用 skirt.py
+            script_dir = os.path.dirname(os.path.realpath(__file__))
+            skirt_wd = os.path.realpath(os.path.join(script_dir, "SKIRT"))
+
+            # 引用文件路径
+            nuc_query = f"{skirt_wd}/IPDKIR/kir_nuc.fasta"
+            gen_query = f"{skirt_wd}/IPDKIR/kir_gen.fasta"
+            eds1_query = f"{skirt_wd}/IPDKIR/fasta/KIR3DS1_nuc.fasta"
+            zds4_fusion = f"{skirt_wd}/IPDKIR/fasta/KIR2DS4-00101e124567_3DL1-03501e89_nuc.fasta"
+            zdl3_fusion = f"{skirt_wd}/IPDKIR/fasta/KIR2DL3-00101e1245_2DP1-00201e6789_nuc.fasta"
+            novel_allele = f"{skirt_wd}/novel.fa"
+
+            # 输出前缀
+            fastafile = os.path.basename(fasta_path)
+            outputname = os.path.splitext(fastafile)[0]
+            output_prefix = os.path.join(skirt_out, outputname)
+            paf_path = f"{output_prefix}.paf"
+            with open(f"{output_prefix}.skirt.err", "w") as skirt_err:
+                subprocess.run([
+                    "python3",
+                    f"{skirt_wd}/scripts/skirt.py",
+                    "-asm", fasta_path,
+                    "-g", gen_paf_path,
+                    paf_path,
+                    output_prefix
+                ], stderr=skirt_err)
+
+            print(f"[INFO] SKIRT completed. Output: {output_prefix}")
+
         
 
         
