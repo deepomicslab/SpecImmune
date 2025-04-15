@@ -102,11 +102,9 @@ def main(args):
             os.system(command)
             # run SKIRT, make output 
             skirt_out = f"{args['o']}/{args['n']}/Sequences/SKIRT"
-            skirt_out = f"{args['o']}/{args['n']}/Sequences/SKIRT"
             python_path = sys.executable
-            fasta_path = f"{args['o']}/{args['n']}/KIR.all.fasta"
 
-            run_skirt_directly(fasta_path, skirt_out, python_path)
+            # run_skirt_directly(fasta_path, skirt_out, python_path)
             python_path = sys.executable 
             command = f"""
             mkdir -p {skirt_out}
