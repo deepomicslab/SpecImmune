@@ -99,9 +99,13 @@ def main(args):
             os.system(command)
             # run SKIRT, make output 
             skirt_out = f"{args['o']}/{args['n']}/Sequences/SKIRT"
+            python_path = sys.executable 
             command = f"""
             mkdir -p {skirt_out}
-            bash {sys.path[0]}/SKIRT/scripts/miniskirt.sh {args["o"]}/{args["n"]}/KIR.all.fasta {skirt_out}
+            bash {sys.path[0]}/SKIRT/scripts/miniskirt.sh \\
+            "{args['o']}/{args['n']}/KIR.all.fasta" \\
+            "{skirt_out}" \\
+            "{python_path}"
             """
             os.system(command)
             
