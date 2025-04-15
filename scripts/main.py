@@ -84,7 +84,27 @@ def main(args):
             os.system(command)
             for i in range(1, args["iteration"]):
                 os.system(f"rm {args['o']}/{args['n']}/{args['n']}.{args['i']}.final.type.{i}.result.txt")
-
+        # if gene is kir, make annotation for kir result
+        if args["i"] == "KIR":
+            command = f"""
+            python3 {sys.path[0]}/kir_annotation.py {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.formatted.txt {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.formatted.anno.txt
+            """
+            os.system(command)
+            # annotate by SKIRT further
+            # merge all kir fasta to one file
+            command = f"""
+            cat {args["o"]}/{args["n"]}/Sequence/*.fasta > {args["o"]}/{args["n"]}/KIR.all.fasta
+            samtools faidx {args["o"]}/{args["n"]}/KIR.all.fasta
+            """
+            os.system(command)
+            # run SKIRT, make output 
+            skirt_out = f"{args['o']}/{args['n']}/Sequence/SKIRT"
+            command = f"""
+            mkdir -p {skirt_out}
+            bash {sys.path[0]}/SKIRT/scripts/miniskirt.sh {args["o"]}/{args["n"]}/KIR.all.fasta {skirt_out}
+            """
+            os.system(command)
+            
         
 
         

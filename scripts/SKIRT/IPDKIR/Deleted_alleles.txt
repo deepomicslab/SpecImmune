@@ -1,0 +1,25 @@
+# file: Deleted_alleles.txt
+# date: 2022-12-12
+# version: IPD-KIR 2.12.0
+# origin: https://github.com/ANHIG/IPDKIR/Deleted_alleles.txt
+# repository: https://raw.githubusercontent.com/ANHIG/IPDKIR/Latest/Deleted_alleles.txt
+# author: Steven G. E. Marsh (steven.marsh@ucl.ac.uk)
+# Deleted Alleles
+AlleleID,Allele,Description
+KIR00208,KIR2DL4*00203,Sequence shown to contain errors and be identical to KIR2DL4*0060201 (March 2008)
+KIR00209,KIR2DL4*00502,Sequence shown to be in error and identical to KIR2DL4*0050101 (February 2011)
+KIR00441,KIR2DL5B*0020105,Sequence shown to be identical to KIR2DL5B*0020101 (November 2018)
+KIR01035,KIR2DP1*005,Named in error and renamed KIR2DP1*0020110 (November 2018)
+KIR00490,KIR2DS1*007,Sequence named in error and renamed KIR2DS1*00502 (August 2009)
+KIR00047,KIR2DS4*002,Sequence shown to contain errors (November 2005)
+KIR00124,KIR2DS4*005,Sequence shown to contain errors and be identical to KIR2DS4*0040101 (January 2005)
+KIR00123,KIR3DL1*003,Sequence shown to contain errors and be identical to KIR3DL1*0150201 (March 2004)
+KIR00889,KIR3DL2*00108,Sequence submitted in error (March 2016)
+KIR01357,KIR3DL3*0030110,Sequence shown to be identical to 3DL3*0030106 (August 2020)
+KIR01368,KIR3DL3*0030111,Sequence shown to be identical to 3DL3*0030105 (August 2020)
+KIR00491,KIR3DL3*024,Sequence named in error and renamed KIR3DL3*02102 (August 2009)
+KIR01331,KIR3DL3*10702,Sequence shown to be identical to 3DL3*10701 (August 2020)
+KIR01339,KIR3DL3*1090102,Sequence shown to be identical to 3DL3*1090101 (August 2020)
+KIR01347,KIR3DL3*1100102,Sequence shown to be identical to 3DL3*1100101 (August 2020)
+# Alleles With Suffix Changes
+AlleleID,Allele,Description

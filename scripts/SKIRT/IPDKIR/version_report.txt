@@ -1,0 +1,98 @@
+# file: version_report.txt
+# date: 2022-12-12
+# version: IPD-KIR 2.12.0
+# repository: https://raw.githubusercontent.com/ANHIG/IPDKIR/Latest/version_report.txt
+# origin: https://github.com/ANHIG/IPDKIR/version_report.txt
+# author: Steven G. E. Marsh (steven.marsh@ucl.ac.uk)
+Status,Alleles,AlleleID,Comments
+New,2DL1*00308,KIR01625,
+New,2DL1*00309,KIR01627,
+New,2DL1*00406,KIR01623,
+New,2DL1*069,KIR01628,
+New,2DL1*070,KIR01620,
+New,2DL1*071,KIR01624,
+New,2DL1*072,KIR01612,
+New,2DL1*073,KIR01616,
+New,2DL1*074,KIR01617,
+New,2DL1*075,KIR01682,
+New,2DL1*076,KIR01683,
+New,2DL1*077,KIR01684,
+New,2DL2*016,KIR01691,
+New,2DL3*00111,KIR01618,
+New,2DL3*00112,KIR01621,
+New,2DL3*00503,KIR01681,
+New,2DL3*037,KIR01614,
+New,2DL4*00108,KIR01613,
+New,2DL4*059,KIR01690,
+New,2DL5A*042,KIR01687,
+New,2DS4*023,KIR01686,
+New,2DS4*024,KIR01688,
+New,3DL1*00703,KIR01611,
+New,3DL1*01507,KIR01626,
+New,3DL1*01508,KIR01619,
+New,3DL1*120,KIR01622,
+New,3DL1*121,KIR01615,
+New,3DL2*00802,KIR01692,
+New,3DL2*117,KIR01689,
+New,3DL3*115,KIR01685,
+New,3DS1*0130112,KIR01641,Genomic Sequence
+New,3DS1*0130113,KIR01672,Genomic Sequence
+New,3DS1*0130114,KIR01635,Genomic Sequence
+New,3DS1*0130115,KIR01638,Genomic Sequence
+New,3DS1*0130116,KIR01678,Genomic Sequence
+New,3DS1*0130117,KIR01631,Genomic Sequence
+New,3DS1*0130118,KIR01667,Genomic Sequence
+New,3DS1*0130119,KIR01659,Genomic Sequence
+New,3DS1*0130120,KIR01648,Genomic Sequence
+New,3DS1*0130121,KIR01653,Genomic Sequence
+New,3DS1*0130122,KIR01661,Genomic Sequence
+New,3DS1*0130123,KIR01656,Genomic Sequence
+New,3DS1*0130124,KIR01657,Genomic Sequence
+New,3DS1*0130125,KIR01662,Genomic Sequence
+New,3DS1*0130126,KIR01654,Genomic Sequence
+New,3DS1*0130127,KIR01633,Genomic Sequence
+New,3DS1*0130128,KIR01670,Genomic Sequence
+New,3DS1*0130129,KIR01634,Genomic Sequence
+New,3DS1*0130130,KIR01629,Genomic Sequence
+New,3DS1*0130131,KIR01644,Genomic Sequence
+New,3DS1*0130132,KIR01674,Genomic Sequence
+New,3DS1*01308,KIR01639,Genomic Sequence
+New,3DS1*01309,KIR01666,Genomic Sequence
+New,3DS1*01310,KIR01665,Genomic Sequence
+New,3DS1*01311,KIR01649,Genomic Sequence
+New,3DS1*01312,KIR01651,Genomic Sequence
+New,3DS1*01313,KIR01658,Genomic Sequence
+New,3DS1*01314,KIR01664,Genomic Sequence
+New,3DS1*04902N,KIR01630,Genomic Sequence
+New,3DS1*122,KIR01675,Genomic Sequence
+New,3DS1*1230101,KIR01676,Genomic Sequence
+New,3DS1*1230102,KIR01673,Genomic Sequence
+New,3DS1*1230103,KIR01642,Genomic Sequence
+New,3DS1*1240101,KIR01677,Genomic Sequence
+New,3DS1*1240102,KIR01650,Genomic Sequence
+New,3DS1*1250101,KIR01679,Genomic Sequence
+New,3DS1*1250102,KIR01643,Genomic Sequence
+New,3DS1*126,KIR01637,Genomic Sequence
+New,3DS1*1270101,KIR01645,Genomic Sequence
+New,3DS1*1270102,KIR01671,Genomic Sequence
+New,3DS1*1280101,KIR01636,Genomic Sequence
+New,3DS1*1280102,KIR01655,Genomic Sequence
+New,3DS1*129,KIR01632,Genomic Sequence
+New,3DS1*1300101,KIR01680,Genomic Sequence
+New,3DS1*1300102,KIR01663,Genomic Sequence
+New,3DS1*131,KIR01669,Genomic Sequence
+New,3DS1*132,KIR01668,Genomic Sequence
+New,3DS1*1330101,KIR01660,Genomic Sequence
+New,3DS1*1330102,KIR01640,Genomic Sequence
+New,3DS1*134,KIR01647,Genomic Sequence
+New,3DS1*135,KIR01646,Genomic Sequence
+New,3DS1*136,KIR01652,Genomic Sequence
+Confidential,2DP1*014,,
+Modified,2DL4*0050101,KIR00026,Genomic Sequence Extended
+Modified,2DS3*0020101,KIR00131,Genomic Sequence Extended
+Modified,2DS3*0030102N,KIR01577,Genomic Sequence Extended
+Modified,3DL2*056,KIR00624,Genomic Sequence Added
+Modified,3DL3*0030106,KIR01334,Genomic Sequence Extended
+Modified,3DS1*0130101,KIR00085,Genomic Sequence Extended
+Modified,3DS1*055,KIR00243,Genomic Sequence Added
+Corrected,2DS2*0010101,KIR00037,Genomic Sequence Corrected
