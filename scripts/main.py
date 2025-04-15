@@ -93,12 +93,12 @@ def main(args):
             # annotate by SKIRT further
             # merge all kir fasta to one file
             command = f"""
-            cat {args["o"]}/{args["n"]}/Sequence/*.fasta > {args["o"]}/{args["n"]}/KIR.all.fasta
+            cat {args["o"]}/{args["n"]}/Sequences/*.fasta > {args["o"]}/{args["n"]}/KIR.all.fasta
             samtools faidx {args["o"]}/{args["n"]}/KIR.all.fasta
             """
             os.system(command)
             # run SKIRT, make output 
-            skirt_out = f"{args['o']}/{args['n']}/Sequence/SKIRT"
+            skirt_out = f"{args['o']}/{args['n']}/Sequences/SKIRT"
             command = f"""
             mkdir -p {skirt_out}
             bash {sys.path[0]}/SKIRT/scripts/miniskirt.sh {args["o"]}/{args["n"]}/KIR.all.fasta {skirt_out}
