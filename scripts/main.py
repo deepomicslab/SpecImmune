@@ -89,6 +89,7 @@ def main(args):
             command = f"""
             python3 {sys.path[0]}/kir_annotation.py {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.formatted.txt {args["o"]}/{args["n"]}/{args["n"]}.{args["i"]}.final.type.result.formatted.anno.txt
             """
+            print(command, flush=True)
             os.system(command)
             # annotate by SKIRT further
             # merge all kir fasta to one file
@@ -96,6 +97,7 @@ def main(args):
             cat {args["o"]}/{args["n"]}/Sequences/*.fasta > {args["o"]}/{args["n"]}/KIR.all.fasta
             samtools faidx {args["o"]}/{args["n"]}/KIR.all.fasta
             """
+            print(command, flush=True)
             os.system(command)
             # run SKIRT, make output 
             skirt_out = f"{args['o']}/{args['n']}/Sequences/SKIRT"
@@ -107,6 +109,7 @@ def main(args):
             "{skirt_out}" \\
             "{python_path}"
             """
+            print(command, flush=True)
             os.system(command)
             
         
