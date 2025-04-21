@@ -157,7 +157,7 @@ elif [[ "$seq_type" =~ ^(ont|nanopore)$ ]]; then
 else
     echo "Unknown seq_type: $seq_type"
 fi
-dysgu call --divergence auto --mode $mode $hla_ref $dysgu_work_dir $bam > $refined_sv3
+dysgu call --divergence auto --mode $mode -x $hla_ref $dysgu_work_dir $bam > $refined_sv3
 bgzip -f $refined_sv3
 tabix -f $refined_sv3.gz
 bgzip -f $refined_sv
