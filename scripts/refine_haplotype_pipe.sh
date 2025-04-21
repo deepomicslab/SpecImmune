@@ -158,16 +158,35 @@ else
     echo "Unknown seq_type: $seq_type"
 fi
 dysgu call --divergence auto --mode $mode -x $hla_ref $dysgu_work_dir $bam > $refined_sv3
-bgzip -f $refined_sv3
-tabix -f $refined_sv3.gz
+
 bgzip -f $refined_sv
 tabix -f $refined_sv.gz
 bgzip -f $refined_sv2
 tabix -f $refined_sv2.gz
 
 # merge sniffles, cutesv and dysgu
+
+# dysgu is empty (no word line in vcf) use sniffles and cutesv else use all three
 merged_sv=$gene_work_dir/HLA_$hla.snisv.cutesv.dysgu.vcf
-bcftools merge -m none $refined_sv.gz $refined_sv2.gz $refined_sv3.gz --force-samples -Ov -o $merged_sv
+
+if [[ ! -s $refined_sv3 ]]; then
+    echo "dysgu is empty, use sniffles and cutesv"
+    bgzip -f $refined_sv3
+    tabix -f $refined_sv3.gz
+    bcftools merge -m none $refined_sv.gz $refined_sv2.gz --force-samples -Ov -o $merged_sv
+else
+    # merge all three
+    bcftools merge -m none $refined_sv.gz $refined_sv2.gz $refined_sv3.gz --force-samples -Ov -o $merged_sv
+fi
+
+
+
+
+
+
+
+
+
 
 # truvari collapse -i merge.vcf.gz -o truvari_merge.vcf -c truvari_collapsed.vcf -k first --gt het --intra 
 truvari_merge=$gene_work_dir/HLA_$hla.snisv.cutesv.dysgu.truvari.vcf
