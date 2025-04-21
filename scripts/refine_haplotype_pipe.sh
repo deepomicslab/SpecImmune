@@ -93,6 +93,94 @@ esac
 echo "sniffles for $sample !"
 run_sniffles $genotype_error $minsupport $mapq $cluster_binsize $cluster_r $cluster_merge_pos
 
+# run cutesv
+refined_sv2=$gene_work_dir/HLA_$hla.cutesv.vcf
+filtered_sv2=$gene_work_dir/HLA_$hla.cutesv.filtered.vcf
+cute_work_dir=$gene_work_dir/cutesv
+mkdir -p $cute_work_dir
+# > For PacBio CLR data:
+# 	--max_cluster_bias_INS		100
+# 	--diff_ratio_merging_INS	0.3
+# 	--max_cluster_bias_DEL	200
+# 	--diff_ratio_merging_DEL	0.5
+
+# > For PacBio CCS(HIFI) data:
+# 	--max_cluster_bias_INS		1000
+# 	--diff_ratio_merging_INS	0.9
+# 	--max_cluster_bias_DEL	1000
+# 	--diff_ratio_merging_DEL	0.5
+
+# > For ONT data:
+# 	--max_cluster_bias_INS		100
+# 	--diff_ratio_merging_INS	0.3
+# 	--max_cluster_bias_DEL	100
+# 	--diff_ratio_merging_DEL	0.3
+
+# set paramters for cute sv by seq_type [pb||ont]
+if [[ "$seq_type" =~ ^(pb|pacbio)$ ]]; then
+    max_cluster_bias_INS=1000
+    diff_ratio_merging_INS=0.9
+    max_cluster_bias_DEL=1000
+    diff_ratio_merging_DEL=0.5
+elif [[ "$seq_type" =~ ^(ont|nanopore)$ ]]; then
+    max_cluster_bias_INS=100
+    diff_ratio_merging_INS=0.3
+    max_cluster_bias_DEL=100
+    diff_ratio_merging_DEL=0.3
+else
+    echo "Unknown seq_type: $seq_type"
+fi
+
+# cutesv [BAM], reference, output, work_dir
+echo "cutesv for $sample !"
+cutesv $bam $hla_ref $refined_sv2 $cute_work_dir \
+    --max_cluster_bias_INS $max_cluster_bias_INS \
+    --diff_ratio_merging_INS $diff_ratio_merging_INS \
+    --max_cluster_bias_DEL $max_cluster_bias_DEL \
+    --diff_ratio_merging_DEL $diff_ratio_merging_DEL --genotype -S "cutesv"
+
+
+# dysgu call
+# dysgu call --divergence auto --mode nanopore||pacbio reference.fa temp_dir input.bam > svs.vcf
+refined_sv3=$gene_work_dir/HLA_$hla.dysgu.vcf
+refined_sv3_renamed=$gene_work_dir/HLA_$hla.dysgu.rename.vcf.gz
+filtered_sv3=$gene_work_dir/HLA_$hla.dysgu.filtered.vcf
+dysgu_work_dir=$gene_work_dir/dysgu
+mkdir -p $cute_work_dir
+echo "dysgu for $sample !"
+#  if seq_type == pacbio, use pacbio
+#  if seq_type == ont, use nanopore
+if [[ "$seq_type" =~ ^(pb|pacbio)$ ]]; then
+    mode="pacbio"
+elif [[ "$seq_type" =~ ^(ont|nanopore)$ ]]; then
+    mode="nanopore"
+else
+    echo "Unknown seq_type: $seq_type"
+fi
+dysgu call --divergence auto --mode $mode $hla_ref $dysgu_work_dir $bam > $refined_sv3
+bgzip -f $refined_sv3
+tabix -f $refined_sv3.gz
+bgzip -f $refined_sv
+tabix -f $refined_sv.gz
+bgzip -f $refined_sv2
+tabix -f $refined_sv2.gz
+
+# merge sniffles, cutesv and dysgu
+merged_sv=$gene_work_dir/HLA_$hla.snisv.cutesv.dysgu.vcf
+bcftools merge -m none $refined_sv.gz $refined_sv2.gz $refined_sv3.gz --force-samples -Ov -o $merged_sv
+
+# truvari collapse -i merge.vcf.gz -o truvari_merge.vcf -c truvari_collapsed.vcf -k first --gt het --intra 
+truvari_merge=$gene_work_dir/HLA_$hla.snisv.cutesv.dysgu.truvari.vcf
+truvari collapse -i $merged_sv -o $truvari_merge -c $gene_work_dir/HLA_$hla.snisv.cutesv.dysgu.truvari.collapsed.vcf -k first --gt het --intra
+
+
+
+
+
+
+
+
+
 # Whatshap haplotag
 echo "haplotag for $sample !"
 # fix dup HD in header
@@ -141,7 +229,7 @@ echo "longphase for $sample !"
 $longphase phase -s $snv_vcf \
     -b $gene_work_dir/haplotagged.$hla.bam \
     -r $hla_ref \
-    --sv-file $refined_sv \
+    --sv-file $truvari_merge \
     -o $gene_work_dir/longphase \
     --${seq_type}
 
