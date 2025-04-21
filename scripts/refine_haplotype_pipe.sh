@@ -133,7 +133,7 @@ fi
 
 # cutesv [BAM], reference, output, work_dir
 echo "cutesv for $sample !"
-cutesv $bam $hla_ref $refined_sv2 $cute_work_dir \
+cuteSV $bam $hla_ref $refined_sv2 $cute_work_dir \
     --max_cluster_bias_INS $max_cluster_bias_INS \
     --diff_ratio_merging_INS $diff_ratio_merging_INS \
     --max_cluster_bias_DEL $max_cluster_bias_DEL \
