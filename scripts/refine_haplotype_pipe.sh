@@ -174,11 +174,19 @@ if [[ ! -s $refined_sv3 ]]; then
     bgzip -f $refined_sv3
     tabix -f $refined_sv3.gz
     bcftools merge -m none $refined_sv.gz $refined_sv2.gz --force-samples -Ov -o $merged_sv
+    echo """
+    bcftools merge -m none $refined_sv.gz $refined_sv2.gz --force-samples -Ov -o $merged_sv
+    """
 else
     # merge all three
     bcftools merge -m none $refined_sv.gz $refined_sv2.gz $refined_sv3.gz --force-samples -Ov -o $merged_sv
+    echo """
+    bcftools merge -m none $refined_sv.gz $refined_sv2.gz $refined_sv3.gz --force-samples -Ov -o $merged_sv
+    """
 fi
 
+bgzip -f $merged_sv
+tabix -f $merged_sv.gz
 
 
 
@@ -190,7 +198,7 @@ fi
 
 # truvari collapse -i merge.vcf.gz -o truvari_merge.vcf -c truvari_collapsed.vcf -k first --gt het --intra 
 truvari_merge=$gene_work_dir/HLA_$hla.snisv.cutesv.dysgu.truvari.vcf
-truvari collapse -i $merged_sv -o $truvari_merge -c $gene_work_dir/HLA_$hla.snisv.cutesv.dysgu.truvari.collapsed.vcf -k first --gt het --intra
+truvari collapse -i $merged_sv.gz -o $truvari_merge -c $gene_work_dir/HLA_$hla.snisv.cutesv.dysgu.truvari.collapsed.vcf -k first --gt het --intra
 
 
 
