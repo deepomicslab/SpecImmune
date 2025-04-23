@@ -70,7 +70,8 @@ def files_to_pdf(bam, vcf, ref, gene, out_pdf, alleles, alleles_bams=[], tag="ho
             "Sample": sample,
             "Locus": gene,
             "alleles": alleles,
-            "resolution": "4th field"
+            "resolution": "4th field",
+            "tag": tag,
     }
     # chose top ten alleles
     alleles_bams = alleles_bams[:10]
@@ -90,15 +91,15 @@ def files_to_pdf(bam, vcf, ref, gene, out_pdf, alleles, alleles_bams=[], tag="ho
     res_track.height = 450
     view.add_track(res_track)
 
-    view.add_track(BAMCoverageTrack(bam, name="bam coverage"))
+    view.add_track(BAMCoverageTrack(bam, name="Bam coverage"))
 
-    variant_track = VCFTrack(vcf, "variants")
+    variant_track = VCFTrack(vcf, "Variants")
     print(f"Variant track: {variant_track.var_cnt}")
     view.add_track(variant_track)
 
 
 
-    bam_track = SingleEndBAMTrack(bam, name=f"Alignment (reference: reconstructed gene haplotype {allele_idx+1})", bam_type="normal")
+    bam_track = SingleEndBAMTrack(bam, name=f"Alignment (reference: reconstructed gene haplotype)", bam_type="normal")
     bam_track.draw_mismatches = True
     bam_track.quick_consensus = True
     bam_track.color_fn = lambda x: "lightgray"

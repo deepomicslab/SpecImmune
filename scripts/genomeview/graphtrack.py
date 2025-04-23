@@ -33,7 +33,7 @@ class GraphTrack(Track):
         if x is not None:
             self.add_series(x, y)
 
-        self.height = 45
+        self.height = 70
         self.ymargin = 5
         
     def add_series(self, x, y, color=None, label=None):

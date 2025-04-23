@@ -290,52 +290,161 @@ class SVG(GraphicsBackend):
     #         x_pos += cell_width
         
     #     y_pos += line_height * (row_count + 1)
+    # def hla_typing_results(self, x, y, sample_info):
+    #     sample = sample_info["Sample"]
+    #     locus = sample_info["Locus"]
+    #     alleles = sample_info["alleles"]
+    #     resolution = sample_info["resolution"]
+    #     tag= "Homozygous" if sample_info["tag"]=="hom" else "Heterozygous"
+    #     pdf_width = 900
+    #     pdf_x_margin = 50
+
+    #     margin_left = 50
+    #     margin_top = 30
+    #     line_height = 40
+    #     rect_height = 30
+    #     text_margin = 10
+    #     gap_between_alleles = 20
+    #     max_columns = 3  # Set the maximum number of columns to 3
+
+    #     y_pos = margin_top
+
+
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Sample:</tspan> <tspan font-weight='bold'>{sample}</tspan>", size=20, anchor="start", family="Arial", fill="#213271")
+    #     y_pos += line_height
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Locus:</tspan> <tspan font-weight='bold'>{locus}</tspan>", size=16, anchor="start", family="Arial", fill="#E86349")
+    #     y_pos += line_height
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Resolution:</tspan> <tspan font-weight='bold'>4th field</tspan>", size=16, anchor="start", family="Arial", fill="black")
+    #     y_pos += 60
+    #     yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Full typing result {tag} :</tspan>", size=16, anchor="start", family="Arial", fill="black")
+    #     y_pos += line_height
+
+    #     x_pos = margin_left
+    #     column_count = 0
+        
+    #     for idx, allele in enumerate(alleles):
+    #         text_width = len(allele) * 8  # Adjust 8 to match your font's character width
+    #         cell_width = text_width + text_margin * 2 + gap_between_alleles
+
+    #         if column_count >= max_columns or x_pos + cell_width > pdf_width - pdf_x_margin:
+    #             y_pos += line_height
+    #             x_pos = margin_left
+    #             column_count = 0
+
+    #         centered_x_pos = x_pos + text_margin
+
+    #         yield from self.text_with_background2(centered_x_pos, y_pos, allele, size=14, anchor="start", family="Arial", fill="black", bg="#DDFAFB", bg_opacity=1, **{"font-weight": 'bold'})
+    #         x_pos += cell_width
+    #         column_count += 1
+        
+    #     y_pos += line_height
     def hla_typing_results(self, x, y, sample_info):
-        sample = sample_info["Sample"]
-        locus = sample_info["Locus"]
-        alleles = sample_info["alleles"]
-        resolution = sample_info["resolution"]
-        pdf_width = 900
-        pdf_x_margin = 50
+        """
+        Draw HLA typing results at position (x, y).
 
-        margin_left = 50
-        margin_top = 30
-        line_height = 40
-        rect_height = 30
-        text_margin = 10
-        gap_between_alleles = 20
-        max_columns = 3  # Set the maximum number of columns to 3
+        - Display at most 5 alleles per haplotype; if there are more, append a "+N more" line.
+        - If sample_info["tag"] == "hom", draw two identical boxes (homozygous).
+          Otherwise draw a single box (heterozygous).
+        """
+        # 1) Extract sample data
+        sample        = sample_info["Sample"]
+        locus         = sample_info["Locus"]
+        alleles       = sample_info["alleles"]
+        is_homozygous = (sample_info.get("tag") == "hom")
 
-        y_pos = margin_top
+        # 2) Limit number of displayed alleles
+        max_display      = 5
+        display_alleles  = alleles[:max_display]
+        remaining        = len(alleles) - max_display
+        if remaining > 0:
+            display_alleles.append(f"+{remaining} more")
 
-        yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Sample:</tspan> <tspan font-weight='bold'>{sample}</tspan>", size=20, anchor="start", family="Arial", fill="#213271")
-        y_pos += line_height
-        yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Locus:</tspan> <tspan font-weight='bold'>{locus}</tspan>", size=16, anchor="start", family="Arial", fill="#E86349")
-        y_pos += line_height
-        yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Resolution:</tspan> <tspan font-weight='bold'>4th field</tspan>", size=16, anchor="start", family="Arial", fill="black")
-        y_pos += 60
-        yield from self.text(margin_left, y_pos, f"<tspan font-weight='bold' font-style='italic'>Full typing result:</tspan>", size=16, anchor="start", family="Arial", fill="black")
-        y_pos += line_height
+        # 3) Styling & layout parameters
+        font_family         = "Arial"
+        title_font_size     = 20
+        subtitle_font_size  = 16
+        allele_font_size    = 14
+        line_height         = title_font_size * 1.2    # consistent line spacing
+        padding             = 6
+        box_gap             = 20
 
-        x_pos = margin_left
-        column_count = 0
-        
-        for idx, allele in enumerate(alleles):
-            text_width = len(allele) * 8  # Adjust 8 to match your font's character width
-            cell_width = text_width + text_margin * 2 + gap_between_alleles
+        # 4) Starting coordinates (shift down by one line to avoid clipping)
+        current_x = x
+        current_y = y + line_height
 
-            if column_count >= max_columns or x_pos + cell_width > pdf_width - pdf_x_margin:
-                y_pos += line_height
-                x_pos = margin_left
-                column_count = 0
+        # 5) Draw the header lines
+        yield from self.text(
+            current_x, current_y,
+            f"<tspan font-weight='bold' font-style='italic'>Sample:</tspan> "
+            f"<tspan font-weight='bold'>{sample}</tspan>",
+            size=title_font_size, anchor="start",
+            family=font_family, fill="#213271"
+        )
+        current_y += line_height
 
-            centered_x_pos = x_pos + text_margin
+        yield from self.text(
+            current_x, current_y,
+            f"<tspan font-weight='bold' font-style='italic'>Locus:</tspan> "
+            f"<tspan font-weight='bold'>{locus}</tspan>",
+            size=subtitle_font_size, anchor="start",
+            family=font_family, fill="#E86349"
+        )
+        current_y += line_height
 
-            yield from self.text_with_background2(centered_x_pos, y_pos, allele, size=14, anchor="start", family="Arial", fill="black", bg="#DDFAFB", bg_opacity=1, **{"font-weight": 'bold'})
-            x_pos += cell_width
-            column_count += 1
-        
-        y_pos += line_height
+        yield from self.text(
+            current_x, current_y,
+            f"<tspan font-weight='bold' font-style='italic'>Resolution:</tspan> "
+            f"<tspan font-weight='bold'>4th field</tspan>",
+            size=subtitle_font_size, anchor="start",
+            family=font_family, fill="black"
+        )
+        current_y += line_height
+
+        tag_str = "Homozygous" if is_homozygous else "Heterozygous"
+        yield from self.text(
+            current_x, current_y,
+            f"<tspan font-weight='bold' font-style='italic'>Full typing result ({tag_str}):</tspan>",
+            size=subtitle_font_size, anchor="start",
+            family=font_family, fill="black"
+        )
+        current_y += line_height
+
+        # 6) Compute dimensions for the allele box
+        char_width_est = allele_font_size * 0.6
+        max_chars      = max(len(a) for a in display_alleles)
+        box_width      = max_chars * char_width_est + 2 * padding
+        box_height     = len(display_alleles) * line_height + 2 * padding
+
+        # 7) Draw one or two boxes
+        box_count = 2 if is_homozygous else 1
+        for _ in range(box_count):
+            # 7a) Background rectangle
+            yield from self.rect(
+                current_x, current_y,
+                box_width, box_height,
+                fill="#DDFAFB",
+                stroke="none",
+                opacity=1.0
+            )
+
+            # 7b) Draw each allele line
+            text_x = current_x + padding
+            text_y = current_y + padding + (allele_font_size * 0.8)  # account for ascent
+            for allele in display_alleles:
+                yield from self.text(
+                    text_x, text_y,
+                    allele,
+                    size=allele_font_size,
+                    anchor="start",
+                    family=font_family,
+                    fill="black",
+                    **{"font-weight": "bold"}
+                )
+                text_y += line_height
+
+            # Move right for next box
+            current_x += box_width + box_gap
+
 
     
 
