@@ -21,7 +21,7 @@ def main(args):
     if not os.path.exists(args["r"]):
         raise Exception(f"Input data {args['r']} not exists.")
 
-    if args['i'] == "HLA" or args['i'] == "KIR" or (args['i'] == "CYP"):
+    if args['i'] == "HLA" or args['i'] == "KIR" or (args['i'] == "CYP") or args['i'] == "extend":
 
         my_folder = My_folder(args)
         my_folder.make_dir()
@@ -237,7 +237,7 @@ if __name__ == "__main__":
     required.add_argument("-r", type=str, help="Long-read fastq file. PacBio or Nanopore.", metavar="\b")
     required.add_argument("-n", type=str, help="Sample ID", metavar="\b")
     required.add_argument("-o", type=str, help="The output folder to store the typing results.", metavar="\b", default="./output")
-    required.add_argument("-i", type=str, help="HLA,KIR,CYP,IG_TR",metavar="\b", default="HLA")
+    required.add_argument("-i", type=str, help="HLA, KIR, CYP, IG_TR, or extend (user self-defined gene family)",metavar="\b", default="HLA")
     optional.add_argument("-j", type=int, help="Number of threads.", metavar="\b", default=5)
     # optional.add_argument("-g", type=int, help="Whether use G group resolution annotation [0|1].", metavar="\b", default=0)
     # optional.add_argument("--analyze_method", type=str, help="phase/assembly", metavar="\b", default="phase")

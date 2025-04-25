@@ -385,7 +385,6 @@ def remove_duplicate_contigs(fasta_file, output_file):
             sequences[record.id] = record
     SeqIO.write(sequences.values(), output_file, "fasta")
 
-
 def make_KIR_db():
     # URL to download the FASTA file
     KIR_fasta_url = "https://raw.githubusercontent.com/ANHIG/IPDKIR/Latest/kir_gen.fasta"
@@ -498,6 +497,34 @@ def make_IG_TR_db():
     ## delete gen_IG_TR_dir
     os.system(f"rm -rf {gen_IG_TR_dir}")
 
+def make_extend_db():
+
+    # Path to save the downloaded FASTA file within the output directory
+    KIR_dir = os.path.join(args.outdir, "extend")
+    print(KIR_dir)
+    if not os.path.exists(KIR_dir):
+        os.makedirs(KIR_dir)
+
+    if not args.extend_fa:
+        ## report error
+        print("Please provide the extend fasta file")
+        sys.exit(1)
+    else:
+        local_fasta_filename = args.extend_fa
+    
+    unique_fasta_filename = os.path.join(KIR_dir, "extend_gen_unique.fasta")
+    remove_duplicate_contigs(local_fasta_filename, unique_fasta_filename)
+    gene_list=[]
+    for record in SeqIO.parse(local_fasta_filename, "fasta"):
+        description_parts = record.description.split()
+        gene_name = description_parts[1].split('*')[0]
+        gene_name = gene_name if gene_name in gene_list else f"KIR{gene_name}"
+        print(gene_name)
+        sequence_name = description_parts[1]
+        gene_list.append(gene_name)
+    gene_list=list(set(gene_list))
+    # Parse the FASTA file and save sequences by gene
+    create_KIR_directories_and_save_sequences(unique_fasta_filename, KIR_dir, gene_list)
 
 
 
@@ -514,6 +541,8 @@ def main():
             print("Please provide the CYP fasta file")
     elif args.i == "IG_TR":
         make_IG_TR_db()
+    elif args.i == "extend":
+        make_extend_db()
     else:
         print("Please provide the gene class by -i")
 
@@ -531,11 +560,12 @@ if __name__ == "__main__":
     
     required.add_argument("-o","--outdir", help="Directory to save the gene-specific sequences", default="../db/")
     # add default hla_gene.fa
-    required.add_argument("-i", type=str, help="HLA,KIR,CYP,IG_TR",metavar="\b", default="HLA")
+    required.add_argument("-i", type=str, help="HLA,KIR,CYP,IG_TR,extend",metavar="\b", default="HLA")
     optional.add_argument("--HLA_fa", help="hla_gene")
     optional.add_argument("--HLA_exon_fa", help="hla_exon_gene")
     optional.add_argument("--KIR_fa", help="kir_gene")
     optional.add_argument("--CYP_fa", help="cyp_gene")
+    optional.add_argument("--extend_fa", help="extend gene database")
     optional.add_argument("--IG_TR_fa", help="IG_TR_gene")
     args = parser.parse_args()
     script_dir = os.path.dirname(os.path.abspath(__file__))
