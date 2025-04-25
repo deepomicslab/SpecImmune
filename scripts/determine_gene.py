@@ -36,7 +36,8 @@ def get_focus_gene(input):
         gene_list= TCR + IG
         # gene_list= ['TRBV6-6','TRBV17']
     elif gene_class == "extend":
-        gene_list = ['Mafa-KIR3DL20']
+        # we'll automatically get the gene list from the db folder, not here
+        gene_list = ['']
     else:
         print ("wrong -i value.", gene_class)
         sys.exit(0)

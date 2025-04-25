@@ -497,6 +497,90 @@ def make_IG_TR_db():
     ## delete gen_IG_TR_dir
     os.system(f"rm -rf {gen_IG_TR_dir}")
 
+def create_extend_directories_and_save_sequences(fasta_path, output_base_dir, gene_list):
+    """
+    Parse a FASTA file, create directories based on gene names, 
+    and save corresponding sequences to these directories.
+
+    :param fasta_path: Path to the input FASTA file
+    :param output_base_dir: Base directory to save gene-specific directories and sequences
+    """
+    sequences = SeqIO.parse(fasta_path, "fasta")
+    gene_sequences = {}
+
+    for seq_record in sequences:
+        # Extract the gene name from the description, assuming the format is ">HLA:HLA00001 A*01:01:01:01 3503 bp"
+        description_parts = seq_record.description.split()
+        gene_name = description_parts[1].split('*')[0]
+        sequence_name = description_parts[1]
+        allele_type= ""
+        # print(seq_record.id)
+        # print(seq_record.name)
+        # print(seq_record.description)
+        # print(gene_name)
+        # print(description_parts[1])
+        if gene_name in gene_list:
+            allele_type = description_parts[1]
+            
+        else:
+            allele_type = f"{description_parts[1]}"
+            gene_name = f"{gene_name}"
+        # print(allele_type)
+    
+
+        # Update the sequence ID and name
+        seq_record.id = allele_type
+        seq_record.name = allele_type
+        seq_record.description = ""
+        # if gene_name.startswith("KIR2DL5"):
+        
+
+        # print(sequence_name, gene_name, gene_name in gene_list,seq_record.id, seq_record.name, seq_record.description, gene_list, flush=True)
+        # continue        
+        if gene_name not in gene_sequences:
+            gene_sequences[gene_name] = []
+        gene_sequences[gene_name].append(seq_record)
+
+    # Create directories and save gene-specific sequences
+    all_sequences = []
+    for gene_name, seq_records in gene_sequences.items():
+        gene_dir = os.path.join(output_base_dir, gene_name)
+        # if gene_name.startswith("KIR2DL5"):
+        #     gene_dir = os.path.join(output_base_dir, "KIR2DL5")
+
+        os.makedirs(gene_dir, exist_ok=True)
+        gene_fasta_filename = os.path.join(gene_dir, f"{gene_name}.fasta")
+        with open(gene_fasta_filename, "w") as gene_fasta_file:
+            SeqIO.write(seq_records, gene_fasta_file, "fasta")
+        all_sequences.extend(seq_records)
+        
+        # Build the index for the gene-specific FASTA file
+        cmd = f"""
+        samtools faidx "{gene_fasta_filename}"
+        bwa index "{gene_fasta_filename}"
+        makeblastdb -in "{gene_dir}"/{gene_name}.fasta -dbtype nucl -parse_seqids -out "{gene_dir}"/{gene_name}
+        """
+        print(cmd, flush=True)
+        os.system(cmd)
+
+    # Merge all sequences into one file and build the index
+    merged_fasta_filename = os.path.join(output_base_dir, "extend.full.fasta")
+    with open(merged_fasta_filename, "w") as merged_fasta_file:
+        SeqIO.write(all_sequences, merged_fasta_file, "fasta")
+
+    # Build the index for the merged FASTA file
+    cmd = f"""
+    samtools faidx "{merged_fasta_filename}"
+    bwa index "{merged_fasta_filename}"
+    makeblastdb -in "{merged_fasta_filename}" -dbtype nucl -parse_seqids -out "{os.path.join(output_base_dir, 'extend.full')}"
+    """
+    print(cmd, flush=True)
+    os.system(cmd)
+
+    print(f"All sequences have been categorized by gene and saved in {output_base_dir}")
+    print(f"Merged FASTA file created and indexed at {merged_fasta_filename}")
+
+
 def make_extend_db():
 
     # Path to save the downloaded FASTA file within the output directory
@@ -517,14 +601,15 @@ def make_extend_db():
     gene_list=[]
     for record in SeqIO.parse(local_fasta_filename, "fasta"):
         description_parts = record.description.split()
-        gene_name = description_parts[1].split('*')[0]
-        gene_name = gene_name if gene_name in gene_list else f"KIR{gene_name}"
+        gene_name = description_parts[1]
+        # gene_name = description_parts[1].split('*')[0]
+        # gene_name = gene_name if gene_name in gene_list else f"KIR{gene_name}"
         print(gene_name)
         sequence_name = description_parts[1]
         gene_list.append(gene_name)
     gene_list=list(set(gene_list))
     # Parse the FASTA file and save sequences by gene
-    create_KIR_directories_and_save_sequences(unique_fasta_filename, KIR_dir, gene_list)
+    create_extend_directories_and_save_sequences(unique_fasta_filename, KIR_dir, gene_list)
 
 
 

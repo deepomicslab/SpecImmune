@@ -389,6 +389,9 @@ The software generates drug recommendations with the following information:
 
 For more detailed descriptions and scoring ranges, visit [PharmGKB Clinical Annotations](https://www.pharmgkb.org/labelAnnotations)
 
+## Extend to other genes
+please `cd extend/` to see the doc for extending to other genes.
+
 ## Dependencies 
 
 ### Systematic requirement
