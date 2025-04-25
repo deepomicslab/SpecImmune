@@ -75,6 +75,11 @@ class My_db():
             else:
                 print ("WARNING: hg38 not provided, cannot type IG_TR genes")
                 # sys.exit(1)
+        elif self.gene_class == "extend":
+            # self.lite_db = f"""{args["db"]}/KIR/ref/KIR.extend.select.fasta""" ## 72
+            self.lite_db = f"""{args["db"]}/extend/extend.full.fasta"""  ## 848
+            self.full_db = f"""{args["db"]}/extend/extend.full.fasta"""  ## 848
+            self.subdir = "extend"
         else:
             print ("wrong gene_class")
 
