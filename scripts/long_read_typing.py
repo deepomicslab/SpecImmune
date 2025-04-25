@@ -503,6 +503,7 @@ class Fasta():
             self.splice_align_db()
             self.annoRNA()
 
+
         elif args['i'] == "KIR":
             anno = f"""
             perl {sys.path[0]}/annoKIR.pl -s {parameter.sample} -i {my_folder.sequence_dir} -p {parameter.population} -r tgs -d {args["db"]} -t {rna_tag} -g {args["g"]}
@@ -515,6 +516,12 @@ class Fasta():
             perl {sys.path[0]}/annoCYP.pl -s {parameter.sample} -i {my_folder.sequence_dir} -p {parameter.population} -r tgs -d {args["db"]} -t {rna_tag} -g {args["g"]}
             """
             # print (anno)
+            os.system(anno)
+        elif args['i'] == "extend":
+            anno = f"""
+            perl {sys.path[0]}/annoExtend.pl -s {parameter.sample} -i {my_folder.sequence_dir} -p {parameter.population} -r tgs -g {args["g"]} -t {rna_tag} -d {args["db"]}
+            """
+            print (anno)
             os.system(anno)
 
         if args['seq_tech'] != 'rna':

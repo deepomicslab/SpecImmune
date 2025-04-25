@@ -389,8 +389,48 @@ The software generates drug recommendations with the following information:
 
 For more detailed descriptions and scoring ranges, visit [PharmGKB Clinical Annotations](https://www.pharmgkb.org/labelAnnotations)
 
-## Extend to other genes
-please `cd extend/` to see the doc for extending to other genes.
+## Showcase how to extend SpecImmune to other genes
+
+For easy extend, SpecImmune supports a built in gene family named extend, so just prepare the database, and update the gene list.
+Let's take NHKIR genes for example.
+
+### step 1: prepare the database
+Download the NHKIR database
+```
+wget https://raw.githubusercontent.com/ANHIG/IPDNHKIR/refs/heads/Latest/NHKIR_gen.fasta
+```
+
+Make the db, all the extended genes should have a family name `extend`, so set `-i extend`
+```
+python make_db.py -i extend --extend_fa /home/shuaiw/methylation/data/hla/NHKIR_gen.fasta  -o /home/shuaiw/methylation/data/hla/db
+```
+
+### step 2: edit gene list
+
+Put your own gene list in `annoExtend.pl` in 
+```
+my @genes = (
+    "Mafa-KIR3DL20"
+);
+```
+Here we only focus on gene `Mafa-KIR3DL20`.
+
+### step 3: test
+Prepare the test data and run like
+```
+ python main.py -i extend --db /home/shuaiw/methylation/data/hla/db -r /home/shuaiw/methylation/data/hla/Mamu-KIR1D_test.fq.gz -n test -o /home/shuaiw/methylation/data/hla/extend_test
+
+```
+
+### The test result is like
+```
+# version:  N/A
+Locus   Chromosome      Genotype        Match_info      Reads_num       Step1_type      One_guess
+Mafa-KIR3DL20   1       Mafa-KIR3DL20*032:01:01 Mafa-KIR3DL20*032:01:01|13301|1.0       95      Mafa-KIR3DL20*032:01:01 Mafa-KIR3DL20*032:01:
+01
+Mafa-KIR3DL20   2       Mafa-KIR3DL20*002:01:01 Mafa-KIR3DL20*002:01:01|13294|1.0       95      Mafa-KIR3DL20*002:01:01 Mafa-KIR3DL20*002:01:
+01
+```
 
 ## Dependencies 
 
