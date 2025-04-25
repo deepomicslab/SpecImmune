@@ -373,12 +373,12 @@ Interpret each column in the annotation line as
 |  hete_variant_num | Number of heterozygous variants detected on this locus  |
 
 
-# Drug Recommendation
+## Drug Recommendation
 
 
 SpecImmune recommends drugs based on **HLA typing** or **CYP typing** results using annotations from **PharmGKB**. It helps clinicians select effective medications with fewer side effects by leveraging PharmGKB's clinical and variant annotation scoring system. You can obtain the recommendations by adding `--drug_recommendation` in your typing command.
 
-## Output
+### Output
 
 The software generates drug recommendations with the following information:
 
