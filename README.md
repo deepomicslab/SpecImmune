@@ -394,8 +394,7 @@ For more detailed descriptions and scoring ranges, visit [PharmGKB Clinical Anno
 
 ## Showcase how to extend SpecImmune to other genes
 
-For easy extend, SpecImmune supports a built in gene family named extend, so just prepare the database, and update the gene list.
-Let's take NHKIR genes for example.
+SpecImmune supports a built-in gene family named extend, making it easy to incorporate additional gene sets. This guide demonstrates how to add support for NHKIR genes by preparing a custom database and updating the gene list.
 
 ### step 1: prepare the database
 Download the NHKIR database
@@ -403,29 +402,34 @@ Download the NHKIR database
 wget https://raw.githubusercontent.com/ANHIG/IPDNHKIR/refs/heads/Latest/NHKIR_gen.fasta
 ```
 
-Make the db, all the extended genes should have a family name `extend`, so set `-i extend`
+Build the database using `make_db.py`.
+All extended genes must be labeled under the family name `extend`:
 ```
-python make_db.py -i extend --extend_fa /home/shuaiw/methylation/data/hla/NHKIR_gen.fasta  -o /home/shuaiw/methylation/data/hla/db
+python make_db.py -i extend \
+ --extend_fa /home/shuaiw/methylation/data/hla/NHKIR_gen.fasta \
+ -o /home/shuaiw/methylation/data/hla/db
 ```
 
 ### step 2: edit gene list
 
-Put your own gene list in `annoExtend.pl` in 
+Update the gene list in `annoExtend.pl` by editing the following block:
 ```
 my @genes = (
     "Mafa-KIR3DL20"
 );
 ```
-Here we only focus on gene `Mafa-KIR3DL20`.
+In this example, only the gene `Mafa-KIR3DL20` will be processed.
 
 ### step 3: test
-Prepare the test data and run like
+Prepare your test read file (FASTQ) and execute the pipeline:
 ```
- python main.py -i extend --db /home/shuaiw/methylation/data/hla/db -r /home/shuaiw/methylation/data/hla/Mamu-KIR1D_test.fq.gz -n test -o /home/shuaiw/methylation/data/hla/extend_test
-
+ python main.py -i extend --db /home/shuaiw/methylation/data/hla/db \
+  -r /home/shuaiw/methylation/data/hla/Mamu-KIR1D_test.fq.gz \
+  -n test \
+  -o /home/shuaiw/methylation/data/hla/extend_test
 ```
 
-### The test result is like
+### step 4, check the test result, which is like
 ```
 # version:  N/A
 Locus   Chromosome      Genotype        Match_info      Reads_num       Step1_type      One_guess
