@@ -22,6 +22,9 @@
 6. **Efficient and User-Friendly**  
    SpecImmune is computationally efficient, making it suitable for use on personal computers, enabling convenient use in clinical settings.
 
+6. **Easy to extend to other genes**  
+    Provide detailed instruction to extend SpecImmune to type other genes.
+
 ## Quick start
 ### Install  
 First, create the env with conda or mamba, and activate the env. 
