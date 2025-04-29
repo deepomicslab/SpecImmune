@@ -1448,6 +1448,49 @@ def main_cyp_hprc(pangu_dir, spec_dir, result_file, dataset="1k"):
 
     cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file)
 
+def main_cyp_hprc2(pangu_dir, spec_dir, result_file, dataset="1k"):
+    import glob
+    if dataset == "1k":
+        truth_dict = load_1k_CYP_truth()
+    else:
+        truth_dict = load_HPRC_CYP_truth()
+    pangu_result_dict = {}
+    spec_result_dict = {} 
+    spec_depth_dict = {} 
+
+    for file in glob.glob(os.path.join(pangu_dir, "*/", "*_report.json")):
+        print(file)
+    # for file in os.listdir(pangu_dir):
+    #     print (file)
+        if file.endswith("_report.json"):
+            sample = file.split("/")[-2]
+            pangu_result = os.path.join(pangu_dir, file)
+            pangu_diplotype = read_pangu_result(pangu_result)
+            pangu_result_dict[sample] = pangu_diplotype
+    print (pangu_result_dict)
+    #### remove the elements in the truth_dict that are not in the pangu_result_dict
+    truth_dict = get_shared_sample(truth_dict, pangu_result_dict)
+    print ("pangu", len(pangu_result_dict), "truth", len(truth_dict))
+    compare_four(truth_dict, pangu_result_dict, ['CYP2D6'], 8, "CYP")
+    
+    ## for each folder in the spec_dir, the sample name is the folder name
+    # for folder in os.listdir(spec_dir):
+    for folder in glob.glob(os.path.join(spec_dir, "*/")):
+        print(folder)
+        sample = folder.split("/")[-2]
+        print ("xxxxx", os.path.join(spec_dir, folder, sample, ))
+        ## check if the folder is a folder
+        if not os.path.isdir(os.path.join(spec_dir, folder, sample)):
+            continue
+
+        spec_result = os.path.join(spec_dir, folder, sample, f"{sample}.CYP.merge.type.result.txt")
+        spec_result_dict[sample], all_gene_result, spec_depth_dict[sample] = read_spec_result(spec_result)
+        # print (pure_diplotype, spec_result_dict[sample])
+    print ("speclong:")
+    compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
+
+    cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file)
+
 
 
 def cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file):

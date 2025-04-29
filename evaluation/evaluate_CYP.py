@@ -1,7 +1,7 @@
 import sys
 sys.path.insert(0, sys.path[0]+'/../scripts/')
 
-from four_field_compare import main_cyp_hprc, load_GeT_RM4, main_all_cyp
+from four_field_compare import main_cyp_hprc, load_GeT_RM4, main_all_cyp, main_cyp_hprc2
 from four_field_compare import assess_sim_module
 from determine_gene import get_focus_gene
 
@@ -49,6 +49,11 @@ def evaluate_real():
 if __name__ == "__main__":
     #### CYP
 
+    pangu_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun/out_CYP_pangu/"
+    spec_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun/out_CYP/"
+    result_file = "cyp_results/hprc_hifi_cyp_depth_cutoff2.csv"
+    main_cyp_hprc2(pangu_dir, spec_dir, result_file, 'hprc')
+
     #pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
     #spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"
     #result_file = "cyp_results/hprc_hifi_cyp_depth_cutoff.csv"
@@ -70,6 +75,6 @@ if __name__ == "__main__":
 
     # load_GeT_RM4()
 
-    evaluate_sim()
+    # evaluate_sim()
 
 
