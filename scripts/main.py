@@ -22,7 +22,7 @@ def main(args):
         raise Exception(f"Input data {args['r']} not exists.")
 
     if args['i'] == "HLA" or args['i'] == "KIR" or (args['i'] == "CYP") or args['i'] == "extend":
-
+    
         my_folder = My_folder(args)
         my_folder.make_dir()
 

@@ -179,6 +179,8 @@ if [[ ! -s $refined_sv3 ]]; then
     """
 else
     # merge all three
+    bgzip -f $refined_sv3
+    tabix -f $refined_sv3.gz
     bcftools merge -m none $refined_sv.gz $refined_sv2.gz $refined_sv3.gz --force-samples -Ov -o $merged_sv
     echo """
     bcftools merge -m none $refined_sv.gz $refined_sv2.gz $refined_sv3.gz --force-samples -Ov -o $merged_sv
