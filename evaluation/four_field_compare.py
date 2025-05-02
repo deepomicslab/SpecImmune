@@ -13,6 +13,7 @@ sys.path.insert(0, sys.path[0]+'/../scripts/')
 from get_lite_db import convert_field_for_allele
 from determine_gene import get_focus_gene
 from db_objects import My_db
+from count_depth import for_all_samples_dp
 
 # gene_list = ['C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRB1']
 # gene_list = ['DRB1']
@@ -1225,7 +1226,9 @@ def read_spec_result(spec_result):
     spec_result_dict = {}
     spec_gene_depth = {}
     if not os.path.exists(spec_result):
-        raise FileNotFoundError(f"{spec_result} does not exist")
+        # raise FileNotFoundError(f"{spec_result} does not exist")
+        return None, None, None
+    # print (spec_resu
     pure_diplotype = 'NA'
     with open(spec_result, 'r') as f:
         for line in f:
@@ -1458,6 +1461,7 @@ def main_cyp_hprc2(pangu_dir, spec_dir, result_file, dataset="1k"):
     spec_result_dict = {} 
     spec_depth_dict = {} 
 
+    sample_depth_dict = for_all_samples_dp(spec_dir)
     for file in glob.glob(os.path.join(pangu_dir, "*/", "*_report.json")):
         print(file)
     # for file in os.listdir(pangu_dir):
@@ -1485,17 +1489,30 @@ def main_cyp_hprc2(pangu_dir, spec_dir, result_file, dataset="1k"):
 
         spec_result = os.path.join(spec_dir, folder, sample, f"{sample}.CYP.merge.type.result.txt")
         spec_result_dict[sample], all_gene_result, spec_depth_dict[sample] = read_spec_result(spec_result)
+        if all_gene_result is None:
+            print (sample, "not in spec_result_dict")
+            ## remove the sample from the truth_dict and spec_result_dict
+            del spec_result_dict[sample]
+            del spec_depth_dict[sample]
+            continue
+        ## replace read count to depth
+        if sample in sample_depth_dict:
+            spec_depth_dict[sample]['CYP2D6'] = sample_depth_dict[sample]
+        else:
+            print (sample, "not in sample_depth_dict")
+            continue
         # print (pure_diplotype, spec_result_dict[sample])
     print ("speclong:")
+    truth_dict = get_shared_sample(truth_dict, spec_result_dict)
     compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
 
     cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file)
 
 
-
 def cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file):
     data = []
-    cutoff_set = [0, 10, 20, 30, 40, 50]
+    # cutoff_set = [0, 10, 20, 30, 40, 50]
+    cutoff_set = [0, 5, 10, 15, 20, 25, 30]
     #cutoff_set = [x * 5 for x in range(5)]
     #cutoff_set = [x * 10 for x in range(6)]
     for cutoff in cutoff_set:
