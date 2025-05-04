@@ -80,7 +80,7 @@ def read_alleles(allele_file, super_pop_dict, sample_pop_dict,read_num_cutoff=10
             super_pop = 'Non-pop'
         else:
             pop = sample_pop_dict[row['Sample']]
-            super_pop = super_pop_dict[pop]
+            super_pop = 'Non-pop'
             # print (row['Sample'], sample_pop_dict[row['Sample']])
 
         if row['Sample'] not in alleles_sample_dict:
@@ -133,7 +133,7 @@ def read_alleles_cyp(allele_file, super_pop_dict, sample_pop_dict,read_num_cutof
             super_pop = 'Non-pop'
         else:
             pop = sample_pop_dict[row['Sample']]
-            super_pop = super_pop_dict[pop]
+            super_pop = 'Non-pop'
             # print (row['Sample'], sample_pop_dict[row['Sample']])
         
         # if row['Sample'] == "HG01341":
@@ -142,9 +142,6 @@ def read_alleles_cyp(allele_file, super_pop_dict, sample_pop_dict,read_num_cutof
 
         if row['Sample'] not in alleles_sample_dict:
             alleles_sample_dict[row['Sample']] = []
-        
-        if row['Locus'] == "HFE":
-            continue
         
         read_num = int(row['Reads_num'])
         if read_num < read_num_cutoff:
@@ -194,7 +191,7 @@ def read_alleles_vdj(allele_file, super_pop_dict, sample_pop_dict,read_num_cutof
             super_pop = 'Non-pop'
         else:
             pop = sample_pop_dict[row['Sample']]
-            super_pop = super_pop_dict[pop]
+            super_pop = 'Non-pop'
         
         read_num = int(row['depth'])
         if read_num < read_num_cutoff:
@@ -299,17 +296,22 @@ def each_trio(alleles_sample_dict):
     print ("consistent_freq", consistent_freq, "consistent_num", total_all_consistent_num, "allele_num", total_all_allele_num)
 
 if __name__ == "__main__":
-    super_pop_file = "../hla/20131219.populations.tsv"
-    sample_pop_file = "../hla/20130606_sample_info.xlsx"
+    kir_merge_file = "../kir/merged_samples.csv"
+    hla_merge_file = "../hla/speclong_res_merged_samples.csv"
+    cyp_merge_file = "../cyp/cyp_1k_all.csv"
+    vdj_merge_file = "../ig_tr/merged_samples.ig_tr.csv"
+    result_file = "1kgp_all_genotypes.csv"
 
-    super_pop_dict = get_super_pop(super_pop_file)
-    sample_pop_dict = get_sample_pop(sample_pop_file)
 
-    alleles_dict, alleles_gene_dict_kir, alleles_sample_dict_kir,pop_alleles_dict,pop_sample_num = read_alleles("../kir/merged_samples.csv", super_pop_dict, sample_pop_dict, 10, 8)
-    alleles_dict, alleles_gene_dict_hla, alleles_sample_dict_hla,pop_alleles_dict,pop_sample_num = read_alleles("../hla/speclong_res_merged_samples.csv", super_pop_dict, sample_pop_dict, 10, 8)
-    alleles_dict, alleles_gene_dict_cyp, alleles_sample_dict_cyp,pop_alleles_dict,sample_phenotype_dict = read_alleles_cyp("../cyp/cyp_1k_all.csv", super_pop_dict, sample_pop_dict, 10, 8)
-    alleles_dict, alleles_gene_dict_vdj, alleles_sample_dict_vdj,pop_alleles_dict,sample_gene_dict = read_alleles_vdj("../ig_tr/merged_samples.ig_tr.csv", super_pop_dict, sample_pop_dict, 10, 99)
+
+    sample_pop_dict = {}
+    super_pop_dict = {}
+    alleles_dict, alleles_gene_dict_kir, alleles_sample_dict_kir,pop_alleles_dict,pop_sample_num = read_alleles(kir_merge_file, super_pop_dict, sample_pop_dict, 10, 8)
+    alleles_dict, alleles_gene_dict_hla, alleles_sample_dict_hla,pop_alleles_dict,pop_sample_num = read_alleles(hla_merge_file, super_pop_dict, sample_pop_dict, 10, 8)
+    alleles_dict, alleles_gene_dict_cyp, alleles_sample_dict_cyp,pop_alleles_dict,sample_phenotype_dict = read_alleles_cyp(cyp_merge_file, super_pop_dict, sample_pop_dict, 10, 8)
+    alleles_dict, alleles_gene_dict_vdj, alleles_sample_dict_vdj,pop_alleles_dict,sample_gene_dict = read_alleles_vdj(vdj_merge_file, super_pop_dict, sample_pop_dict, 10, 99)
     # print (alleles_sample_dict_cyp)
+    print (alleles_gene_dict_cyp)
     # merge the two gene dict
     alleles_gene_dict_cyp = {"CYP2D6":1}
     alleles_gene_dict = {**alleles_gene_dict_kir, **alleles_gene_dict_hla, **alleles_gene_dict_cyp, **alleles_gene_dict_vdj}
@@ -336,7 +338,10 @@ if __name__ == "__main__":
     data = []
     for sample in alleles_sample_dict:
         # print (sample, alleles_sample_dict[sample])
+        i = 0
         for each in alleles_sample_dict[sample]:
-            data.append([sample, each])
-    df = pd.DataFrame(data, columns=['Sample', 'Genotype'])
-    df.to_csv("all_genotypes.csv", index=False)
+            hap = f"haplotype_{i%2}"
+            data.append([sample, hap, each])
+            i += 1
+    df = pd.DataFrame(data, columns=['Sample', "Chromosome", 'Genotype'])
+    df.to_csv(result_file, index=False)

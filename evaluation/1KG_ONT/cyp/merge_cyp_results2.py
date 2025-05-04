@@ -45,8 +45,20 @@ def read_spec_result(spec_result):
     return diplotype_list, spec_gene_depth['CYP2D6'], phenotype, activity, spec_result_dict, spec_gene_depth
     
 
-spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k_all2/"
-result = "cyp_1k_all2.csv"
+# spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_1k_all2/"
+# result = "cyp_1k_all2.csv"
+
+spec_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun/out_1kg_CYP_ont/"
+result = "all_results/cyp_1k_all2.csv"
+dataset = "1KGP"
+
+# spec_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun/out_CYP/"
+# result = "all_results/cyp_all_hprc_hifi.csv"
+# dataset = "HPRC_HIFI"
+
+# spec_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun/out_CYP_ont/"
+# result = "all_results/cyp_all_hprc_ont.csv"
+# dataset = "HPRC_ONT"
 
 data = []
 for folder in os.listdir(spec_dir):
@@ -56,10 +68,15 @@ for folder in os.listdir(spec_dir):
     sample = folder
     spec_result = os.path.join(spec_dir, folder, f"{folder}.CYP.merge.type.result.txt")
     if not os.path.exists(spec_result):
+        spec_result = os.path.join(spec_dir, folder, folder, f"{folder}.CYP.merge.type.result.txt")
+        print (spec_result)
+        # continue
+    if not os.path.exists(spec_result):
+        print (f"{spec_result} does not exist")
         continue
     diplotype_list, read_num, phenotype, activity, spec_result_dict, spec_gene_depth = read_spec_result(spec_result)
-    data.append(["CYP2D6", '1', diplotype_list[0], '-', read_num, '-', '-', sample])
-    data.append(["CYP2D6", '2', diplotype_list[1], '-', read_num, '-', '-', sample])
+    data.append(["CYP2D6", '1', diplotype_list[0], '-', read_num, '-', '-', sample, dataset])
+    data.append(["CYP2D6", '2', diplotype_list[1], '-', read_num, '-', '-', sample, dataset])
     for gene in spec_result_dict:
         if gene == 'CYP2D6':
             continue
@@ -73,10 +90,10 @@ for folder in os.listdir(spec_dir):
                 array[j] = array[j].split(".")[0]  ## only get star allele
             field[2] = ";".join(array)
             field[6] = field[6].split(".")[0]  ## only get star allele
-            data.append([gene, i+1, field[2], field[3], field[4], field[5], field[6], sample])
+            data.append([gene, i+1, field[2], field[3], field[4], field[5], field[6], sample, dataset])
 
 
 
 # transfer to dataframe
-df = pd.DataFrame(data, columns=["Locus","Chromosome","Genotype","Match_info","Reads_num","Step1_type","One_guess","Sample"])
+df = pd.DataFrame(data, columns=["Locus","Chromosome","Genotype","Match_info","Reads_num","Step1_type","One_guess","Sample", "Dataset"])
 df.to_csv(result, index=False)
