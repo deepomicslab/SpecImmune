@@ -122,7 +122,7 @@ def plot_averaged_accuracies(data):
         plt.tight_layout()
         # save to svg
         plt.savefig(f'average_performance_in4data_{gene_class}.svg', layout='tight', dpi=600)
-        plt.show()
+        # plt.show()
 
 # 计算不考虑read depth的平均准确率（按软件分开）
 overall_averages_by_software = calculate_overall_average_accuracy_by_software(data)

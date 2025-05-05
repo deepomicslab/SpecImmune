@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Step 1: Read the CSV files into DataFrames
-df1 = pd.read_csv('hlala.match.csv')
+df1 = pd.read_csv('hlala.match.3.csv')
 df2 = pd.read_csv('spechla.match.csv')
 df3 = pd.read_csv('speclong.match.csv')
 
@@ -62,6 +62,7 @@ for cutoff in read_cutoffs:
 
 # Use the specified colors
 colors = ["#D2D2D2", "#062565", "#0098B4"]
+colors = ["#98B6C4", "#8D93AF", "#3E4271"]
 # Step 7: Calculate and plot average accuracy across all genes and samples for each depth cutoff
 
 # Initialize a dictionary to store the average accuracy for each DataFrame at each cutoff
@@ -82,7 +83,7 @@ for cutoff in read_cutoffs:
 plt.figure(figsize=(4, 3))  # Adjust the figure size
 
 for df_name, color in zip(df_names, colors):
-    plt.plot(read_cutoffs, average_accuracies[df_name], label=df_name, color=color, marker='o', linewidth=3)
+    plt.plot(read_cutoffs, average_accuracies[df_name], label=df_name, color=color, marker='o', linewidth=2, markersize=4)
 
 # Add plot labels and titles
 plt.xlabel("Depth", fontsize=9)
@@ -95,6 +96,6 @@ plt.ylim(0, 1.1)  # Assuming accuracy is between 0 and 1
 plt.legend(title="", loc='center left', bbox_to_anchor=(1, 0.5), fontsize=6, frameon=False)
 
 plt.tight_layout(pad=2)  # Adjust padding for better spacing
-plt.savefig("overview_average_depth_accuracy_hla.svg", format="svg", bbox_inches='tight', dpi=600)  # Save the overview plot as an SVG
-plt.show()  # Display the plot
+plt.savefig("overview_average_depth_accuracy_hla.2.svg", format="svg", bbox_inches='tight', dpi=600)  # Save the overview plot as an SVG
+# plt.show()  # Display the plot
 

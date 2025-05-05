@@ -16,6 +16,12 @@ gene_order = class1_genes + class1_pseudogenes + class2_genes + non_hla_genes
 
 KGP_genes = ['A', 'B', 'C', 'DQB1', 'DRB1']
 colors = ["#D2D2D2", "#062565", "#0098B4"]
+colors = ["#98B6C4", "#8D93AF", "#3E4271"]
+
+outdir="revise"
+if not os.path.exists(outdir):
+    os.makedirs(outdir)
+
 
 # 软件名称映射字典
 software_name_map = {
@@ -36,6 +42,10 @@ def load_data_from_files(dataset_dirs):
         all_data[dataset] = {'software_data': {}, 'depth_data': None}
         for software in ['hlala', 'spechla', 'speclong']:
             file_path = os.path.join(data_dir, f'{software}.match.csv')
+            if dataset == '1kg_ont' and software == 'hlala':
+                file_path = os.path.join(data_dir, f'{software}.match.3.csv')
+            if dataset == 'hgsvc2_clr' and software == 'hlala':
+                file_path = os.path.join(data_dir, f'{software}.match.qv.csv')
             if os.path.exists(file_path):
                 df = pd.read_csv(file_path)
                 all_data[dataset]['software_data'][software] = df
@@ -162,11 +172,11 @@ def plot_accuracy(all_data):
         plt.tight_layout()
 
         # 保存图像为SVG格式
-        svg_file_path = f'{dataset}_gene_accuracy_depth_comparison_raincloud.svg'
+        svg_file_path = f'{outdir}/{dataset}_gene_accuracy_depth_comparison_raincloud.svg'
         plt.savefig(svg_file_path, format='svg', bbox_inches='tight', dpi=600)
 
         # 显示图像
-        plt.show()
+        # plt.show()
 
 # 指定每个数据集的目录
 dataset_dirs = {
@@ -175,6 +185,9 @@ dataset_dirs = {
     'hprc_hifi': '../HPRC/hla/hifi',  
     'hprc_ont': '../HPRC/hla/ont',  
     '1kg_ont': '../1KG_ONT/hla/',
+}
+dataset_dirs = { 
+    'hgsvc2_clr': '../HGSVC2/clr', 
 }
 
 # 读取文件并加载数据

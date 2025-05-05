@@ -85,9 +85,15 @@ for dataset_name, dataset_dir in dataset_dirs.items():
     print(f"\nDataset: {dataset_name}")
 
     # 加载这个数据集的 CSV 文件
-    df1 = pd.read_csv(f'{dataset_dir}/hlala.match.csv')
+    if dataset_name == 'hgsvc2_clr':
+        df1 = pd.read_csv(f'{dataset_dir}/hlala.match.qv.csv')
+    elif dataset_name == '1kg_ont':
+        df1 = pd.read_csv(f'{dataset_dir}/hlala.match.3.csv')
+    else:
+        df1 = pd.read_csv(f'{dataset_dir}/hlala.match.csv')
     df2 = pd.read_csv(f'{dataset_dir}/spechla.match.csv')
     df3 = pd.read_csv(f'{dataset_dir}/speclong.match.csv')
+    
 
     # 定义 genes_for_speclong
     genes_for_speclong = [gene for gene in pd.concat([df1['Gene'], df2['Gene'], df3['Gene']]).unique() if gene not in ['']]
