@@ -3,9 +3,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Step 1: Read the CSV files into DataFrames
-df1 = pd.read_csv('hlala.match.3.csv')
-df2 = pd.read_csv('spechla.match.csv')
-df3 = pd.read_csv('speclong.match.csv')
+# df1 = pd.read_csv('hlala.match.3.csv')
+# df2 = pd.read_csv('spechla.match.csv')
+# df3 = pd.read_csv('speclong.match.csv')
+df1 = pd.read_csv('hlala.gp.match.csv')
+df2 = pd.read_csv('spechla.gp.match.csv')
+df3 = pd.read_csv('specimmune.gp.match.csv')
 
 # Combine the DataFrames into a list
 dfs = [df1, df2, df3]
@@ -96,6 +99,6 @@ plt.ylim(0, 1.1)  # Assuming accuracy is between 0 and 1
 plt.legend(title="", loc='center left', bbox_to_anchor=(1, 0.5), fontsize=6, frameon=False)
 
 plt.tight_layout(pad=2)  # Adjust padding for better spacing
-plt.savefig("overview_average_depth_accuracy_hla.2.svg", format="svg", bbox_inches='tight', dpi=600)  # Save the overview plot as an SVG
+plt.savefig("overview_average_depth_accuracy_hla.pg_group.svg", format="svg", bbox_inches='tight', dpi=600)  # Save the overview plot as an SVG
 # plt.show()  # Display the plot
 

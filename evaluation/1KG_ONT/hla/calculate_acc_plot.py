@@ -3,9 +3,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Step 1: Read the CSV files into DataFrames
-df1 = pd.read_csv('hlala.match.csv')
-df2 = pd.read_csv('spechla.match.csv')
-df3 = pd.read_csv('speclong.match.csv')
+# df1 = pd.read_csv('hlala.match.csv')
+# df2 = pd.read_csv('spechla.match.csv')
+# df3 = pd.read_csv('speclong.match.csv')
+df1 = pd.read_csv('hlala.gp.match.csv')
+df2 = pd.read_csv('spechla.gp.match.csv')
+df3 = pd.read_csv('specimmune.gp.match.csv')
 
 # Combine the DataFrames into a list
 dfs = [df1, df2, df3]
@@ -114,5 +117,5 @@ for i, gene in enumerate(genes_in_dfs, 1):
     plt.legend(title="", loc='center left', bbox_to_anchor=(1, 0.5), fontsize=8, frameon=False)
 
 plt.tight_layout(pad=1)  # Adjust padding for better spacing
-plt.savefig("gene_accuracy_by_cutoff_plots.svg", format="svg", bbox_inches='tight', dpi=600)  # Save the second plot as a PDF
+plt.savefig("gene_accuracy_by_cutoff_plots.pg_group.svg", format="svg", bbox_inches='tight', dpi=600)  # Save the second plot as a PDF
 # plt.show()

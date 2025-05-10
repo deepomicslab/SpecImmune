@@ -3,10 +3,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Step 1: Read the CSV files into DataFrames
-df1 = pd.read_csv('hlala.match.3.csv')
-df2 = pd.read_csv('spechla.match.csv')
-df3 = pd.read_csv('speclong.match.csv')
+# df1 = pd.read_csv('hlala.match.3.csv')
+# df2 = pd.read_csv('spechla.match.csv')
+# df3 = pd.read_csv('speclong.match.csv')
 
+df1 = pd.read_csv('hlala.gp.match.csv')
+df2 = pd.read_csv('spechla.gp.match.csv')
+df3 = pd.read_csv('specimmune.gp.match.csv')
 # Combine the DataFrames into a list
 dfs = [df1, df2, df3]
 df_names = ['HLA*LA', 'SpecHLA', 'SpecLong']  # Updated labels for DataFrames
