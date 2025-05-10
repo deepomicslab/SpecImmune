@@ -4,6 +4,7 @@ channels:
   - conda-forge
   - bioconda
   - defaults
+  - r
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
@@ -19,11 +20,13 @@ dependencies:
   - blas=1.1=openblas
   - blast=2.15.0=pl5321h6f7f691_1
   - bottleneck=1.4.0=py38he82f83a_1
+  - brotli=1.1.0=hd590300_1
+  - brotli-bin=1.1.0=hd590300_1
   - brotli-python=1.1.0=py38h17151c0_1
   - bwidget=1.9.14=ha770c72_1
   - bzip2=1.0.8=hd590300_5
   - c-ares=1.28.1=hd590300_0
-  - ca-certificates=2024.12.14=hbcca054_0
+  - ca-certificates=2025.1.31=hbcca054_0
   - cairo=1.18.0=h3faef2a_0
   - canu=2.2=ha47f30e_0
   - certifi=2024.8.30=pyhd8ed1ab_0
@@ -31,13 +34,18 @@ dependencies:
   - charset-normalizer=3.3.2=pyhd8ed1ab_0
   - chrpath=0.16=h7f98852_1002
   - click=8.1.7=unix_pyh707e725_0
+  - cni=1.0.1=ha975731_1
+  - cni-plugins=1.3.0=ha8f183a_0
   - coin-or-cbc=2.10.10=h9002f0b_0
   - coin-or-cgl=0.60.7=h516709c_0
   - coin-or-clp=1.17.8=h1ee7a9c_0
   - coin-or-osi=0.108.10=haf5fa05_0
   - coin-or-utils=2.11.11=hee58242_0
   - coincbc=2.10.10=0_metapackage
+  - contourpy=1.1.1=py38h7f3f72f_1
   - curl=8.8.0=he654da7_1
+  - cycler=0.12.1=pyhd8ed1ab_0
+  - dataclasses=0.8=pyhc8e2a94_3
   - dbus=1.13.6=h5008d03_3
   - docopt=0.6.2=py_1
   - docutils=0.20.1=py38h578d9bd_3
@@ -51,6 +59,7 @@ dependencies:
   - fontconfig=2.14.2=h14ed4e7_0
   - fonts-conda-ecosystem=1=0
   - fonts-conda-forge=1=0
+  - fonttools=4.53.1=py38h2019614_0
   - freetype=2.12.1=h267a509_2
   - fribidi=1.0.10=h36c2ea0_0
   - gcc_impl_linux-64=13.2.0=h9eb54c0_13
@@ -75,20 +84,27 @@ dependencies:
   - icu=73.2=h59595ed_0
   - idna=3.7=pyhd8ed1ab_0
   - importlib-metadata=7.1.0=pyha770c72_0
+  - importlib-resources=6.1.0=pyhd8ed1ab_0
   - importlib_resources=6.1.0=py38h06a4308_0
   - isa-l=2.31.0=hd590300_1
   - joblib=1.4.2=pyhd8ed1ab_0
+  - jq=1.5=0
   - k8=1.0=h6618dc6_0
   - kernel-headers_linux-64=3.10.0=h4a8ded7_14
   - keyutils=1.6.1=h166bdaf_0
+  - kiwisolver=1.4.5=py38h7f3f72f_1
   - krb5=1.21.3=h659f571_0
   - lame=3.100=h166bdaf_1003
   - lcms2=2.16=hb7c19ff_0
   - ld_impl_linux-64=2.40=h55db66e_0
   - lerc=4.0.0=h27087fc_0
+  - libarchive=3.5.2=hada088e_3
   - libasprintf=0.22.5=h661eb56_2
   - libasprintf-devel=0.22.5=h661eb56_2
   - libblas=3.9.0=22_linux64_openblas
+  - libbrotlicommon=1.1.0=hd590300_1
+  - libbrotlidec=1.1.0=hd590300_1
+  - libbrotlienc=1.1.0=hd590300_1
   - libcap=2.69=h0f662aa_0
   - libcblas=3.9.0=22_linux64_openblas
   - libclang-cpp15=15.0.7=default_h127d8a8_5
@@ -102,8 +118,9 @@ dependencies:
   - libexpat=2.6.2=h59595ed_0
   - libffi=3.4.2=h7f98852_5
   - libflac=1.4.3=h59595ed_0
+  - libgcc=14.2.0=h767d61c_2
   - libgcc-devel_linux-64=13.2.0=hdb50d1a_113
-  - libgcc-ng=13.2.0=h77fa898_7
+  - libgcc-ng=14.2.0=h69a702a_2
   - libgcrypt=1.10.3=hd590300_0
   - libgd=2.3.3=h119a65a_9
   - libgettextpo=0.22.5=h59595ed_2
@@ -111,7 +128,7 @@ dependencies:
   - libgfortran-ng=13.2.0=h69a702a_7
   - libgfortran5=13.2.0=hca663fb_7
   - libglib=2.80.2=hf974151_0
-  - libgomp=13.2.0=h77fa898_7
+  - libgomp=14.2.0=h767d61c_2
   - libgpg-error=1.49=h4f305b6_0
   - libiconv=1.17=hd590300_2
   - libidn2=2.3.7=hd590300_0
@@ -129,6 +146,7 @@ dependencies:
   - libpq=16.3=ha72fbe1_0
   - librsvg=2.58.1=hadf69e7_0
   - libsanitizer=13.2.0=h6ddb7a1_13
+  - libseccomp=2.4.4=hd590300_4
   - libsndfile=1.2.2=hc60ed4a_1
   - libsqlite=3.45.3=h2797004_0
   - libssh2=1.11.0=h0841786_0
@@ -148,10 +166,14 @@ dependencies:
   - libzlib=1.2.13=hd590300_5
   - longshot=1.0.0=hd4f2111_1
   - lz4-c=1.9.4=hcb278e6_0
+  - lzo=2.10=hd590300_1001
   - make=4.3=hd18ef5c_1
   - mappy=2.28=py38h6bfa29d_2
+  - matplotlib=3.7.3=py38h578d9bd_0
+  - matplotlib-base=3.7.3=py38h58ed7fa_0
   - minimap2=2.28=he4a0461_1
   - mpg123=1.32.6=h59595ed_0
+  - munkres=1.1.4=pyh9f0ad1d_0
   - mysql-common=8.3.0=hf1915f5_4
   - mysql-libs=8.3.0=hca2cd23_4
   - ncbi-vdb=3.1.1=h4ac6f70_0
@@ -164,10 +186,12 @@ dependencies:
   - numpy=1.24.4=py38h59b608b_0
   - openblas=0.3.27=pthreads_h7a3da1a_0
   - openjdk=22.0.1=hb622114_0
-  - openssl=3.3.1=hb9d3cd8_3
+  - openjpeg=2.5.2=h488ebb8_0
+  - openssl=3.5.0=h7b32b05_0
   - packaging=24.0=pyhd8ed1ab_0
   - pandas=2.0.3=py38h1128e8f_0
   - pango=1.52.2=ha41ecd1_0
+  - patsy=0.5.6=pyhd8ed1ab_0
   - pbsv=2.9.0=h9ee0642_0
   - pbtk=3.1.1=h9ee0642_0
   - pbzip2=1.1.13=h1fcc475_2
@@ -198,9 +222,11 @@ dependencies:
   - perl-types-serialiser=1.01=pl5321hdfd78af_0
   - picard=3.2.0=hdfd78af_0
   - pigz=2.8=h2797004_0
+  - pillow=10.3.0=py38h9e66945_0
   - pip=24.0=pyhd8ed1ab_0
   - pixman=0.43.2=h59595ed_0
   - platformdirs=4.2.2=pyhd8ed1ab_0
+  - ply=3.11=pyhd8ed1ab_2
   - pooch=1.8.1=pyhd8ed1ab_0
   - pthread-stubs=0.4=h36c2ea0_1001
   - pulp=2.8.0=py38h578d9bd_0
@@ -208,7 +234,9 @@ dependencies:
   - pycparser=2.22=pyhd8ed1ab_0
   - pyfaidx=0.8.1.1=pyhdfd78af_0
   - pyparsing=3.1.2=pyhd8ed1ab_0
-  - pysam=0.22.1=py38h15b938a_0
+  - pypdf2=3.0.1=pyhd8ed1ab_0
+  - pyqt=5.15.9=py38hffdaa6c_5
+  - pyqt5-sip=12.12.2=py38h17151c0_5
   - pysocks=1.7.1=pyha2e5f31_6
   - python=3.8.19=hd12c33a_0_cpython
   - python-dateutil=2.9.0=pyhd8ed1ab_0
@@ -227,16 +255,27 @@ dependencies:
   - samtools=1.3.1=h0cf4675_11
   - scikit-learn=1.3.0=py38h1128e8f_0
   - scipy=1.10.1=py38h32ae08f_1
+  - seaborn=0.13.2=hd8ed1ab_2
+  - seaborn-base=0.13.2=pyhd8ed1ab_2
   - sed=4.8=he412f7d_0
   - seqtk=1.4=he4a0461_2
   - setuptools=70.0.0=pyhd8ed1ab_0
+  - singularity=3.8.6=hf1ae047_0
+  - sip=6.7.12=py38h17151c0_0
   - six=1.16.0=pyh6c4a22f_0
   - sniffles=2.2=pyhdfd78af_0
+  - squashfs-tools=4.6.1=hdfefc0d_0
+  - statsmodels=0.14.1=py38h7f0c24c_0
   - stringtie=2.2.3=h43eeafb_0
   - sysroot_linux-64=2.17=h4a8ded7_14
   - threadpoolctl=3.5.0=pyhc1e730c_0
   - tk=8.6.13=noxft_h4845f30_101
   - tktable=2.10=h8bc8fbc_6
+  - toml=0.10.2=pyhd8ed1ab_0
+  - tomli=2.0.2=pyhd8ed1ab_0
+  - tornado=6.4.1=py38hfb59056_0
+  - typing_extensions=4.12.2=pyha770c72_0
+  - unicodedata2=15.1.0=py38h01eb140_0
   - urllib3=2.2.1=pyhd8ed1ab_0
   - wget=1.21.4=hda4d442_0
   - whatshap=2.3=py38h2494328_0
@@ -275,8 +314,24 @@ dependencies:
   - zstandard=0.19.0=py38h0a891b7_0
   - zstd=1.5.6=ha6fb4c9_0
   - pip:
+      - bwapy==0.1.4
+      - cigar==0.1.3
+      - cutesv==2.1.2
+      - cython==3.0.12
+      - dysgu==1.6.2
+      - edlib==1.3.9.post1
       - genomeview==1.1.4
+      - intervaltree==3.1.0
+      - lightgbm==4.6.0
+      - markdown-it-py==3.0.0
+      - mdurl==0.1.2
+      - pyabpoa==1.5.3
       - pybigwig==0.3.22
-      - pypdf2==3.0.1
-      - typing-extensions==4.12.2
-prefix: /home/shuaiw/miniconda3/envs/SpecImmune
+      - pysam==0.23.0
+      - pytabix==0.1
+      - pywfa==0.5.1
+      - rich==14.0.0
+      - sortedcontainers==2.4.0
+      - truvari==5.2.0
+      - xlrd==2.0.1
+prefix: /data3/wangxuedong/app/miniconda3/envs/SpecImmune
