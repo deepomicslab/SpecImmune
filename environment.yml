@@ -313,6 +313,8 @@ dependencies:
   - zlib-ng=2.0.7=h0b41bf4_0
   - zstandard=0.19.0=py38h0a891b7_0
   - zstd=1.5.6=ha6fb4c9_0
+  - truvari=5.3.0=pyhdfd78af_0
+  - pywfa=0.5.1=py38he5da3d1_2
   - pip:
       - bwapy==0.1.4
       - cigar==0.1.3
@@ -327,11 +329,9 @@ dependencies:
       - mdurl==0.1.2
       - pyabpoa==1.5.3
       - pybigwig==0.3.22
-      - pysam==0.23.0
+      - pysam>=0.21.0,<=0.23.0
       - pytabix==0.1
-      - pywfa==0.5.1
       - rich==14.0.0
       - sortedcontainers==2.4.0
-      - truvari==5.2.0
       - xlrd==2.0.1
 prefix: /data3/wangxuedong/app/miniconda3/envs/SpecImmune

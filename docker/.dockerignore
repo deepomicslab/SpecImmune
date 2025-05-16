@@ -3,3 +3,7 @@ pharmvar-6.2
 simulation
 evaluation
 db
+.DS_Store
+.git
+.gitignore
+.vscode
