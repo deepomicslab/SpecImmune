@@ -6,7 +6,6 @@ from scipy.stats import fisher_exact
 def read_tab(csv, sample_pop_dict, pop, family="HLA"):
     sample_set = set()
     allele_sample_dict = defaultdict(dict)
-    
     df = pd.read_csv(csv)
     for index, row in df.iterrows():
         sample = row['Sample']
@@ -17,20 +16,15 @@ def read_tab(csv, sample_pop_dict, pop, family="HLA"):
             continue
         if sample_pop_dict[sample] != pop:
             continue
-        # if sample_pop_dict[sample] not in  ['SAS', 'AFR', 'EUR', 'AMR']: 
-        #     continue
         # print (sample, row["One_guess"])
         ## get 1-field HLA
         if family == "HLA":
             allele = row["One_guess"].split(":")[0]
-            if allele.split("*")[0] not in ["HLA-A", "HLA-B", "HLA-C", "HLA-DPA1", "HLA-DPB1", "HLA-DQA1", "HLA-DQB1", "HLA-DRB1"]:
-                continue
         if family == "KIR":
             allele = row["One_guess"][:11]
-        if allele.split("*")[0] in ["MICA", "MICB", "TAP2", "TAP1"]:
+        if allele.split("*")[0] in ["MICA", "MICB", "TAP2"]:
             allele = "HLA-" + allele
         allele_sample_dict[allele][sample] = 1
-        allele_count_dict[allele] += 1
         sample_set.add(sample)
     # print (len(allele_sample_dict), "alleles in", family)
     return allele_sample_dict, sample_set
@@ -75,27 +69,24 @@ def association_test(all_allele_sample_dict, all_sample_set):
                 continue
             if allele1 not in all_allele_sample_dict or allele2 not in all_allele_sample_dict:
                 continue
-            # cutoff = 50
-            # if allele_count_dict[allele1] < cutoff or allele_count_dict[allele2] < cutoff:
-            #     continue
-            # print (allele_count_dict[allele1], allele_count_dict[allele2], allele1, allele2)
             a, b, c, d, oddsratio, p_value = get_Contingency(all_allele_sample_dict, allele1, allele2, all_sample_set)
-            data.append((allele1, allele2, a, b, c, d, oddsratio, p_value,allele_count_dict[allele1], allele_count_dict[allele2]))
+            data.append((allele1, allele2, a, b, c, d, oddsratio, p_value))
             # if p_value < 0.01 and oddsratio > 1:
             #     print(f"{allele1} and {allele2}: a={a}, b={b}, c={c}, d={d}, oddsratio={oddsratio}, p_value={p_value}")
     print (f"start correction..")
     ## perform multiple testing correction
     from statsmodels.stats.multitest import multipletests
-    df = pd.DataFrame(data, columns=["Allele1", "Allele2", "a", "b", "c", "d", "OddsRatio", "p_value", "Allele1_count", "Allele2_count"])
+    df = pd.DataFrame(data, columns=["Allele1", "Allele2", "a", "b", "c", "d", "OddsRatio", "p_value"])
     ## use rejected, pvals_corrected, _, _ = multipletests(p_values, alpha=0.05, method='fdr_bh')
     p_values = df["p_value"].values
     rejected, pvals_corrected, _, _ = multipletests(p_values, alpha=0.05, method='fdr_bh')
+
+    ## add p_value_corrected to df
     df["p_value_corrected"] = pvals_corrected
     ## sort by p_value_corrected
     df = df.sort_values(by="p_value_corrected")
     ## print top 10 associations
-    print (len(df), "associations tested")
-    print(df.head(100))
+    print(df.head(10))
     ## filter by p_value_corrected < 0.05
     df_filtered = df[df["p_value_corrected"] < 0.05]
     print(f"Number of associations with p_value_corrected < 0.05: {len(df_filtered)}")
@@ -112,7 +103,6 @@ def get_super_pop(super_pop_file):
         super_pop_dict[row['Population Code']] = row['Super Population']
     # print (super_pop_dict)
     return super_pop_dict
-
 def get_sample_pop(sample_pop_file, super_pop_dict):
     pop_set = set()
     super_pop_set = set()
@@ -137,8 +127,8 @@ sample_pop_file = "../1KG_ONT/hla/20130606_sample_info.xlsx"
 
 super_pop_dict = get_super_pop(super_pop_file)
 sample_pop_dict, pop_set, sample_super_pop_dict, super_pop_set = get_sample_pop(sample_pop_file, super_pop_dict)
-allele_count_dict = defaultdict(int)
-print (super_pop_set)
+
+
 for pop in super_pop_set:
     all_allele_sample_dict = {}
     all_sample_set = set()
@@ -151,4 +141,3 @@ for pop in super_pop_set:
     print (pop, "pop...", len(all_allele_sample_dict), "alleles,",
            len(all_sample_set), "samples")
     association_test(all_allele_sample_dict, all_sample_set)
-    # break

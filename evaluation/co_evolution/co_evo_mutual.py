@@ -1,6 +1,8 @@
 import pandas as pd
 from collections import defaultdict
 from scipy.stats import fisher_exact
+from sklearn.metrics import mutual_info_score
+import numpy as np
 
 
 def read_tab(csv, sample_pop_dict, pop, family="HLA"):
@@ -35,35 +37,30 @@ def read_tab(csv, sample_pop_dict, pop, family="HLA"):
     # print (len(allele_sample_dict), "alleles in", family)
     return allele_sample_dict, sample_set
 
-def get_Contingency(allele_sample_dict, allele1, allele2, sample_set):
-    """
-    a: number of individuals with both alleles A and B
 
-    b: A present, B absent
+def get_mutual_info(allele_sample_dict, allele1, allele2, sample_set):
+    allele1_binary = [1 if sample in allele_sample_dict[allele1] else 0 for sample in sample_set]
+    allele2_binary = [1 if sample in allele_sample_dict[allele2] else 0 for sample in sample_set]
+    
 
-    c: A absent, B present
+    mi, p = permutation_test_mi(allele1_binary, allele2_binary)
+    return mi, p
 
-    d: neither present
-    """
-    ## Build 2x2 Contingency Tables
-    a, b, c, d = 0, 0, 0, 0
-    for sample in allele_sample_dict[allele1]:
-        if sample in allele_sample_dict[allele2]:
-            a += 1
-        else:
-            b += 1
-    for sample in allele_sample_dict[allele2]:
-        if sample not in allele_sample_dict[allele1]:
-            c += 1
-    d = len(sample_set) - a - b - c
-    oddsratio, p_value = fisher_exact([[a, b], [c, d]])
-    # print(a, b, c, d, oddsratio, p_value)
-    return a, b, c, d, oddsratio, p_value
+
+def permutation_test_mi(x, y, n_permutations=1000):
+    observed_mi = mutual_info_score(x, y)
+    permuted_mis = [mutual_info_score(np.random.permutation(x), y) for _ in range(n_permutations)]
+    pval = np.mean([mi >= observed_mi for mi in permuted_mis])
+    return observed_mi, pval
+
+
+
 
 def association_test(all_allele_sample_dict, all_sample_set):
     allele_list = list(all_allele_sample_dict.keys())
     # allele_list = allele_list[:5]
     data = []
+    z = 0
     for i in range(len(allele_list)):
         for j in range(i + 1, len(allele_list)):
             allele1 = allele_list[i]
@@ -79,27 +76,29 @@ def association_test(all_allele_sample_dict, all_sample_set):
             # if allele_count_dict[allele1] < cutoff or allele_count_dict[allele2] < cutoff:
             #     continue
             # print (allele_count_dict[allele1], allele_count_dict[allele2], allele1, allele2)
-            a, b, c, d, oddsratio, p_value = get_Contingency(all_allele_sample_dict, allele1, allele2, all_sample_set)
-            data.append((allele1, allele2, a, b, c, d, oddsratio, p_value,allele_count_dict[allele1], allele_count_dict[allele2]))
+            mi, p = get_mutual_info(all_allele_sample_dict, allele1, allele2, all_sample_set)
+            data.append((allele1, allele2, mi, p,allele_count_dict[allele1], allele_count_dict[allele2]))
+            print (f"{z}, {allele1} and {allele2}: mi={mi}, p={p}, Allele1_count={allele_count_dict[allele1]}, Allele2_count={allele_count_dict[allele2]}")
+            z += 1
             # if p_value < 0.01 and oddsratio > 1:
             #     print(f"{allele1} and {allele2}: a={a}, b={b}, c={c}, d={d}, oddsratio={oddsratio}, p_value={p_value}")
     print (f"start correction..")
     ## perform multiple testing correction
     from statsmodels.stats.multitest import multipletests
-    df = pd.DataFrame(data, columns=["Allele1", "Allele2", "a", "b", "c", "d", "OddsRatio", "p_value", "Allele1_count", "Allele2_count"])
+    df = pd.DataFrame(data, columns=["Allele1", "Allele2", "mi", "p_value", "Allele1_count", "Allele2_count"])
     ## use rejected, pvals_corrected, _, _ = multipletests(p_values, alpha=0.05, method='fdr_bh')
     p_values = df["p_value"].values
     rejected, pvals_corrected, _, _ = multipletests(p_values, alpha=0.05, method='fdr_bh')
     df["p_value_corrected"] = pvals_corrected
     ## sort by p_value_corrected
-    df = df.sort_values(by="p_value_corrected")
+    df = df.sort_values(by="p_value_corrected", ascending=True)
     ## print top 10 associations
     print (len(df), "associations tested")
     print(df.head(100))
     ## filter by p_value_corrected < 0.05
-    df_filtered = df[df["p_value_corrected"] < 0.05]
-    print(f"Number of associations with p_value_corrected < 0.05: {len(df_filtered)}")
-    ## save to file
+    # df_filtered = df[df["p_value_corrected"] < 0.05]
+    # print(f"Number of associations with p_value_corrected < 0.05: {len(df_filtered)}")
+    # ## save to file
 
 
 ## read the file using pandas, sep is \t
@@ -151,4 +150,4 @@ for pop in super_pop_set:
     print (pop, "pop...", len(all_allele_sample_dict), "alleles,",
            len(all_sample_set), "samples")
     association_test(all_allele_sample_dict, all_sample_set)
-    # break
+    break
