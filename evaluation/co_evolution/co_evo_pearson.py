@@ -5,7 +5,7 @@ from sklearn.metrics import mutual_info_score
 import numpy as np
 
 
-def read_tab(csv, sample_pop_dict, pop, family="HLA"):
+def read_tab(csv, sample_pop_dict, family="HLA"):
     sample_set = set()
     allele_sample_dict = defaultdict(dict)
     
@@ -17,11 +17,9 @@ def read_tab(csv, sample_pop_dict, pop, family="HLA"):
             continue
         if sample not in sample_pop_dict:
             continue
-        if sample_pop_dict[sample] != pop:
-            continue
-        # if sample_pop_dict[sample] not in  ['SAS', 'AFR', 'EUR', 'AMR']: 
-        #     continue
-        # print (sample, row["One_guess"])
+        pop = sample_pop_dict[sample]
+        
+
         ## get 1-field HLA
         if family == "HLA":
             field = row["One_guess"].split(":")
@@ -37,11 +35,25 @@ def read_tab(csv, sample_pop_dict, pop, family="HLA"):
             allele = field[0] + "*" + field[1][:3]
         if allele.split("*")[0] in ["MICA", "MICB", "TAP2", "TAP1"]:
             allele = "HLA-" + allele
-        allele_sample_dict[allele][sample] = 1
-        allele_count_dict[allele] += 1
+        if pop not in allele_sample_dict[allele]:
+            allele_sample_dict[allele] = defaultdict(int)
+        # print (pop)
+        allele_sample_dict[allele][pop] += 1
         sample_set.add(sample)
-    # print (len(allele_sample_dict), "alleles in", family)
-    return allele_sample_dict, sample_set
+    
+    pop_num_dict = defaultdict(int)
+    for sample in sample_set:
+        pop = sample_pop_dict[sample]
+        pop_num_dict[pop] += 1
+    pop_list = sorted(list(pop_num_dict.keys()))
+    print (pop_list)
+    ## get frequency of each allele in each population
+    allele_pop_freq_dict = defaultdict(dict)
+    for allele in allele_sample_dict:
+        for pop in pop_list:
+            allele_pop_freq_dict[allele][pop] = allele_sample_dict[allele][pop] / (pop_num_dict[pop]*2)
+
+    return allele_pop_freq_dict, pop_list
 
 
 def get_mutual_info(allele_sample_dict, allele1, allele2, sample_set):
@@ -146,16 +158,35 @@ super_pop_dict = get_super_pop(super_pop_file)
 sample_pop_dict, pop_set, sample_super_pop_dict, super_pop_set = get_sample_pop(sample_pop_file, super_pop_dict)
 allele_count_dict = defaultdict(int)
 print (super_pop_set)
-for pop in super_pop_set:
-    all_allele_sample_dict = {}
-    all_sample_set = set()
-    HLA_allele_sample_dict, HLA_sample_set = read_tab(hla_csv, sample_super_pop_dict, pop, family="HLA")
-    KIR_allele_sample_dict, KIR_sample_set = read_tab(kir_csv, sample_super_pop_dict, pop, family="KIR")
-    all_allele_sample_dict.update(HLA_allele_sample_dict)
-    all_allele_sample_dict.update(KIR_allele_sample_dict)
-    all_sample_set.update(HLA_sample_set)
-    all_sample_set.update(KIR_sample_set)
-    print (pop, "pop...", len(all_allele_sample_dict), "alleles,",
-           len(all_sample_set), "samples")
-    association_test(all_allele_sample_dict, all_sample_set)
-    # break
+
+
+all_allele_sample_dict = {}
+all_sample_set = set()
+HLA_allele_pop_freq_dict, pop_list = read_tab(hla_csv, sample_super_pop_dict, family="HLA")
+KIR_allele_pop_freq_dict, pop_list = read_tab(kir_csv, sample_super_pop_dict, family="KIR")
+from scipy.stats import pearsonr
+for HLA_allele in HLA_allele_pop_freq_dict:
+    for KIR_allele in KIR_allele_pop_freq_dict:
+        hla_freqs = [HLA_allele_pop_freq_dict[HLA_allele][pop] for pop in pop_list]
+        kir_freqs = [KIR_allele_pop_freq_dict[KIR_allele][pop] for pop in pop_list]
+        ## the freq in each pop should be >0
+        if any(freq ==0 for freq in hla_freqs) or any(freq == 0 for freq in kir_freqs):
+            continue
+        ## get pearson correlation
+        corr, pval = pearsonr(hla_freqs, kir_freqs)
+        # if pval < 0.05 and sum(hla_freqs) > 0.02 and sum(kir_freqs) > 0.02:
+        print(f"{HLA_allele} vs {KIR_allele}: Pearson r={corr:.3f}, p={pval:.3g}")
+        print (f"HLA allele frequencies: {hla_freqs}")
+        print (f"KIR allele frequencies: {kir_freqs}")
+        print ("##############################################")
+
+    
+
+# all_allele_sample_dict.update(HLA_allele_sample_dict)
+# all_allele_sample_dict.update(KIR_allele_sample_dict)
+# all_sample_set.update(HLA_sample_set)
+# all_sample_set.update(KIR_sample_set)
+# print (pop, "pop...", len(all_allele_sample_dict), "alleles,",
+#         len(all_sample_set), "samples")
+# association_test(all_allele_sample_dict, all_sample_set)
+# # break
