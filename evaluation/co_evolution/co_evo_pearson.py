@@ -3,6 +3,7 @@ from collections import defaultdict
 from scipy.stats import fisher_exact
 from sklearn.metrics import mutual_info_score
 import numpy as np
+import re
 
 
 def read_tab(csv, sample_pop_dict, family="HLA"):
@@ -19,16 +20,20 @@ def read_tab(csv, sample_pop_dict, family="HLA"):
             continue
         pop = sample_pop_dict[sample]
         
-
+        gene = row["One_guess"].split("*")[0]
         ## get 1-field HLA
         if family == "HLA":
             field = row["One_guess"].split(":")
+            # if field[0] != gene + "*" + "01":
+            #     field[0] = gene + "*" + "other"
+
+            
             # if len(field) < 2:
             #     allele = row["One_guess"]
             # else:
             #     allele = field[0] + ":" + field[1]
             allele = field[0]
-            if allele.split("*")[0] not in ["HLA-A", "HLA-B", "HLA-C", "HLA-DPA1", "HLA-DPB1", "HLA-DQA1", "HLA-DQB1", "HLA-DRB1"]:
+            if gene not in ["HLA-A", "HLA-B", "HLA-C", "HLA-DPA1", "HLA-DPB1", "HLA-DQA1", "HLA-DQB1", "HLA-DRB1"]:
                 continue
         if family == "KIR":
             field = row["One_guess"].split("*")
@@ -36,10 +41,12 @@ def read_tab(csv, sample_pop_dict, family="HLA"):
         if allele.split("*")[0] in ["MICA", "MICB", "TAP2", "TAP1"]:
             allele = "HLA-" + allele
         if pop not in allele_sample_dict[allele]:
-            allele_sample_dict[allele] = defaultdict(int)
+            allele_sample_dict[allele][pop] = 0
         # print (pop)
         allele_sample_dict[allele][pop] += 1
         sample_set.add(sample)
+        # if re.search("HLA-A\*01", allele):
+        #     print (allele_sample_dict["HLA-A*01"])
     
     pop_num_dict = defaultdict(int)
     for sample in sample_set:
@@ -50,8 +57,12 @@ def read_tab(csv, sample_pop_dict, family="HLA"):
     ## get frequency of each allele in each population
     allele_pop_freq_dict = defaultdict(dict)
     for allele in allele_sample_dict:
+        allele_pop_freq_dict[allele] = {}
         for pop in pop_list:
-            allele_pop_freq_dict[allele][pop] = allele_sample_dict[allele][pop] / (pop_num_dict[pop]*2)
+            if pop not in allele_sample_dict[allele]:
+                allele_pop_freq_dict[allele][pop] = 0
+            else:
+                allele_pop_freq_dict[allele][pop] = allele_sample_dict[allele][pop] / (pop_num_dict[pop]*2)
 
     return allele_pop_freq_dict, pop_list
 
@@ -162,9 +173,12 @@ print (super_pop_set)
 
 all_allele_sample_dict = {}
 all_sample_set = set()
-HLA_allele_pop_freq_dict, pop_list = read_tab(hla_csv, sample_super_pop_dict, family="HLA")
-KIR_allele_pop_freq_dict, pop_list = read_tab(kir_csv, sample_super_pop_dict, family="KIR")
+HLA_allele_pop_freq_dict, pop_list = read_tab(hla_csv, sample_pop_dict, family="HLA")
+KIR_allele_pop_freq_dict, pop_list = read_tab(kir_csv, sample_pop_dict, family="KIR")
+# print (HLA_allele_pop_freq_dict["HLA-A*01"])
 from scipy.stats import pearsonr
+corr_num = 0
+data = []
 for HLA_allele in HLA_allele_pop_freq_dict:
     for KIR_allele in KIR_allele_pop_freq_dict:
         hla_freqs = [HLA_allele_pop_freq_dict[HLA_allele][pop] for pop in pop_list]
@@ -174,11 +188,29 @@ for HLA_allele in HLA_allele_pop_freq_dict:
             continue
         ## get pearson correlation
         corr, pval = pearsonr(hla_freqs, kir_freqs)
-        # if pval < 0.05 and sum(hla_freqs) > 0.02 and sum(kir_freqs) > 0.02:
-        print(f"{HLA_allele} vs {KIR_allele}: Pearson r={corr:.3f}, p={pval:.3g}")
-        print (f"HLA allele frequencies: {hla_freqs}")
-        print (f"KIR allele frequencies: {kir_freqs}")
-        print ("##############################################")
+        data.append((HLA_allele, KIR_allele, corr, pval))
+        if pval < 0.05 :
+            print(f"{HLA_allele} vs {KIR_allele}: Pearson r={corr:.3f}, p={pval:.3g}")
+            # print (f"HLA allele frequencies: {hla_freqs}")
+            # print (f"KIR allele frequencies: {kir_freqs}")
+            # print ("##############################################")
+            corr_num += 1
+
+print (f"Total number of significant correlations: {corr_num}")
+## to df
+df = pd.DataFrame(data, columns=["HLA_allele", "KIR_allele", "Pearson_r", "p_value"])
+## correct p-values
+from statsmodels.stats.multitest import multipletests
+p_values = df["p_value"].values
+rejected, pvals_corrected, _, _ = multipletests(p_values, alpha=0.05, method='fdr_bh')  ##multipletests(p_values, method='bonferroni')
+df["p_value_corrected"] = pvals_corrected
+## keep only significant associations
+df = df[df["p_value_corrected"] < 0.05]
+print(f"Number of significant associations after correction: {len(df)}")
+## sort by p_value_corrected
+df = df.sort_values(by="p_value_corrected", ascending=True)
+
+print (df)
 
     
 
