@@ -31,21 +31,13 @@ def read_tab(csv, sample_pop_dict, family="HLA"):
         ## get 1-field HLA
         if family == "HLA":
             field = row["One_guess"].split(":")
-            # if field[0] != gene + "*" + "01":
-            #     field[0] = gene + "*" + "other"
-
-            # if len(field) < 2:
-            #     allele = row["One_guess"]
-            # else:
-            #     allele = field[0] + ":" + field[1]
             allele = field[0]
-            if gene not in ["HLA-A", "HLA-B", "HLA-C", "HLA-DPA1", "HLA-DPB1", "HLA-DQA1", "HLA-DQB1", "HLA-DRB1"]:
-                continue
+            # if gene not in ["HLA-A", "HLA-B", "HLA-C", "HLA-DPA1", "HLA-DPB1", "HLA-DQA1", "HLA-DQB1", "HLA-DRB1"]:
+            #     continue
         if family == "KIR":
             field = row["One_guess"].split("*")
             allele = field[0] + "*" + field[1][:3]
-        if allele.split("*")[0] in ["MICA", "MICB", "TAP2", "TAP1"]:
-            allele = "HLA-" + allele
+
         if pop not in allele_sample_dict[allele]:
             allele_sample_dict[allele][pop] = 0
         # print (pop)
@@ -199,7 +191,7 @@ def plot(final_freq_dict, allele_1, allele_2, pop_list, super_pop_dict):
     ## save the plot
     plt.savefig(f"./corr_{allele_1}_{allele_2}.png")
 
-def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list):
+def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, corr_tag):
     corr_num = 0
     data = []
     final_freq_dict = {}
@@ -214,17 +206,17 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
             final_freq_dict[KIR_allele] = kir_freqs
             ## get pearson correlation
             corr, pval = pearsonr(hla_freqs, kir_freqs)
-            data.append((HLA_allele, KIR_allele, corr, pval))
-            if pval < 0.05 :
-                print(f"{HLA_allele} vs {KIR_allele}: Pearson r={corr:.3f}, p={pval:.3g}")
-                # print (f"HLA allele frequencies: {hla_freqs}")
-                # print (f"KIR allele frequencies: {kir_freqs}")
-                # print ("##############################################")
-                corr_num += 1
+            data.append((HLA_allele, KIR_allele, corr, pval, corr_tag))
+            # if pval < 0.05 :
+            #     # print(f"{HLA_allele} vs {KIR_allele}: Pearson r={corr:.3f}, p={pval:.3g}")
+            #     # print (f"HLA allele frequencies: {hla_freqs}")
+            #     # print (f"KIR allele frequencies: {kir_freqs}")
+            #     # print ("##############################################")
+            #     corr_num += 1
 
     print (f"Total number of significant correlations: {corr_num}")
     ## to df
-    df = pd.DataFrame(data, columns=["HLA_allele", "KIR_allele", "Pearson_r", "p_value"])
+    df = pd.DataFrame(data, columns=["HLA_allele", "KIR_allele", "Pearson_r", "p_value", "corr_tag"])
     ## correct p-values
 
     p_values = df["p_value"].values
@@ -237,33 +229,51 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
     df = df.sort_values(by="p_value_corrected", ascending=True)
 
     print (df)
-    plot(final_freq_dict, "IGKV2-29*01", "HLA-DPA1*01", pop_list, super_pop_dict)
+    # plot(final_freq_dict, "IGKV2-29*01", "HLA-DPA1*01", pop_list, super_pop_dict)
+    return df
 
+if __name__ == "__main__":
 
+    hla_csv = "/home/shuaiw/methylation/data/hla/genotypes/data/HLA_Table_S6.csv"
+    kir_csv = "/home/shuaiw/methylation/data/hla/genotypes/data/KIR_Table_S7.csv"
+    cyp_csv = "/home/shuaiw/methylation/data/hla/genotypes/data/CYP_Table_S10.csv"
+    ig_tcr_csv = "/home/shuaiw/methylation/data/hla/genotypes/data/IG_TR_Table_S9.csv"
+    super_pop_file = "../1KG_ONT/hla/20131219.populations.tsv"
+    sample_pop_file = "../1KG_ONT/hla/20130606_sample_info.xlsx"
 
-hla_csv = "/home/shuaiw/methylation/data/hla/genotypes/data/HLA_Table_S6.csv"
-kir_csv = "/home/shuaiw/methylation/data/hla/genotypes/data/KIR_Table_S7.csv"
-cyp_csv = "/home/shuaiw/methylation/data/hla/genotypes/data/CYP_Table_S10.csv"
-ig_tcr_csv = "/home/shuaiw/methylation/data/hla/genotypes/data/IG_TR_Table_S9.csv"
-super_pop_file = "../1KG_ONT/hla/20131219.populations.tsv"
-sample_pop_file = "../1KG_ONT/hla/20130606_sample_info.xlsx"
+    super_pop_dict = get_super_pop(super_pop_file)
+    sample_pop_dict, pop_set, sample_super_pop_dict, super_pop_set = get_sample_pop(sample_pop_file, super_pop_dict)
+    allele_count_dict = defaultdict(int)
+    print (super_pop_set)
 
-super_pop_dict = get_super_pop(super_pop_file)
-sample_pop_dict, pop_set, sample_super_pop_dict, super_pop_set = get_sample_pop(sample_pop_file, super_pop_dict)
-allele_count_dict = defaultdict(int)
-print (super_pop_set)
+    TCR_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="TR")
+    IG_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="IG")
+    CYP_allele_pop_freq_dict, pop_list = read_cyp_csv(cyp_csv, sample_pop_dict)
+    HLA_allele_pop_freq_dict, pop_list = read_tab(hla_csv, sample_pop_dict, family="HLA")
+    KIR_allele_pop_freq_dict, pop_list = read_tab(kir_csv, sample_pop_dict, family="KIR")
 
+    family_list = ["HLA", "KIR", "CYP", "IG", "TCR"]
+    family_dict = {
+        "HLA": HLA_allele_pop_freq_dict,
+        "KIR": KIR_allele_pop_freq_dict,
+        "CYP": CYP_allele_pop_freq_dict,
+        "IG": IG_pop_freq_dict,
+        "TCR": TCR_pop_freq_dict
+    }
 
-all_allele_sample_dict = {}
-all_sample_set = set()
+    total_df = pd.DataFrame([])
+    for i in range(len(family_list)):
+        for j in range(i+1, len(family_list)):
+            family_1 = family_list[i]
+            family_2 = family_list[j]
+            corr_tag = f"{family_1}_vs_{family_2}"
+            print(f"Correlation between {family_1} and {family_2}:")
+            df = correlation_analysis(family_dict[family_1], family_dict[family_2], pop_list, corr_tag)
+            total_df = pd.concat([total_df, df], ignore_index=True)
+    
+    ## save the total df to csv
+    total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
 
-TCR_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="TR")
-IG_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="IG")
-# CYP_allele_pop_freq_dict, pop_list = read_cyp_csv(cyp_csv, sample_pop_dict)
-HLA_allele_pop_freq_dict, pop_list = read_tab(hla_csv, sample_pop_dict, family="HLA")
-# KIR_allele_pop_freq_dict, pop_list = read_tab(kir_csv, sample_pop_dict, family="KIR")
-
-
-correlation_analysis(IG_pop_freq_dict, HLA_allele_pop_freq_dict, pop_list)
-# correlation_analysis(KIR_allele_pop_freq_dict, CYP_allele_pop_freq_dict, pop_list)
+    # correlation_analysis(IG_pop_freq_dict, HLA_allele_pop_freq_dict, pop_list)
+    # correlation_analysis(KIR_allele_pop_freq_dict, CYP_allele_pop_freq_dict, pop_list)
 
