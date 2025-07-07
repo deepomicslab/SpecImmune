@@ -9,6 +9,11 @@ import matplotlib.pyplot as plt
 ## use seaborn for better aesthetics
 import seaborn as sns
 from scipy.stats import pearsonr
+import gzip
+import random
+from cyvcf2 import VCF
+from collections import defaultdict
+
 
 
 def read_tab(csv, sample_pop_dict, family="HLA"):
@@ -191,7 +196,7 @@ def plot(final_freq_dict, allele_1, allele_2, pop_list, super_pop_dict):
     ## save the plot
     plt.savefig(f"./corr_{allele_1}_{allele_2}.png")
 
-def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, corr_tag):
+def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, corr_tag, empirical_correlations):
     corr_num = 0
     data = []
     final_freq_dict = {}
@@ -206,17 +211,14 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
             final_freq_dict[KIR_allele] = kir_freqs
             ## get pearson correlation
             corr, pval = pearsonr(hla_freqs, kir_freqs)
-            data.append((HLA_allele, KIR_allele, corr, pval, corr_tag))
-            # if pval < 0.05 :
-            #     # print(f"{HLA_allele} vs {KIR_allele}: Pearson r={corr:.3f}, p={pval:.3g}")
-            #     # print (f"HLA allele frequencies: {hla_freqs}")
-            #     # print (f"KIR allele frequencies: {kir_freqs}")
-            #     # print ("##############################################")
-            #     corr_num += 1
+            ## calculate empirical p-value
+            empirical_pval = sum(abs(corr) < abs(emp_corr) for emp_corr in empirical_correlations) / len(empirical_correlations)
+            data.append((HLA_allele, KIR_allele, corr, pval, corr_tag, empirical_pval))
+
 
     print (f"Total number of significant correlations: {corr_num}")
     ## to df
-    df = pd.DataFrame(data, columns=["HLA_allele", "KIR_allele", "Pearson_r", "p_value", "corr_tag"])
+    df = pd.DataFrame(data, columns=["HLA_allele", "KIR_allele", "Pearson_r", "p_value", "corr_tag", "empirical_p_value"])
     ## correct p-values
 
     p_values = df["p_value"].values
@@ -230,7 +232,88 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
 
     print (df)
     # plot(final_freq_dict, "IGKV2-29*01", "HLA-DPA1*01", pop_list, super_pop_dict)
-    return df
+    return df, final_freq_dict
+
+
+def read_snp_freq(chr1_vcf, sample_pop_dict, pop_list):
+    """
+    Parse a phased VCF file, randomly select 1000 SNPs,
+    and compute ref allele frequencies per population.
+    """
+    vcf = VCF(chr1_vcf)
+    samples = vcf.samples
+    sample_to_index = {s: i for i, s in enumerate(samples)}
+
+    # Filter samples for relevant populations
+    pop_samples = {pop: [] for pop in pop_list}
+    for sample in samples:
+        pop = sample_pop_dict.get(sample)
+        if pop in pop_list:
+            pop_samples[pop].append(sample)
+
+    print("Samples per population:")
+    for pop, s_list in pop_samples.items():
+        print(f"{pop}: {len(s_list)}")
+
+    # Re-open VCF to reset iterator
+    vcf = VCF(chr1_vcf)
+
+    allele_pop_freq_dict = dict()
+
+    for variant in vcf:
+        # if variant.ID not in selected_ids:
+        #     continue
+        if not (variant.REF != '.' and variant.ALT[0] != '.'):
+            continue
+
+        geno = variant.genotypes  # list of [a1, a2, phased]
+        # build per-pop ref allele counts
+        pop_ref_count = defaultdict(int)
+        pop_total_alleles = defaultdict(int)
+        ref_count, total_allelses = 0, 0
+        for pop in pop_list:
+            for sample in pop_samples[pop]:
+                idx = sample_to_index[sample]
+                alleles = geno[idx][:2]  # Get genotype (0 or 1)
+                if None in alleles:
+                    continue  # missing genotype
+                ref_alleles = alleles.count(0)
+                pop_ref_count[pop] += ref_alleles
+                pop_total_alleles[pop] += 2
+                ref_count += ref_alleles
+                total_allelses += 2
+
+        hete_freq = 1 - (ref_count / total_allelses) if total_allelses > 0 else 0
+        if hete_freq < 0.25 or hete_freq > 0.75:
+            continue
+        # calculate ref frequency
+        allele_pop_freq_dict[variant.ID] = {
+            pop: (pop_ref_count[pop] / pop_total_alleles[pop]) if pop_total_alleles[pop] > 0 else None
+            for pop in pop_list
+        }
+        if len(allele_pop_freq_dict) > 100000:
+            break
+    print (len(allele_pop_freq_dict), "variants" )
+    return allele_pop_freq_dict
+
+def empirical_test(chr1_allele_pop_freq_dict, chr10_allele_pop_freq_dict, pop_list, num_iterations=1000):
+    ### randomly select 1000 alleles from chr1 and chr10, and calculate the correlation
+    chr1_variants = list(chr1_allele_pop_freq_dict.keys())
+    chr10_variants = list(chr10_allele_pop_freq_dict.keys())
+    random.seed(42)  # for reproducibility
+    selected_chr1_variants = random.sample(chr1_variants, num_iterations)
+    selected_chr10_variants = random.sample(chr10_variants, num_iterations)
+    empirical_correlations = []
+    for i in range(num_iterations):
+        hla_freqs = [chr1_allele_pop_freq_dict[selected_chr1_variants[i]][pop] for pop in pop_list]
+        kir_freqs = [chr10_allele_pop_freq_dict[selected_chr10_variants[i]][pop] for pop in pop_list]
+        if any(freq is None for freq in hla_freqs) or any(freq is None for freq in kir_freqs):
+            continue
+        corr, _ = pearsonr(hla_freqs, kir_freqs)
+        empirical_correlations.append(abs(corr))
+    # print (empirical_correlations)
+    return sorted(empirical_correlations)
+
 
 if __name__ == "__main__":
 
@@ -240,17 +323,24 @@ if __name__ == "__main__":
     ig_tcr_csv = "/home/shuaiw/methylation/data/hla/genotypes/data/IG_TR_Table_S9.csv"
     super_pop_file = "../1KG_ONT/hla/20131219.populations.tsv"
     sample_pop_file = "../1KG_ONT/hla/20130606_sample_info.xlsx"
-
+    chr1_vcf = "/home/shuaiw/methylation/data/hla/phased_snps/20201028_3202_phased/CCDG_14151_B01_GRM_WGS_2020-08-05_chr1.filtered.shapeit2-duohmm-phased.vcf.gz"
+    chr10_vcf = "/home/shuaiw/methylation/data/hla/phased_snps/20201028_3202_phased/CCDG_14151_B01_GRM_WGS_2020-08-05_chr10.filtered.shapeit2-duohmm-phased.vcf.gz"
     super_pop_dict = get_super_pop(super_pop_file)
     sample_pop_dict, pop_set, sample_super_pop_dict, super_pop_set = get_sample_pop(sample_pop_file, super_pop_dict)
     allele_count_dict = defaultdict(int)
     print (super_pop_set)
+
+    pop_list = ['ACB', 'ASW', 'BEB', 'CDX', 'CEU', 'CHB', 'CHS', 'CLM', 'ESN', 'FIN', 'GBR', 'GIH', 'GWD', 'IBS', 'ITU', 'JPT', 'KHV', 'LWK', 'MSL', 'MXL', 'PEL', 'PJL', 'PUR', 'STU', 'TSI', 'YRI']
+    chr1_allele_pop_freq_dict = read_snp_freq(chr1_vcf, sample_pop_dict, pop_list)
+    chr10_allele_pop_freq_dict = read_snp_freq(chr10_vcf, sample_pop_dict, pop_list)
+    empirical_correlations = empirical_test(chr1_allele_pop_freq_dict, chr10_allele_pop_freq_dict, pop_list)
 
     TCR_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="TR")
     IG_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="IG")
     CYP_allele_pop_freq_dict, pop_list = read_cyp_csv(cyp_csv, sample_pop_dict)
     HLA_allele_pop_freq_dict, pop_list = read_tab(hla_csv, sample_pop_dict, family="HLA")
     KIR_allele_pop_freq_dict, pop_list = read_tab(kir_csv, sample_pop_dict, family="KIR")
+
 
     family_list = ["HLA", "KIR", "CYP", "IG", "TCR"]
     family_dict = {
@@ -262,17 +352,20 @@ if __name__ == "__main__":
     }
 
     total_df = pd.DataFrame([])
+    final_allele_freq_dict = {}
     for i in range(len(family_list)):
         for j in range(i+1, len(family_list)):
             family_1 = family_list[i]
             family_2 = family_list[j]
             corr_tag = f"{family_1}_vs_{family_2}"
             print(f"Correlation between {family_1} and {family_2}:")
-            df = correlation_analysis(family_dict[family_1], family_dict[family_2], pop_list, corr_tag)
+            df, final_freq_dict = correlation_analysis(family_dict[family_1], family_dict[family_2], pop_list, corr_tag, empirical_correlations)
             total_df = pd.concat([total_df, df], ignore_index=True)
-    
+            final_allele_freq_dict = {**final_allele_freq_dict, **final_freq_dict}
+            
     ## save the total df to csv
-    total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
+    # total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
+    # plot(final_allele_freq_dict, "IGHV7-81*01", "TRBV16*01", pop_list, super_pop_dict)
 
     # correlation_analysis(IG_pop_freq_dict, HLA_allele_pop_freq_dict, pop_list)
     # correlation_analysis(KIR_allele_pop_freq_dict, CYP_allele_pop_freq_dict, pop_list)
