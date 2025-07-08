@@ -152,8 +152,6 @@ def read_ig_tcr_csv(csv, sample_pop_dict, family="TR"):
 
     return allele_pop_freq_dict, pop_list
 
-
-
 ## read the file using pandas, sep is \t
 def get_super_pop(super_pop_file):
     df = pd.read_csv(super_pop_file, sep='\t')
@@ -235,7 +233,7 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
     return df, final_freq_dict
 
 
-def read_snp_freq(chr1_vcf, sample_pop_dict, pop_list):
+def read_snp_freq(chr1_vcf, sample_pop_dict, pop_list, gene_region_dict):
     """
     Parse a phased VCF file, randomly select 1000 SNPs,
     and compute ref allele frequencies per population.
@@ -261,16 +259,39 @@ def read_snp_freq(chr1_vcf, sample_pop_dict, pop_list):
     allele_pop_freq_dict = dict()
 
     for variant in vcf:
-        # if variant.ID not in selected_ids:
-        #     continue
+        ## randomly select with a rate of 1%
+        if random.random() > 0.1:
+            continue
         if not (variant.REF != '.' and variant.ALT[0] != '.'):
+            continue
+        ## only keep snp
+        if len(variant.ALT) != 1 or len(variant.REF) != 1 or len(variant.ALT[0]) != 1:
+            continue
+        # print (variant.ID, variant.CHROM, variant.POS, variant.REF, variant.ALT)
+        ### if vatiant is not in the gene region, skip
+        if variant.CHROM not in gene_region_dict:
+            continue
+        in_gene_region = False
+        for start, end in gene_region_dict[variant.CHROM]:
+            if start <= variant.POS <= end:
+                in_gene_region = True
+                break
+        if not in_gene_region:
+            # print ("skip variant not in gene region", variant.ID, variant.CHROM, variant.POS)
+            continue
+        # if len(allele_pop_freq_dict) % 1000 == 0:
+        #     print (af, len(allele_pop_freq_dict))
+        hete_individuals = variant.INFO.get("AC_Het")
+        individual_num = variant.INFO.get("AN") / 2  # Total individuals
+        # print (hete_individuals,individual_num )
+        hete_freq = hete_individuals / individual_num if individual_num > 0 else 0
+        if hete_freq < 0.25:
             continue
 
         geno = variant.genotypes  # list of [a1, a2, phased]
         # build per-pop ref allele counts
         pop_ref_count = defaultdict(int)
         pop_total_alleles = defaultdict(int)
-        ref_count, total_allelses = 0, 0
         for pop in pop_list:
             for sample in pop_samples[pop]:
                 idx = sample_to_index[sample]
@@ -280,40 +301,78 @@ def read_snp_freq(chr1_vcf, sample_pop_dict, pop_list):
                 ref_alleles = alleles.count(0)
                 pop_ref_count[pop] += ref_alleles
                 pop_total_alleles[pop] += 2
-                ref_count += ref_alleles
-                total_allelses += 2
 
-        hete_freq = 1 - (ref_count / total_allelses) if total_allelses > 0 else 0
-        if hete_freq < 0.25 or hete_freq > 0.75:
-            continue
         # calculate ref frequency
         allele_pop_freq_dict[variant.ID] = {
             pop: (pop_ref_count[pop] / pop_total_alleles[pop]) if pop_total_alleles[pop] > 0 else None
             for pop in pop_list
         }
-        if len(allele_pop_freq_dict) > 100000:
+        # for pop in pop_list:
+        #     print (f"{variant.ID} {pop}: {round(allele_pop_freq_dict[variant.ID][pop], 2)}, {pop_ref_count[pop]}, {pop_total_alleles[pop]}")
+
+        if len(allele_pop_freq_dict) > 1000:
             break
-    print (len(allele_pop_freq_dict), "variants" )
+    print (len(allele_pop_freq_dict), "variants")
     return allele_pop_freq_dict
 
 def empirical_test(chr1_allele_pop_freq_dict, chr10_allele_pop_freq_dict, pop_list, num_iterations=1000):
     ### randomly select 1000 alleles from chr1 and chr10, and calculate the correlation
     chr1_variants = list(chr1_allele_pop_freq_dict.keys())
     chr10_variants = list(chr10_allele_pop_freq_dict.keys())
-    random.seed(42)  # for reproducibility
+    random.seed(2)  # for reproducibility
     selected_chr1_variants = random.sample(chr1_variants, num_iterations)
     selected_chr10_variants = random.sample(chr10_variants, num_iterations)
     empirical_correlations = []
     for i in range(num_iterations):
-        hla_freqs = [chr1_allele_pop_freq_dict[selected_chr1_variants[i]][pop] for pop in pop_list]
-        kir_freqs = [chr10_allele_pop_freq_dict[selected_chr10_variants[i]][pop] for pop in pop_list]
-        if any(freq is None for freq in hla_freqs) or any(freq is None for freq in kir_freqs):
+        chr1_freqs = [chr1_allele_pop_freq_dict[selected_chr1_variants[i]][pop] for pop in pop_list]
+        chr10_freqs = [chr10_allele_pop_freq_dict[selected_chr10_variants[i]][pop] for pop in pop_list]
+        if any(freq is None for freq in chr1_freqs) or any(freq is None for freq in chr10_freqs):
             continue
-        corr, _ = pearsonr(hla_freqs, kir_freqs)
+        corr, _ = pearsonr(chr1_freqs, chr10_freqs)
         empirical_correlations.append(abs(corr))
-    # print (empirical_correlations)
-    return sorted(empirical_correlations)
+        if abs(corr) > 0.9:
+            print (chr1_freqs)
+            print (chr10_freqs)
+            print (f"High correlation: {corr} {_} for {selected_chr1_variants[i]} and {selected_chr10_variants[i]}")
+            print ("############")
+            # ## plot the frequencies
+            # plt.scatter(chr1_freqs, chr10_freqs)
+            # plt.xlabel(f"Chr1 Frequencies ({selected_chr1_variants[i]})")
+            # plt.ylabel(f"Chr10 Frequencies ({selected_chr10_variants[i]})")
+            # plt.title(f"Correlation: {corr:.2f}")
+            # plt.savefig(f"./empirical_corr_{selected_chr1_variants[i]}_{selected_chr10_variants[i]}.png")
+            # plt.close() 
+            # break
+    empirical_correlations = sorted(empirical_correlations)
+    ## plot box plot for the correlations
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(x=empirical_correlations)
+    plt.title("Empirical Correlations Distribution")
+    plt.xlabel("Correlation Coefficient")
+    plt.savefig("./empirical_correlations_boxplot.png")
+    plt.close()
+    print (empirical_correlations)
+    return empirical_correlations
 
+def read_gene_region(gtf):
+    gene_region_dict = defaultdict(list)
+    with open(gtf, 'r') as f:
+        for line in f:
+            if line.startswith("#"):
+                continue
+            fields = line.strip().split("\t")
+            if fields[2] != "gene":
+                continue
+            chrom = fields[0]
+            if chrom not in ["chr1", "chr10"]:
+                continue
+            if chrom not in gene_region_dict:
+                gene_region_dict[chrom] = []
+            start = min(int(fields[3]), int(fields[4]))
+            end = max(int(fields[3]), int(fields[4]))
+            gene_region_dict[chrom].append((start, end))
+
+    return gene_region_dict
 
 if __name__ == "__main__":
 
@@ -325,22 +384,25 @@ if __name__ == "__main__":
     sample_pop_file = "../1KG_ONT/hla/20130606_sample_info.xlsx"
     chr1_vcf = "/home/shuaiw/methylation/data/hla/phased_snps/20201028_3202_phased/CCDG_14151_B01_GRM_WGS_2020-08-05_chr1.filtered.shapeit2-duohmm-phased.vcf.gz"
     chr10_vcf = "/home/shuaiw/methylation/data/hla/phased_snps/20201028_3202_phased/CCDG_14151_B01_GRM_WGS_2020-08-05_chr10.filtered.shapeit2-duohmm-phased.vcf.gz"
+    gtf = "/home/shuaiw/methylation/data/hla/gencode.v44.annotation.gtf"
     super_pop_dict = get_super_pop(super_pop_file)
     sample_pop_dict, pop_set, sample_super_pop_dict, super_pop_set = get_sample_pop(sample_pop_file, super_pop_dict)
     allele_count_dict = defaultdict(int)
     print (super_pop_set)
+    gene_region_dict = read_gene_region(gtf)
+    print ("len(gene_region_dict)", len(gene_region_dict))
 
     pop_list = ['ACB', 'ASW', 'BEB', 'CDX', 'CEU', 'CHB', 'CHS', 'CLM', 'ESN', 'FIN', 'GBR', 'GIH', 'GWD', 'IBS', 'ITU', 'JPT', 'KHV', 'LWK', 'MSL', 'MXL', 'PEL', 'PJL', 'PUR', 'STU', 'TSI', 'YRI']
-    chr1_allele_pop_freq_dict = read_snp_freq(chr1_vcf, sample_pop_dict, pop_list)
-    chr10_allele_pop_freq_dict = read_snp_freq(chr10_vcf, sample_pop_dict, pop_list)
-    empirical_correlations = empirical_test(chr1_allele_pop_freq_dict, chr10_allele_pop_freq_dict, pop_list)
+    print ("len(pop_list)", len(pop_list))
+    chr1_allele_pop_freq_dict = read_snp_freq(chr1_vcf, sample_pop_dict, pop_list, gene_region_dict)
+    chr10_allele_pop_freq_dict = read_snp_freq(chr10_vcf, sample_pop_dict, pop_list, gene_region_dict)
+    empirical_correlations = empirical_test(chr1_allele_pop_freq_dict, chr10_allele_pop_freq_dict, pop_list, 1000)
 
     TCR_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="TR")
     IG_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="IG")
     CYP_allele_pop_freq_dict, pop_list = read_cyp_csv(cyp_csv, sample_pop_dict)
     HLA_allele_pop_freq_dict, pop_list = read_tab(hla_csv, sample_pop_dict, family="HLA")
     KIR_allele_pop_freq_dict, pop_list = read_tab(kir_csv, sample_pop_dict, family="KIR")
-
 
     family_list = ["HLA", "KIR", "CYP", "IG", "TCR"]
     family_dict = {
@@ -350,6 +412,7 @@ if __name__ == "__main__":
         "IG": IG_pop_freq_dict,
         "TCR": TCR_pop_freq_dict
     }
+
 
     total_df = pd.DataFrame([])
     final_allele_freq_dict = {}
