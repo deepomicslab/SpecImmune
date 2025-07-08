@@ -194,6 +194,31 @@ def plot(final_freq_dict, allele_1, allele_2, pop_list, super_pop_dict):
     ## save the plot
     plt.savefig(f"./corr_{allele_1}_{allele_2}.png")
 
+
+def permutation_test(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, num_iterations=10000):
+    """
+    Perform a permutation test to calculate empirical p-values for the correlation between HLA and KIR allele frequencies.
+    """
+    permutation_correlations = []
+    HLA_allele_list = list(HLA_allele_pop_freq_dict.keys())
+    KIR_allele_list = list(KIR_allele_pop_freq_dict.keys())
+    for i in range(num_iterations):
+        ## randomly select one HLA allele and one KIR allele
+        HLA_allele = random.sample(HLA_allele_list, 1)[0]
+        KIR_allele = random.sample(KIR_allele_list, 1)[0]
+        hla_freqs = [HLA_allele_pop_freq_dict[HLA_allele][pop] for pop in pop_list]
+        kir_freqs = [KIR_allele_pop_freq_dict[KIR_allele][pop] for pop in pop_list]
+        ## the freq in each pop should be >0
+        if any(freq == 0 for freq in hla_freqs) or any(freq == 0 for freq in kir_freqs):
+            continue
+        ## get pearson correlation
+        corr, _ = pearsonr(hla_freqs, kir_freqs)
+        permutation_correlations.append(abs(corr))
+
+    permutation_correlations = sorted(permutation_correlations)
+    return permutation_correlations
+
+
 def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, corr_tag, empirical_correlations):
     corr_num = 0
     data = []
@@ -213,9 +238,6 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
             empirical_pval = sum(abs(corr) < abs(emp_corr) for emp_corr in empirical_correlations) / len(empirical_correlations)
             data.append((HLA_allele, KIR_allele, corr, pval, corr_tag, empirical_pval))
 
-
-    print (f"Total number of significant correlations: {corr_num}")
-    ## to df
     df = pd.DataFrame(data, columns=["HLA_allele", "KIR_allele", "Pearson_r", "p_value", "corr_tag", "empirical_p_value"])
     ## correct p-values
 
@@ -227,7 +249,13 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
     print(f"Number of significant associations after correction: {len(df)}")
     ## sort by p_value_corrected
     df = df.sort_values(by="p_value_corrected", ascending=True)
-
+    permutation_correlations = permutation_test(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, 10000)
+    ### add permutation p-value
+    for index, row in df.iterrows():
+        permutation_p_val = sum(abs(row["Pearson_r"]) < abs(emp_corr) for emp_corr in permutation_correlations) / len(permutation_correlations)
+        df.at[index, "permutation_p_value"] = permutation_p_val
+    df = df[df["permutation_p_value"] < 0.05]
+    print (f"Number of significant associations after permutation test: {len(df)}")
     print (df)
     # plot(final_freq_dict, "IGKV2-29*01", "HLA-DPA1*01", pop_list, super_pop_dict)
     return df, final_freq_dict
@@ -260,7 +288,7 @@ def read_snp_freq(chr1_vcf, sample_pop_dict, pop_list, gene_region_dict):
 
     for variant in vcf:
         ## randomly select with a rate of 1%
-        if random.random() > 0.1:
+        if random.random() > 1:
             continue
         if not (variant.REF != '.' and variant.ALT[0] != '.'):
             continue
@@ -310,7 +338,7 @@ def read_snp_freq(chr1_vcf, sample_pop_dict, pop_list, gene_region_dict):
         # for pop in pop_list:
         #     print (f"{variant.ID} {pop}: {round(allele_pop_freq_dict[variant.ID][pop], 2)}, {pop_ref_count[pop]}, {pop_total_alleles[pop]}")
 
-        if len(allele_pop_freq_dict) > 1000:
+        if len(allele_pop_freq_dict) > 100:
             break
     print (len(allele_pop_freq_dict), "variants")
     return allele_pop_freq_dict
@@ -396,7 +424,7 @@ if __name__ == "__main__":
     print ("len(pop_list)", len(pop_list))
     chr1_allele_pop_freq_dict = read_snp_freq(chr1_vcf, sample_pop_dict, pop_list, gene_region_dict)
     chr10_allele_pop_freq_dict = read_snp_freq(chr10_vcf, sample_pop_dict, pop_list, gene_region_dict)
-    empirical_correlations = empirical_test(chr1_allele_pop_freq_dict, chr10_allele_pop_freq_dict, pop_list, 1000)
+    empirical_correlations = empirical_test(chr1_allele_pop_freq_dict, chr10_allele_pop_freq_dict, pop_list, 100)
 
     TCR_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="TR")
     IG_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="IG")
