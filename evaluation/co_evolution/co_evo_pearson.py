@@ -256,6 +256,7 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
         df.at[index, "permutation_p_value"] = permutation_p_val
     df = df[df["permutation_p_value"] < 0.05]
     print (f"Number of significant associations after permutation test: {len(df)}")
+    # print (df)
     df = df[df["empirical_p_value"] < 0.05]
     print (f"Number of significant associations after empirical test: {len(df)}")
     print (df)
@@ -421,6 +422,7 @@ if __name__ == "__main__":
     chr10_vcf = "/home/shuaiw/methylation/data/hla/phased_snps/20201028_3202_phased/CCDG_14151_B01_GRM_WGS_2020-08-05_chr10.filtered.shapeit2-duohmm-phased.vcf.gz"
     gtf = "/home/shuaiw/methylation/data/hla/gencode.v44.annotation.gtf"
     alfred = "ALFRED/pearson/alfred_200_random_interchrom_pairwise_population_corr.tsv"
+    dbsnp = "dbSNP/dbSNP_pairwise_cor.tsv"
     super_pop_dict = get_super_pop(super_pop_file)
     sample_pop_dict, pop_set, sample_super_pop_dict, super_pop_set = get_sample_pop(sample_pop_file, super_pop_dict)
     allele_count_dict = defaultdict(int)
