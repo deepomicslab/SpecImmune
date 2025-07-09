@@ -454,8 +454,8 @@ if __name__ == "__main__":
             total_df = pd.concat([total_df, df], ignore_index=True)
             final_allele_freq_dict = {**final_allele_freq_dict, **final_freq_dict}
             
-    ## save the total df to csv
-    # total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
+    # save the total df to csv
+    total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
     # plot(final_allele_freq_dict, "IGHV7-81*01", "TRBV16*01", pop_list, super_pop_dict)
 
     # correlation_analysis(IG_pop_freq_dict, HLA_allele_pop_freq_dict, pop_list)
