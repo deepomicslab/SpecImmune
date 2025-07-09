@@ -256,10 +256,11 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
         df.at[index, "permutation_p_value"] = permutation_p_val
     df = df[df["permutation_p_value"] < 0.05]
     print (f"Number of significant associations after permutation test: {len(df)}")
+    df = df[df["empirical_p_value"] < 0.05]
+    print (f"Number of significant associations after empirical test: {len(df)}")
     print (df)
     # plot(final_freq_dict, "IGKV2-29*01", "HLA-DPA1*01", pop_list, super_pop_dict)
     return df, final_freq_dict
-
 
 def read_snp_freq(chr1_vcf, sample_pop_dict, pop_list, gene_region_dict):
     """
@@ -402,6 +403,12 @@ def read_gene_region(gtf):
 
     return gene_region_dict
 
+def alfred_empirical(alfred, num_iterations=10000):
+    df = pd.read_csv(alfred, sep='\t')
+    alfred_empirical_lists = df["corr_ref"].tolist()
+    alfred_empirical_lists = random.sample(alfred_empirical_lists, num_iterations)
+    return sorted(alfred_empirical_lists)
+
 if __name__ == "__main__":
 
     hla_csv = "/home/shuaiw/methylation/data/hla/genotypes/data/HLA_Table_S6.csv"
@@ -413,6 +420,7 @@ if __name__ == "__main__":
     chr1_vcf = "/home/shuaiw/methylation/data/hla/phased_snps/20201028_3202_phased/CCDG_14151_B01_GRM_WGS_2020-08-05_chr1.filtered.shapeit2-duohmm-phased.vcf.gz"
     chr10_vcf = "/home/shuaiw/methylation/data/hla/phased_snps/20201028_3202_phased/CCDG_14151_B01_GRM_WGS_2020-08-05_chr10.filtered.shapeit2-duohmm-phased.vcf.gz"
     gtf = "/home/shuaiw/methylation/data/hla/gencode.v44.annotation.gtf"
+    alfred = "ALFRED/pearson/alfred_200_random_interchrom_pairwise_population_corr.tsv"
     super_pop_dict = get_super_pop(super_pop_file)
     sample_pop_dict, pop_set, sample_super_pop_dict, super_pop_set = get_sample_pop(sample_pop_file, super_pop_dict)
     allele_count_dict = defaultdict(int)
@@ -422,9 +430,10 @@ if __name__ == "__main__":
 
     pop_list = ['ACB', 'ASW', 'BEB', 'CDX', 'CEU', 'CHB', 'CHS', 'CLM', 'ESN', 'FIN', 'GBR', 'GIH', 'GWD', 'IBS', 'ITU', 'JPT', 'KHV', 'LWK', 'MSL', 'MXL', 'PEL', 'PJL', 'PUR', 'STU', 'TSI', 'YRI']
     print ("len(pop_list)", len(pop_list))
-    chr1_allele_pop_freq_dict = read_snp_freq(chr1_vcf, sample_pop_dict, pop_list, gene_region_dict)
-    chr10_allele_pop_freq_dict = read_snp_freq(chr10_vcf, sample_pop_dict, pop_list, gene_region_dict)
-    empirical_correlations = empirical_test(chr1_allele_pop_freq_dict, chr10_allele_pop_freq_dict, pop_list, 100)
+    # chr1_allele_pop_freq_dict = read_snp_freq(chr1_vcf, sample_pop_dict, pop_list, gene_region_dict)
+    # chr10_allele_pop_freq_dict = read_snp_freq(chr10_vcf, sample_pop_dict, pop_list, gene_region_dict)
+    # empirical_correlations = empirical_test(chr1_allele_pop_freq_dict, chr10_allele_pop_freq_dict, pop_list, 100)
+    empirical_correlations = alfred_empirical(alfred, num_iterations=10000)
 
     TCR_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="TR")
     IG_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="IG")
