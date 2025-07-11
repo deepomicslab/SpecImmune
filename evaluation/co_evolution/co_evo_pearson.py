@@ -406,8 +406,11 @@ def read_gene_region(gtf):
 
 def alfred_empirical(alfred, num_iterations=10000):
     df = pd.read_csv(alfred, sep='\t')
-    alfred_empirical_lists = df["pearson_r"].tolist()
+    alfred_empirical_lists = df["corr_ref"].tolist()
     # alfred_empirical_lists = df["corr_ref"].tolist()
+    if len(alfred_empirical_lists) < num_iterations:
+        print(f"Warning: Not enough data points in ALFRED file. Using all {len(alfred_empirical_lists)} points.")
+        num_iterations = len(alfred_empirical_lists)
     alfred_empirical_lists = random.sample(alfred_empirical_lists, num_iterations)
     return sorted(alfred_empirical_lists)
 
@@ -425,6 +428,7 @@ if __name__ == "__main__":
     alfred = "ALFRED/pearson/alfred_200_random_interchrom_pairwise_population_corr.tsv"
     dbsnp = "dbSNP/dbSNP_pairwise_cor.tsv"
     gnomAD = "gnomAD/gene_pair_variant_pearson.tsv"
+    gnomAD = "gnomAD/interchromosomal_gene_pairs_correlation.tsv"
 
     super_pop_dict = get_super_pop(super_pop_file)
     sample_pop_dict, pop_set, sample_super_pop_dict, super_pop_set = get_sample_pop(sample_pop_file, super_pop_dict)
@@ -438,7 +442,7 @@ if __name__ == "__main__":
     # chr1_allele_pop_freq_dict = read_snp_freq(chr1_vcf, sample_pop_dict, pop_list, gene_region_dict)
     # chr10_allele_pop_freq_dict = read_snp_freq(chr10_vcf, sample_pop_dict, pop_list, gene_region_dict)
     # empirical_correlations = empirical_test(chr1_allele_pop_freq_dict, chr10_allele_pop_freq_dict, pop_list, 100)
-    empirical_correlations = alfred_empirical(gnomAD, num_iterations=900)
+    empirical_correlations = alfred_empirical(alfred, num_iterations=10000)
 
     TCR_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="TR")
     IG_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="IG")
