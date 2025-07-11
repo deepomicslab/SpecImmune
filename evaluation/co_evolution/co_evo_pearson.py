@@ -127,6 +127,9 @@ def read_ig_tcr_csv(csv, sample_pop_dict, family="TR"):
         gene = row["gene"]
         if gene[:2] != family:
             continue
+        ## skip if allele is nan
+        if pd.isna(row["allele_1"]) or pd.isna(row["allele_2"]):
+            continue
         allele_list = [row["allele_1"], row["allele_2"]]
         for allele in allele_list:
             if pop not in allele_sample_dict[allele]:
