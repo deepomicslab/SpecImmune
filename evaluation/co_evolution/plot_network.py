@@ -117,6 +117,8 @@ def plot(G, family_dict):
     plt.close()
 
 def load_graph():
+    ## define a graph
+    G = nx.Graph()
     corr_csv = "co_evo_pearson_results.csv"
     df = pd.read_csv(corr_csv)
     IG_TCR = ["TCR", "IG"]
@@ -132,23 +134,22 @@ def load_graph():
         family_list = compare_tag.split("_vs_")
         family_1 = family_list[0]
         family_2 = family_list[1]
-        # if family_1 in IG_TCR or family_2 in IG_TCR:
-        #     continue
 
         family_dict[gene_1] = family_1
         family_dict[gene_2] = family_2
+        G.add_node(gene_1, label=family_dict[gene_1], type=family_dict[gene_1])
+        G.add_node(gene_2, label=family_dict[gene_2], type=family_dict[gene_2])
 
         tag = f"{gene_1}_{gene_2}"
         if tag not in pair_dict:
             pair_dict[tag] = []
         pair_dict[tag].append(abs(r))
 
-    ## define a graph
-    G = nx.Graph()
     for tag, r_list in pair_dict.items():
         # print (tag, max(r_list), r_list)
         gene_1, gene_2 = tag.split("_")
         G.add_edge(gene_1, gene_2, weight=max(r_list))
+    nx.write_gml(G, "co_evolution_network.gml")
     return G, family_dict
 
 if __name__ == "__main__":
