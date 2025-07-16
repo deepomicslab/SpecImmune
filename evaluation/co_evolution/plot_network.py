@@ -104,6 +104,56 @@ def cluster(G, family_dict):
     edge_df = pd.DataFrame(data_list, columns=["Community_0", "Community_1", "Weight"])
     edge_df.to_csv("community_edges.csv", index=False)
 
+def plot_community(colors):
+    partition_df = pd.read_csv("community_structure.csv")
+    # Count family occurrences in each community
+    family_counts = partition_df.groupby(['Community', 'Family']).size().reset_index(name='Count')
+    # Calculate proportions
+    total_per_community = family_counts.groupby('Community')['Count'].transform('sum')
+    family_counts['Proportion'] = family_counts['Count'] / total_per_community
+
+    # Pivot for plotting
+    pivot_df = family_counts.pivot(index='Community', columns='Family', values='Proportion').fillna(0)
+
+    # Only plot first 2 communities (Community 0 and Community 1)
+    top_communities = [0, 1]
+    pivot_df = pivot_df.loc[top_communities]
+    pivot_df = pivot_df.reset_index().melt(id_vars='Community', var_name='Family', value_name='Proportion')
+
+    plt.figure(figsize=(6, 3))
+    num_communities = len(top_communities)
+    ## use colors as color palette
+    fig, axes = plt.subplots(1, num_communities, figsize=(5 * num_communities, 5))
+    if num_communities == 1:
+        axes = [axes]
+    for i, community in enumerate(top_communities):
+        data = pivot_df[pivot_df['Community'] == community]
+        families = data['Family']
+        proportions = data['Proportion']
+        axes[i].pie(
+            proportions,
+            labels=families,
+            autopct='%1.1f%%',
+            startangle=90,
+            counterclock=False,
+            colors=colors[:len(proportions)]
+        )
+        axes[i].set_title(f'Community {community}')
+        
+    # plt.tight_layout()
+    plt.savefig("family_proportions_in_community.pdf")
+    plt.clf()
+
+    ## plot the proportions of community in each family in a bar chart
+    family_proportions = partition_df.groupby('Family')['Community'].value_counts(normalize=True).unstack().fillna(0)
+    family_proportions = family_proportions.loc[:, top_communities]
+    family_proportions.plot(kind='bar', stacked=True, figsize=(5, 3.5), color=colors[:len(top_communities)])
+    plt.xlabel('Family')
+    plt.ylabel('Proportion')
+    plt.legend(title='Community')
+    plt.savefig("community_proportions_in_family.pdf")
+
+
 
 def plot(G, family_dict):
     ## group the nodes by family
@@ -175,9 +225,11 @@ def load_graph():
     return G, family_dict
 
 if __name__ == "__main__":
+    colors = ["#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"]
     G, family_dict = load_graph()
     # profile_graph(G, family_dict)
     # plot(G, family_dict)
-    cluster(G, family_dict)
+    # cluster(G, family_dict)
+    plot_community(colors)
 
 
