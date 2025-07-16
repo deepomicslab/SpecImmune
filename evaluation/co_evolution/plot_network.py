@@ -3,6 +3,7 @@ import networkx as nx
 # Draw the graph
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from networkx.algorithms.community import label_propagation_communities
 
 
 def profile_graph(G, family_dict):
@@ -50,17 +51,17 @@ def profile_graph(G, family_dict):
 
 def cluster(G, family_dict):
 
-    import community as community_louvain
-    partition = community_louvain.best_partition(G)
-    print("\nCommunity structure (Louvain method):")
-    community_count = {}
-    for node, community in partition.items():
-        if community not in community_count:
-            community_count[community] = 0
-        community_count[community] += 1
+    # import community as community_louvain
+    # partition = community_louvain.best_partition(G)
+    # print("\nCommunity structure (Louvain method):")
+    # community_count = {}
+    # for node, community in partition.items():
+    #     if community not in community_count:
+    #         community_count[community] = 0
+    #     community_count[community] += 1
 
-    for community, count in community_count.items():
-        print(f"Community {community}: {count} nodes")
+    # for community, count in community_count.items():
+    #     print(f"Community {community}: {count} nodes")
     
     # ## print the node of each community
     # print("\nNodes in each community:")
@@ -72,7 +73,7 @@ def cluster(G, family_dict):
     # for community, nodes in community_nodes.items():
     #     print(f"Community {community}: {', '.join(sorted(nodes))}")
 
-    from networkx.algorithms.community import label_propagation_communities
+    
     communities = label_propagation_communities(G)
     print("\nCommunity structure (Label Propagation method):")
     for i, community in enumerate(communities):
@@ -82,6 +83,27 @@ def cluster(G, family_dict):
     for i, community in enumerate(communities):
         community_nodes = sorted(community)
         print(f"Community {i}: {', '.join(community_nodes)}")
+    ### save the community structure to a CSV file
+    data = []
+    for i, community in enumerate(communities):
+        if i == 0:
+            first = community
+        elif i == 1:
+            second = community
+        for node in community:
+            data.append({"Community": i, "Node": node, "Family": family_dict.get(node, "Unknown")})
+    partition_df = pd.DataFrame(data)
+    partition_df.to_csv("community_structure.csv", index=False)
+
+    data_list = []
+    for u, v, data in G.edges(data=True):
+        if u in first and v in second:  # Example condition to filter edges
+            data_list.append([u, v, data['weight']])
+        elif v in first and u in second:
+            data_list.append([v, u, data['weight']])
+    edge_df = pd.DataFrame(data_list, columns=["Community_0", "Community_1", "Weight"])
+    edge_df.to_csv("community_edges.csv", index=False)
+
 
 def plot(G, family_dict):
     ## group the nodes by family
