@@ -435,6 +435,7 @@ if __name__ == "__main__":
     dbsnp = "dbSNP/dbSNP_pairwise_cor.tsv"
     gnomAD = "gnomAD/gene_pair_variant_pearson.tsv"
     gnomAD = "gnomAD/interchromosomal_gene_pairs_correlation.tsv"
+    colors = ["#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"]
 
     super_pop_dict = get_super_pop(super_pop_file)
     sample_pop_dict, pop_set, sample_super_pop_dict, super_pop_set = get_sample_pop(sample_pop_file, super_pop_dict)
@@ -491,6 +492,7 @@ if __name__ == "__main__":
     # Create a 5x2 grid for subplots
     fig, axes = plt.subplots(5, 2, figsize=(12, 24))
     axes = axes.flatten()
+    super_pop_order = sorted(list(super_pop_set))
 
 
     for idx, info in enumerate(plot_info):
@@ -503,11 +505,14 @@ if __name__ == "__main__":
         for i in range(len(final_allele_freq_dict[allele_1])):
             data2.append((final_allele_freq_dict[allele_1][i], final_allele_freq_dict[allele_2][i], pop_list[i], super_pop_dict[pop_list[i]]))
         df2 = pd.DataFrame(data2, columns=[f"{allele_1}_freq", f"{allele_2}_freq", "Population", "Super_Population"])
+        ## sort the df2 by super_pop_order
+        df2["Super_Population"] = pd.Categorical(df2["Super_Population"], categories=super_pop_order, ordered=True)
+        df2 = df2.sort_values("Super_Population")
         ax = axes[idx]
         if idx == 0:
-            scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population", ax=ax)
+            scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population", ax=ax, palette=colors)
         else:
-            scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population",ax=ax, legend=False)
+            scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population",ax=ax, legend=False, palette=colors)
         sns.regplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", scatter=False, color='black', ax=ax)
         ax.set_xlabel(f"{allele_1} Frequency")
         ax.set_ylabel(f"{allele_2} Frequency")

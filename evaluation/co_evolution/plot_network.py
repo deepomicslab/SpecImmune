@@ -107,6 +107,7 @@ def cluster(G, family_dict):
 def plot_community(colors):
     partition_df = pd.read_csv("community_structure.csv")
     # Count family occurrences in each community
+    family_order = ["HLA", "KIR", "IG", "TCR", "CYP"]
     family_counts = partition_df.groupby(['Community', 'Family']).size().reset_index(name='Count')
     # Calculate proportions
     total_per_community = family_counts.groupby('Community')['Count'].transform('sum')
@@ -114,6 +115,8 @@ def plot_community(colors):
 
     # Pivot for plotting
     pivot_df = family_counts.pivot(index='Community', columns='Family', values='Proportion').fillna(0)
+    ## sort the columns by family_order
+    pivot_df = pivot_df.reindex(columns=family_order, fill_value=0)
 
     # Only plot first 2 communities (Community 0 and Community 1)
     top_communities = [0, 1]
