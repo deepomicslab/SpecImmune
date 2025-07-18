@@ -227,12 +227,43 @@ def load_graph():
     nx.write_gml(G, "co_evolution_network.gml")
     return G, family_dict
 
+def load_allele_graph():
+    ## define a graph
+    G = nx.Graph()
+    corr_csv = "co_evo_pearson_results.csv"
+    df = pd.read_csv(corr_csv)
+    IG_TCR = ["TCR", "IG"]
+    # df = df[df["corr_tag"] == "HLA_vs_KIR"]
+    family_dict = {}
+    for i, row in df.iterrows():
+        gene_1 = row["HLA_allele"].split("*")[0]
+        # print (i, row["KIR_allele"])
+        gene_2 = row["KIR_allele"].split("*")[0]
+        r = row["Pearson_r"]
+        compare_tag = row["corr_tag"]
+        family_list = compare_tag.split("_vs_")
+        family_1 = family_list[0]
+        family_2 = family_list[1]
+        allele_1 = row["HLA_allele"]
+        allele_2 = row["KIR_allele"]
+
+        family_dict[gene_1] = family_1
+        family_dict[gene_2] = family_2
+        G.add_node(allele_1, label=allele_1, type=family_dict[gene_1])
+        G.add_node(allele_2, label=allele_2, type=family_dict[gene_2])
+        G.add_edge(allele_1, allele_2, weight=abs(r))
+
+    nx.write_gml(G, "allele_co_evolution_network.gml")
+    return G, family_dict
+
+
 if __name__ == "__main__":
     colors = ["#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"]
-    G, family_dict = load_graph()
+    # G, family_dict = load_graph()
+    load_allele_graph()
     # profile_graph(G, family_dict)
     # plot(G, family_dict)
     # cluster(G, family_dict)
-    plot_community(colors)
+    # plot_community(colors)
 
 

@@ -420,6 +420,16 @@ def alfred_empirical(alfred, num_iterations=10000):
     alfred_empirical_lists = random.sample(alfred_empirical_lists, num_iterations)
     return sorted(alfred_empirical_lists)
 
+def output_raw_data(family_dict, pop_list):
+    data = []
+    for family, allele_pop_freq_dict in family_dict.items():
+        for allele in allele_pop_freq_dict:
+            allele_freqs = [allele_pop_freq_dict[allele][pop] for pop in pop_list]
+            data.append((family, allele, *allele_freqs))
+    df = pd.DataFrame(data, columns=["Family", "Allele"] + pop_list)
+    df.to_csv(f"./allele_pop_freqs.tsv", sep='\t', index=False)
+
+
 if __name__ == "__main__":
 
     hla_csv = "/home/shuaiw/methylation/data/hla/genotypes/data/HLA_Table_S6.csv"
@@ -464,64 +474,66 @@ if __name__ == "__main__":
         "TCR": TCR_pop_freq_dict
     }
 
-    plot_info = []
-    total_df = pd.DataFrame([])
-    final_allele_freq_dict = {}
-    for i in range(len(family_list)):
-        for j in range(i+1, len(family_list)):
-            family_1 = family_list[i]
-            family_2 = family_list[j]
-            corr_tag = f"{family_1}_vs_{family_2}"
-            print(f"Correlation between {family_1} and {family_2}:")
-            df, final_freq_dict = correlation_analysis(family_dict[family_1], family_dict[family_2], pop_list, corr_tag, empirical_correlations)
-            ## get first row of df
-            if not df.empty:
-                print(df.iloc[0])
-            plot_info.append([corr_tag, df.iloc[0]["HLA_allele"], df.iloc[0]["KIR_allele"], df.iloc[0]["Pearson_r"], df.iloc[0]["p_value_corrected"]])
-            total_df = pd.concat([total_df, df], ignore_index=True)
-            final_allele_freq_dict = {**final_allele_freq_dict, **final_freq_dict}
-        #     if j > 1:
-        #         break
-        # break
+    output_raw_data(family_dict, pop_list)
+
+    # plot_info = []
+    # total_df = pd.DataFrame([])
+    # final_allele_freq_dict = {}
+    # for i in range(len(family_list)):
+    #     for j in range(i+1, len(family_list)):
+    #         family_1 = family_list[i]
+    #         family_2 = family_list[j]
+    #         corr_tag = f"{family_1}_vs_{family_2}"
+    #         print(f"Correlation between {family_1} and {family_2}:")
+    #         df, final_freq_dict = correlation_analysis(family_dict[family_1], family_dict[family_2], pop_list, corr_tag, empirical_correlations)
+    #         ## get first row of df
+    #         if not df.empty:
+    #             print(df.iloc[0])
+    #         plot_info.append([corr_tag, df.iloc[0]["HLA_allele"], df.iloc[0]["KIR_allele"], df.iloc[0]["Pearson_r"], df.iloc[0]["p_value_corrected"]])
+    #         total_df = pd.concat([total_df, df], ignore_index=True)
+    #         final_allele_freq_dict = {**final_allele_freq_dict, **final_freq_dict}
+    #     #     if j > 1:
+    #     #         break
+    #     # break
 
             
     # save the total df to csv
     # total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
 
     
-    # Create a 5x2 grid for subplots
-    fig, axes = plt.subplots(5, 2, figsize=(12, 24))
-    axes = axes.flatten()
-    super_pop_order = sorted(list(super_pop_set))
+    # # Create a 5x2 grid for subplots
+    # fig, axes = plt.subplots(5, 2, figsize=(12, 24))
+    # axes = axes.flatten()
+    # super_pop_order = sorted(list(super_pop_set))
 
 
-    for idx, info in enumerate(plot_info):
-        if idx >= 10:
-            break
-        corr_tag, allele_1, allele_2, r, p_adjusted = info
-        print(f"Plotting {corr_tag} for {allele_1} and {allele_2} with r={r:.2f}, p.adj={p_adjusted:.2e}")
-        # Prepare data
-        data2 = []
-        for i in range(len(final_allele_freq_dict[allele_1])):
-            data2.append((final_allele_freq_dict[allele_1][i], final_allele_freq_dict[allele_2][i], pop_list[i], super_pop_dict[pop_list[i]]))
-        df2 = pd.DataFrame(data2, columns=[f"{allele_1}_freq", f"{allele_2}_freq", "Population", "Super_Population"])
-        ## sort the df2 by super_pop_order
-        df2["Super_Population"] = pd.Categorical(df2["Super_Population"], categories=super_pop_order, ordered=True)
-        df2 = df2.sort_values("Super_Population")
-        ax = axes[idx]
-        if idx == 0:
-            scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population", ax=ax, palette=colors)
-        else:
-            scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population",ax=ax, legend=False, palette=colors)
-        sns.regplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", scatter=False, color='black', ax=ax)
-        ax.set_xlabel(f"{allele_1} Frequency")
-        ax.set_ylabel(f"{allele_2} Frequency")
-        ax.set_title(f"Correlation: {r:.2f}, p.adj: {p_adjusted:.2e}")
+    # for idx, info in enumerate(plot_info):
+    #     if idx >= 10:
+    #         break
+    #     corr_tag, allele_1, allele_2, r, p_adjusted = info
+    #     print(f"Plotting {corr_tag} for {allele_1} and {allele_2} with r={r:.2f}, p.adj={p_adjusted:.2e}")
+    #     # Prepare data
+    #     data2 = []
+    #     for i in range(len(final_allele_freq_dict[allele_1])):
+    #         data2.append((final_allele_freq_dict[allele_1][i], final_allele_freq_dict[allele_2][i], pop_list[i], super_pop_dict[pop_list[i]]))
+    #     df2 = pd.DataFrame(data2, columns=[f"{allele_1}_freq", f"{allele_2}_freq", "Population", "Super_Population"])
+    #     ## sort the df2 by super_pop_order
+    #     df2["Super_Population"] = pd.Categorical(df2["Super_Population"], categories=super_pop_order, ordered=True)
+    #     df2 = df2.sort_values("Super_Population")
+    #     ax = axes[idx]
+    #     if idx == 0:
+    #         scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population", ax=ax, palette=colors)
+    #     else:
+    #         scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population",ax=ax, legend=False, palette=colors)
+    #     sns.regplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", scatter=False, color='black', ax=ax)
+    #     ax.set_xlabel(f"{allele_1} Frequency")
+    #     ax.set_ylabel(f"{allele_2} Frequency")
+    #     ax.set_title(f"Correlation: {r:.2f}, p.adj: {p_adjusted:.2e}")
 
 
 
-    plt.savefig("plots/corr_all_subplots.pdf")
-    plt.clf()
+    # plt.savefig("plots/corr_all_subplots.pdf")
+    # plt.clf()
 
 
 
