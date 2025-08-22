@@ -1,4 +1,4 @@
-# SpecImmune: A Tool for Accurate Typing of Diverse Immune-Related Gene Families from Long-Read Sequencing Data
+# A Scalable Framework for Comprehensive Typing of Polymorphic Immune Genes from Long-Read Data
 
 **SpecImmune** is a bioinformatics software tool designed to accurately type five key immune-related gene families—**HLA, KIR, IG, TCR, and CYP**—from long-read sequencing data. These genes are critical for human immune functions and drug metabolism, but their genetic complexity makes them difficult to decode using traditional short-read sequencing methods. SpecImmune leverages the advantages of long-read sequencing technologies, such as **Nanopore** and **PacBio**, to provide highly accurate genotyping of these gene families.
 
@@ -11,7 +11,7 @@
    It supports whole-genome sequencing (WGS) and targeted amplicon sequencing data from various long-read sequencing platforms like ONT and PacBio.
 
 3. **Superior Performance**  
-   SpecImmune outperforms existing tools such as **SpecHLA**, **HLA*LA**, and **Pangu** in typing accuracy, particularly for **HLA** and **CYP2D6** genes. It is also the only tool capable of typing **KIR** and germline **IG/TCR** from long-read data.
+   SpecImmune outperforms existing tools such as **SpecHLA**, **HLA*LA**, and **Pangu** in typing accuracy, particularly for **HLA** and **CYP** genes. It is also the only tool capable of typing **KIR** and germline **IG/TCR** from long-read data.
 
 4. **Consensus Sequence Reconstruction**  
    It bins reads to alleles and reconstructs consensus sequences, ensuring high-quality haplotype sequences for each typed gene.
@@ -458,3 +458,5 @@ bioRxiv 2025.02.04.636381; doi: https://doi.org/10.1101/2025.02.04.636381
 
 ## Getting help
 Should you have any queries, please feel free to contact us via opening an issue or sending an email, we will reply as soon as possible (wshuai294@gmail.com).
+
+
