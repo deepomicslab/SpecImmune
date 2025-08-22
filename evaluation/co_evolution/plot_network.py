@@ -113,6 +113,8 @@ def plot_community(colors):
     total_per_community = family_counts.groupby('Community')['Count'].transform('sum')
     family_counts['Proportion'] = family_counts['Count'] / total_per_community
 
+    print (family_counts)
+
     # Pivot for plotting
     pivot_df = family_counts.pivot(index='Community', columns='Family', values='Proportion').fillna(0)
     ## sort the columns by family_order
@@ -260,10 +262,10 @@ def load_allele_graph():
 if __name__ == "__main__":
     colors = ["#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"]
     # G, family_dict = load_graph()
-    load_allele_graph()
+    # load_allele_graph()
     # profile_graph(G, family_dict)
     # plot(G, family_dict)
     # cluster(G, family_dict)
-    # plot_community(colors)
+    plot_community(colors)
 
 
