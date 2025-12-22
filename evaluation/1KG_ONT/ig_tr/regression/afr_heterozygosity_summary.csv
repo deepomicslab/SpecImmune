@@ -1,0 +1,5 @@
+approach,afr_higher,p_value,effect_size
+Residual Analysis,True,4.307291856605747e-90,0.2837609911005106
+Mann-Whitney U,True,3.64278433488479e-253,U=15882340818
+ANCOVA,True,1.1102230246251565e-16,0.28376383930504345
+Depth-Matched,True,See bins,0.2894162193283551

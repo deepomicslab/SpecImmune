@@ -1,0 +1,4 @@
+Model,R²,Predictors
+Depth only,0.014064329319114943,1
+All Technical,0.07590538787498047,3
+Technical + Population,0.07716702650218177,7

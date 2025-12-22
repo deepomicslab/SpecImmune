@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import allel
 import scipy
 from scipy.spatial import distance
 from collections import defaultdict
@@ -80,8 +79,6 @@ def read_alleles(allele_file, super_pop_dict, sample_pop_dict,read_num_cutoff=10
 
     for index, row in df.iterrows():
         if row['Sample'] not in sample_pop_dict:
-            # print ("no pop info for sample", row['Sample'])
-            # continue
             pop = 'Non-pop'
             super_pop = 'Non-pop'
         else:
@@ -532,18 +529,17 @@ def count_hete_freq():
 
     
     
+if __name__ == "__main__":
+    super_pop_file = "../hla/20131219.populations.tsv"
+    sample_pop_file = "../hla/20130606_sample_info.xlsx"
+    allele_file = "merged_samples.ig_tr.csv"
 
+    super_pop_dict = get_super_pop(super_pop_file)
+    sample_pop_dict = get_sample_pop(sample_pop_file)
 
-super_pop_file = "../hla/20131219.populations.tsv"
-sample_pop_file = "../hla/20130606_sample_info.xlsx"
-allele_file = "merged_samples.ig_tr.csv"
+    alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict,sample_gene_dict \
+        = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 99)
 
-super_pop_dict = get_super_pop(super_pop_file)
-sample_pop_dict = get_sample_pop(sample_pop_file)
-
-# alleles_dict, alleles_gene_dict, alleles_sample_dict,pop_alleles_dict,sample_gene_dict \
-#     = read_alleles(allele_file, super_pop_dict, sample_pop_dict, 10, 99)
-
-# count_vdj(sample_gene_dict)
-# count_enriched_ratio()
-count_hete_freq()
+    count_vdj(sample_gene_dict)
+    # count_enriched_ratio()
+    # count_hete_freq()
