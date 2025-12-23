@@ -13,6 +13,8 @@ import gzip
 import random
 from cyvcf2 import VCF
 from collections import defaultdict
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LinearRegression
 
 
 
@@ -201,6 +203,37 @@ def plot(final_freq_dict, allele_1, allele_2, pop_list, super_pop_dict, r, p_adj
     plt.clf()
 
 
+def bootstrap_correlation(freq1, freq2, n_bootstrap=1000):
+    """
+    Bootstrap resampling to assess correlation stability.
+    Sample populations with replacement, keeping all allele frequencies within each population.
+    """
+    bootstrap_corrs = []
+    n_pops = len(freq1)
+    
+    for _ in range(n_bootstrap):
+        # Sample populations with replacement
+        boot_indices = np.random.choice(n_pops, size=n_pops, replace=True)
+        boot_freq1 = [freq1[i] for i in boot_indices]
+        boot_freq2 = [freq2[i] for i in boot_indices]
+        
+        # Compute correlation on bootstrap sample
+        corr, _ = pearsonr(boot_freq1, boot_freq2)
+        bootstrap_corrs.append(corr)
+    
+    bootstrap_corrs = np.array(bootstrap_corrs)
+    # Confidence intervals (95%)
+    ci_lower = np.percentile(bootstrap_corrs, 2.5)
+    ci_upper = np.percentile(bootstrap_corrs, 97.5)
+    # Sign stability (proportion with same sign as observed)
+    obs_corr = pearsonr(freq1, freq2)[0]
+    sign_stability = np.mean(np.sign(bootstrap_corrs) == np.sign(obs_corr))
+    # Bootstrap p-value (proportion crossing zero)
+    bootstrap_pval = np.mean(np.sign(bootstrap_corrs) != np.sign(obs_corr))
+    
+    return ci_lower, ci_upper, sign_stability, bootstrap_pval
+
+
 def permutation_test(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, num_iterations=10000):
     """
     Perform a permutation test to calculate empirical p-values for the correlation between HLA and KIR allele frequencies.
@@ -225,7 +258,7 @@ def permutation_test(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_lis
     return permutation_correlations
 
 
-def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, corr_tag, empirical_correlations):
+def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, corr_tag, empirical_correlations, pcs=None):
     corr_num = 0
     data = []
     final_freq_dict = {}
@@ -240,11 +273,34 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
             final_freq_dict[KIR_allele] = kir_freqs
             ## get pearson correlation
             corr, pval = pearsonr(hla_freqs, kir_freqs)
+            
+            ## PC-adjusted p-value
+            if pcs is not None:
+                hla_arr = np.array(hla_freqs).reshape(-1, 1)
+                kir_arr = np.array(kir_freqs).reshape(-1, 1)
+                reg1 = LinearRegression().fit(pcs, hla_arr)
+                reg2 = LinearRegression().fit(pcs, kir_arr)
+                resid1 = hla_arr - reg1.predict(pcs)
+                resid2 = kir_arr - reg2.predict(pcs)
+                _, pval_pc = pearsonr(resid1.flatten(), resid2.flatten())
+            else:
+                pval_pc = pval
+            
+            if pval > 0.05 or pval_pc > 0.05:
+                continue
+
+            ## Bootstrap analysis
+            ci_lower, ci_upper, sign_stability, bootstrap_pval = bootstrap_correlation(hla_freqs, kir_freqs, n_bootstrap=1000)
+            
             ## calculate empirical p-value
             empirical_pval = sum(abs(corr) < abs(emp_corr) for emp_corr in empirical_correlations) / len(empirical_correlations)
-            data.append((HLA_allele, KIR_allele, corr, pval, corr_tag, empirical_pval))
+            data.append((HLA_allele, KIR_allele, corr, pval, pval_pc, 
+                        ci_lower, ci_upper, sign_stability, bootstrap_pval, 
+                        corr_tag, empirical_pval))
 
-    df = pd.DataFrame(data, columns=["HLA_allele", "KIR_allele", "Pearson_r", "p_value", "corr_tag", "empirical_p_value"])
+    df = pd.DataFrame(data, columns=["HLA_allele", "KIR_allele", "Pearson_r", "p_value", "p_value_PC_adjusted",
+                                      "bootstrap_CI_lower", "bootstrap_CI_upper", "bootstrap_sign_stability", "bootstrap_pval",
+                                      "corr_tag", "empirical_p_value"])
     ## correct p-values
 
     p_values = df["p_value"].values
@@ -265,6 +321,8 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
     # print (df)
     df = df[df["empirical_p_value"] < 0.05]
     print (f"Number of significant associations after empirical test: {len(df)}")
+    df = df[df["p_value_PC_adjusted"] < 0.05]
+    print (f"Number of significant associations after PC-adjusted p-value: {len(df)}")
     print (df)
     # plot(final_freq_dict, "IGKV2-29*01", "HLA-DPA1*01", pop_list, super_pop_dict)
     return df, final_freq_dict
@@ -465,7 +523,8 @@ if __name__ == "__main__":
     HLA_allele_pop_freq_dict, pop_list = read_tab(hla_csv, sample_pop_dict, family="HLA")
     KIR_allele_pop_freq_dict, pop_list = read_tab(kir_csv, sample_pop_dict, family="KIR")
 
-    family_list = ["HLA", "KIR", "CYP", "IG", "TCR"]
+    # family_list = ["HLA", "KIR", "CYP", "IG", "TCR"]
+    family_list = ["HLA", "KIR"]
     family_dict = {
         "HLA": HLA_allele_pop_freq_dict,
         "KIR": KIR_allele_pop_freq_dict,
@@ -474,31 +533,43 @@ if __name__ == "__main__":
         "TCR": TCR_pop_freq_dict
     }
 
-    output_raw_data(family_dict, pop_list)
+    # output_raw_data(family_dict, pop_list)
 
-    # plot_info = []
-    # total_df = pd.DataFrame([])
-    # final_allele_freq_dict = {}
-    # for i in range(len(family_list)):
-    #     for j in range(i+1, len(family_list)):
-    #         family_1 = family_list[i]
-    #         family_2 = family_list[j]
-    #         corr_tag = f"{family_1}_vs_{family_2}"
-    #         print(f"Correlation between {family_1} and {family_2}:")
-    #         df, final_freq_dict = correlation_analysis(family_dict[family_1], family_dict[family_2], pop_list, corr_tag, empirical_correlations)
-    #         ## get first row of df
-    #         if not df.empty:
-    #             print(df.iloc[0])
-    #         plot_info.append([corr_tag, df.iloc[0]["HLA_allele"], df.iloc[0]["KIR_allele"], df.iloc[0]["Pearson_r"], df.iloc[0]["p_value_corrected"]])
-    #         total_df = pd.concat([total_df, df], ignore_index=True)
-    #         final_allele_freq_dict = {**final_allele_freq_dict, **final_freq_dict}
-    #     #     if j > 1:
-    #     #         break
-    #     # break
+    # Compute PCs for PC-adjusted correlations
+    all_freqs = []
+    for family_name, allele_pop_freq_dict in family_dict.items():
+        for allele, pop_freqs in allele_pop_freq_dict.items():
+            freq_vector = [pop_freqs[pop] for pop in pop_list]
+            if any(f > 0 for f in freq_vector):
+                all_freqs.append(freq_vector)
+    freq_matrix = np.array(all_freqs).T
+    pca = PCA(n_components=min(5, freq_matrix.shape[0], freq_matrix.shape[1]))
+    pcs = pca.fit_transform(freq_matrix)
+    print(f"PCs computed: {pcs.shape}, variance explained: {pca.explained_variance_ratio_[:3]}")
+
+    plot_info = []
+    total_df = pd.DataFrame([])
+    final_allele_freq_dict = {}
+    for i in range(len(family_list)):
+        for j in range(i+1, len(family_list)):
+            family_1 = family_list[i]
+            family_2 = family_list[j]
+            corr_tag = f"{family_1}_vs_{family_2}"
+            print(f"Correlation between {family_1} and {family_2}:")
+            df, final_freq_dict = correlation_analysis(family_dict[family_1], family_dict[family_2], pop_list, corr_tag, empirical_correlations, pcs=pcs)
+            ## get first row of df
+            if not df.empty:
+                print(df.iloc[0])
+            plot_info.append([corr_tag, df.iloc[0]["HLA_allele"], df.iloc[0]["KIR_allele"], df.iloc[0]["Pearson_r"], df.iloc[0]["p_value_corrected"]])
+            total_df = pd.concat([total_df, df], ignore_index=True)
+            final_allele_freq_dict = {**final_allele_freq_dict, **final_freq_dict}
+        #     if j > 1:
+        #         break
+        # break
 
             
     # save the total df to csv
-    # total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
+    total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
 
     
     # # Create a 5x2 grid for subplots
