@@ -604,6 +604,7 @@ if __name__ == "__main__":
     gnomAD = "gnomAD/interchromosomal_gene_pairs_correlation.tsv"
     colors = ["#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"]
 
+    # """
     super_pop_dict = get_super_pop(super_pop_file)
     sample_pop_dict, pop_set, sample_super_pop_dict, super_pop_set = get_sample_pop(sample_pop_file, super_pop_dict)
     allele_count_dict = defaultdict(int)
@@ -632,7 +633,7 @@ if __name__ == "__main__":
         "TCR": TCR_pop_freq_dict
     }
 
-    # output_raw_data(family_dict, pop_list)
+    output_raw_data(family_dict, pop_list)
 
     # Compute PCs for PC-adjusted correlations
     all_freqs = []
@@ -680,6 +681,12 @@ if __name__ == "__main__":
             
     # save the total df to csv
     total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
+    # """
+    total_df = pd.read_csv(f"./co_evo_pearson_results.csv")
+    ## filter total_df by split_sample_replication_rate exists and split_sample_replication_rate > 0.7
+    total_df = total_df[total_df["split_sample_replication_rate"].notna()]
+    total_df = total_df[total_df["split_sample_replication_rate"] >= 0.7]
+    total_df.to_csv(f"./co_evo_pearson_results.filtered.csv", index=False)
 
     
     # # Create a 5x2 grid for subplots

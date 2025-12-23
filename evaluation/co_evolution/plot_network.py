@@ -74,12 +74,12 @@ def cluster(G, family_dict):
     #     print(f"Community {community}: {', '.join(sorted(nodes))}")
 
     
-    communities = label_propagation_communities(G)
-    print("\nCommunity structure (Label Propagation method):")
+    communities = sorted(nx.connected_components(G), key=len, reverse=True)
+    print("\nCommunity structure (Connected Components method):")
     for i, community in enumerate(communities):
         print(f"Community {i}: {len(community)} nodes")
     ## print the nodes in each community
-    print("\nNodes in each community (Label Propagation):")
+    print("\nNodes in each community (Connected Components):")
     for i, community in enumerate(communities):
         community_nodes = sorted(community)
         print(f"Community {i}: {', '.join(community_nodes)}")
@@ -103,6 +103,12 @@ def cluster(G, family_dict):
             data_list.append([v, u, data['weight']])
     edge_df = pd.DataFrame(data_list, columns=["Community_0", "Community_1", "Weight"])
     edge_df.to_csv("community_edges.csv", index=False)
+
+    ## print connected components
+    components = list(nx.connected_components(G))
+    print(f"\nNumber of connected components: {len(components)}")
+    for i, component in enumerate(components):
+        print(f"Component {i}: {len(component)} nodes")
 
 def plot_community(colors):
     partition_df = pd.read_csv("community_structure.csv")
@@ -196,13 +202,15 @@ def plot(G, family_dict):
 def load_graph():
     ## define a graph
     G = nx.Graph()
-    corr_csv = "co_evo_pearson_results.csv"
+    corr_csv = "co_evo_pearson_results.filtered.csv"
     df = pd.read_csv(corr_csv)
     IG_TCR = ["TCR", "IG"]
     # df = df[df["corr_tag"] == "HLA_vs_KIR"]
     pair_dict = {}
     family_dict = {}
+    association_pair_num = 0
     for i, row in df.iterrows():
+        association_pair_num += 1
         gene_1 = row["HLA_allele"].split("*")[0]
         # print (i, row["KIR_allele"])
         gene_2 = row["KIR_allele"].split("*")[0]
@@ -227,12 +235,13 @@ def load_graph():
         gene_1, gene_2 = tag.split("_")
         G.add_edge(gene_1, gene_2, weight=max(r_list))
     nx.write_gml(G, "co_evolution_network.gml")
+    print (f"Total association pairs used to build the graph: {association_pair_num}")
     return G, family_dict
 
 def load_allele_graph():
     ## define a graph
     G = nx.Graph()
-    corr_csv = "co_evo_pearson_results.csv"
+    corr_csv = "co_evo_pearson_results.filtered.csv"
     df = pd.read_csv(corr_csv)
     IG_TCR = ["TCR", "IG"]
     # df = df[df["corr_tag"] == "HLA_vs_KIR"]
@@ -266,6 +275,6 @@ if __name__ == "__main__":
     profile_graph(G, family_dict)
     plot(G, family_dict)
     cluster(G, family_dict)
-    # plot_community(colors)
+    plot_community(colors)
 
 
