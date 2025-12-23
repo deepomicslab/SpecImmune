@@ -69,7 +69,7 @@ def read_tab(csv, sample_pop_dict, family="HLA"):
             else:
                 allele_pop_freq_dict[allele][pop] = allele_sample_dict[allele][pop] / (pop_num_dict[pop]*2)
 
-    return allele_pop_freq_dict, pop_list
+    return allele_pop_freq_dict, pop_list, allele_sample_dict, pop_num_dict
 
 def read_cyp_csv(csv, sample_pop_dict):
     sample_set = set()
@@ -111,7 +111,7 @@ def read_cyp_csv(csv, sample_pop_dict):
             else:
                 allele_pop_freq_dict[allele][pop] = allele_sample_dict[allele][pop] / (pop_num_dict[pop]*2)
 
-    return allele_pop_freq_dict, pop_list
+    return allele_pop_freq_dict, pop_list, allele_sample_dict, pop_num_dict
 
 def read_ig_tcr_csv(csv, sample_pop_dict, family="TR"):
     sample_set = set()
@@ -155,7 +155,7 @@ def read_ig_tcr_csv(csv, sample_pop_dict, family="TR"):
             else:
                 allele_pop_freq_dict[allele][pop] = allele_sample_dict[allele][pop] / (pop_num_dict[pop]*2)
 
-    return allele_pop_freq_dict, pop_list
+    return allele_pop_freq_dict, pop_list, allele_sample_dict, pop_num_dict
 
 ## read the file using pandas, sep is \t
 def get_super_pop(super_pop_file):
@@ -201,6 +201,90 @@ def plot(final_freq_dict, allele_1, allele_2, pop_list, super_pop_dict, r, p_adj
     plt.savefig(f"plots/corr_{allele_1}_{allele_2}.pdf")
     ## clean the plot
     plt.clf()
+
+
+def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_pairs, n_splits=100, alpha=0.05):
+    """
+    Split-sample replication: partition individuals within each population,
+    recompute frequencies, test edges in subset A, replicate in subset B.
+    
+    Returns replication rate for each allele pair.
+    """
+    replication_results = {pair: [] for pair in allele_pairs}
+    
+    for split_idx in range(n_splits):
+        # Split samples within each population
+        subset_A_dict = defaultdict(lambda: defaultdict(int))
+        subset_B_dict = defaultdict(lambda: defaultdict(int))
+        subset_A_count = defaultdict(int)
+        subset_B_count = defaultdict(int)
+        
+        for allele, pop_counts in allele_sample_dict.items():
+            for pop, count in pop_counts.items():
+                # Randomly split count into two subsets
+                count_A = np.random.binomial(count, 0.5)
+                count_B = count - count_A
+                subset_A_dict[allele][pop] = count_A
+                subset_B_dict[allele][pop] = count_B
+        
+        # Recompute population sizes for each subset
+        for pop in pop_list:
+            pop_A_size = int(pop_num_dict[pop] * 0.5)
+            pop_B_size = pop_num_dict[pop] - pop_A_size
+            subset_A_count[pop] = pop_A_size
+            subset_B_count[pop] = pop_B_size
+        
+        # Compute frequencies for subset A and B
+        def compute_freqs(sample_dict, pop_count):
+            freq_dict = {}
+            for allele, pop_counts in sample_dict.items():
+                freq_dict[allele] = {}
+                for pop in pop_list:
+                    count = pop_counts.get(pop, 0)
+                    pop_size = pop_count.get(pop, 1)
+                    freq_dict[allele][pop] = count / (pop_size * 2) if pop_size > 0 else 0
+            return freq_dict
+        
+        freq_A = compute_freqs(subset_A_dict, subset_A_count)
+        freq_B = compute_freqs(subset_B_dict, subset_B_count)
+        
+        # Test each allele pair
+        for (allele1, allele2) in allele_pairs:
+            if allele1 not in freq_A or allele2 not in freq_A:
+                continue
+            if allele1 not in freq_B or allele2 not in freq_B:
+                continue
+                
+            freqs1_A = [freq_A[allele1][pop] for pop in pop_list]
+            freqs2_A = [freq_A[allele2][pop] for pop in pop_list]
+            freqs1_B = [freq_B[allele1][pop] for pop in pop_list]
+            freqs2_B = [freq_B[allele2][pop] for pop in pop_list]
+            
+            # Skip if any zero frequencies
+            if any(f == 0 for f in freqs1_A + freqs2_A + freqs1_B + freqs2_B):
+                continue
+            
+            # Test in subset A
+            corr_A, pval_A = pearsonr(freqs1_A, freqs2_A)
+            
+            # If significant in A, test in B
+            if pval_A < alpha:
+                corr_B, pval_B = pearsonr(freqs1_B, freqs2_B)
+                # Concordant direction and nominal significance
+                if np.sign(corr_A) == np.sign(corr_B) and pval_B < alpha:
+                    replication_results[(allele1, allele2)].append(1)
+                else:
+                    replication_results[(allele1, allele2)].append(0)
+    
+    # Compute replication rate for each pair
+    replication_rates = {}
+    for pair, results in replication_results.items():
+        if len(results) > 0:
+            replication_rates[pair] = np.mean(results)
+        else:
+            replication_rates[pair] = np.nan
+    
+    return replication_rates
 
 
 def bootstrap_correlation(freq1, freq2, n_bootstrap=1000):
@@ -258,10 +342,13 @@ def permutation_test(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_lis
     return permutation_correlations
 
 
-def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, corr_tag, empirical_correlations, pcs=None):
+def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, corr_tag, empirical_correlations, pcs=None, 
+                        HLA_sample_dict=None, KIR_sample_dict=None, pop_num_dict=None):
     corr_num = 0
     data = []
     final_freq_dict = {}
+    allele_pairs_for_replication = []
+    
     for HLA_allele in HLA_allele_pop_freq_dict:
         for KIR_allele in KIR_allele_pop_freq_dict:
             hla_freqs = [HLA_allele_pop_freq_dict[HLA_allele][pop] for pop in pop_list]
@@ -297,6 +384,7 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
             data.append((HLA_allele, KIR_allele, corr, pval, pval_pc, 
                         ci_lower, ci_upper, sign_stability, bootstrap_pval, 
                         corr_tag, empirical_pval))
+            allele_pairs_for_replication.append((HLA_allele, KIR_allele))
 
     df = pd.DataFrame(data, columns=["HLA_allele", "KIR_allele", "Pearson_r", "p_value", "p_value_PC_adjusted",
                                       "bootstrap_CI_lower", "bootstrap_CI_upper", "bootstrap_sign_stability", "bootstrap_pval",
@@ -323,6 +411,17 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
     print (f"Number of significant associations after empirical test: {len(df)}")
     df = df[df["p_value_PC_adjusted"] < 0.05]
     print (f"Number of significant associations after PC-adjusted p-value: {len(df)}")
+    
+    # Split-sample replication
+    if HLA_sample_dict is not None and KIR_sample_dict is not None and pop_num_dict is not None and len(df) > 0:
+        print("\nPerforming split-sample replication (100 iterations)...")
+        sig_pairs = [(row["HLA_allele"], row["KIR_allele"]) for _, row in df.iterrows()]
+        combined_sample_dict = {**HLA_sample_dict, **KIR_sample_dict}
+        replication_rates = split_sample_replication(combined_sample_dict, pop_num_dict, pop_list, sig_pairs, n_splits=100)
+        df["split_sample_replication_rate"] = [replication_rates.get((row["HLA_allele"], row["KIR_allele"]), np.nan) 
+                                                 for _, row in df.iterrows()]
+        print(f"Mean replication rate: {df['split_sample_replication_rate'].mean():.3f}")
+    
     print (df)
     # plot(final_freq_dict, "IGKV2-29*01", "HLA-DPA1*01", pop_list, super_pop_dict)
     return df, final_freq_dict
@@ -517,14 +616,14 @@ if __name__ == "__main__":
     # empirical_correlations = empirical_test(chr1_allele_pop_freq_dict, chr10_allele_pop_freq_dict, pop_list, 100)
     empirical_correlations = alfred_empirical(alfred, num_iterations=10000)
 
-    TCR_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="TR")
-    IG_pop_freq_dict, pop_list = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="IG")
-    CYP_allele_pop_freq_dict, pop_list = read_cyp_csv(cyp_csv, sample_pop_dict)
-    HLA_allele_pop_freq_dict, pop_list = read_tab(hla_csv, sample_pop_dict, family="HLA")
-    KIR_allele_pop_freq_dict, pop_list = read_tab(kir_csv, sample_pop_dict, family="KIR")
+    TCR_pop_freq_dict, pop_list, TCR_sample_dict, TCR_pop_num_dict = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="TR")
+    IG_pop_freq_dict, pop_list, IG_sample_dict, IG_pop_num_dict = read_ig_tcr_csv(ig_tcr_csv, sample_pop_dict, family="IG")
+    CYP_allele_pop_freq_dict, pop_list, CYP_sample_dict, CYP_pop_num_dict = read_cyp_csv(cyp_csv, sample_pop_dict)
+    HLA_allele_pop_freq_dict, pop_list, HLA_sample_dict, HLA_pop_num_dict = read_tab(hla_csv, sample_pop_dict, family="HLA")
+    KIR_allele_pop_freq_dict, pop_list, KIR_sample_dict, KIR_pop_num_dict = read_tab(kir_csv, sample_pop_dict, family="KIR")
 
-    # family_list = ["HLA", "KIR", "CYP", "IG", "TCR"]
-    family_list = ["HLA", "KIR"]
+    family_list = ["HLA", "KIR", "CYP", "IG", "TCR"]
+    # family_list = ["CYP", "IG"]
     family_dict = {
         "HLA": HLA_allele_pop_freq_dict,
         "KIR": KIR_allele_pop_freq_dict,
@@ -556,7 +655,18 @@ if __name__ == "__main__":
             family_2 = family_list[j]
             corr_tag = f"{family_1}_vs_{family_2}"
             print(f"Correlation between {family_1} and {family_2}:")
-            df, final_freq_dict = correlation_analysis(family_dict[family_1], family_dict[family_2], pop_list, corr_tag, empirical_correlations, pcs=pcs)
+            
+            # Get sample dicts (for split-sample replication)
+            sample_dicts = {"HLA": HLA_sample_dict, "KIR": KIR_sample_dict, "CYP": CYP_sample_dict, "IG": IG_sample_dict, "TCR": TCR_sample_dict}
+            pop_num_dicts = {"HLA": HLA_pop_num_dict, "KIR": KIR_pop_num_dict, "CYP": CYP_pop_num_dict, "IG": IG_pop_num_dict, "TCR": TCR_pop_num_dict}
+            sample_dict_1 = sample_dicts.get(family_1)
+            sample_dict_2 = sample_dicts.get(family_2)
+            pop_num = pop_num_dicts.get(family_1, HLA_pop_num_dict)
+            
+            df, final_freq_dict = correlation_analysis(
+                family_dict[family_1], family_dict[family_2], pop_list, corr_tag, empirical_correlations, pcs=pcs,
+                HLA_sample_dict=sample_dict_1, KIR_sample_dict=sample_dict_2, pop_num_dict=pop_num
+            )
             ## get first row of df
             if not df.empty:
                 print(df.iloc[0])
