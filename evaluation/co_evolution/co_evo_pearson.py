@@ -671,7 +671,7 @@ if __name__ == "__main__":
             ## get first row of df
             if not df.empty:
                 print(df.iloc[0])
-            plot_info.append([corr_tag, df.iloc[0]["HLA_allele"], df.iloc[0]["KIR_allele"], df.iloc[0]["Pearson_r"], df.iloc[0]["p_value_corrected"]])
+                plot_info.append([corr_tag, df.iloc[0]["HLA_allele"], df.iloc[0]["KIR_allele"], df.iloc[0]["Pearson_r"], df.iloc[0]["p_value_corrected"]])
             total_df = pd.concat([total_df, df], ignore_index=True)
             final_allele_freq_dict = {**final_allele_freq_dict, **final_freq_dict}
         #     if j > 1:
@@ -689,39 +689,39 @@ if __name__ == "__main__":
     total_df.to_csv(f"./co_evo_pearson_results.filtered.csv", index=False)
 
     
-    # # Create a 5x2 grid for subplots
-    # fig, axes = plt.subplots(5, 2, figsize=(12, 24))
-    # axes = axes.flatten()
-    # super_pop_order = sorted(list(super_pop_set))
+    # Create a 5x2 grid for subplots
+    fig, axes = plt.subplots(5, 2, figsize=(12, 24))
+    axes = axes.flatten()
+    super_pop_order = sorted(list(super_pop_set))
 
 
-    # for idx, info in enumerate(plot_info):
-    #     if idx >= 10:
-    #         break
-    #     corr_tag, allele_1, allele_2, r, p_adjusted = info
-    #     print(f"Plotting {corr_tag} for {allele_1} and {allele_2} with r={r:.2f}, p.adj={p_adjusted:.2e}")
-    #     # Prepare data
-    #     data2 = []
-    #     for i in range(len(final_allele_freq_dict[allele_1])):
-    #         data2.append((final_allele_freq_dict[allele_1][i], final_allele_freq_dict[allele_2][i], pop_list[i], super_pop_dict[pop_list[i]]))
-    #     df2 = pd.DataFrame(data2, columns=[f"{allele_1}_freq", f"{allele_2}_freq", "Population", "Super_Population"])
-    #     ## sort the df2 by super_pop_order
-    #     df2["Super_Population"] = pd.Categorical(df2["Super_Population"], categories=super_pop_order, ordered=True)
-    #     df2 = df2.sort_values("Super_Population")
-    #     ax = axes[idx]
-    #     if idx == 0:
-    #         scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population", ax=ax, palette=colors)
-    #     else:
-    #         scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population",ax=ax, legend=False, palette=colors)
-    #     sns.regplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", scatter=False, color='black', ax=ax)
-    #     ax.set_xlabel(f"{allele_1} Frequency")
-    #     ax.set_ylabel(f"{allele_2} Frequency")
-    #     ax.set_title(f"Correlation: {r:.2f}, p.adj: {p_adjusted:.2e}")
+    for idx, info in enumerate(plot_info):
+        if idx >= 10:
+            break
+        corr_tag, allele_1, allele_2, r, p_adjusted = info
+        print(f"Plotting {corr_tag} for {allele_1} and {allele_2} with r={r:.2f}, p.adj={p_adjusted:.2e}")
+        # Prepare data
+        data2 = []
+        for i in range(len(final_allele_freq_dict[allele_1])):
+            data2.append((final_allele_freq_dict[allele_1][i], final_allele_freq_dict[allele_2][i], pop_list[i], super_pop_dict[pop_list[i]]))
+        df2 = pd.DataFrame(data2, columns=[f"{allele_1}_freq", f"{allele_2}_freq", "Population", "Super_Population"])
+        ## sort the df2 by super_pop_order
+        df2["Super_Population"] = pd.Categorical(df2["Super_Population"], categories=super_pop_order, ordered=True)
+        df2 = df2.sort_values("Super_Population")
+        ax = axes[idx]
+        if idx == 0:
+            scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population", ax=ax, palette=colors)
+        else:
+            scatter = sns.scatterplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", hue="Super_Population",ax=ax, legend=False, palette=colors)
+        sns.regplot(data=df2, x=f"{allele_1}_freq", y=f"{allele_2}_freq", scatter=False, color='black', ax=ax)
+        ax.set_xlabel(f"{allele_1} Frequency")
+        ax.set_ylabel(f"{allele_2} Frequency")
+        ax.set_title(f"Correlation: {r:.2f}, p.adj: {p_adjusted:.2e}")
 
 
 
-    # plt.savefig("plots/corr_all_subplots.pdf")
-    # plt.clf()
+    plt.savefig("plots/corr_all_subplots.pdf")
+    plt.clf()
 
 
 

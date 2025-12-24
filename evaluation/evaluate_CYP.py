@@ -52,12 +52,17 @@ if __name__ == "__main__":
     pangu_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun/out_CYP_pangu/"
     spec_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun/out_CYP/"
     result_file = "cyp_results/hprc_hifi_cyp_depth_cutoff2.csv"
-    main_cyp_hprc2(pangu_dir, spec_dir, result_file, 'hprc')
+    main_cyp_hprc2(pangu_dir, spec_dir, result_file, 'hprc_hifi')
 
     # pangu_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun//out_CYP_ont_pangu/"
     # spec_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun//out_CYP_ont/"
     # result_file = "cyp_results/hprc_ont_cyp_depth_cutoff2.csv"
-    # main_cyp_hprc(pangu_dir, spec_dir, result_file, 'hprc')
+    # main_cyp_hprc2(pangu_dir, spec_dir, result_file, 'hprc_ont')
+
+    # pangu_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun//out_1kg_CYP_pangu/"
+    # spec_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun//out_1kg_CYP_ont/"
+    # result_file = "cyp_results/hprc_1kg_cyp_depth_cutoff2.csv"
+    # main_cyp_hprc2(pangu_dir, spec_dir, result_file, '1k')
 
     #pangu_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/pangu_hprc/"
     #spec_dir = "/home/wangshuai/00.hla/long/experiments/cyp/cyp_results/spec_hprc/"

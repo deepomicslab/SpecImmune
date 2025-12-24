@@ -9,7 +9,7 @@ import pickle
 
 import sys, os
 sys.path.insert(0, sys.path[0]+'/../scripts/')
-
+import glob
 from get_lite_db import convert_field_for_allele
 from determine_gene import get_focus_gene
 from db_objects import My_db
@@ -586,6 +586,7 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
                     true_list[i] = true_list[i].split("/")
                 # print (hla_la_list, hla_la_list[i])
                 
+                
                 ### if hla_la_list[i] is a list, use join
                 if type(hla_la_list[i]) is list:
                     hla_la_list[i] = ";".join(hla_la_list[i])
@@ -614,6 +615,7 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
                 if gene_class == "CYP":
                     for j in range(len(true_list[i])):
                         true_list[i][j] = true_list[i][j].split('.')[0]
+                        true_list[i][j] = true_list[i][j].replace("**", "*")  ## hanlde '**1'
                     for j in range(len(hla_la_list[i])):
                         hla_la_list[i][j] = hla_la_list[i][j].split('.')[0]
                     # true_list[i] = list(set(true_list[i]))
@@ -625,7 +627,8 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
                     continue
 
             fir, sec = for_rev_compare(true_list, hla_la_list, gene_class)
-
+            if sample == "HG01928" :
+                print (sample, gene, true_list, hla_la_list, fir, sec)
 
             if gene not in gene_dict:
                 gene_dict[gene] = [0, 0]
@@ -650,8 +653,8 @@ def compare_four(truth_dict, all_hla_la_result, gene_list, digit=8, gene_class="
 def for_rev_compare(true_list, hla_la_list, gene_class):
     fir = 0
     sec = 0
-    # if gene_class != "CYP":
-    if True:
+    if gene_class != "CYP":
+    # if True:
         if has_intersection(true_list[0], hla_la_list[0]):
             fir += 1
         if has_intersection(true_list[1], hla_la_list[1]):
@@ -1452,7 +1455,6 @@ def main_cyp_hprc(pangu_dir, spec_dir, result_file, dataset="1k"):
     cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file)
 
 def main_cyp_hprc2(pangu_dir, spec_dir, result_file, dataset="1k"):
-    import glob
     if dataset == "1k":
         truth_dict = load_1k_CYP_truth()
     else:
@@ -1463,7 +1465,7 @@ def main_cyp_hprc2(pangu_dir, spec_dir, result_file, dataset="1k"):
 
     sample_depth_dict = for_all_samples_dp(spec_dir)
     for file in glob.glob(os.path.join(pangu_dir, "*/", "*_report.json")):
-        print(file)
+        # print(file)
     # for file in os.listdir(pangu_dir):
     #     print (file)
         if file.endswith("_report.json"):
@@ -1471,18 +1473,16 @@ def main_cyp_hprc2(pangu_dir, spec_dir, result_file, dataset="1k"):
             pangu_result = os.path.join(pangu_dir, file)
             pangu_diplotype = read_pangu_result(pangu_result)
             pangu_result_dict[sample] = pangu_diplotype
-    print (pangu_result_dict)
+    # print (pangu_result_dict)
     #### remove the elements in the truth_dict that are not in the pangu_result_dict
     truth_dict = get_shared_sample(truth_dict, pangu_result_dict)
-    print ("pangu", len(pangu_result_dict), "truth", len(truth_dict))
+    print (">>>>>>>>pangu", len(pangu_result_dict), "truth", len(truth_dict))
     compare_four(truth_dict, pangu_result_dict, ['CYP2D6'], 8, "CYP")
     
     ## for each folder in the spec_dir, the sample name is the folder name
     # for folder in os.listdir(spec_dir):
     for folder in glob.glob(os.path.join(spec_dir, "*/")):
-        print(folder)
         sample = folder.split("/")[-2]
-        print ("xxxxx", os.path.join(spec_dir, folder, sample, ))
         ## check if the folder is a folder
         if not os.path.isdir(os.path.join(spec_dir, folder, sample)):
             continue
@@ -1496,31 +1496,136 @@ def main_cyp_hprc2(pangu_dir, spec_dir, result_file, dataset="1k"):
             del spec_depth_dict[sample]
             continue
         ## replace read count to depth
-        if sample in sample_depth_dict:
-            spec_depth_dict[sample]['CYP2D6'] = sample_depth_dict[sample]
-        else:
-            print (sample, "not in sample_depth_dict")
-            continue
+        # if sample in sample_depth_dict:
+        #     spec_depth_dict[sample]['CYP2D6'] = sample_depth_dict[sample]
+        # else:
+        #     print (sample, "not in sample_depth_dict")
+        #     continue
         # print (pure_diplotype, spec_result_dict[sample])
-    print ("speclong:")
+    
     truth_dict = get_shared_sample(truth_dict, spec_result_dict)
+    print (">>>>>>>specImmune:", len(spec_result_dict), "truth", len(truth_dict))
     compare_four(truth_dict, spec_result_dict, ['CYP2D6'], 8, "CYP")
 
-    cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file)
+    # Build combined dataframe for detailed analysis
+    data_rows = []
+    for sample in truth_dict:
+        if sample not in pangu_result_dict and sample not in spec_result_dict:
+            continue
+            
+        truth_alleles = truth_dict[sample]['CYP2D6']
+        pangu_alleles = pangu_result_dict.get(sample, {}).get('CYP2D6', [['NA'], ['NA']])
+        spec_alleles = spec_result_dict.get(sample, {}).get('CYP2D6', [['NA'], ['NA']])
+        depth = spec_depth_dict.get(sample, {}).get('CYP2D6', 0)
+        
+        data_rows.append({
+            'Sample': sample,
+            'Truth_Allele1': truth_alleles[0][0],
+            'Truth_Allele2': truth_alleles[1][0],
+            'Pangu_Allele1': pangu_alleles[0][0],
+            'Pangu_Allele2': pangu_alleles[1][0],
+            'SpecImmune_Allele1': spec_alleles[0][0],
+            'SpecImmune_Allele2': spec_alleles[1][0],
+            'Depth': depth
+        })
+    
+    df = pd.DataFrame(data_rows)
+    detail_file = result_file.replace('.csv', '_detail.csv')
+    df.to_csv(detail_file, index=False)
+    print(f"\nDetailed results saved to: {detail_file}")
+    
+    # Analyze SV concordance
+    sv_stats = count_SV_concordance(df)
+    
+    # Save SV concordance stats
+    sv_file = result_file.replace('.csv', '_sv_stats.csv')
+    sv_data = []
+    for method in ['pangu', 'spec']:
+        sv_data.append({
+            'Method': method.capitalize(),
+            'Allele_Correct': sv_stats[method]['allele'][0],
+            'Allele_Total': sv_stats[method]['allele'][1],
+            'Allele_Accuracy': sv_stats[method]['allele'][0] / sv_stats[method]['allele'][1] if sv_stats[method]['allele'][1] > 0 else 0,
+            'Sample_Correct': sv_stats[method]['sample'][0],
+            'Sample_Total': sv_stats[method]['sample'][1],
+            'Sample_Accuracy': sv_stats[method]['sample'][0] / sv_stats[method]['sample'][1] if sv_stats[method]['sample'][1] > 0 else 0
+        })
+    pd.DataFrame(sv_data).to_csv(sv_file, index=False)
+    print(f"SV concordance stats saved to: {sv_file}")
 
+    cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file,dataset)
 
-def cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file):
+def count_SV_concordance(df):
+    """Count accuracy for structural variant (SV) alleles containing '+' or 'x' symbols."""
+    sv_pattern = re.compile(r'[\+x]')
+    stats = {'pangu': {'allele': [0, 0], 'sample': [0, 0]}, 
+             'spec': {'allele': [0, 0], 'sample': [0, 0]}}
+    
+    print("\n=== SV Allele Debug Info ===")
+    for idx, row in df.iterrows():
+        truth = [row['Truth_Allele1'], row['Truth_Allele2']]
+        pangu = [row['Pangu_Allele1'], row['Pangu_Allele2']]
+        spec = [row['SpecImmune_Allele1'], row['SpecImmune_Allele2']]
+        
+        # Check if any truth allele is SV
+        sv_indices = [i for i in range(2) if sv_pattern.search(str(truth[i]))]
+        if not sv_indices:
+            continue
+        
+        print(f"\nSample {row['Sample']}:")
+        print(f"  Truth SV alleles: {[truth[i] for i in sv_indices]}")
+        print(f"  Pangu predicted: {pangu}")
+        print(f"  SpecImmune predicted: {spec}")
+        
+        # Check both possible orderings for diplotype
+        pangu_order1 = [validate_star_allele(truth[i], pangu[i]) for i in sv_indices]
+        pangu_order2 = [validate_star_allele(truth[i], pangu[1-i]) for i in sv_indices]
+        spec_order1 = [validate_star_allele(truth[i], spec[i]) for i in sv_indices]
+        spec_order2 = [validate_star_allele(truth[i], spec[1-i]) for i in sv_indices]
+        
+        print(f"  Pangu order1 match: {pangu_order1}, order2 match: {pangu_order2}")
+        print(f"  SpecImmune order1 match: {spec_order1}, order2 match: {spec_order2}")
+        
+        # Count allele-level accuracy (best matching)
+        pangu_matches = max(sum(pangu_order1), sum(pangu_order2))
+        spec_matches = max(sum(spec_order1), sum(spec_order2))
+        
+        stats['pangu']['allele'][0] += pangu_matches
+        stats['pangu']['allele'][1] += len(sv_indices)
+        stats['spec']['allele'][0] += spec_matches
+        stats['spec']['allele'][1] += len(sv_indices)
+        
+        # Count sample-level accuracy (all alleles correct)
+        stats['pangu']['sample'][1] += 1
+        stats['spec']['sample'][1] += 1
+        if all(pangu_order1) or all(pangu_order2):
+            stats['pangu']['sample'][0] += 1
+        if all(spec_order1) or all(spec_order2):
+            stats['spec']['sample'][0] += 1
+    
+    print(f"\n=== SV Allele Accuracy Summary ===")
+    for method in ['pangu', 'spec']:
+        c, t = stats[method]['allele']
+        acc = c / t if t > 0 else 0
+        print(f"{method.capitalize()}: {c}/{t} alleles = {acc:.2%}")
+    
+    return stats
+
+def cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file, dataset="hprc_hifi"):
     data = []
     # cutoff_set = [0, 10, 20, 30, 40, 50]
-    cutoff_set = [0, 5, 10, 15, 20, 25, 30]
-    #cutoff_set = [x * 5 for x in range(5)]
+    if dataset == "hprc_hifi" or dataset == "1k":
+        # cutoff_set = [0, 5, 10, 15, 20, 25, 30]
+        cutoff_set = [0, 10, 20, 30, 40, 50]
+    if dataset == "hprc_ont":
+        cutoff_set = [x * 5 for x in range(5)]
     #cutoff_set = [x * 10 for x in range(6)]
     for cutoff in cutoff_set:
         print ("###", cutoff)
         cutoff_truth_dict = filter_depth_sample(truth_dict, spec_depth_dict, cutoff)
         cutoff_spec_dict = filter_depth_sample(spec_result_dict, spec_depth_dict, cutoff)
         spec_gene_accuracy_dict = compare_four(cutoff_truth_dict, cutoff_spec_dict, ['CYP2D6'], 8, "CYP")
-        data.append(['SpecLong', cutoff] + spec_gene_accuracy_dict['CYP2D6'])
+        data.append(['SpecImmune', cutoff] + spec_gene_accuracy_dict['CYP2D6'])
 
     for cutoff in cutoff_set:
         print ("###", cutoff)

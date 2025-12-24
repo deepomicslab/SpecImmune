@@ -1,0 +1,5 @@
+Sample,Truth_Allele1,Truth_Allele2,Pangu_Allele1,Pangu_Allele2,SpecImmune_Allele1,SpecImmune_Allele2,Depth
+HG00111,*3,*3,*3,*3,*3,*3,27
+HG00436,*2x2,*71,*2x2,*71,*2x2,*71,48
+HG00464,*1,*36,*1,*36+*10,*36+*10,*1,49
+HG00589,*1,*21,*2,NA,*2,*1,11
