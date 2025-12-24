@@ -1,0 +1,13 @@
+method,cutoff,gene,correct,total,accuracy
+SpecImmune,0,CYP2D6,90,118,0.763
+SpecImmune,10,CYP2D6,83,110,0.755
+SpecImmune,20,CYP2D6,54,68,0.794
+SpecImmune,30,CYP2D6,27,34,0.794
+SpecImmune,40,CYP2D6,22,28,0.786
+SpecImmune,50,CYP2D6,7,8,0.875
+pangu,0,CYP2D6,86,118,0.729
+pangu,10,CYP2D6,82,110,0.745
+pangu,20,CYP2D6,50,68,0.735
+pangu,30,CYP2D6,23,34,0.676
+pangu,40,CYP2D6,18,28,0.643
+pangu,50,CYP2D6,4,8,0.5

@@ -59,8 +59,8 @@ if __name__ == "__main__":
     # result_file = "cyp_results/hprc_ont_cyp_depth_cutoff2.csv"
     # main_cyp_hprc2(pangu_dir, spec_dir, result_file, 'hprc_ont')
 
-    pangu_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun//out_1kg_CYP_pangu/"  ## change to delta2
-    spec_dir = "/home/shuaiw/methylation/data/hla/CYP_rerun//out_1kg_CYP_ont/"   ## change to delta2
+    pangu_dir = "/data6/wangxuedong/add_experiment_CYP_rerun/out_1kg_CYP_pangu"  ## change to delta2
+    spec_dir = "/data6/wangxuedong/add_experiment_CYP_rerun/out_1kg_CYP_ont"   ## change to delta2
     result_file = "cyp_results/hprc_1kg_cyp_depth_cutoff2.csv"
     main_cyp_hprc2(pangu_dir, spec_dir, result_file, '1k')
 
