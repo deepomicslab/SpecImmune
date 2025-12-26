@@ -1530,9 +1530,9 @@ def main_cyp_hprc2(pangu_dir, spec_dir, result_file, dataset="1k"):
         })
     
     df = pd.DataFrame(data_rows)
-    detail_file = result_file.replace('.csv', '_detail.csv')
-    df.to_csv(detail_file, index=False)
-    print(f"\nDetailed results saved to: {detail_file}")
+    # detail_file = result_file.replace('.csv', '_detail.csv')
+    # df.to_csv(detail_file, index=False)
+    # print(f"\nDetailed results saved to: {detail_file}")
     
     # Analyze SV concordance
     sv_stats = count_SV_concordance(df)
@@ -1553,7 +1553,7 @@ def main_cyp_hprc2(pangu_dir, spec_dir, result_file, dataset="1k"):
     pd.DataFrame(sv_data).to_csv(sv_file, index=False)
     print(f"SV concordance stats saved to: {sv_file}")
 
-    cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file,dataset)
+    # cyp_depth_cutoff(truth_dict, spec_depth_dict, spec_result_dict, pangu_result_dict, result_file,dataset)
 
 def count_SV_concordance(df):
     """Count accuracy for structural variant (SV) alleles containing '+' or 'x' symbols."""
