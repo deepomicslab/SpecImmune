@@ -9,7 +9,7 @@ df<-read.table("HGSCV2_hifi_chain.csv", sep=",", header=TRUE)
 p1<- ggplot(data=df, aes(x=cutoff, y=accuracy, group = chain)) +
   geom_line(aes(color=chain), size=1)+
   geom_point(aes(color=chain))+
-  xlab("Depth")+
+  xlab("Minimum depth (filter cutoff)")+
   ylim(c(0.85,1))+
   ggtitle('HGSVC HiFi')+
   ylab("Accuracy")+theme_classic()+
@@ -21,7 +21,7 @@ df<-read.table("hgscv2_clr_chain.csv", sep=",", header=TRUE)
 p2<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
   geom_line(size=1)+
   geom_point()+
-  xlab("Depth")+
+  xlab("Minimum depth (filter cutoff)")+
   ylim(c(0.85,1))+
   ggtitle('HGSVC CLR')+
   ylab("Accuracy")+theme_classic()+
@@ -31,7 +31,7 @@ df<-read.table("HPRC_hifi_chain.csv", sep=",", header=TRUE)
 p3<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
   geom_line(size=1)+
   geom_point()+
-  xlab("Depth")+
+  xlab("Minimum depth (filter cutoff)")+
   ylim(c(0.85,1))+
   ggtitle('HPRC HiFi')+
   ylab("Accuracy")+theme_classic()+
@@ -41,7 +41,7 @@ df<-read.table("HPRC_ont_chain.csv", sep=",", header=TRUE)
 p4<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
   geom_line(size=1)+
   geom_point()+
-  xlab("Depth")+
+  xlab("Minimum depth (filter cutoff)")+
   ylim(c(0.85,1))+
   ggtitle('HPRC ONT')+
   ylab("Accuracy")+theme_classic()+

@@ -86,9 +86,9 @@ p3 <- ggplot(data=df, aes(x=cutoff, y=accuracy, color=method)) +
 
 ### -------- Combine panels --------
 prow <- plot_grid(
-  p1 + theme(legend.position="none"),
   p2 + theme(legend.position="none"),
   p3 + theme(legend.position="none"),
+  p1 + theme(legend.position="none"),
   align = 'vh',
   hjust = -1,
   nrow = 1

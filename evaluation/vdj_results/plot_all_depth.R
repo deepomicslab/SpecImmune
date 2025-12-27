@@ -7,7 +7,7 @@ df<-read.table("all_loci_depth.csv", sep=",", header=TRUE)
 ggplot(data=df, aes(x=depth, y=accuracy, color=dataset)) +
   geom_line(size=1)+
   geom_point()+
-  xlab("Depth")+
+  xlab("Minimum depth (filter cutoff)")+
   ylim(c(0.95,1))+
   geom_line(aes(linetype=dataset))+
   ylab("Accuracy")+theme_classic()+ scale_color_manual(values = c("#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"))+#  scale_color_brewer(palette="Dark2")+
