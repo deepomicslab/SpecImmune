@@ -203,10 +203,16 @@ def plot(final_freq_dict, allele_1, allele_2, pop_list, super_pop_dict, r, p_adj
     plt.clf()
 
 
-def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_pairs, n_splits=100, alpha=0.05):
+def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_pairs, n_splits=100, alpha=0.1, pcs=None):
     """
     Split-sample replication: partition individuals within each population,
     recompute frequencies, test edges in subset A, replicate in subset B.
+    If PCs provided, compute PC-adjusted correlations.
+    
+    Replication criteria (direction-first with nominal support):
+    - Subset A: two-sided p < 0.1 (discovery)
+    - Subset B: (1) concordant sign with A (mandatory)
+                (2) one-sided p < 0.1 (nominal support, equivalent to two-sided p < 0.2)
     
     Returns replication rate for each allele pair.
     """
@@ -264,14 +270,35 @@ def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_
             if any(f == 0 for f in freqs1_A + freqs2_A + freqs1_B + freqs2_B):
                 continue
             
-            # Test in subset A
-            corr_A, pval_A = pearsonr(freqs1_A, freqs2_A)
+            # Test in subset A (PC-adjusted if PCs provided)
+            if pcs is not None:
+                freq1_A_arr = np.array(freqs1_A).reshape(-1, 1)
+                freq2_A_arr = np.array(freqs2_A).reshape(-1, 1)
+                reg1_A = LinearRegression().fit(pcs, freq1_A_arr)
+                reg2_A = LinearRegression().fit(pcs, freq2_A_arr)
+                resid1_A = freq1_A_arr - reg1_A.predict(pcs)
+                resid2_A = freq2_A_arr - reg2_A.predict(pcs)
+                corr_A, pval_A = pearsonr(resid1_A.flatten(), resid2_A.flatten())
+            else:
+                corr_A, pval_A = pearsonr(freqs1_A, freqs2_A)
             
-            # If significant in A, test in B
+            # If significant in A (two-sided p < 0.1), test replication in B
             if pval_A < alpha:
-                corr_B, pval_B = pearsonr(freqs1_B, freqs2_B)
-                # Concordant direction and nominal significance
-                if np.sign(corr_A) == np.sign(corr_B) and pval_B < alpha:
+                if pcs is not None:
+                    freq1_B_arr = np.array(freqs1_B).reshape(-1, 1)
+                    freq2_B_arr = np.array(freqs2_B).reshape(-1, 1)
+                    reg1_B = LinearRegression().fit(pcs, freq1_B_arr)
+                    reg2_B = LinearRegression().fit(pcs, freq2_B_arr)
+                    resid1_B = freq1_B_arr - reg1_B.predict(pcs)
+                    resid2_B = freq2_B_arr - reg2_B.predict(pcs)
+                    corr_B, pval_B = pearsonr(resid1_B.flatten(), resid2_B.flatten())
+                else:
+                    corr_B, pval_B = pearsonr(freqs1_B, freqs2_B)
+                
+                # Direction-first replication: 
+                # (1) Concordant sign (mandatory)
+                # (2) One-sided p < 0.1, equivalent to two-sided p < 0.2 (nominal support)
+                if np.sign(corr_A) == np.sign(corr_B) and pval_B < (alpha * 2):
                     replication_results[(allele1, allele2)].append(1)
                 else:
                     replication_results[(allele1, allele2)].append(0)
@@ -287,22 +314,47 @@ def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_
     return replication_rates
 
 
-def bootstrap_correlation(freq1, freq2, n_bootstrap=1000):
+def bootstrap_correlation(freq1, freq2, n_bootstrap=1000, pcs=None):
     """
     Bootstrap resampling to assess correlation stability.
     Sample populations with replacement, keeping all allele frequencies within each population.
+    If PCs provided, compute correlations on PC-adjusted residuals.
     """
     bootstrap_corrs = []
     n_pops = len(freq1)
     
+    # Compute observed correlation (PC-adjusted if PCs provided)
+    if pcs is not None:
+        freq1_arr = np.array(freq1).reshape(-1, 1)
+        freq2_arr = np.array(freq2).reshape(-1, 1)
+        reg1 = LinearRegression().fit(pcs, freq1_arr)
+        reg2 = LinearRegression().fit(pcs, freq2_arr)
+        resid1 = freq1_arr - reg1.predict(pcs)
+        resid2 = freq2_arr - reg2.predict(pcs)
+        obs_corr = pearsonr(resid1.flatten(), resid2.flatten())[0]
+    else:
+        obs_corr = pearsonr(freq1, freq2)[0]
+    
     for _ in range(n_bootstrap):
         # Sample populations with replacement
         boot_indices = np.random.choice(n_pops, size=n_pops, replace=True)
-        boot_freq1 = [freq1[i] for i in boot_indices]
-        boot_freq2 = [freq2[i] for i in boot_indices]
+        boot_freq1 = np.array([freq1[i] for i in boot_indices])
+        boot_freq2 = np.array([freq2[i] for i in boot_indices])
         
         # Compute correlation on bootstrap sample
-        corr, _ = pearsonr(boot_freq1, boot_freq2)
+        if pcs is not None:
+            # Resample PCs as well
+            boot_pcs = pcs[boot_indices, :]
+            # PC-adjust bootstrap samples
+            boot_freq1_arr = boot_freq1.reshape(-1, 1)
+            boot_freq2_arr = boot_freq2.reshape(-1, 1)
+            reg1_boot = LinearRegression().fit(boot_pcs, boot_freq1_arr)
+            reg2_boot = LinearRegression().fit(boot_pcs, boot_freq2_arr)
+            resid1_boot = boot_freq1_arr - reg1_boot.predict(boot_pcs)
+            resid2_boot = boot_freq2_arr - reg2_boot.predict(boot_pcs)
+            corr, _ = pearsonr(resid1_boot.flatten(), resid2_boot.flatten())
+        else:
+            corr, _ = pearsonr(boot_freq1, boot_freq2)
         bootstrap_corrs.append(corr)
     
     bootstrap_corrs = np.array(bootstrap_corrs)
@@ -310,7 +362,6 @@ def bootstrap_correlation(freq1, freq2, n_bootstrap=1000):
     ci_lower = np.percentile(bootstrap_corrs, 2.5)
     ci_upper = np.percentile(bootstrap_corrs, 97.5)
     # Sign stability (proportion with same sign as observed)
-    obs_corr = pearsonr(freq1, freq2)[0]
     sign_stability = np.mean(np.sign(bootstrap_corrs) == np.sign(obs_corr))
     # Bootstrap p-value (proportion crossing zero)
     bootstrap_pval = np.mean(np.sign(bootstrap_corrs) != np.sign(obs_corr))
@@ -376,19 +427,17 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
             if pval > 0.05 or pval_pc > 0.05:
                 continue
 
-            ## Bootstrap analysis
-            ci_lower, ci_upper, sign_stability, bootstrap_pval = bootstrap_correlation(hla_freqs, kir_freqs, n_bootstrap=1000)
+            ## Bootstrap analysis (PC-adjusted if PCs provided)
+            _, _, _, bootstrap_pval = bootstrap_correlation(hla_freqs, kir_freqs, n_bootstrap=1000, pcs=pcs)
             
             ## calculate empirical p-value
             empirical_pval = sum(abs(corr) < abs(emp_corr) for emp_corr in empirical_correlations) / len(empirical_correlations)
             data.append((HLA_allele, KIR_allele, corr, pval, pval_pc, 
-                        ci_lower, ci_upper, sign_stability, bootstrap_pval, 
-                        corr_tag, empirical_pval))
+                        bootstrap_pval, corr_tag, empirical_pval))
             allele_pairs_for_replication.append((HLA_allele, KIR_allele))
 
     df = pd.DataFrame(data, columns=["HLA_allele", "KIR_allele", "Pearson_r", "p_value", "p_value_PC_adjusted",
-                                      "bootstrap_CI_lower", "bootstrap_CI_upper", "bootstrap_sign_stability", "bootstrap_pval",
-                                      "corr_tag", "empirical_p_value"])
+                                      "bootstrap_pval", "corr_tag", "empirical_p_value"])
     ## correct p-values
 
     p_values = df["p_value"].values
@@ -411,17 +460,20 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
     print (f"Number of significant associations after empirical test: {len(df)}")
     df = df[df["p_value_PC_adjusted"] < 0.05]
     print (f"Number of significant associations after PC-adjusted p-value: {len(df)}")
+
     
-    # Split-sample replication
+    # Split-sample replication (PC-adjusted if PCs provided)
     if HLA_sample_dict is not None and KIR_sample_dict is not None and pop_num_dict is not None and len(df) > 0:
         print("\nPerforming split-sample replication (100 iterations)...")
         sig_pairs = [(row["HLA_allele"], row["KIR_allele"]) for _, row in df.iterrows()]
         combined_sample_dict = {**HLA_sample_dict, **KIR_sample_dict}
-        replication_rates = split_sample_replication(combined_sample_dict, pop_num_dict, pop_list, sig_pairs, n_splits=100)
+        replication_rates = split_sample_replication(combined_sample_dict, pop_num_dict, pop_list, sig_pairs, n_splits=100, pcs=pcs)
         df["split_sample_replication_rate"] = [replication_rates.get((row["HLA_allele"], row["KIR_allele"]), np.nan) 
                                                  for _, row in df.iterrows()]
         print(f"Mean replication rate: {df['split_sample_replication_rate'].mean():.3f}")
     
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.width', None)
     print (df)
     # plot(final_freq_dict, "IGKV2-29*01", "HLA-DPA1*01", pop_list, super_pop_dict)
     return df, final_freq_dict
@@ -624,7 +676,7 @@ if __name__ == "__main__":
     KIR_allele_pop_freq_dict, pop_list, KIR_sample_dict, KIR_pop_num_dict = read_tab(kir_csv, sample_pop_dict, family="KIR")
 
     family_list = ["HLA", "KIR", "CYP", "IG", "TCR"]
-    # family_list = ["CYP", "IG"]
+    # family_list = ["HLA", "KIR"]
     family_dict = {
         "HLA": HLA_allele_pop_freq_dict,
         "KIR": KIR_allele_pop_freq_dict,
@@ -683,9 +735,11 @@ if __name__ == "__main__":
     total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
     # """
     total_df = pd.read_csv(f"./co_evo_pearson_results.csv")
-    ## filter total_df by split_sample_replication_rate exists and split_sample_replication_rate > 0.7
+    ## filter total_df by split_sample_replication_rate exists and split_sample_replication_rate > 0.5
     total_df = total_df[total_df["split_sample_replication_rate"].notna()]
-    total_df = total_df[total_df["split_sample_replication_rate"] >= 0.7]
+    total_df = total_df[total_df["split_sample_replication_rate"] >= 0.5]
+    total_df = total_df[total_df["bootstrap_pval"] < 0.05]
+    print (f"Number of significant associations after bootstrap analysis: {len(total_df)}")
     total_df.to_csv(f"./co_evo_pearson_results.filtered.csv", index=False)
 
     
