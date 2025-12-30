@@ -8,7 +8,7 @@ from statsmodels.stats.multitest import multipletests
 import matplotlib.pyplot as plt
 ## use seaborn for better aesthetics
 import seaborn as sns
-from scipy.stats import pearsonr
+from scipy.stats import pearsonr, binom
 import gzip
 import random
 from cyvcf2 import VCF
@@ -16,6 +16,30 @@ from collections import defaultdict
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression
 
+
+def replication_pvalue(x_obs, n_splits, p0):
+    """
+    Calculate binomial p-value for replication rate.
+    
+    Parameters
+    ----------
+    x_obs : int
+        Number of observed replications
+    n_splits : int
+        Total number of splits tested
+    p0 : float
+        Null probability of replication per split
+        For direction match + one-sided p < α: p0 = 0.5 × α
+    
+    Returns
+    -------
+    float
+        Upper-tail p-value: P(X >= x_obs | n, p0)
+    """
+    if x_obs == 0:
+        return 1.0
+    # Upper-tail: P(X >= x_obs)
+    return binom.sf(x_obs - 1, n_splits, p0)
 
 
 def read_tab(csv, sample_pop_dict, family="HLA"):
@@ -203,11 +227,13 @@ def plot(final_freq_dict, allele_1, allele_2, pop_list, super_pop_dict, r, p_adj
     plt.clf()
 
 
-def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_pairs, n_splits=100, alpha=0.1, pcs=None):
+def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_pairs, n_splits=100, max_attempts=10000, alpha=0.1, pcs=None):
     """
     Split-sample replication: partition individuals within each population,
     recompute frequencies, test edges in subset A, replicate in subset B.
     If PCs provided, compute PC-adjusted correlations.
+    
+    Runs n_splits iterations for each pair (excluding zero frequency cases).
     
     Replication criteria (direction-first with nominal support):
     - Subset A: two-sided p < 0.1 (discovery)
@@ -217,8 +243,18 @@ def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_
     Returns replication rate for each allele pair.
     """
     replication_results = {pair: [] for pair in allele_pairs}
+    skipped_counts = {pair: {'zero_freq': 0, 'not_discovered': 0, 'total_valid': 0, 'non_zero_splits': 0} for pair in allele_pairs}
     
-    for split_idx in range(n_splits):
+    attempt_count = 0
+    while attempt_count < max_attempts:
+        # Check if all pairs have reached the target number of non-zero splits
+        all_complete = all(skipped_counts[pair]['non_zero_splits'] >= n_splits for pair in allele_pairs)
+        if all_complete:
+            print(f"All pairs reached {n_splits} non-zero-frequency splits after {attempt_count} attempts.")
+            break
+        
+        attempt_count += 1
+        
         # Split samples within each population
         subset_A_dict = defaultdict(lambda: defaultdict(int))
         subset_B_dict = defaultdict(lambda: defaultdict(int))
@@ -256,6 +292,10 @@ def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_
         
         # Test each allele pair
         for (allele1, allele2) in allele_pairs:
+            # Skip if this pair already has enough non-zero splits
+            if skipped_counts[(allele1, allele2)]['non_zero_splits'] >= n_splits:
+                continue
+                
             if allele1 not in freq_A or allele2 not in freq_A:
                 continue
             if allele1 not in freq_B or allele2 not in freq_B:
@@ -268,7 +308,11 @@ def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_
             
             # Skip if any zero frequencies
             if any(f == 0 for f in freqs1_A + freqs2_A + freqs1_B + freqs2_B):
+                skipped_counts[(allele1, allele2)]['zero_freq'] += 1
                 continue
+            
+            # Count this as a non-zero split
+            skipped_counts[(allele1, allele2)]['non_zero_splits'] += 1
             
             # Test in subset A (PC-adjusted if PCs provided)
             if pcs is not None:
@@ -284,6 +328,7 @@ def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_
             
             # If significant in A (two-sided p < 0.1), test replication in B
             if pval_A < alpha:
+                skipped_counts[(allele1, allele2)]['total_valid'] += 1
                 if pcs is not None:
                     freq1_B_arr = np.array(freqs1_B).reshape(-1, 1)
                     freq2_B_arr = np.array(freqs2_B).reshape(-1, 1)
@@ -302,16 +347,52 @@ def split_sample_replication(allele_sample_dict, pop_num_dict, pop_list, allele_
                     replication_results[(allele1, allele2)].append(1)
                 else:
                     replication_results[(allele1, allele2)].append(0)
+            else:
+                skipped_counts[(allele1, allele2)]['not_discovered'] += 1
     
-    # Compute replication rate for each pair
+    # Report if we hit max attempts
+    if attempt_count >= max_attempts:
+        print(f"\nReached maximum attempts ({max_attempts}). Some pairs may have fewer than {n_splits} non-zero splits.")
+    
+    # Null probability: sign match (0.5) × one-sided p < alpha (alpha)
+    p0 = 0.5 * alpha
+    print(f"\nNull replication probability p0 = 0.5 × {alpha} = {p0}")
+    
+    # Compute replication rate and p-value for each pair
     replication_rates = {}
+    replication_pvalues = {}
+    print(f"\n{'Allele Pair':<50} {'Total':>8} {'Discov':>8} {'NotDisc':>8} {'RepRate':>8} {'p-value':>10}")
+    print("=" * 105)
     for pair, results in replication_results.items():
-        if len(results) > 0:
-            replication_rates[pair] = np.mean(results)
+        counts = skipped_counts[pair]
+        total_splits = counts['non_zero_splits']
+        discovered = counts['total_valid']
+        not_discovered = counts['not_discovered']
+        
+        if discovered > 0:
+            x_obs = sum(results)  # number of successful replications
+            rate = x_obs / discovered  # replication rate among discovered
+            pval = replication_pvalue(x_obs, discovered, p0)
+            
+            replication_rates[pair] = rate
+            replication_pvalues[pair] = pval
+            
+            allele_pair_str = f"{pair[0]} x {pair[1]}"
+            if len(allele_pair_str) > 48:
+                allele_pair_str = allele_pair_str[:45] + "..."
+            print(f"{allele_pair_str:<50} {total_splits:>8} {discovered:>8} "
+                  f"{not_discovered:>8} {rate:>8.3f} {pval:>10.3e}")
         else:
             replication_rates[pair] = np.nan
+            replication_pvalues[pair] = np.nan
+            allele_pair_str = f"{pair[0]} x {pair[1]}"
+            if len(allele_pair_str) > 48:
+                allele_pair_str = allele_pair_str[:45] + "..."
+            print(f"{allele_pair_str:<50} {total_splits:>8} {discovered:>8} "
+                  f"{not_discovered:>8} {'NaN':>8} {'NaN':>10}")
+            print(f"  WARNING: No discoveries in {total_splits} splits!")
     
-    return replication_rates
+    return replication_rates, replication_pvalues
 
 
 def bootstrap_correlation(freq1, freq2, n_bootstrap=1000, pcs=None):
@@ -540,13 +621,24 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
     
     # Split-sample replication (PC-adjusted if PCs provided)
     if HLA_sample_dict is not None and KIR_sample_dict is not None and pop_num_dict is not None and len(df) > 0:
-        print("\nPerforming split-sample replication (100 iterations)...")
+        print("\nPerforming split-sample replication (100 splits per pair, excluding zero frequencies)...")
         sig_pairs = [(row["HLA_allele"], row["KIR_allele"]) for _, row in df.iterrows()]
         combined_sample_dict = {**HLA_sample_dict, **KIR_sample_dict}
-        replication_rates = split_sample_replication(combined_sample_dict, pop_num_dict, pop_list, sig_pairs, n_splits=100, pcs=pcs)
+        replication_rates, replication_pvalues = split_sample_replication(combined_sample_dict, pop_num_dict, pop_list, sig_pairs, n_splits=100, max_attempts=10000, pcs=pcs)
         df["split_sample_replication_rate"] = [replication_rates.get((row["HLA_allele"], row["KIR_allele"]), np.nan) 
                                                  for _, row in df.iterrows()]
+        df["replication_pvalue"] = [replication_pvalues.get((row["HLA_allele"], row["KIR_allele"]), np.nan) 
+                                     for _, row in df.iterrows()]
         print(f"Mean replication rate: {df['split_sample_replication_rate'].mean():.3f}")
+        
+        # Apply FDR correction to replication p-values
+        valid_pvals = df["replication_pvalue"].dropna()
+        if len(valid_pvals) > 0:
+            _, pvals_corrected, _, _ = multipletests(valid_pvals, alpha=0.05, method='fdr_bh')
+            df.loc[df["replication_pvalue"].notna(), "replication_pvalue_FDR"] = pvals_corrected
+            print(f"Edges with replication FDR < 0.05: {(df['replication_pvalue_FDR'] < 0.05).sum()}")
+        else:
+            df["replication_pvalue_FDR"] = np.nan
     
     pd.set_option('display.max_columns', None)
     pd.set_option('display.width', None)
@@ -752,23 +844,24 @@ if __name__ == "__main__":
     KIR_allele_pop_freq_dict, pop_list, KIR_sample_dict, KIR_pop_num_dict = read_tab(kir_csv, sample_pop_dict, family="KIR")
 
     # Apply entropy-based filtering to remove uninformative alleles
+    min_entropy = 0.15
     print("\n" + "="*60)
     print("ENTROPY-BASED FILTERING")
     print("="*60)
     print("\nHLA alleles:")
-    HLA_allele_pop_freq_dict = filter_by_entropy(HLA_allele_pop_freq_dict, pop_list, min_entropy=0.15)
+    HLA_allele_pop_freq_dict = filter_by_entropy(HLA_allele_pop_freq_dict, pop_list, min_entropy=min_entropy)
     print("\nKIR alleles:")
-    KIR_allele_pop_freq_dict = filter_by_entropy(KIR_allele_pop_freq_dict, pop_list, min_entropy=0.15)
+    KIR_allele_pop_freq_dict = filter_by_entropy(KIR_allele_pop_freq_dict, pop_list, min_entropy=min_entropy)
     print("\nCYP alleles:")
-    CYP_allele_pop_freq_dict = filter_by_entropy(CYP_allele_pop_freq_dict, pop_list, min_entropy=0.15)
+    CYP_allele_pop_freq_dict = filter_by_entropy(CYP_allele_pop_freq_dict, pop_list, min_entropy=min_entropy)
     print("\nIG alleles:")
-    IG_pop_freq_dict = filter_by_entropy(IG_pop_freq_dict, pop_list, min_entropy=0.15)
+    IG_pop_freq_dict = filter_by_entropy(IG_pop_freq_dict, pop_list, min_entropy=min_entropy)
     print("\nTCR alleles:")
-    TCR_pop_freq_dict = filter_by_entropy(TCR_pop_freq_dict, pop_list, min_entropy=0.15)
+    TCR_pop_freq_dict = filter_by_entropy(TCR_pop_freq_dict, pop_list, min_entropy=min_entropy)
     print("\n" + "="*60)
 
     family_list = ["HLA", "KIR", "CYP", "IG", "TCR"]
-    # family_list = ["HLA", "KIR", "CYP"]
+    # family_list = ["HLA", "KIR"]
     family_dict = {
         "HLA": HLA_allele_pop_freq_dict,
         "KIR": KIR_allele_pop_freq_dict,

@@ -51,9 +51,9 @@ def profile_graph(G, family_dict):
 
 def cluster(G, family_dict):
 
-    # Use Label Propagation for community detection
-    communities = list(label_propagation_communities(G))
-    print("\nCommunity structure (Label Propagation method):")
+    # Use connected components for community detection
+    communities = list(nx.connected_components(G))
+    print("\nCommunity structure (Connected Components method):")
     
     # Sort communities by size
     communities = sorted(communities, key=len, reverse=True)
