@@ -51,50 +51,55 @@ def profile_graph(G, family_dict):
 
 def cluster(G, family_dict):
 
-    # import community as community_louvain
-    # partition = community_louvain.best_partition(G)
-    # print("\nCommunity structure (Louvain method):")
-    # community_count = {}
-    # for node, community in partition.items():
-    #     if community not in community_count:
-    #         community_count[community] = 0
-    #     community_count[community] += 1
-
-    # for community, count in community_count.items():
-    #     print(f"Community {community}: {count} nodes")
+    # Use Label Propagation for community detection
+    communities = list(label_propagation_communities(G))
+    print("\nCommunity structure (Label Propagation method):")
     
-    # ## print the node of each community
-    # print("\nNodes in each community:")
-    # community_nodes = {}
-    # for node, community in partition.items():
-    #     if community not in community_nodes:
-    #         community_nodes[community] = []
-    #     community_nodes[community].append(node) 
-    # for community, nodes in community_nodes.items():
-    #     print(f"Community {community}: {', '.join(sorted(nodes))}")
-
+    # Sort communities by size
+    communities = sorted(communities, key=len, reverse=True)
     
-    communities = sorted(nx.connected_components(G), key=len, reverse=True)
-    print("\nCommunity structure (Connected Components method):")
+    # Create partition dictionary for compatibility
+    partition = {}
     for i, community in enumerate(communities):
-        print(f"Community {i}: {len(community)} nodes")
-    ## print the nodes in each community
-    print("\nNodes in each community (Connected Components):")
-    for i, community in enumerate(communities):
-        community_nodes = sorted(community)
-        print(f"Community {i}: {', '.join(community_nodes)}")
+        for node in community:
+            partition[node] = i
+    
+    community_count = {}
+    for node, community in partition.items():
+        if community not in community_count:
+            community_count[community] = 0
+        community_count[community] += 1
+
+    for community, count in community_count.items():
+        print(f"Community {community}: {count} nodes")
+    
+    ## print the node of each community
+    print("\nNodes in each community:")
+    community_nodes = {}
+    for node, community in partition.items():
+        if community not in community_nodes:
+            community_nodes[community] = []
+        community_nodes[community].append(node) 
+    for community, nodes in community_nodes.items():
+        print(f"Community {community}: {', '.join(sorted(nodes))}")
+
     ### save the community structure to a CSV file
     data = []
-    for i, community in enumerate(communities):
-        if i == 0:
-            first = community
-        elif i == 1:
-            second = community
-        for node in community:
-            data.append({"Community": i, "Node": node, "Family": family_dict.get(node, "Unknown")})
+    # Get top 2 communities by size
+    community_sizes = sorted(community_count.items(), key=lambda x: x[1], reverse=True)
+    top_communities = [community_sizes[0][0], community_sizes[1][0]] if len(community_sizes) >= 2 else [community_sizes[0][0]]
+    first_community = top_communities[0]
+    second_community = top_communities[1] if len(top_communities) > 1 else None
+    
+    for node, community in partition.items():
+        data.append({"Community": community, "Node": node, "Family": family_dict.get(node, "Unknown")})
     partition_df = pd.DataFrame(data)
     partition_df.to_csv("community_structure.csv", index=False)
 
+    # Get nodes in first and second communities
+    first = [node for node, comm in partition.items() if comm == first_community]
+    second = [node for node, comm in partition.items() if comm == second_community] if second_community is not None else []
+    
     data_list = []
     for u, v, data in G.edges(data=True):
         if u in first and v in second:  # Example condition to filter edges

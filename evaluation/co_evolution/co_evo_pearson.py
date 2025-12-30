@@ -369,6 +369,80 @@ def bootstrap_correlation(freq1, freq2, n_bootstrap=1000, pcs=None):
     return ci_lower, ci_upper, sign_stability, bootstrap_pval
 
 
+def binary_entropy(f):
+    """
+    Calculate binary entropy for a single frequency value.
+    h(f) = -f*log2(f) - (1-f)*log2(1-f)
+    
+    Returns entropy in bits. Returns 0 for f=0 or f=1 (boundary cases).
+    """
+    if f <= 0 or f >= 1:
+        return 0.0
+    return -(f * np.log2(f) + (1 - f) * np.log2(1 - f))
+
+
+def calculate_allele_entropy(freq_vector):
+    """
+    Calculate mean binary entropy across populations for an allele.
+    H_allele = (1/P) * sum(h(f_p)) for p=1 to P
+    
+    Parameters
+    ----------
+    freq_vector : list or array
+        Allele frequencies across P populations
+    
+    Returns
+    -------
+    float
+        Mean entropy in bits. Higher values indicate more informative alleles.
+    """
+    entropies = [binary_entropy(f) for f in freq_vector]
+    return np.mean(entropies)
+
+
+def filter_by_entropy(allele_pop_freq_dict, pop_list, min_entropy=0.15):
+    """
+    Filter alleles based on mean entropy across populations.
+    
+    Parameters
+    ----------
+    allele_pop_freq_dict : dict
+        Dictionary mapping allele -> {population: frequency}
+    pop_list : list
+        List of population codes
+    min_entropy : float, default=0.15
+        Minimum mean entropy threshold in bits
+    
+    Returns
+    -------
+    dict
+        Filtered dictionary containing only informative alleles
+    """
+    filtered_dict = {}
+    entropy_stats = []
+    
+    for allele, pop_freqs in allele_pop_freq_dict.items():
+        freq_vector = [pop_freqs[pop] for pop in pop_list]
+        H_allele = calculate_allele_entropy(freq_vector)
+        entropy_stats.append((allele, H_allele))
+        
+        if H_allele >= min_entropy:
+            filtered_dict[allele] = pop_freqs
+    
+    # Print statistics
+    all_entropies = [h for _, h in entropy_stats]
+    print(f"\nEntropy-based filtering (threshold: {min_entropy} bits):")
+    print(f"  Total alleles: {len(allele_pop_freq_dict)}")
+    print(f"  Informative alleles (H >= {min_entropy}): {len(filtered_dict)}")
+    print(f"  Filtered out: {len(allele_pop_freq_dict) - len(filtered_dict)}")
+    print(f"  Mean entropy: {np.mean(all_entropies):.3f} bits")
+    print(f"  Median entropy: {np.median(all_entropies):.3f} bits")
+    print(f"  Min entropy: {np.min(all_entropies):.3f} bits")
+    print(f"  Max entropy: {np.max(all_entropies):.3f} bits")
+    
+    return filtered_dict
+
+
 def permutation_test(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop_list, num_iterations=10000):
     """
     Perform a permutation test to calculate empirical p-values for the correlation between HLA and KIR allele frequencies.
@@ -402,6 +476,8 @@ def correlation_analysis(HLA_allele_pop_freq_dict, KIR_allele_pop_freq_dict, pop
     
     for HLA_allele in HLA_allele_pop_freq_dict:
         for KIR_allele in KIR_allele_pop_freq_dict:
+            # if HLA_allele != "IGLV4-69*01" or KIR_allele != "TRAJ58*01":
+            #     continue
             hla_freqs = [HLA_allele_pop_freq_dict[HLA_allele][pop] for pop in pop_list]
             kir_freqs = [KIR_allele_pop_freq_dict[KIR_allele][pop] for pop in pop_list]
             ## the freq in each pop should be >0
@@ -675,8 +751,24 @@ if __name__ == "__main__":
     HLA_allele_pop_freq_dict, pop_list, HLA_sample_dict, HLA_pop_num_dict = read_tab(hla_csv, sample_pop_dict, family="HLA")
     KIR_allele_pop_freq_dict, pop_list, KIR_sample_dict, KIR_pop_num_dict = read_tab(kir_csv, sample_pop_dict, family="KIR")
 
+    # Apply entropy-based filtering to remove uninformative alleles
+    print("\n" + "="*60)
+    print("ENTROPY-BASED FILTERING")
+    print("="*60)
+    print("\nHLA alleles:")
+    HLA_allele_pop_freq_dict = filter_by_entropy(HLA_allele_pop_freq_dict, pop_list, min_entropy=0.15)
+    print("\nKIR alleles:")
+    KIR_allele_pop_freq_dict = filter_by_entropy(KIR_allele_pop_freq_dict, pop_list, min_entropy=0.15)
+    print("\nCYP alleles:")
+    CYP_allele_pop_freq_dict = filter_by_entropy(CYP_allele_pop_freq_dict, pop_list, min_entropy=0.15)
+    print("\nIG alleles:")
+    IG_pop_freq_dict = filter_by_entropy(IG_pop_freq_dict, pop_list, min_entropy=0.15)
+    print("\nTCR alleles:")
+    TCR_pop_freq_dict = filter_by_entropy(TCR_pop_freq_dict, pop_list, min_entropy=0.15)
+    print("\n" + "="*60)
+
     family_list = ["HLA", "KIR", "CYP", "IG", "TCR"]
-    # family_list = ["HLA", "KIR"]
+    # family_list = ["HLA", "KIR", "CYP"]
     family_dict = {
         "HLA": HLA_allele_pop_freq_dict,
         "KIR": KIR_allele_pop_freq_dict,
@@ -684,6 +776,7 @@ if __name__ == "__main__":
         "IG": IG_pop_freq_dict,
         "TCR": TCR_pop_freq_dict
     }
+    ### 
 
     output_raw_data(family_dict, pop_list)
 
@@ -733,16 +826,7 @@ if __name__ == "__main__":
             
     # save the total df to csv
     total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
-    # """
-    total_df = pd.read_csv(f"./co_evo_pearson_results.csv")
-    ## filter total_df by split_sample_replication_rate exists and split_sample_replication_rate > 0.5
-    total_df = total_df[total_df["split_sample_replication_rate"].notna()]
-    total_df = total_df[total_df["split_sample_replication_rate"] >= 0.5]
-    total_df = total_df[total_df["bootstrap_pval"] < 0.05]
-    print (f"Number of significant associations after bootstrap analysis: {len(total_df)}")
-    total_df.to_csv(f"./co_evo_pearson_results.filtered.csv", index=False)
 
-    
     # Create a 5x2 grid for subplots
     fig, axes = plt.subplots(5, 2, figsize=(12, 24))
     axes = axes.flatten()
