@@ -1,7 +1,8 @@
 library(ggplot2)
 
-df <- data.frame(method=c("pangu", "SpecLong"),
-                 Accuracy=c(0, 0.95))
+df <- data.frame(method=c("Pangu", "SpecLong"),
+                 Accuracy=c(0, 0.98),
+                 count=c(20, 20))
 
 pdf("figures/cyp_amplicon.pdf", width=2, height=3)
 # df$Group <- factor(df$Group, levels=c("Thomas-Abun", "Hybrid"))
@@ -9,9 +10,10 @@ df$method <- gsub("SpecLong", "SpecImmune", df$method)
 
  p <- ggplot(data=df, aes(x=method, y=Accuracy, fill=method))+
    geom_bar(stat="identity", color="black", position=position_dodge(), width=0.6)+
+   geom_text(aes(label=count), vjust=-0.5, size=3.5)+
    theme_classic()+
   #  scale_x_discrete(guide = guide_axis(angle = 30))+
-   coord_cartesian(ylim=c(0,1))+
+   coord_cartesian(ylim=c(0,1.05))+
    xlab("")+
    theme(legend.position = "none")+
   #  theme(legend.position = "none", axis.text.x = element_text(size = 13))+

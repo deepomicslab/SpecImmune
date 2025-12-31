@@ -2,6 +2,7 @@
 library(ggplot2)
 library(cowplot)
 library(dplyr)
+library(ggpubr)
 
 
 df<-read.table("cyp_activity.csv", sep=",", header=TRUE)
@@ -45,21 +46,18 @@ print(p1)
 dev.off()
 
 # Figure 2: EAS vs Non-EAS with p-value
-pdf(file="cyp_activity_box_eas_vs_noneas.pdf", width=3, height=4, onefile=FALSE)
+pdf(file="cyp_activity_box_eas_vs_noneas.pdf", width=2, height=2.5, onefile=FALSE)
 
 p2 <- ggplot(df_comparison, aes(x=Group, y = Activity_score, fill=Group)) +
   geom_boxplot(outlier.shape = NA, alpha=0.7)  +
   geom_jitter(width=0.2, size=0.8, alpha=0.4) +
   stat_summary(fun=mean, geom="point", shape=20, size=3, color="skyblue", fill="skyblue") +
-  annotate("text", x = 1.5, y = max(df$Activity_score) * 1.05, 
-           label = p_label, size = 4) +
-  annotate("segment", x = 1, xend = 2, 
-           y = max(df$Activity_score) * 1.02, yend = max(df$Activity_score) * 1.02) +
   theme_classic()+
   xlab('')+
   ylab('CYP2D6 Activity Score')+
   theme(legend.position = "none") +
-  scale_fill_manual(values = c("#8f96bd", "#d6d69b"))
+  scale_fill_manual(values = c("#8f96bd", "#d6d69b")) +
+  stat_compare_means(method = "t.test", label.y = 3.5, size = 3)
 
 print(p2)
 

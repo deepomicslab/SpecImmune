@@ -4,7 +4,7 @@ library(cowplot)
 library(dplyr)
 
 
-pdf(file="figures/kir_depth.pdf", width=16, height=6, onefile=FALSE)
+pdf(file="figures/kir_depth.pdf", width=16, height=3, onefile=FALSE)
 
 df<-read.table("HPRC_hifi_field1_result.csv", sep=",", header=TRUE)
 # df <- dplyr::filter(df, cutoff == 0)
@@ -24,88 +24,52 @@ df4<-read.table("hgscv2_clr_field1_result.csv", sep=",", header=TRUE)
 # df2$dataset <- "HGSCV2"
 # ## combine the two data frames
 # df <- rbind(df, df2)
+## for all the dfs, only keep rows where cutoff == 0
+df <- dplyr::filter(df, cutoff == 0)
+df2 <- dplyr::filter(df2, cutoff == 0)
+df3 <- dplyr::filter(df3, cutoff == 0)
+df4 <- dplyr::filter(df4, cutoff == 0)
 
-p1<- ggplot(data=df, aes(x=gene, y=total)) +
-  geom_bar(stat="identity", position=position_dodge(), fill="#9fc3d5")+ #"#E69F00"
-  # theme_minimal()+
+# Plot accuracy with count labels on top
+p1<- ggplot(data=df, aes(x=gene, y=accuracy)) +
+  geom_bar(stat="identity", position=position_dodge(), fill="#2a347a")+ 
+  geom_text(aes(label=total), vjust=0.5, hjust=1.5, size=3.5, angle=90, color="white")+
   theme_classic()+
    theme(legend.position = "none", axis.text.x = element_text(size = 10))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
   ggtitle('HPRC HiFi')+
-  ylab("Count")+scale_fill_manual(values = c("#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"))
+  ylab("Accuracy")
 
-p12<- ggplot(data=df, aes(x=gene, y=accuracy)) +
-  geom_bar(stat="identity", position=position_dodge(), fill="#2a347a")+ #"#E69F00"
-  # theme_minimal()+
-  theme_classic()+
-   theme(legend.position = "none", axis.text.x = element_text(size = 10))+
-   scale_x_discrete(guide = guide_axis(angle = 90))+
-  xlab("")+
-  ggtitle('HPRC HiFi')+
-  ylab("Accuracy")+scale_fill_manual(values = c("#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"))
-
-p2<- ggplot(data=df2, aes(x=gene, y=total)) +
-  geom_bar(stat="identity", position=position_dodge(), fill="#9fc3d5")+ #"#E69F00"
-  # theme_minimal()+
+p2<- ggplot(data=df2, aes(x=gene, y=accuracy)) +
+  geom_bar(stat="identity", position=position_dodge(), fill="#2a347a")+ 
+  geom_text(aes(label=total), vjust=0.5, hjust=1.5, size=3.5, angle=90, color="white")+
   theme_classic()+
    theme(legend.position = "none", axis.text.x = element_text(size = 10))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
   ggtitle('HGSVC HiFi')+
-  ylab("Count")+scale_fill_brewer(palette="Dark2")
+  ylab("Accuracy")
 
-p22<- ggplot(data=df2, aes(x=gene, y=accuracy)) +
-  geom_bar(stat="identity", position=position_dodge(), fill="#2a347a")+ #"#E69F00"
-  # theme_minimal()+
-  theme_classic()+
-   theme(legend.position = "none", axis.text.x = element_text(size = 10))+
-   scale_x_discrete(guide = guide_axis(angle = 90))+
-  xlab("")+
-  ggtitle('HGSVC HiFi')+
-  ylab("Accuracy")+scale_fill_brewer(palette="Dark2")
-
-
-p3<- ggplot(data=df3, aes(x=gene, y=total)) +
-  geom_bar(stat="identity", position=position_dodge(), fill="#9fc3d5")+ #"#E69F00"
-  # theme_minimal()+
+p3<- ggplot(data=df3, aes(x=gene, y=accuracy)) +
+  geom_bar(stat="identity", position=position_dodge(), fill="#2a347a")+ 
+  geom_text(aes(label=total), vjust=0.5, hjust=1.5, size=3.5, angle=90, color="white")+
   theme_classic()+
    theme(legend.position = "none", axis.text.x = element_text(size = 10))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
   ggtitle('HPRC ONT')+
-  ylab("Count")+scale_fill_brewer(palette="Dark2")
+  ylab("Accuracy")
 
-p32<- ggplot(data=df3, aes(x=gene, y=accuracy)) +
-  geom_bar(stat="identity", position=position_dodge(), fill="#2a347a")+ #"#E69F00"
-  # theme_minimal()+
-  theme_classic()+
-   theme(legend.position = "none", axis.text.x = element_text(size = 10))+
-   scale_x_discrete(guide = guide_axis(angle = 90))+
-  xlab("")+
-  ggtitle('HPRC ONT')+
-  ylab("Accuracy")+scale_fill_brewer(palette="Dark2")
-
-
-p4<- ggplot(data=df4, aes(x=gene, y=total)) +
-  geom_bar(stat="identity", position=position_dodge(), fill="#9fc3d5")+ #"#E69F00"
-  # theme_minimal()+
+p4<- ggplot(data=df4, aes(x=gene, y=accuracy)) +
+  geom_bar(stat="identity", position=position_dodge(), fill="#2a347a")+ 
+  geom_text(aes(label=total), vjust=0.5, hjust=1.5, size=3.5, angle=90, color="white")+
   theme_classic()+
    theme(legend.position = "none", axis.text.x = element_text(size = 10))+
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
   ggtitle('HGSVC CLR')+
-  ylab("Count")+scale_fill_brewer(palette="Dark2")
-
-p42<- ggplot(data=df4, aes(x=gene, y=accuracy)) +
-  geom_bar(stat="identity", position=position_dodge(), fill="#2a347a")+ #"#E69F00"
-  # theme_minimal()+
-  theme_classic()+
-   theme(legend.position = "none", axis.text.x = element_text(size = 10))+
-   scale_x_discrete(guide = guide_axis(angle = 90))+
-  xlab("")+
-  ggtitle('HGSVC CLR')+
-  ylab("Accuracy")+scale_fill_brewer(palette="Dark2")
+  ylab("Accuracy")
 
 # p3<- ggplot(data=df3, aes(x=gene, y=total)) +
 #   geom_bar(stat="identity", position=position_dodge(), fill="#9fc3d5")+ #"#E69F00"
@@ -133,13 +97,9 @@ prow <- plot_grid(
   p2 + theme(legend.position="none"),
   p3 + theme(legend.position="none"),
   p4 + theme(legend.position="none"),
-  p12 + theme(legend.position="none"),
-  p22 + theme(legend.position="none"),
-  p32 + theme(legend.position="none"),
-  p42 + theme(legend.position="none"),
   align = 'vh',
   hjust = -1,
-  nrow = 2
+  nrow = 1
 )
 legend <- get_legend(
   p1 +

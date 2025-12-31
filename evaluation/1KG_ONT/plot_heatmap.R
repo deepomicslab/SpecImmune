@@ -74,17 +74,21 @@ df3 <- df[df$Group1 != df$Group2,]
 ttest <- t.test(df3$JSD[df3$compare == "intra"], df3$JSD[df3$compare == "inter"])
 ttest
 
-pdf(file="hla/JSD_compare.pdf", width=3, height=3, onefile=FALSE)
+pdf(file="hla/JSD_compare.pdf", width=2, height=2.5, onefile=FALSE)
 
 vysg <- ggplot(df3, aes(x=compare,y=JSD,fill=compare)) + 
           geom_boxplot() + 
+          geom_jitter(width=0.2, alpha=0.3, size=1)+
         theme_classic()+
   scale_fill_manual(values = c("#9fc3d5", "#2a347a"))+
 xlab('')+
   theme(legend.position = "none")
 
 
-vysg+ stat_compare_means(method = "t.test")
+vysg+ stat_compare_means(method = "t.test", label.y = 0.6, size = 3)
 dev.off()
 
 dev.off()
+
+
+
