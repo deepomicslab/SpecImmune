@@ -13,6 +13,9 @@ df
 ## make accueacy as numeric
 df$accuracy <- as.numeric(as.character(df$accuracy))
 
+# Set factor levels for dataset to control x-axis order
+df$dataset <- factor(df$dataset, levels = c("HPRC HiFi", "HPRC ONT", "HGSVC HiFi", "HGSVC CLR"))
+
 # p1<- ggplot(data=df, aes(x=dataset, y=accuracy)) +
 #   geom_bar(stat="identity", position=position_dodge(), aes(fill=dataset))+ #"#E69F00"
 #   ylab("Accuracy")+ylim(c(0.5,1))+scale_fill_brewer(palette="Dark2")+ 

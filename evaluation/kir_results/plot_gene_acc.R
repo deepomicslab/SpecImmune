@@ -94,12 +94,13 @@ p4<- ggplot(data=df4, aes(x=gene, y=accuracy)) +
 
 prow <- plot_grid(
   p1 + theme(legend.position="none"),
-  p2 + theme(legend.position="none"),
   p3 + theme(legend.position="none"),
+  p2 + theme(legend.position="none"),
   p4 + theme(legend.position="none"),
   align = 'vh',
   hjust = -1,
-  nrow = 1
+  nrow = 1,
+  labels = c("HPRC HiFi", "HPRC ONT", "HGSVC HiFi", "HGSVC CLR")
 )
 legend <- get_legend(
   p1 +

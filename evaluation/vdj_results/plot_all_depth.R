@@ -6,6 +6,9 @@ library(ggrepel)
 pdf(file="figures/all_depth.pdf", width=7, height=4, onefile=FALSE)
 df<-read.table("all_loci_depth.csv", sep=",", header=TRUE)
 
+# Set factor levels for dataset to control legend order
+df$dataset <- factor(df$dataset, levels = c("HPRC HiFi", "HPRC ONT", "HGSVC HiFi", "HGSVC CLR"))
+
 # Add label combining accuracy and total alleles
 df$label <- paste0(sprintf("%.1f%%", df$accuracy * 100), "\n(n=", df$total, ")")
 

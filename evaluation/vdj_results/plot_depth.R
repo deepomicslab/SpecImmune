@@ -69,10 +69,10 @@ p4<-ggplot(data=df, aes(x=cutoff, y=accuracy, color = chain)) +
   scale_color_manual(values = c("#827e3f", "skyblue", "#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b")) 
 
 prow <- plot_grid(
-  p1 + theme(legend.position="none"),
-  p2 + theme(legend.position="none"),
   p3 + theme(legend.position="none"),
   p4 + theme(legend.position="none"),
+  p1 + theme(legend.position="none"),
+  p2 + theme(legend.position="none"),
   align = 'vh',
   hjust = -1,
   nrow = 2
