@@ -1,0 +1,15 @@
+##fileformat=VCFv4.1
+##fileDate=20241216
+##contig=<ID=NG_007929.1,length=34098>
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=VI,Number=1,Type=String,Description="Variant impact">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+NG_007929.1	5071	rs8192709	C	T	.	.	VI=R22C;
+NG_007929.1	17747	rs2279341	G	C	.	.	.
+NG_007929.1	30813	rs3181842	C	T	.	.	.
+NG_007929.1	31100	rs7246465	T	C	.	.	.
+NG_007929.1	31601	rs28969420	G	T	.	.	.
+NG_007929.1	31884	rs707265	A	G	.	.	.
+NG_007929.1	31928	rs12979270	A	C	.	.	.
+NG_007929.1	31929	rs12979898	G	A	.	.	.
+NG_007929.1	31950	rs1042389	T	C	.	.	.

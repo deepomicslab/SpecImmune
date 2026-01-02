@@ -1,0 +1,8 @@
+##fileformat=VCFv4.1
+##fileDate=20241216
+##contig=<ID=NG_007938.2,length=38805>
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=VI,Number=1,Type=String,Description="Variant impact">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+NG_007938.2	19787	rs10264272	G	A	.	.	VI=splice_defect;
+NG_007938.2	36708	rs15524	T	C	.	.	.

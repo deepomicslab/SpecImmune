@@ -6,6 +6,12 @@ __pycache__/
 db/
 test/pacbio/output/
 test/test
+test
+*.sif
+*.fa.*
+*.fa
+*.fasta
+*.zip
 nohup.out
 *.log
 # C extensions

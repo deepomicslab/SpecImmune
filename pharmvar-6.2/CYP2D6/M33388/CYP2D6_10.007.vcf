@@ -1,0 +1,19 @@
+##fileformat=VCFv4.1
+##fileDate=20241216
+##contig=<ID=M33388,length=9432>
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=VI,Number=1,Type=String,Description="Variant impact">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+M33388	194	rs28588594	C	T	.	.	.
+M33388	620	rs1080989	G	A	.	.	.
+M33388	1719	rs1065852	C	T	.	.	VI=P34S;
+M33388	1929	rs28371699	G	T	.	.	.
+M33388	2462	rs28371702	T	G	.	.	.
+M33388	2658	rs1081003	C	T	.	.	.
+M33388	3280	rs1058164	G	C	.	.	.
+M33388	3716	rs2267447	A	G	.	.	.
+M33388	4110	rs190535395	G	A	.	.	.
+M33388	5003	rs1985842	A	C	.	.	.
+M33388	5201	rs2004511	A	G	.	.	.
+M33388	5799	rs1135840	G	C	.	.	VI=S486T;
+M33388	6020	rs28371738	C	T	.	.	.

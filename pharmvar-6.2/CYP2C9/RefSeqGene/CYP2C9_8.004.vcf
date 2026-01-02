@@ -1,0 +1,11 @@
+##fileformat=VCFv4.1
+##fileDate=20241216
+##contig=<ID=NG_008385.2,length=58934>
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=VI,Number=1,Type=String,Description="Variant impact">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+NG_008385.2	3760	rs9332094	T	C	.	.	.
+NG_008385.2	4338	rs4918758	T	C	.	.	.
+NG_008385.2	4883	rs185008625	G	T	.	.	.
+NG_008385.2	9152	rs7900194	G	A	.	.	VI=R150H;
+NG_008385.2	55959	rs9332241	C	T	.	.	.
