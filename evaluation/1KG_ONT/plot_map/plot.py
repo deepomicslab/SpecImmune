@@ -220,7 +220,7 @@ for category in superpop_categories:
 # Add background rectangles for each superpopulation group
 for category, (start, end) in group_boundaries.items():
     ax_bar.axhspan(start - 0.5, end - 0.5, facecolor=superpop_colors.get(category, '#ffffff'), alpha=0.6)
-    ax_bar.text(-max_population * 0.45, (start + end) / 2 - 0.5, category, 
+    ax_bar.text(-max_population * 0.55, (start + end) / 2 - 0.5, category, 
                 va='center', ha='right', fontsize=22, fontweight='bold')
 
 # Plot bars
