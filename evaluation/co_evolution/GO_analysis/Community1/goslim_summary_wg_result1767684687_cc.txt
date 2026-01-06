@@ -1,0 +1,9 @@
+GO:0005768	endosome	3
+GO:0005773	vacuole	3
+GO:0012505	endomembrane system	3
+GO:0016020	membrane	3
+GO:0031982	vesicle	3
+GO:0032991	protein-containing complex	3
+GO:0005615	extracellular space	1
+GO:0005783	endoplasmic reticulum	1
+GO:0005794	Golgi apparatus	1
