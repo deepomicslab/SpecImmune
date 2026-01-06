@@ -13,12 +13,14 @@ non_hla_genes = ['MICA', 'MICB', 'TAP1', 'TAP2']
 
 # 合并所有基因分类
 gene_order = class1_genes + class1_pseudogenes + class2_genes + non_hla_genes
+genes_for_hlala = ['A', 'B', 'C', 'DPA1', 'DPB1', 'DQA1', 'DQB1', 'DRA', 'DRB1', 'E', 'F', 'G', 'H', 'K', 'V', 'DRB3', 'DRB4']
+gene_order = genes_for_hlala
 
 KGP_genes = ['A', 'B', 'C', 'DQB1', 'DRB1']
 colors = ["#D2D2D2", "#062565", "#0098B4"]
 colors = ["#98B6C4", "#8D93AF", "#3E4271"]
 
-outdir="revise"
+outdir="revise_as_r1"
 if not os.path.exists(outdir):
     os.makedirs(outdir)
 
@@ -27,7 +29,7 @@ if not os.path.exists(outdir):
 software_name_map = {
     'hlala': 'HLA*LA',
     'spechla': 'SpecHLA',
-    'speclong': 'SpecLong'
+    'speclong': 'SpecImmune'
 }
 
 # 计算准确率
@@ -68,10 +70,15 @@ import pandas as pd
 import numpy as np
 
 # 绘图函数，包含准确率和带有雨云图的深度图
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+# 绘图函数，只包含准确率柱状图
 def plot_accuracy(all_data):
     for dataset, data in all_data.items():
         software_data = data['software_data']
-        depth_data = data['depth_data']
 
         # 如果数据集是 '1kg_ont'，只聚焦于 KGP_genes，并缩小图的宽度
         if dataset == '1kg_ont':
@@ -106,75 +113,34 @@ def plot_accuracy(all_data):
         # 合并三个软件的数据
         combined_df = pd.concat(combined_data)
 
-        # 创建一个新的图形对象，带有两个子图
-        fig, axes = plt.subplots(2, 1, figsize=(fig_width, 3), gridspec_kw={'height_ratios': [2, 1]})
+        # 创建单个图形对象
+        fig, ax = plt.subplots(1, 1, figsize=(fig_width, 2.5))
 
         # ==============================
-        # 第一个子图: 准确率柱状图 (Barplot)
+        # 准确率柱状图 (Barplot)
         # ==============================
-        sns.barplot(x='Gene', y='Accuracy', hue='Software', data=combined_df, palette=colors, ci=None, dodge=True, ax=axes[0])
+        sns.barplot(x='Gene', y='Accuracy', hue='Software', data=combined_df, palette=colors, ci=None, dodge=True, ax=ax)
 
-        axes[0].set_xticklabels([])
-        axes[0].set_xlabel('')
-        axes[0].set_ylabel('Accuracy', fontsize=12)
-        axes[0].set_ylim(0, 1.1)
-        axes[0].tick_params(axis='y', labelsize=12)
-        axes[0].legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=12, frameon=False)
-
-        # ==============================
-        # 第二个子图: 深度分布图 (Raincloud Plot)
-        # ==============================
-        if depth_data is not None:
-            # 如果没有显式的 'Sample' 列，将第一列重命名为 'Sample'
-            if 'Sample' not in depth_data.columns:
-                depth_data.rename(columns={depth_data.columns[0]: 'Sample'}, inplace=True)
-
-            # 移除基因名称中的 "HLA-" 前缀
-            depth_data.columns = depth_data.columns.str.replace('HLA-', '')
-
-            # 将深度数据转换为长格式
-            depth_data_melted = depth_data.melt(id_vars=['Sample'], var_name='Gene', value_name='Depth')
-
-            # 根据基因过滤数据，只选择目标基因
-            depth_data_melted = depth_data_melted[depth_data_melted['Gene'].isin(gene_filter)]
-
-            # 按照基因分类排序
-            depth_data_melted['Gene'] = pd.Categorical(depth_data_melted['Gene'], categories=gene_filter, ordered=True)
-            depth_data_melted = depth_data_melted.sort_values('Gene')
-
-            # 设置箱线图的颜色和美化
-            boxprops = dict(color='darkgray', linewidth=1, facecolor='#75D5DF', alpha=1)
-            medianprops = dict(color='darkgray', linewidth=2)
-            whiskerprops = dict(color='darkgray', linewidth=1.5)
-            capprops = dict(color='darkgray', linewidth=1.5)
-
-            # 在小提琴图上叠加箱线图（作为雨云图中的“总结统计信息”部分）
-            sns.boxplot(
-                x='Gene', 
-                y='Depth', 
-                data=depth_data_melted, 
-                width=0.3,  # 控制箱线图宽度
-                ax=axes[1],
-                showfliers=False,  # 不显示异常值
-                boxprops=boxprops,  # 设置箱线图的外观
-                medianprops=medianprops,  # 设置中位数线的外观
-                whiskerprops=whiskerprops,  # 设置胡须线的外观
-                capprops=capprops,  # 设置箱线图顶端和底端线的外观
-                zorder=2  # 确保箱线图在小提琴图上方
-            )
-
-            # 设置标签和外观
-            axes[1].set_xticklabels(gene_filter, rotation=45, ha='right', fontsize=10)
-            axes[1].set_xlabel('Locus', fontsize=12)
-            axes[1].set_ylabel('Depth', fontsize=12)
-            axes[1].tick_params(axis='y', labelsize=12)
+        ax.set_xticklabels(gene_filter, rotation=45, ha='right', fontsize=10)
+        ax.set_xlabel('Locus', fontsize=12)
+        ax.set_ylabel('Accuracy', fontsize=12)
+        ax.set_ylim(0, 1.1)
+        ax.tick_params(axis='y', labelsize=12)
+        ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=12, frameon=False)
+        
+        # ========== 添加淡色横向网格线 ==========
+        ax.yaxis.grid(True, linestyle='--', alpha=0.3, linewidth=0.8, color='gray')
+        ax.set_axisbelow(True)  # 将网格线放在图形元素下方
+        # =======================================
 
         plt.tight_layout()
 
         # 保存图像为SVG格式
-        svg_file_path = f'{outdir}/{dataset}_gene_accuracy_depth_comparison_raincloud.svg'
+        svg_file_path = f'{outdir}/{dataset}_gene_accuracy_comparison.svg'
         plt.savefig(svg_file_path, format='svg', bbox_inches='tight', dpi=600)
 
+        # 关闭图形以释放内存
+        plt.close()
         # 显示图像
         # plt.show()
 
@@ -186,9 +152,9 @@ dataset_dirs = {
     'hprc_ont': '../HPRC/hla/ont',  
     '1kg_ont': '../1KG_ONT/hla/',
 }
-dataset_dirs = { 
-    'hgsvc2_clr': '../HGSVC2/clr', 
-}
+# dataset_dirs = { 
+#     'hgsvc2_clr': '../HGSVC2/clr', 
+# }
 
 # 读取文件并加载数据
 all_data = load_data_from_files(dataset_dirs)
