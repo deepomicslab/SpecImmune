@@ -1,0 +1,2 @@
+GO:0005515	protein binding	2
+GO:0060089	molecular transducer activity	2

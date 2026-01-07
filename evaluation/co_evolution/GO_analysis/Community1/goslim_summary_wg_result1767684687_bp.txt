@@ -1,0 +1,7 @@
+GO:0032501	multicellular organismal process	3
+GO:0050896	response to stimulus	3
+GO:0065007	biological regulation	3
+GO:0016043	cellular component organization	2
+GO:0008152	metabolic process	1
+GO:0051179	localization	1
+GO:0032502	developmental process	1
