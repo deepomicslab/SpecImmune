@@ -3,7 +3,7 @@ library(grid)
 library(cowplot)
 library(ggrepel)
 
-pdf(file="figures/all_depth.pdf", width=7, height=4, onefile=FALSE)
+pdf(file="figures/all_depth.pdf", width=5.5, height=4, onefile=FALSE)
 df<-read.table("all_loci_depth.csv", sep=",", header=TRUE)
 
 # Set factor levels for dataset to control legend order
@@ -31,6 +31,6 @@ ggplot(data=df, aes(x=depth, y=accuracy, color=dataset)) +
   scale_x_continuous(breaks = c(0, 5, 10, 15, 20)) +
   geom_line(aes(linetype=dataset))+
   ylab("Accuracy")+theme_classic()+ scale_color_manual(values = c("#d9e6eb", "#9fc3d5", "#8f96bd", "#2a347a", "#d6d69b"))+
-  theme(legend.position="right",
+  theme(legend.position="top",
         plot.margin = margin(10, 10, 10, 10))
 dev.off()

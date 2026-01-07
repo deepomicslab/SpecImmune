@@ -39,7 +39,7 @@ p1<- ggplot(data=df, aes(x=gene, y=accuracy)) +
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
   ggtitle('HPRC HiFi')+
-  ylab("Accuracy")
+  ylab("1-field Accuracy")
 
 p2<- ggplot(data=df2, aes(x=gene, y=accuracy)) +
   geom_bar(stat="identity", position=position_dodge(), fill="#2a347a")+ 
@@ -49,7 +49,7 @@ p2<- ggplot(data=df2, aes(x=gene, y=accuracy)) +
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
   ggtitle('HGSVC HiFi')+
-  ylab("Accuracy")
+  ylab("1-field Accuracy")
 
 p3<- ggplot(data=df3, aes(x=gene, y=accuracy)) +
   geom_bar(stat="identity", position=position_dodge(), fill="#2a347a")+ 
@@ -59,7 +59,7 @@ p3<- ggplot(data=df3, aes(x=gene, y=accuracy)) +
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
   ggtitle('HPRC ONT')+
-  ylab("Accuracy")
+  ylab("1-field Accuracy")
 
 p4<- ggplot(data=df4, aes(x=gene, y=accuracy)) +
   geom_bar(stat="identity", position=position_dodge(), fill="#2a347a")+ 
@@ -69,7 +69,7 @@ p4<- ggplot(data=df4, aes(x=gene, y=accuracy)) +
    scale_x_discrete(guide = guide_axis(angle = 90))+
   xlab("")+
   ggtitle('HGSVC CLR')+
-  ylab("Accuracy")
+  ylab("1-field Accuracy")
 
 # p3<- ggplot(data=df3, aes(x=gene, y=total)) +
 #   geom_bar(stat="identity", position=position_dodge(), fill="#9fc3d5")+ #"#E69F00"
@@ -99,8 +99,7 @@ prow <- plot_grid(
   p4 + theme(legend.position="none"),
   align = 'vh',
   hjust = -1,
-  nrow = 1,
-  labels = c("HPRC HiFi", "HPRC ONT", "HGSVC HiFi", "HGSVC CLR")
+  nrow = 1
 )
 legend <- get_legend(
   p1 +
