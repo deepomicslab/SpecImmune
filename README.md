@@ -439,6 +439,47 @@ Mafa-KIR3DL20   2       Mafa-KIR3DL20*002:01:01 Mafa-KIR3DL20*002:01:01|13294|1.
 01
 ```
 
+## New Allele Submission Guidelines
+
+SpecImmune is designed to identify potential novel alleles by flagging sequences with identity $<100\%$ to known references. However, identifying a novel sequence is only the first step. To officially name and submit a new allele to public repositories, strict validation and submission protocols must be followed.
+
+Below are the specific submission guidelines for each gene family supported by SpecImmune:
+
+### HLA Genes
+**Repository:** [IPD-IMGT/HLA Database](https://www.ebi.ac.uk/ipd/imgt/hla/)
+
+*   **Submission Guidelines:** [IPD-IMGT/HLA Submission Guidelines](https://www.ebi.ac.uk/ipd/imgt/hla/submission/guidelines/)
+*   **Key Requirements:**
+    *   Full-length sequencing is highly recommended (and required for non-coding variants).
+    *   For novel alleles identified in patients with haematological malignancies, germline confirmation (e.g., via buccal swab) is essential to rule out tumor-derived mutations.
+    *   Validation via a second independent PCR or sequencing reaction is often required.
+
+### KIR Genes
+**Repository:** [IPD-KIR Database](https://www.ebi.ac.uk/ipd/kir/)
+
+*   **Submission Guidelines:** [IPD-KIR Submission Guidelines](https://www.ebi.ac.uk/ipd/kir/submission/)
+*   **Key Requirements:**
+    *   Similar to HLA, confirmation of the novel sequence from a second independent PCR reaction is standard practice.
+    *   Submission must include physical evidence (sequence traces or NGS assembly data).
+
+### CYP Genes
+**Repository:** [PharmVar](https://www.pharmvar.org/)
+
+*   **Submission Guidelines:** [PharmVar Submission Criteria](https://www.pharmvar.org/criteria)
+*   **Key Requirements:**
+    *   Submissions must adhere to PharmVar's "Allele Designation Criteria".
+    *   High-quality NGS metrics (coverage, base quality) are mandatory.
+    *   Distinguish between star-allele (haplotype) definitions and single nucleotide variants (SNVs).
+
+### Ig and TCR Genes
+**Repository:** [IMGT/LIGM-DB](https://www.imgt.org/)
+
+*   **Submission Guidelines:** [IMGT/V-QUEST User Guide](https://www.imgt.org/IMGT_vquest/user_guide#nucseq)
+*   **Key Requirements:**
+    *   Sequences must be formatted according to IMGT standards (FASTA headers < 50 chars, no prohibited characters).
+    *   Use **IMGT/V-QUEST** to validate the novelty of the V-domain and identify specific mutations before submission.
+
+
 ## Dependencies 
 
 ### Systematic requirement
