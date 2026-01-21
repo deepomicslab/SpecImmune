@@ -202,12 +202,71 @@ def multivariate_regression_analysis(df, pdf):
     residual_file = os.path.join(OUTPUT_DIR, 'population_residuals.csv')
     residual_df.to_csv(residual_file, index=False)
     
-    # Plot: Two subplots comparing AFR vs non-AFR
-    fig = plt.figure(figsize=(14, 5.5))
-    gs = fig.add_gridspec(1, 2, hspace=0.25, wspace=0.3)
+    # Plot: Three subplots - depth distributions, AFR vs non-AFR comparison
+    fig = plt.figure(figsize=(24, 5.5))
+    gs = fig.add_gridspec(1, 3, hspace=0.25, wspace=0.3)
     
-    # Plot 1: Violin plot (top left)
+    # Plot 1: Per-population depth distributions (first)
     ax1 = fig.add_subplot(gs[0, 0])
+    
+    # Prepare depth data by population
+    populations = sorted(analysis_df['super_pop'].unique())
+    depth_data = [analysis_df[analysis_df['super_pop'] == pop]['depth'].values for pop in populations]
+    
+    # Create violin plot
+    positions = list(range(1, len(populations) + 1))
+    parts = ax1.violinplot(depth_data, positions=positions, 
+                          showmeans=False, showmedians=False, widths=0.7)
+    
+    # Use same color for all populations
+    for pc in parts['bodies']:
+        pc.set_facecolor('#4A90E2')
+        pc.set_alpha(0.7)
+        pc.set_edgecolor('black')
+        pc.set_linewidth(1.5)
+    
+    # Add mean and median markers
+    for i, pop in enumerate(populations):
+        pop_data = analysis_df[analysis_df['super_pop'] == pop]['depth']
+        mean_depth = pop_data.mean()
+        median_depth = pop_data.median()
+        
+        # Add median line
+        ax1.hlines(median_depth, i + 0.7, i + 1.3, colors='red', linewidth=3, linestyle='-', zorder=10)
+        # Add mean line
+        ax1.hlines(mean_depth, i + 0.7, i + 1.3, colors='blue', linewidth=3, linestyle='--', zorder=10)
+        # Add mean marker
+        ax1.scatter(i + 1, mean_depth, color='white', s=150, zorder=11, 
+                   edgecolor='black', linewidth=2, marker='D')
+        
+        # Annotate mean value
+        ax1.text(i + 1, mean_depth, f'{mean_depth:.0f}', 
+                ha='center', va='bottom', fontsize=9, fontweight='bold',
+                bbox=dict(boxstyle='round,pad=0.3', facecolor='white', 
+                         edgecolor='black', linewidth=1, alpha=0.9))
+    
+    ax1.set_xlabel('Super Population', fontsize=13, fontweight='bold')
+    ax1.set_ylabel('Sequencing Depth (×)', fontsize=13, fontweight='bold')
+    ax1.set_title('Per-Population Depth Distribution\nfor IG/TCR Loci', 
+                  fontsize=14, fontweight='bold', pad=15)
+    ax1.grid(True, alpha=0.3, axis='y', linewidth=0.5)
+    ax1.set_xlim(0.5, len(populations) + 0.5)
+    
+    # Add sample size annotations below x-axis labels
+    ax1.set_xticks(positions)
+    ax1.set_xticklabels([f'{pop}' 
+                          for pop in populations], fontsize=11, fontweight='bold')
+    
+    # Add legend for median/mean lines
+    from matplotlib.lines import Line2D
+    legend_elements = [
+        Line2D([0], [0], color='red', linewidth=2.5, label='Median'),
+        Line2D([0], [0], color='blue', linewidth=2.5, linestyle='--', label='Mean')
+    ]
+    ax1.legend(handles=legend_elements, loc='upper right', fontsize=10, frameon=True, shadow=True)
+    
+    # Plot 2: Violin plot for AFR vs non-AFR
+    ax2 = fig.add_subplot(gs[0, 1])
     
     # Remove extreme outliers for visualization (keep within 5th-95th percentile)
     non_afr_q5, non_afr_q95 = np.percentile(non_afr_residuals, [5, 95])
@@ -216,7 +275,7 @@ def multivariate_regression_analysis(df, pdf):
     non_afr_filtered = non_afr_residuals[(non_afr_residuals >= non_afr_q5) & (non_afr_residuals <= non_afr_q95)]
     afr_filtered = afr_residuals[(afr_residuals >= afr_q5) & (afr_residuals <= afr_q95)]
     
-    parts = ax1.violinplot([non_afr_filtered, afr_filtered], positions=[1, 2], 
+    parts = ax2.violinplot([non_afr_filtered, afr_filtered], positions=[1, 2], 
                            showmeans=False, showmedians=False, widths=0.65)
     
     # Style violin plots
@@ -229,55 +288,55 @@ def multivariate_regression_analysis(df, pdf):
     
     # Add mean markers and lines
     means = [non_afr_residuals.mean(), afr_residuals.mean()]
-    ax1.scatter([1, 2], means, color='white', s=200, zorder=10, edgecolor='black', linewidth=2.5, marker='D')
-    ax1.hlines(means, [0.7, 1.7], [1.3, 2.3], colors='black', linewidth=2.5, linestyle='-', zorder=9)
+    ax2.scatter([1, 2], means, color='white', s=200, zorder=10, edgecolor='black', linewidth=2.5, marker='D')
+    ax2.hlines(means, [0.7, 1.7], [1.3, 2.3], colors='black', linewidth=2.5, linestyle='-', zorder=9)
     
     # Labels and styling
-    ax1.set_xticks([1, 2])
-    ax1.set_xticklabels(['Non-AFR\n(n=283,170)', 'AFR\n(n=104,747)'], fontsize=12, fontweight='bold')
-    ax1.axhline(y=0, color='gray', linestyle='--', linewidth=2, alpha=0.6)
-    ax1.set_ylabel('Residual Heterozygosity', fontsize=13, fontweight='bold')
-    ax1.set_title(f'AFR vs Non-AFR Comparison\np = {t_pval:.2e}', fontsize=14, fontweight='bold', pad=15)
-    ax1.grid(True, alpha=0.3, axis='y', linewidth=0.5)
-    ax1.set_xlim(0.5, 2.5)
+    ax2.set_xticks([1, 2])
+    ax2.set_xticklabels(['Non-AFR', 'AFR'], fontsize=12, fontweight='bold')
+    ax2.axhline(y=0, color='gray', linestyle='--', linewidth=2, alpha=0.6)
+    ax2.set_ylabel('Residual Heterozygosity', fontsize=13, fontweight='bold')
+    ax2.set_title(f'AFR vs Non-AFR Comparison\np = {t_pval:.2e}', fontsize=14, fontweight='bold', pad=15)
+    ax2.grid(True, alpha=0.3, axis='y', linewidth=0.5)
+    ax2.set_xlim(0.5, 2.5)
     
     # Add mean value annotations
     for i, (pos, mean) in enumerate(zip([1, 2], means)):
-        ax1.text(pos, mean + 0.2, f'{mean:.3f}', ha='center', va='bottom',
+        ax2.text(pos, mean + 0.2, f'{mean:.3f}', ha='center', va='bottom',
                 fontsize=11, fontweight='bold', 
                 bbox=dict(boxstyle='round,pad=0.4', facecolor='white', edgecolor='black', linewidth=1.5))
     
-    # Plot 2: Histogram (top right)
-    ax2 = fig.add_subplot(gs[0, 1])
+    # Plot 3: Histogram
+    ax3 = fig.add_subplot(gs[0, 2])
     
     bins = np.linspace(min(non_afr_filtered.min(), afr_filtered.min()), 
                        max(non_afr_filtered.max(), afr_filtered.max()), 60)
     
     # Use step histograms for clarity
-    ax2.hist(non_afr_filtered, bins=bins, alpha=0, histtype='step', 
+    ax3.hist(non_afr_filtered, bins=bins, alpha=0, histtype='step', 
              color=colors[0], linewidth=2.5, density=True)
-    ax2.hist(afr_filtered, bins=bins, alpha=0, histtype='step',
+    ax3.hist(afr_filtered, bins=bins, alpha=0, histtype='step',
              color=colors[1], linewidth=2.5, density=True)
     
     # Fill under curves with transparency
     counts_non, bins_non = np.histogram(non_afr_filtered, bins=bins, density=True)
     counts_afr, bins_afr = np.histogram(afr_filtered, bins=bins, density=True)
-    ax2.fill_between(bins_non[:-1], counts_non, alpha=0.3, color=colors[0], step='post')
-    ax2.fill_between(bins_afr[:-1], counts_afr, alpha=0.3, color=colors[1], step='post')
+    ax3.fill_between(bins_non[:-1], counts_non, alpha=0.3, color=colors[0], step='post')
+    ax3.fill_between(bins_afr[:-1], counts_afr, alpha=0.3, color=colors[1], step='post')
     
     # Add mean lines
-    ax2.axvline(non_afr_residuals.mean(), color=colors[0], linestyle='--', linewidth=3, 
+    ax3.axvline(non_afr_residuals.mean(), color=colors[0], linestyle='--', linewidth=3, 
                 label=f'Non-AFR: {non_afr_residuals.mean():.3f}', zorder=10)
-    ax2.axvline(afr_residuals.mean(), color=colors[1], linestyle='--', linewidth=3, 
+    ax3.axvline(afr_residuals.mean(), color=colors[1], linestyle='--', linewidth=3, 
                 label=f'AFR: {afr_residuals.mean():.3f}', zorder=10)
-    ax2.axvline(0, color='gray', linestyle='-', linewidth=2, alpha=0.5)
+    ax3.axvline(0, color='gray', linestyle='-', linewidth=2, alpha=0.5)
     
-    ax2.set_xlabel('Residual Heterozygosity', fontsize=13, fontweight='bold')
-    ax2.set_ylabel('Density', fontsize=13, fontweight='bold')
-    ax2.set_title(f'Distribution Comparison\nΔ = {afr_residuals.mean() - non_afr_residuals.mean():.4f}', 
+    ax3.set_xlabel('Residual Heterozygosity', fontsize=13, fontweight='bold')
+    ax3.set_ylabel('Density', fontsize=13, fontweight='bold')
+    ax3.set_title(f'Distribution Comparison\nΔ = {afr_residuals.mean() - non_afr_residuals.mean():.4f}', 
                   fontsize=14, fontweight='bold', pad=15)
-    ax2.legend(fontsize=10, loc='upper right', frameon=True, shadow=True)
-    ax2.grid(True, alpha=0.3, axis='y', linewidth=0.5)
+    ax3.legend(fontsize=10, loc='upper right', frameon=True, shadow=True)
+    ax3.grid(True, alpha=0.3, axis='y', linewidth=0.5)
     
     plt.tight_layout()
     pdf.savefig(fig, dpi=150, bbox_inches='tight')
