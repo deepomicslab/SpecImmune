@@ -59,7 +59,7 @@ DATASET_DISPLAY_NAMES = {
     'hprc_ont': 'HPRC ONT',
     'hgsvc2_hifi': 'HGSVC HiFi',
     'hgsvc2_clr': 'HGSVC CLR',
-    '1kg_ont': '1KG ONT'  # 新增
+    '1kg_ont': '1kGP ONT'  # 新增
 }
 
 # 按照您要求的顺序 (新增 1kg_ont)
@@ -392,7 +392,7 @@ def plot_by_dataset():
     datasets = DATASET_ORDER
     
     # 改为 2 行 3 列布局
-    fig, axes = plt.subplots(2, 3, figsize=(18, 10), dpi=300)
+    fig, axes = plt.subplots(2, 3, figsize=(12, 8), dpi=300)
     axes = axes.flatten()
     
     for idx, dataset in enumerate(datasets):
