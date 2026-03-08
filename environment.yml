@@ -382,7 +382,8 @@ dependencies:
       - cigar==0.1.3
       - cutesv==2.1.2
       - cython==3.0.12
-      - dysgu==1.6.2
+      # dysgu 1.6.2 pins pysam==0.21.0, which conflicts with truvari (pysam>=0.22).
+      # Install dysgu after env create: pip install --no-deps dysgu==1.6.2
       - edlib==1.3.9.post1
       - genomeview==1.1.4
       - intervaltree==3.1.0

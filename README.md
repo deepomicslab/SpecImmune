@@ -29,7 +29,7 @@
 ### Install  
 First, create the env with conda or mamba, and activate the env. 
 
-**Use conda**
+**Use conda/mamba**
 ```
 git clone git@github.com:deepomicslab/SpecImmune.git
 cd SpecImmune/
@@ -37,13 +37,11 @@ conda env create -n SpecImmune -f environment.yml
 conda activate SpecImmune
 ```
 
-**For faster installation and environment management, we recommend using mamba.**
+After creating and activating the env, install dysgu:
 
 ```
-mamba env create -n SpecImmune -f environment.yml
-mamba activate SpecImmune
+pip install --no-deps dysgu==1.6.2
 ```
-
 
 Second, make the software in bin/ executable.
 ```
