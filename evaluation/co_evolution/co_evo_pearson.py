@@ -921,7 +921,7 @@ if __name__ == "__main__":
     total_df.to_csv(f"./co_evo_pearson_results.csv", index=False)
 
     # Create a 5x2 grid for subplots
-    fig, axes = plt.subplots(5, 2, figsize=(12, 24))
+    fig, axes = plt.subplots(2, 5, figsize=(24, 12))
     axes = axes.flatten()
     super_pop_order = sorted(list(super_pop_set))
 
